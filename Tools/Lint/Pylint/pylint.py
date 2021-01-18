@@ -50,7 +50,7 @@ def _python_modules_for_python_version(version: _PythonVersion) -> Tuple[Path, .
 
 def _python_2_modules() -> Tuple[Path, ...]:
     python_2_list_content = (
-        _root_path() / "Tools" / "Lint" / "python2_modules.txt"
+        _root_path() / "Tools" / "Lint" / "Pylint" / "python2_modules.txt"
     ).read_text()
     return tuple(Path(item) for item in python_2_list_content.split("\n") if item)
 
@@ -115,7 +115,7 @@ def _lint_modules_for_python_version(
     print(f"Linting python {version.value} modules")
     _assert_valid_python_version(version)
     config_file = (
-        _root_path() / "Tools" / "Lint" / f".pylintrc_for_python_{version.value}"
+        _root_path() / "Tools" / "Lint" / "Pylint"/ f".pylintrc_for_python_{version.value}"
     )
 
     check_call(
