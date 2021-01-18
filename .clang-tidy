@@ -22,7 +22,6 @@ Checks: >
   -mpi-*,
   -objc-*,
   -openmp-*,
-  -performance-*,
   -portability-*,
   -readability-*,
   -zircon-*,
