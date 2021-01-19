@@ -8,21 +8,21 @@
 #include "CvDefines.h"
 
 
-enum GameStateTypes
+enum class GameStateTypes
 {
 	GAMESTATE_ON,
 	GAMESTATE_OVER,
 	GAMESTATE_EXTENDED,
 };
 
-enum PopupStates
+enum class PopupStates
 {
 	POPUPSTATE_IMMEDIATE,
 	POPUPSTATE_QUEUED,
 	POPUPSTATE_MINIMIZED,
 };
 
-enum PopupEventTypes
+enum class PopupEventTypes
 {
 	POPUPEVENT_NONE,
 	POPUPEVENT_PRODUCTION,
@@ -32,7 +32,7 @@ enum PopupEventTypes
 	POPUPEVENT_CIVIC,
 };
 
-enum CameraLookAtTypes
+enum class CameraLookAtTypes
 {
 	CAMERALOOKAT_NORMAL,
 	CAMERALOOKAT_CITY_ZOOM_IN,
@@ -43,19 +43,19 @@ enum CameraLookAtTypes
 	CAMERALOOKAT_HOTSEAT,
 };
 
-enum CameraMovementSpeeds
+enum class CameraMovementSpeeds
 {
 	CAMERAMOVEMENTSPEED_NORMAL,
 	CAMERAMOVEMENTSPEED_SLOW,
 	CAMERAMOVEMENTSPEED_FAST,
 };
 
-enum CameraAnimationTypes
+enum class CameraAnimationTypes
 {
 	NO_CAMERA_ANIMATION = -1,
 };
 
-enum ZoomLevelTypes
+enum class ZoomLevelTypes
 {
 	ZOOM_UNKNOWN							= 0x00000000,
 	ZOOM_DETAIL								= 0x00000001,
@@ -64,7 +64,7 @@ enum ZoomLevelTypes
 	ZOOM_GLOBEVIEW						= 0x00000008
 };
 
-enum DirectionTypes
+enum class DirectionTypes
 {
 	NO_DIRECTION = -1,
 
@@ -89,7 +89,7 @@ enum DirectionTypes
 	DIRECTION_NORTHWEST_MASK = 1 << DIRECTION_NORTHWEST,
 };
 
-enum CardinalDirectionTypes
+enum class CardinalDirectionTypes
 {
 	NO_CARDINALDIRECTION = -1,
 
@@ -101,7 +101,7 @@ enum CardinalDirectionTypes
 	NUM_CARDINALDIRECTION_TYPES
 };
 
-enum RotationTypes
+enum class RotationTypes
 {
 	ROTATE_NONE = 0,
 	ROTATE_90CW,
@@ -116,7 +116,7 @@ enum RotationTypes
 };
 
 // camera wrap helper
-enum WrapDirection
+enum class WrapDirection
 {
 	WRAP_SAVE,
 	WRAP_NONE = WRAP_SAVE,
@@ -134,18 +134,18 @@ enum WrapDirection
 	WRAP_DOWN_MASK = 1 << WRAP_DOWN,
 };
 
-enum ColorTypes
+enum class ColorTypes
 {
 	NO_COLOR = -1,
 };
 
-enum PlayerColorTypes
+enum class PlayerColorTypes
 {
 	NO_PLAYERCOLOR = -1,
 };
 
 //Warning: these values correspond to locations in the plot texture [JW]
-enum PlotStyles
+enum class PlotStyles
 {
 	PLOT_STYLE_NONE = -1,
 
@@ -186,7 +186,7 @@ enum PlotStyles
 };
 
 //Warning: these values are used as an index into a fixed array
-enum PlotLandscapeLayers
+enum class PlotLandscapeLayers
 {
 	PLOT_LANDSCAPE_LAYER_ALL = -1,
 	PLOT_LANDSCAPE_LAYER_BASE = 0,
@@ -196,7 +196,7 @@ enum PlotLandscapeLayers
 	PLOT_LANDSCAPE_LAYER_REVEALED_PLOTS = 1,
 };
 
-enum AreaBorderLayers
+enum class AreaBorderLayers
 {
 	AREA_BORDER_LAYER_REVEALED_PLOTS,
 	AREA_BORDER_LAYER_WORLD_BUILDER,
@@ -209,12 +209,12 @@ enum AreaBorderLayers
 	NUM_AREA_BORDER_LAYERS
 };
 
-enum EffectTypes
+enum class EffectTypes
 {
 	NO_EFFECT = -1,
 };
 
-enum AttachableTypes
+enum class AttachableTypes
 {
 	NO_ATTACHABLE = -1,
 };
@@ -222,7 +222,7 @@ enum AttachableTypes
 // Dale - RB: Field Bombard new interface added at end of list
 // Dale - AB: Bombing new interfaces added at end of list
 // Dale - FE: Fighter new interfaces added at end of list
-enum InterfaceModeTypes
+enum class InterfaceModeTypes
 {
 	NO_INTERFACEMODE = -1,
 
@@ -268,7 +268,7 @@ enum InterfaceModeTypes
 	NUM_INTERFACEMODE_TYPES
 };
 
-enum InterfaceMessageTypes
+enum class InterfaceMessageTypes
 {
 	NO_MESSAGE_TYPE = -1,
 
@@ -283,7 +283,7 @@ enum InterfaceMessageTypes
 	NUM_INTERFACE_MESSAGE_TYPES
 };
 
-enum FlyoutTypes
+enum class FlyoutTypes
 {
 	NO_FLYOUT = -1,
 
@@ -301,7 +301,7 @@ enum FlyoutTypes
 	FLYOUR_SLEEP_ALL,
 };
 
-enum MinimapModeTypes
+enum class MinimapModeTypes
 {
 	NO_MINIMAPMODE = -1,
 
@@ -313,7 +313,7 @@ enum MinimapModeTypes
 	NUM_MINIMAPMODE_TYPES
 };
 
-enum EngineDirtyBits
+enum class EngineDirtyBits
 {
 	GlobeTexture_DIRTY_BIT,
 	GlobePartialTexture_DIRTY_BIT,
@@ -323,7 +323,7 @@ enum EngineDirtyBits
 	NUM_ENGINE_DIRTY_BITS
 };
 
-enum InterfaceDirtyBits
+enum class InterfaceDirtyBits
 {
 	SelectionCamera_DIRTY_BIT,
 	Fog_DIRTY_BIT,
@@ -364,7 +364,7 @@ enum InterfaceDirtyBits
 	NUM_INTERFACE_DIRTY_BITS
 };
 
-enum CityTabTypes
+enum class CityTabTypes
 {
 	NO_CITYTAB = -1,
 
@@ -375,7 +375,7 @@ enum CityTabTypes
 	NUM_CITYTAB_TYPES
 };
 
-enum WidgetTypes
+enum class WidgetTypes
 {
 	WIDGET_PLOT_LIST,
 	WIDGET_PLOT_LIST_SHIFT,
@@ -587,7 +587,7 @@ enum WidgetTypes
 	NUM_WIDGET_TYPES
 };
 
-enum ButtonPopupTypes
+enum class ButtonPopupTypes
 {
 	BUTTONPOPUP_TEXT,
 	BUTTONPOPUP_MAIN_MENU,
@@ -656,22 +656,22 @@ enum ButtonPopupTypes
 	NUM_BUTTONPOPUP_TYPES
 };
 
-enum ClimateTypes
+enum class ClimateTypes
 {
 	NO_CLIMATE = -1,
 };
 
-enum SeaLevelTypes
+enum class SeaLevelTypes
 {
 	NO_SEALEVEL = -1,
 };
 
-enum CustomMapOptionTypes
+enum class CustomMapOptionTypes
 {
 	NO_CUSTOM_MAPOPTION = -1,
 };
 
-enum WorldSizeTypes
+enum class WorldSizeTypes
 {
 	NO_WORLDSIZE = -1,
 
@@ -689,14 +689,14 @@ enum WorldSizeTypes
 /***** Parallel Maps - Begin *****/
 /*********************************/
 
-enum MapTypes
+enum class MapTypes
 {
 	NO_MAP = -1,
 	MAP_INITIAL,
 	MAX_MAPS = 10,
 };
 
-enum MapSwitchTypes
+enum class MapSwitchTypes
 {
 	NO_MAPSWITCH = -1,
 };
@@ -707,7 +707,7 @@ enum MapSwitchTypes
 
 // This is our current relationship with each
 // one of our connected network peers
-enum InitStates
+enum class InitStates
 {
 	INIT_INACTIVE,
 	INIT_CONNECTED,
@@ -723,12 +723,12 @@ enum InitStates
 	INIT_GAME_STARTED,
 };
 
-enum TerrainTypes
+enum class TerrainTypes
 {
 	NO_TERRAIN = -1,
 };
 
-enum PlotTypes
+enum class PlotTypes
 {
 	NO_PLOT = -1,
 
@@ -740,7 +740,7 @@ enum PlotTypes
 	NUM_PLOT_TYPES
 };
 
-enum YieldTypes
+enum class YieldTypes
 {
 	NO_YIELD = -1,
 
@@ -751,7 +751,7 @@ enum YieldTypes
 	NUM_YIELD_TYPES
 };
 
-enum CommerceTypes
+enum class CommerceTypes
 {
 	NO_COMMERCE = -1,
 
@@ -763,22 +763,22 @@ enum CommerceTypes
 	NUM_COMMERCE_TYPES
 };
 
-enum AdvisorTypes
+enum class AdvisorTypes
 {
 	NO_ADVISOR = -1
 };
 
-enum FlavorTypes
+enum class FlavorTypes
 {
 	NO_FLAVOR = -1
 };
 
-enum EmphasizeTypes
+enum class EmphasizeTypes
 {
 	NO_EMPHASIZE = -1,
 };
 
-enum GameOptionTypes
+enum class GameOptionTypes
 {
 	NO_GAMEOPTION = -1,
 
@@ -880,7 +880,7 @@ enum GameOptionTypes
 
 #define NUM_GAMEOPTION_TYPES GC.getNumGameOptionInfos()
 
-enum MultiplayerOptionTypes
+enum class MultiplayerOptionTypes
 {
 	NO_MPOPTION = -1,
 
@@ -893,7 +893,7 @@ enum MultiplayerOptionTypes
 	NUM_MPOPTION_TYPES
 };
 
-enum SpecialOptionTypes
+enum class SpecialOptionTypes
 {
 	NO_SPECIALOPTION = -1,
 
@@ -902,7 +902,7 @@ enum SpecialOptionTypes
 	NUM_SPECIALOPTION_TYPES
 };
 
-enum PlayerOptionTypes
+enum class PlayerOptionTypes
 {
 	NO_PLAYEROPTION = -1,
 
@@ -932,7 +932,7 @@ enum PlayerOptionTypes
 	NUM_PLAYEROPTION_TYPES
 };
 
-enum GraphicOptionTypes
+enum class GraphicOptionTypes
 {
 	NO_GRAPHICOPTION = -1,
 
@@ -953,7 +953,7 @@ enum GraphicOptionTypes
 	NUM_GRAPHICOPTION_TYPES
 };
 
-enum ForceControlTypes
+enum class ForceControlTypes
 {
 	NO_FORCECONTROL = -1,
 
@@ -968,7 +968,7 @@ enum ForceControlTypes
 	NUM_FORCECONTROL_TYPES
 };
 
-enum TileArtTypes
+enum class TileArtTypes
 {
 	TILE_ART_TYPE_NONE = -1,
 	TILE_ART_TYPE_TREES,
@@ -977,7 +977,7 @@ enum TileArtTypes
 	NUM_TILE_ART_TYPES
 };
 
-enum LightTypes
+enum class LightTypes
 {
 	LIGHT_TYPE_NONE = -1,
 	LIGHT_TYPE_SUN,
@@ -986,57 +986,57 @@ enum LightTypes
 	NUM_LIGHT_TYPES
 };
 
-enum VictoryTypes
+enum class VictoryTypes
 {
 	NO_VICTORY = -1,
 };
 
-enum FeatureTypes
+enum class FeatureTypes
 {
 	NO_FEATURE = -1,
 };
 
-enum BonusTypes
+enum class BonusTypes
 {
 	NO_BONUS = -1,
 };
 
-enum BonusClassTypes
+enum class BonusClassTypes
 {
 	NO_BONUSCLASS = -1,
 };
 
-enum ImprovementTypes
+enum class ImprovementTypes
 {
 	NO_IMPROVEMENT = -1,
 };
 
-enum RouteTypes
+enum class RouteTypes
 {
 	NO_ROUTE = -1,
 };
 
-enum RiverTypes
+enum class RiverTypes
 {
 	NO_RIVER = -1,
 };
 
-enum GoodyTypes
+enum class GoodyTypes
 {
 	NO_GOODY = -1,
 };
 
-enum BuildTypes
+enum class BuildTypes
 {
 	NO_BUILD = -1,
 };
 
-enum SymbolTypes
+enum class SymbolTypes
 {
 	NO_SYMBOL = -1,
 };
 
-enum FontSymbols
+enum class FontSymbols
 {
 	// 'OTHER' symbols
 	HAPPY_CHAR = 0,
@@ -1078,58 +1078,58 @@ enum FontSymbols
 	MAX_NUM_SYMBOLS
 };
 
-enum HandicapTypes
+enum class HandicapTypes
 {
 	NO_HANDICAP = -1,
 };
 
-enum GameSpeedTypes
+enum class GameSpeedTypes
 {
 	NO_GAMESPEED = -1,
 };
 
-enum TurnTimerTypes
+enum class TurnTimerTypes
 {
 	NO_TURNTIMER = -1,
 };
 
-enum EraTypes
+enum class EraTypes
 {
 	NO_ERA = -1,
 };
 
-enum PropertyTypes
+enum class PropertyTypes
 {
 	NO_PROPERTY = -1,
 };
 
-enum OutcomeTypes
+enum class OutcomeTypes
 {
 	NO_OUTCOME = -1,
 };
 
-enum CivilizationTypes
+enum class CivilizationTypes
 {
 	NO_CIVILIZATION = -1,
 };
 
-enum LeaderHeadTypes
+enum class LeaderHeadTypes
 {
 	NO_LEADER = -1,
 };
 
 // Used for managing Art Differences based on nationality
-enum ArtStyleTypes
+enum class ArtStyleTypes
 {
 	NO_ARTSTYLE = -1,
 };
 
-enum UnitArtStyleTypes
+enum class UnitArtStyleTypes
 {
 	NO_UNIT_ARTSTYLE = -1,
 };
 
-enum CitySizeTypes
+enum class CitySizeTypes
 {
 	NO_CITYSIZE = -1,
 
@@ -1140,24 +1140,24 @@ enum CitySizeTypes
 	NUM_CITYSIZE_TYPES
 };
 
-enum FootstepAudioTypes
+enum class FootstepAudioTypes
 {
 	NO_FOOTSTEPAUDIO = -1,
 };
 
-enum FootstepAudioTags
+enum class FootstepAudioTags
 {
 	NO_FOOTSTEPAUDIO_TAG = -1,
 };
 
-enum ChatTargetTypes
+enum class ChatTargetTypes
 {
 	NO_CHATTARGET = -1,
 	CHATTARGET_ALL = -2,
 	CHATTARGET_TEAM = -3,
 };
 
-enum VoiceTargetTypes
+enum class VoiceTargetTypes
 {
 	NO_VOICETARGET = -1,
 
@@ -1168,22 +1168,22 @@ enum VoiceTargetTypes
 	NUM_VOICETARGETS
 };
 
-enum TeamTypes
+enum class TeamTypes
 {
 	NO_TEAM = -1,
 };
 
-enum PlayerTypes
+enum class PlayerTypes
 {
 	NO_PLAYER = -1,
 };
 
-enum TraitTypes
+enum class TraitTypes
 {
 	NO_TRAIT = -1,
 };
 
-enum OrderTypes
+enum class OrderTypes
 {
 	NO_ORDER = -1,
 
@@ -1196,7 +1196,7 @@ enum OrderTypes
 	NUM_ORDER_TYPES
 };
 
-enum TaskTypes
+enum class TaskTypes
 {
 	NO_TASK = -1,
 
@@ -1221,22 +1221,22 @@ enum TaskTypes
 	NUM_TASK_TYPES
 };
 
-enum BuildingTypes
+enum class BuildingTypes
 {
 	NO_BUILDING = -1,
 };
 
-enum SpecialBuildingTypes
+enum class SpecialBuildingTypes
 {
 	NO_SPECIALBUILDING = -1,
 };
 
-enum ProjectTypes
+enum class ProjectTypes
 {
 	NO_PROJECT = -1,
 };
 
-enum AxisTypes
+enum class AxisTypes
 {
 	AXIS_X,
 	AXIS_Y,
@@ -1244,7 +1244,7 @@ enum AxisTypes
 	NUM_AXIS_TYPES
 };
 
-enum SpaceShipInfoTypes
+enum class SpaceShipInfoTypes
 {
 	SPACE_SHIP_INFO_TYPE_NONE,
 	SPACE_SHIP_INFO_TYPE_FILENAME,
@@ -1264,17 +1264,17 @@ enum SpaceShipInfoTypes
 	NUM_SPACE_SHIP_INFO_TYPES
 };
 
-enum ProcessTypes
+enum class ProcessTypes
 {
 	NO_PROCESS = -1,
 };
 
-enum VoteTypes
+enum class VoteTypes
 {
 	NO_VOTE = -1,
 };
 
-enum PlayerVoteTypes
+enum class PlayerVoteTypes
 {
 	NO_PLAYER_VOTE_CHECKED = -6,
 	PLAYER_VOTE_NEVER = -5,
@@ -1284,7 +1284,7 @@ enum PlayerVoteTypes
 	NO_PLAYER_VOTE = -1
 };
 
-enum InfoBarTypes
+enum class InfoBarTypes
 {
 	INFOBAR_STORED,
 	INFOBAR_RATE,
@@ -1294,7 +1294,7 @@ enum InfoBarTypes
 	NUM_INFOBAR_TYPES
 };
 
-enum HealthBarTypes
+enum class HealthBarTypes
 {
 	HEALTHBAR_ALIVE_ATTACK,
 	HEALTHBAR_ALIVE_DEFEND,
@@ -1303,17 +1303,17 @@ enum HealthBarTypes
 	NUM_HEALTHBAR_TYPES
 };
 
-enum ConceptTypes
+enum class ConceptTypes
 {
 	NO_CONCEPT = -1,
 };
 
-enum NewConceptTypes
+enum class NewConceptTypes
 {
 	NO_NEW_CONCEPT = -1,
 };
 
-enum CalendarTypes
+enum class CalendarTypes
 {
 	NO_CALENDAR = -1,
 
@@ -1327,7 +1327,7 @@ enum CalendarTypes
 	CALENDAR_NO_SEASONS
 };
 
-enum SeasonTypes
+enum class SeasonTypes
 {
 	NO_SEASON = -1,
 	SEASON_WINTER,
@@ -1336,12 +1336,12 @@ enum SeasonTypes
 	SEASON_AUTUMN
 };
 
-enum MonthTypes
+enum class MonthTypes
 {
 	NO_MONTH = -1,
 };
 
-enum DenialTypes
+enum class DenialTypes
 {
 	NO_DENIAL = -1,
 
@@ -1376,7 +1376,7 @@ enum DenialTypes
 	DENIAL_PEACE_NOT_POSSIBLE_YOU
 };
 
-enum DomainTypes
+enum class DomainTypes
 {
 	NO_DOMAIN = -1,
 
@@ -1388,55 +1388,55 @@ enum DomainTypes
 	NUM_DOMAIN_TYPES
 };
 
-enum UnitTypes
+enum class UnitTypes
 {
 	NO_UNIT = -1,
 };
 
-enum SpawnTypes
+enum class SpawnTypes
 {
 	NO_SPAWN = -1,
 };
 
-enum SpecialUnitTypes
+enum class SpecialUnitTypes
 {
 	NO_SPECIALUNIT = -1,
 };
 
-enum UnitCombatTypes
+enum class UnitCombatTypes
 {
 	NO_UNITCOMBAT = -1,
 };
 //TB Promotion Line Mod begin
-enum PromotionLineTypes
+enum class PromotionLineTypes
 {
 	NO_PROMOTIONLINE = -1,
 };
 
-enum MapCategoryTypes
+enum class MapCategoryTypes
 {
 	NO_MAPCATEGORY = -1,
 };
 
-enum IdeaClassTypes
+enum class IdeaClassTypes
 {
 	NO_IDEACLASS = -1,
 };
 
-enum IdeaTypes
+enum class IdeaTypes
 {
 	NO_IDEA = -1,
 };
 
-enum TraitOptionEditsTypes
+enum class TraitOptionEditsTypes
 {
 	NO_TRAITOPTIONEDIT = -1,
 };
 //	Koshling - UNITAIs are NOT registered based on the XML any more, but entirely done in code
 //	This means that UNITAIs can be freely added provided you update here and also in
-//	cvInternalGlobals::registerUnitAIs().  The order of the enum no longer matters and the XML
+//	cvInternalGlobals::registerUnitAIs().  The order of the enum class no longer matters and the XML
 //	is not read, so serves at most a documentary function
-enum UnitAITypes
+enum class UnitAITypes
 {
 	NO_UNITAI = -1,
 
@@ -1522,7 +1522,7 @@ enum UnitAITypes
 	 (eAIType) == UNITAI_CARRIER_AIR ||	\
 	 (eAIType) == UNITAI_MISSILE_AIR )
 
-enum AIScaleTypes
+enum class AIScaleTypes
 {
 	AISCALE_NONE = -1,
 	AISCALE_CITY,
@@ -1532,17 +1532,17 @@ enum AIScaleTypes
 };
 
 
-enum InvisibleTypes
+enum class InvisibleTypes
 {
 	NO_INVISIBLE = -1,
 };
 
-enum VoteSourceTypes
+enum class VoteSourceTypes
 {
 	NO_VOTESOURCE = -1,
 };
 
-enum ProbabilityTypes
+enum class ProbabilityTypes
 {
 	NO_PROBABILITY = -1,
 
@@ -1551,7 +1551,7 @@ enum ProbabilityTypes
 	PROBABILITY_HIGH,
 };
 
-enum ActivityTypes
+enum class ActivityTypes
 {
 	NO_ACTIVITY = -1,
 
@@ -1575,7 +1575,7 @@ enum ActivityTypes
 	NUM_ACTIVITY_TYPES
 };
 
-enum AutomateTypes
+enum class AutomateTypes
 {
 	NO_AUTOMATE = -1,
 
@@ -1614,7 +1614,7 @@ enum AutomateTypes
 // Dale - AB: Bombing new missions at end of list
 // Dale - FE: Fighters new missions at end of list
 // any additions need to be reflected in GlobalTypes.xml
-enum MissionTypes
+enum class MissionTypes
 {
 	NO_MISSION = -1,
 
@@ -1742,7 +1742,7 @@ enum MissionTypes
 	//TB Combat Mod and Mission fix end
 };
 
-enum MissionAITypes
+enum class MissionAITypes
 {
 	NO_MISSIONAI = -1,
 
@@ -1798,7 +1798,7 @@ enum MissionAITypes
 };
 
 // any additions need to be reflected in GlobalTypes.xml
-enum CommandTypes
+enum class CommandTypes
 {
 	NO_COMMAND = -1,
 
@@ -1826,7 +1826,7 @@ enum CommandTypes
 	NUM_COMMAND_TYPES
 };
 
-enum ControlTypes
+enum class ControlTypes
 {
 	NO_CONTROL = -1,
 
@@ -1897,57 +1897,57 @@ enum ControlTypes
 	NUM_CONTROL_TYPES
 };
 
-enum PromotionTypes
+enum class PromotionTypes
 {
 	NO_PROMOTION = -1,
 };
 
-enum TechTypes
+enum class TechTypes
 {
 	NO_TECH = -1,
 };
 
-enum SpecialistTypes
+enum class SpecialistTypes
 {
 	NO_SPECIALIST = -1,
 };
 
-enum ReligionTypes
+enum class ReligionTypes
 {
 	NO_RELIGION = -1,
 };
 
-enum CorporationTypes
+enum class CorporationTypes
 {
 	NO_CORPORATION = -1,
 };
 
-enum HurryTypes
+enum class HurryTypes
 {
 	NO_HURRY = -1,
 };
 
-enum UpkeepTypes
+enum class UpkeepTypes
 {
 	NO_UPKEEP = -1,
 };
 
-enum CultureLevelTypes
+enum class CultureLevelTypes
 {
 	NO_CULTURELEVEL = -1,
 };
 
-enum CivicOptionTypes
+enum class CivicOptionTypes
 {
 	NO_CIVICOPTION = -1,
 };
 
-enum CivicTypes
+enum class CivicTypes
 {
 	NO_CIVIC = -1,
 };
 
-enum WarPlanTypes
+enum class WarPlanTypes
 {
 	NO_WARPLAN = -1,
 
@@ -1960,7 +1960,7 @@ enum WarPlanTypes
 	WARPLAN_DOGPILE
 };
 
-enum AreaAITypes
+enum class AreaAITypes
 {
 	NO_AREAAI = -1,
 
@@ -1973,7 +1973,7 @@ enum AreaAITypes
 	AREAAI_NEUTRAL
 };
 
-enum EndTurnButtonStates
+enum class EndTurnButtonStates
 {
 	END_TURN_GO,
 	END_TURN_OVER_HIGHLIGHT,
@@ -1982,7 +1982,7 @@ enum EndTurnButtonStates
 	NUM_END_TURN_STATES
 };
 
-enum FogOfWarModeTypes
+enum class FogOfWarModeTypes
 {
 	FOGOFWARMODE_OFF,
 	FOGOFWARMODE_UNEXPLORED,
@@ -1991,7 +1991,7 @@ enum FogOfWarModeTypes
 	NUM_FOGOFWARMODE_TYPES
 };
 
-enum FogTypes
+enum class FogTypes
 {
 	FOG_TYPE_NONE,
 	FOG_TYPE_PARALLEL,
@@ -1999,14 +1999,14 @@ enum FogTypes
 	NUM_FOG_TYPES
 };
 
-enum CameraOverlayTypes
+enum class CameraOverlayTypes
 {
 	CAMERA_OVERLAY_DECAL,
 	CAMERA_OVERLAY_ADDITIVE,
 	NUM_CAMERA_OVERLAY_TYPES
 };
 
-enum FOWUpdateTypes
+enum class FOWUpdateTypes
 {
 	FOW_UPDATE_REGULAR,
 	FOW_UPDATE_IMMEDIATE,
@@ -2018,7 +2018,7 @@ enum FOWUpdateTypes
 // AnimationTypes is depreciated, and will be eventually removed.
 // BONUSANIMATION_* and IMPROVEMENTANIMATION_* are still used, and will be left.
 
-enum AnimationTypes
+enum class AnimationTypes
 {
 	NONE_ANIMATION = -1,	// NO_ANIMATION is used by FirePlace
 
@@ -2035,12 +2035,12 @@ enum AnimationTypes
 	IMPROVEMENTANIMATION_ON_EXTRA_4,
 };
 
-enum EntityEventTypes
+enum class EntityEventTypes
 {
 	ENTITY_EVENT_NONE = -1,			//!< Invalid event
 };
 
-enum AnimationPathTypes
+enum class AnimationPathTypes
 {
 	ANIMATIONPATH_NONE = -1,
 
@@ -2097,13 +2097,13 @@ enum AnimationPathTypes
 };
 
 //!<  Enumeration for the animation category types.
-enum AnimationCategoryTypes
+enum class AnimationCategoryTypes
 {
 	ANIMCAT_NONE = -1,
 };
 
 //!< Animation category operators.
-enum AnimationOperatorTypes
+enum class AnimationOperatorTypes
 {
 	ANIMOP_FIRST = 1001,
 	ANIMOP_RAND_FPR = ANIMOP_FIRST,			//!< Sets the FPR to a random number [0..1].
@@ -2122,12 +2122,12 @@ enum AnimationOperatorTypes
 	ANIMOP_LAST
 };
 
-enum CursorTypes
+enum class CursorTypes
 {
 	NO_CURSOR = -1,
 };
 
-enum FunctionTypes
+enum class FunctionTypes
 {
 	FUNC_NOINTERP = 0,	// NiAnimationKey::NOINTERP,
 	FUNC_LINKEY,	//	= NiAnimationKey::LINKEY,
@@ -2139,7 +2139,7 @@ enum FunctionTypes
 	NUM_FUNC_TYPES	// = NiAnimationKey::NUMKEYTYPES
 };
 
-enum TradeableItems
+enum class TradeableItems
 {
 	TRADE_ITEM_NONE = -1,
 
@@ -2194,7 +2194,7 @@ enum TradeableItems
 	NUM_TRADEABLE_ITEMS = NUM_TRADEABLE_HEADINGS,
 };
 
-enum DiploEventTypes
+enum class DiploEventTypes
 {
 	NO_DIPLOEVENT = -1,
 
@@ -2237,12 +2237,12 @@ enum DiploEventTypes
 	NUM_DIPLOEVENT_TYPES
 };
 
-enum DiploCommentTypes
+enum class DiploCommentTypes
 {
 	NO_DIPLOCOMMENT = -1
 };
 
-enum NetContactTypes
+enum class NetContactTypes
 {
 	NO_NETCONTACT = -1,
 	NETCONTACT_INITIAL,
@@ -2253,7 +2253,7 @@ enum NetContactTypes
 	NUM_NETCONTACT_TYPES
 };
 
-enum ContactTypes
+enum class ContactTypes
 {
 	CONTACT_RELIGION_PRESSURE,
 	CONTACT_CIVIC_PRESSURE,
@@ -2291,7 +2291,7 @@ enum ContactTypes
 	NUM_CONTACT_TYPES
 };
 
-enum MemoryTypes
+enum class MemoryTypes
 {
 	MEMORY_DECLARED_WAR,
 	MEMORY_DECLARED_WAR_ON_FRIEND,
@@ -2347,7 +2347,7 @@ enum MemoryTypes
 	NUM_MEMORY_TYPES
 };
 
-enum AttitudeTypes
+enum class AttitudeTypes
 {
 	NO_ATTITUDE = -1,
 
@@ -2361,7 +2361,7 @@ enum AttitudeTypes
 };
 
 //! Enumeration for playing events with CvLeaderheadWidget
-enum LeaderheadAction
+enum class LeaderheadAction
 {
 	NO_LEADERANIM = -1,		//!< If used with CvLeaderheadWidget::PerformAction, plays the idle animation
 
@@ -2377,7 +2377,7 @@ enum LeaderheadAction
 	NUM_LEADERANIM_TYPES			//!< The number of leaderhead event types
 };
 
-enum DiplomacyPowerTypes
+enum class DiplomacyPowerTypes
 {
 	NO_DIPLOMACYPOWER		= -1,
 	DIPLOMACYPOWER_WEAKER,
@@ -2387,7 +2387,7 @@ enum DiplomacyPowerTypes
 	NUM_DIPLOMACYPOWER_TYPES
 };
 
-enum FeatTypes
+enum class FeatTypes
 {
 	FEAT_UNITCOMBAT_ARCHER,
 	FEAT_UNITCOMBAT_MOUNTED,
@@ -2423,7 +2423,7 @@ enum FeatTypes
 	NUM_FEAT_TYPES
 };
 
-enum SaveGameTypes
+enum class SaveGameTypes
 {
 	SAVEGAME_NONE = -1,
 
@@ -2440,7 +2440,7 @@ enum SaveGameTypes
 	NUM_SAVEGAME_TYPES
 };
 
-enum InitializationStates
+enum class InitializationStates
 {
 	INIT_OK,
 	INIT_FAILED,
@@ -2448,7 +2448,7 @@ enum InitializationStates
 	NUM_INIT_STATES
 };
 
-enum GameType
+enum class GameType
 {
 	GAME_NONE = -1,
 
@@ -2469,7 +2469,7 @@ enum GameType
 	NUM_GAMETYPES
 };
 
-enum GameMode
+enum class GameMode
 {
 	NO_GAMEMODE = -1,
 
@@ -2479,7 +2479,7 @@ enum GameMode
 	NUM_GAMEMODES
 };
 
-enum GamePwdTypes
+enum class GamePwdTypes
 {
 	NO_PWDTYPE = -1,
 
@@ -2490,7 +2490,7 @@ enum GamePwdTypes
 	NUM_PWDTYPES
 };
 
-enum SlotClaim
+enum class SlotClaim
 {
 	SLOTCLAIM_UNASSIGNED,
 	SLOTCLAIM_RESERVED,
@@ -2499,7 +2499,7 @@ enum SlotClaim
 	NUM_SLOTCLAIMS
 };
 
-enum SlotStatus
+enum class SlotStatus
 {
 	SS_OPEN,
 	SS_COMPUTER,
@@ -2509,7 +2509,7 @@ enum SlotStatus
 	SS_MAX_SLOT_STATUS,
 };
 
-enum InterfaceVisibility
+enum class InterfaceVisibility
 {
 	INTERFACE_SHOW,
 	INTERFACE_HIDE,
@@ -2518,7 +2518,7 @@ enum InterfaceVisibility
 	INTERFACE_ADVANCED_START,
 };
 
-enum GenericButtonSizes
+enum class GenericButtonSizes
 {
 	BUTTON_SIZE_46,
 	BUTTON_SIZE_32,
@@ -2528,7 +2528,7 @@ enum GenericButtonSizes
 	BUTTON_SIZE_CUSTOM,
 };
 
-enum MenuScreenType
+enum class MenuScreenType
 {
 	MENU_SCREEN_STANDARD,
 	MENU_SCREEN_BASELOBBY,
@@ -2576,7 +2576,7 @@ enum MenuScreenType
 	MENU_SCREEN_SP_DIFFICULTY,
 };
 
-enum WorldBuilderPopupTypes
+enum class WorldBuilderPopupTypes
 {
 	WBPOPUP_NONE = -1,
 
@@ -2593,7 +2593,7 @@ enum WorldBuilderPopupTypes
 	NUM_WBPOPUP
 };
 
-enum EventType
+enum class EventType
 {
 	// mouseEvent
 	EVT_LBUTTONDOWN = 1,
@@ -2608,7 +2608,7 @@ enum EventType
 };
 
 // Different types of load
-enum LoadType
+enum class LoadType
 {
 	LOAD_NORMAL,
 	LOAD_INIT,
@@ -2619,7 +2619,7 @@ enum LoadType
 };
 
 //	Available Fonts
-enum FontTypes
+enum class FontTypes
 {
 	TITLE_FONT,
 	GAME_FONT,
@@ -2628,7 +2628,7 @@ enum FontTypes
 	MENU_HIGHLIGHT_FONT,
 };
 
-enum PanelStyles
+enum class PanelStyles
 {
 	// Built in styles
 	PANEL_STYLE_STANDARD,
@@ -2690,7 +2690,7 @@ enum PanelStyles
 	PANEL_STYLE_MAIN_SELECT,
 };
 
-enum ButtonStyles
+enum class ButtonStyles
 {
 	BUTTON_STYLE_STANDARD,
 	BUTTON_STYLE_ETCHED,
@@ -2723,7 +2723,7 @@ enum ButtonStyles
 	BUTTON_STYLE_ARROW_RIGHT
 };
 
-enum TableStyles
+enum class TableStyles
 {
 	TABLE_STYLE_STANDARD,
 	TABLE_STYLE_EMPTY,
@@ -2734,7 +2734,7 @@ enum TableStyles
 	TABLE_STYLE_STAGINGROOM
 };
 
-enum EventContextTypes
+enum class EventContextTypes
 {
 	NO_EVENTCONTEXT = -1,
 
@@ -2742,7 +2742,7 @@ enum EventContextTypes
 	EVENTCONTEXT_ALL,
 };
 
-enum CivLoginStates
+enum class CivLoginStates
 {
 	NO_CIV_LOGIN = -1,
 
@@ -2752,7 +2752,7 @@ enum CivLoginStates
 	LOGIN_CIV_HAS_ID,
 };
 
-enum VersionTypes
+enum class VersionTypes
 {
 	NO_VERSIONTYPE = -1,
 
@@ -2763,13 +2763,13 @@ enum VersionTypes
 	VERSIONTYPE_XML,
 };
 
-enum VoteResultTypes
+enum class VoteResultTypes
 {
 	VOTERESULT_MAJORITY,
 	VOTERESULT_UNANIMOUS,
 };
 
-enum VoteStatusTypes
+enum class VoteStatusTypes
 {
 	NO_VOTESTATUS = -1,
 
@@ -2779,7 +2779,7 @@ enum VoteStatusTypes
 };
 
 // Tab Group in Options Menu
-enum TabGroupTypes
+enum class TabGroupTypes
 {
 	NO_TABGROUP = -1,
 
@@ -2792,7 +2792,7 @@ enum TabGroupTypes
 	NUM_TABGROUPS
 };
 
-enum ReplayMessageTypes
+enum class ReplayMessageTypes
 {
 	NO_REPLAY_MESSAGE = -1,
 
@@ -2807,7 +2807,7 @@ enum ReplayMessageTypes
 Enum:		EAudioTag
 Purpose:	To enumerate all of the tag strings loaded from the csv or xml files
 ------------------------------------------------------------------------------------*/
-enum AudioTag
+enum class AudioTag
 {
 	AUDIOTAG_NONE = -1,
 	AUDIOTAG_SOUNDID,
@@ -2822,7 +2822,7 @@ enum AudioTag
 	AUDIOTAG_COUNT,
 };
 
-enum CivilopediaPageTypes
+enum class CivilopediaPageTypes
 {
 	NO_CIVILOPEDIA_PAGE = -1,
 
@@ -2850,7 +2850,7 @@ enum CivilopediaPageTypes
 	NUM_CIVILOPEDIA_PAGE_TYPES
 };
 
-enum ActionSubTypes
+enum class ActionSubTypes
 {
 	NO_ACTIONSUBTYPE = -1,
 
@@ -2870,7 +2870,7 @@ enum ActionSubTypes
 	NUM_ACTIONSUBTYPES
 };
 
-enum GameMessageTypes
+enum class GameMessageTypes
 {
 	GAMEMESSAGE_NETWORK_READY,
 	GAMEMESSAGE_SAVE_GAME_FLAG,
@@ -2993,7 +2993,7 @@ enum GameMessageTypes
 	GAMEMESSAGE_CONFIRM_AMBUSH
 };
 
-enum PopupControlLayout
+enum class PopupControlLayout
 {
 	POPUP_LAYOUT_LEFT,
 	POPUP_LAYOUT_CENTER,
@@ -3003,7 +3003,7 @@ enum PopupControlLayout
 	POPUP_LAYOUT_NUMLAYOUTS
 };
 
-enum JustificationTypes
+enum class JustificationTypes
 {
 	DLL_FONT_LEFT_JUSTIFY = 1<<0,
 	DLL_FONT_RIGHT_JUSTIFY = 1<<1,
@@ -3012,7 +3012,7 @@ enum JustificationTypes
 	DLL_FONT_ADDITIVE = 1<<4,
 };
 
-enum ToolTipAlignTypes
+enum class ToolTipAlignTypes
 {
 	TOOLTIP_TOP_LEFT,
 	TOOLTIP_TOP_INLEFT,
@@ -3035,7 +3035,7 @@ enum ToolTipAlignTypes
 	TOOLTIP_INTOP_LEFT,
 };
 
-enum ActivationTypes
+enum class ActivationTypes
 {
 	ACTIVATE_NORMAL,
 	ACTIVATE_CHILDFOCUS,
@@ -3043,7 +3043,7 @@ enum ActivationTypes
 	ACTIVATE_MIMICPARENTFOCUS,
 };
 
-enum HitTestTypes
+enum class HitTestTypes
 {
 	HITTEST_DEFAULT,
 	HITTEST_ON,
@@ -3052,7 +3052,7 @@ enum HitTestTypes
 	HITTEST_NOHIT,
 };
 
-enum GraphicLevelTypes
+enum class GraphicLevelTypes
 {
 	GRAPHICLEVEL_HIGH,
 	GRAPHICLEVEL_MEDIUM,
@@ -3062,22 +3062,22 @@ enum GraphicLevelTypes
 	NUM_GRAPHICLEVELS
 };
 
-enum EventTypes
+enum class EventTypes
 {
 	NO_EVENT = -1,
 };
 
-enum EventTriggerTypes
+enum class EventTriggerTypes
 {
 	NO_EVENTTRIGGER = -1,
 };
 
-enum EspionageMissionTypes
+enum class EspionageMissionTypes
 {
 	NO_ESPIONAGEMISSION = -1,
 };
 
-enum AdvancedStartActionTypes
+enum class AdvancedStartActionTypes
 {
 	NO_ADVANCEDSTARTACTION = -1,
 
@@ -3094,7 +3094,7 @@ enum AdvancedStartActionTypes
 	ADVANCEDSTARTACTION_AUTOMATE
 };
 
-enum GlobeLayerTypes
+enum class GlobeLayerTypes
 {
 	GLOBE_LAYER_STRATEGY = -1,
 	GLOBE_LAYER_TRADE,
@@ -3107,7 +3107,7 @@ enum GlobeLayerTypes
 	NUM_GLOBE_LAYER_TYPES
 };
 
-enum GlobeLayerUnitOptionTypes
+enum class GlobeLayerUnitOptionTypes
 {
 	SHOW_ALL_MILITARY,
 	SHOW_TEAM_MILITARY,
@@ -3118,7 +3118,7 @@ enum GlobeLayerUnitOptionTypes
 	NUM_UNIT_OPTION_TYPES
 };
 
-enum GlobeLayerResourceOptionTypes
+enum class GlobeLayerResourceOptionTypes
 {
 	SHOW_RESOURCES_ALL,
 	SHOW_RESOURCES_STRATEGIC,
@@ -3130,7 +3130,7 @@ enum GlobeLayerResourceOptionTypes
 	NUM_RESOURCE_OPTION_TYPES
 };
 
-enum PlotIndicatorVisibilityFlags
+enum class PlotIndicatorVisibilityFlags
 {
 	PLOT_INDICATOR_VISIBLE_ALWAYS,
 	PLOT_INDICATOR_VISIBLE_ONSCREEN_ONLY,
@@ -3139,7 +3139,7 @@ enum PlotIndicatorVisibilityFlags
 	PLOT_INDICATOR_VISIBLE_NEVER
 };
 
-enum UnitSubEntityTypes
+enum class UnitSubEntityTypes
 {
 	UNIT_SUB_ENTITY_NORMAL,
 	UNIT_SUB_ENTITY_LEADER,
@@ -3147,7 +3147,7 @@ enum UnitSubEntityTypes
 	UNIT_SUB_ENTITY_COUNT
 };
 
-enum CivilopediaWidgetShowTypes
+enum class CivilopediaWidgetShowTypes
 {
 	CIVILOPEDIA_WIDGET_SHOW_NONE,
 	CIVILOPEDIA_WIDGET_SHOW_LAND,
@@ -3159,7 +3159,7 @@ enum CivilopediaWidgetShowTypes
 /*                                                                                              */
 /*                                                                                              */
 /************************************************************************************************/
-enum RankingTypes
+enum class RankingTypes
 {
 	RANKING_POWER,
 	RANKING_POPULATION,
@@ -3171,7 +3171,7 @@ enum RankingTypes
 	NUM_RANKINGS
 };
 
-enum LandmarkTypes
+enum class LandmarkTypes
 {
 	NO_LANDMARK = -1,
 	LANDMARK_BAY,
@@ -3188,7 +3188,7 @@ enum LandmarkTypes
 };
 
 //Used for each player
-enum ModderOptionTypes
+enum class ModderOptionTypes
 {
 	NO_MODDEROPTION = -1,
 
@@ -3246,7 +3246,7 @@ enum ModderOptionTypes
 };
 
 //Used for the game
-enum ModderGameOptionTypes
+enum class ModderGameOptionTypes
 {
 	NO_MODDERGAMEOPTION = -1,
 
@@ -3275,7 +3275,7 @@ enum ModderGameOptionTypes
 /************************************************************************************************/
 
 // AIAndy: Game object types
-enum GameObjectTypes
+enum class GameObjectTypes
 {
 	NO_GAMEOBJECT = -1,
 	GAMEOBJECT_GAME,
@@ -3289,7 +3289,7 @@ enum GameObjectTypes
 };
 
 // AIAndy: Game object modifier types
-enum GOMTypes
+enum class GOMTypes
 {
 	NO_GOM = -1,
 	GOM_BUILDING,
@@ -3314,7 +3314,7 @@ enum GOMTypes
 };
 
 // AIAndy: Game object relation types
-enum RelationTypes
+enum class RelationTypes
 {
 	NO_RELATION = -1,
 	RELATION_ASSOCIATED, // owner, owned, ... depending on type
@@ -3327,7 +3327,7 @@ enum RelationTypes
 };
 
 // AIAndy: Built-in game object properties
-enum AttributeTypes
+enum class AttributeTypes
 {
 	NO_ATTRIBUTE = -1,
 	ATTRIBUTE_POPULATION,
@@ -3340,7 +3340,7 @@ enum AttributeTypes
 };
 
 // AIAndy: Built-in game boolean object properties
-enum TagTypes
+enum class TagTypes
 {
 	NO_TAG = -1,
 	TAG_ONLY_DEFENSIVE,
@@ -3366,7 +3366,7 @@ enum TagTypes
 };
 
 // AIAndy: Types of property sources
-enum PropertySourceTypes
+enum class PropertySourceTypes
 {
 	NO_PROPERTYSOURCE = -1,
 	PROPERTYSOURCE_CONSTANT,
@@ -3378,7 +3378,7 @@ enum PropertySourceTypes
 };
 
 // AIAndy: Types of property interactions
-enum PropertyInteractionTypes
+enum class PropertyInteractionTypes
 {
 	NO_PROPERTYINTERACTION = -1,
 	PROPERTYINTERACTION_CONVERT_CONSTANT,
@@ -3389,7 +3389,7 @@ enum PropertyInteractionTypes
 };
 
 // AIAndy: Types of property propagators
-enum PropertyPropagatorTypes
+enum class PropertyPropagatorTypes
 {
 	NO_PROPERTYPROPAGATOR = -1,
 	PROPERTYPROPAGATOR_SPREAD,
