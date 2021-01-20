@@ -55,8 +55,8 @@ jobs:
             #  shell: cmd
             #  run: "c: && cd %PROGRAMFILES(X86)% && dir /s candle.exe"
             - name: testing 7
-              shell: cmd
-              run: "C:\Program Files (x86)\\WiX Toolset v3.11\\bincandle.exe --help"
+              shell: powershell
+              run: '& "$env:PROGRAMFILES(X86)/WiX Toolset v3.11/bincandle.exe"'
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
