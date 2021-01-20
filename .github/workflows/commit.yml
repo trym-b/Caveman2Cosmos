@@ -32,11 +32,11 @@ jobs:
             # - name: test out installer
             - name: Build
               run: |
-                  call Powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%APPVEYOR_BUILD_FOLDER%\Tools\CI\fix_sources_timestamps.ps1"
-                  call "%APPVEYOR_BUILD_FOLDER%\Tools\_AppveyorTestBuild.bat"
+                  Powershell -NoProfile -ExecutionPolicy Bypass -File "%APPVEYOR_BUILD_FOLDER%\Tools\CI\fix_sources_timestamps.ps1"
+                  "%APPVEYOR_BUILD_FOLDER%\Tools\_AppveyorTestBuild.bat"
                   cd Tools && XmlValidator.exe -a
-                  call "%APPVEYOR_BUILD_FOLDER%\Tools\CI\DeployBuild.bat"
-                  call "%APPVEYOR_BUILD_FOLDER%\Tools\_TrimFBuildCache.bat"
+                  "%APPVEYOR_BUILD_FOLDER%\Tools\CI\DeployBuild.bat"
+                  "%APPVEYOR_BUILD_FOLDER%\Tools\_TrimFBuildCache.bat"
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             - name: Upload a test file
