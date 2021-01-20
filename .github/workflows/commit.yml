@@ -25,10 +25,10 @@ jobs:
         name: Create installer
         runs-on: windows-2019
         steps:
-            - name: Check out code
-              uses: actions/checkout@v2
-              with:
-                  lfs: true
+            # - name: Check out code
+            #   uses: actions/checkout@v2
+            #   with:
+            #       lfs: true
             # - name: Build
             #   shell: cmd
             #   run: |
@@ -38,7 +38,7 @@ jobs:
             #       call ${{ github.workspace }}\Tools\_TrimFBuildCache.bat
             - name: Testing candle
               shell: cmd
-              run: candle --help
+              run: cd %PROGRAMFILES(X86)% && dir
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
