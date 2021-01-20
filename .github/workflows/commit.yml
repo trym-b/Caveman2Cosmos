@@ -31,6 +31,7 @@ jobs:
                   lfs: true
             # - name: test out installer
             - name: Build
+              shell: cmd
               run: |
                   Powershell -NoProfile -ExecutionPolicy Bypass -File "${{ github.workspace }}\Tools\CI\fix_sources_timestamps.ps1"
                   "${{ github.workspace }}\Tools\_AppveyorTestBuild.bat"
