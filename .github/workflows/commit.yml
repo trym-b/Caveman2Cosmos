@@ -47,7 +47,7 @@ jobs:
               run: dir
             - name: testing 4
               shell: cmd
-              run: cd .. && dir /s candle.exe
+              run: "c: && dir /s candle.exe"
             - name: testing 5
               shell: cmd
               run: cd ..\.. && dir /s candle.exe
