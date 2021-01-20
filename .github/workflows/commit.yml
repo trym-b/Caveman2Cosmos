@@ -53,7 +53,7 @@ jobs:
             #  run: cd ..\.. && dir /s candle.exe
             - name: testing 6
               shell: cmd
-              run: "c: && dir"
+              run: "c: && cd %PROGRAMFILES(X86)% && dir /s candle.exe"
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
