@@ -34,9 +34,9 @@ jobs:
               shell: cmd
               run: |
                   Powershell -NoProfile -ExecutionPolicy Bypass -File "${{ github.workspace }}\Tools\CI\fix_sources_timestamps.ps1"
-                  "${{ github.workspace }}\Tools\_AppveyorTestBuild.bat"
-                  "${{ github.workspace }}\Tools\CI\DeployBuild.bat"
-                  "${{ github.workspace }}\Tools\_TrimFBuildCache.bat"
+                  ${{ github.workspace }}\Tools\_AppveyorTestBuild.bat
+                  ${{ github.workspace }}\Tools\CI\DeployBuild.bat
+                  ${{ github.workspace }}\Tools\_TrimFBuildCache.bat
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             - name: Upload a test file
