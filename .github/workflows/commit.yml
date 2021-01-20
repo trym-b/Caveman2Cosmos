@@ -29,13 +29,16 @@ jobs:
               uses: actions/checkout@v2
               with:
                   lfs: true
-            - name: Build
+            # - name: Build
+            #   shell: cmd
+            #   run: |
+            #       Powershell -NoProfile -ExecutionPolicy Bypass -File "${{ github.workspace }}\Tools\CI\fix_sources_timestamps.ps1"
+            #       call ${{ github.workspace }}\Tools\_AppveyorTestBuild.bat
+            #       call ${{ github.workspace }}\Tools\CI\DeployBuild.bat
+            #       call ${{ github.workspace }}\Tools\_TrimFBuildCache.bat
+            - name: Testing candle
               shell: cmd
-              run: |
-                  Powershell -NoProfile -ExecutionPolicy Bypass -File "${{ github.workspace }}\Tools\CI\fix_sources_timestamps.ps1"
-                  call ${{ github.workspace }}\Tools\_AppveyorTestBuild.bat
-                  call ${{ github.workspace }}\Tools\CI\DeployBuild.bat
-                  call ${{ github.workspace }}\Tools\_TrimFBuildCache.bat
+              run: candle --help
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
