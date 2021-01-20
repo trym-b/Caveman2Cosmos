@@ -42,9 +42,15 @@ jobs:
             - name: testing 2
               shell: cmd
               run: cd %PROGRAMFILES% && dir
-            - name: testing 3:
+            - name: testing 3
               shell: cmd
               run: dir
+            - name: testing 4
+              shell: cmd
+              run: cd .. && dir /s candle.exe
+            - name: testing 5
+              shell: cmd
+              run: cd ..\.. && dir /s candle.exe
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
