@@ -38,3 +38,35 @@ jobs:
                       --workdir /host_dir ubuntu:18.04 \
                       bash -c \
                       "./Test/Python3/setup.sh && pytest -c Test/Python3/pytest.ini ."
+    build:
+        name: Build
+        runs-on: windows-2019
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2
+              with:
+                  lfs: true
+            - name: Build
+              shell: cmd
+              run: |
+                  Powershell -NoProfile -ExecutionPolicy Bypass -File "${{ github.workspace }}\Tools\CI\fix_sources_timestamps.ps1"
+                  call ${{ github.workspace }}\Tools\_AppveyorTestBuild.bat
+            - name: Run XmlValidator
+              working-directory: ${{ github.workspace }}/Tools
+              run: |
+                  ${{ github.workspace }}\Tools\XmlValidator.exe -a
+            - name: Deploy
+              shell: cmd
+              run: |
+                  call ${{ github.workspace }}\Tools\CI\DeployBuild.bat
+                  call ${{ github.workspace }}\Tools\_TrimFBuildCache.bat
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: build-artifacts
+                  path: |
+                      Assets
+                      Caveman2Cosmos Config.ini
+                      Caveman2Cosmos.ini
+                      PrivateMaps
+                      Resource
