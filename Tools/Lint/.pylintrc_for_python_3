@@ -37,7 +37,6 @@ disable=bad-indentation,
         unidiomatic-typecheck,
         unnecessary-pass,
         unused-argument,
-        unused-import,
         unused-variable,
         wrong-import-order,
 
