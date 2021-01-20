@@ -39,6 +39,9 @@ jobs:
             - name: Testing candle
               shell: cmd
               run: cd %PROGRAMFILES(X86)% && dir
+            - name: testing 2
+              shell: cmd
+              run: cd %PROGRAMFILES% && dir
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
