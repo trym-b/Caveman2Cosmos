@@ -51,9 +51,12 @@ jobs:
             #- name: testing 5
             #  shell: cmd
             #  run: cd ..\.. && dir /s candle.exe
-            - name: testing 6
+            #- name: testing 6
+            #  shell: cmd
+            #  run: "c: && cd %PROGRAMFILES(X86)% && dir /s candle.exe"
+            - name: testing 7
               shell: cmd
-              run: "c: && cd %PROGRAMFILES(X86)% && dir /s candle.exe"
+              run: "C:\Program Files (x86)\WiX Toolset v3.11\bincandle.exe --help"
             - name: Create a dummy file
               run: echo "some text" > hello.txt
             # - name: Upload a test file
