@@ -21,3 +21,19 @@ jobs:
                       --workdir /host_dir ubuntu:20.04 \
                       bash -c \
                       "./Tools/Lint/setup.sh && python3 Tools/Lint/pylint.py --python-versions ${{ matrix.python-version }}"
+    create-installer:
+        name: Create installer
+        runs-on: windows-2019
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2
+              with:
+                  lfs: true
+            # - name: test out installer
+            - name: Create a dummy file
+              run: echo "some text" > hello.txt
+            - name: Upload a test file
+              uses: actions/upload-artifact@v2
+              with:
+                name: hello
+                path: hello.txt
