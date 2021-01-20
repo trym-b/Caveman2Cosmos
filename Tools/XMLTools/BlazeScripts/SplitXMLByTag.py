@@ -1,5 +1,3 @@
-import lxml.etree as ET
-
 path_xml_folder =  '../../../Assets/XML'
 
 ########################################

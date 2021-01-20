@@ -13,10 +13,9 @@ import hashlib
 # from pylanguagetool import api
 import logging
 import colorama
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 from spellchecker import SpellChecker
 from googlesp import GoogleSp
-from random import randint
 from time import sleep
 from langtool import LanguageTool
 import urllib

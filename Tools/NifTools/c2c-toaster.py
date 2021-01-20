@@ -42,9 +42,6 @@ a nif specific wrapper around L{pyffi.spells.Toaster}."""
 # ***** END LICENSE BLOCK *****
 # --------------------------------------------------------------------------
 
-import logging
-import sys
-
 import pyffi.spells.check
 import pyffi.spells.nif
 import pyffi.spells.nif.check
@@ -53,7 +50,6 @@ import pyffi.spells.nif.fix
 import pyffi.spells.nif.optimize
 import pyffi.spells.nif.modify
 
-from pyffi.formats.nif import NifFormat
 from pyffi.spells.nif import NifSpell
 from pyffi.spells.nif.modify import SpellDelBranches
 
