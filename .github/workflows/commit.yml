@@ -50,3 +50,15 @@ jobs:
               working-directory: ${{ github.workspace }}/Tools
               run: |
                   ${{ github.workspace }}/Tools/XmlValidator.exe -a
+    spellchecker:
+        name: Run Autocorrect for spell checking
+        runs-on: windows-2019
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2
+              with:
+                  lfs: true
+            - name: Check for spelling mistakes
+              run: |
+                  python -m pip install lxml requests colorama pyspellchecker
+                  python ${{ github.workspace }}/Tools/Autocorrect/Autocorrect.py --help
