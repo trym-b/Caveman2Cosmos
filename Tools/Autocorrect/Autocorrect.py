@@ -412,7 +412,7 @@ if __name__ == "__main__":
 
     print("this is glob_patterns")
     print(args.glob_patterns)
-    expanded_files = [glob.glob(g) for g in args.glob_patterns]
+    expanded_files = [glob.glob(g, recursive=True) for g in args.glob_patterns]
     print("this is expanded files")
     print(expanded_files)
     flattened_files = [f for files in expanded_files for f in files]
