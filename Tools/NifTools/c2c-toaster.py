@@ -66,6 +66,7 @@ class SpellDumpDefaultLights(NifSpell):
     SPELLNAME = "dump_default_lights"
 
     def branchinspect(self, branch):
+        del branch
         # stick to main tree nodes, and material and texture properties
         return True 
         #branch.__class__.__name__ == 'NiDirectionalLight'
