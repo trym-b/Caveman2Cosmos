@@ -410,9 +410,17 @@ if __name__ == "__main__":
 
     logging.basicConfig(filename=args.log_file, level=logging.DEBUG)
 
+    print("this is glob_patterns")
+    print(args.glob_patterns)
     expanded_files = [glob.glob(g) for g in args.glob_patterns]
+    print("this is expanded files")
+    print(expanded_files)
     flattened_files = [f for files in expanded_files for f in files]
+    print("this is flattended files")
+    print(flattened_files)
     unique_files = list(set(flattened_files))
+    print("this is unique_files")
+    print(unique_files)
     if len(unique_files) == 0:
         print(Fore.YELLOW + 'No files found matching the provided globs!')
     else:
