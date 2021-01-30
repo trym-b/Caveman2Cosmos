@@ -59,6 +59,8 @@ jobs:
               with:
                   lfs: true
             - name: Check for spelling mistakes
+              shell: cmd
               run: |
                   python -m pip install lxml requests colorama pyspellchecker
+                  ${{ github.workspace }}/Tools/Autocorrect/StartServer.bat
                   python ${{ github.workspace }}/Tools/Autocorrect/Autocorrect.py **/*.xml
