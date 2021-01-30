@@ -1,5 +1,5 @@
 import lxml.etree as ET
-from Common import load_tree
+from Common import load_tree, find_text
 
 path_xml_folder =  '../../../Assets/XML'
 
@@ -45,16 +45,6 @@ worker_unlocked_tech = None
 worker_obsolete_tech = None
 
 #####################################################
-
-# helper functions to slightly reduce retyping
-def find_text(element, schema, child_element):
-    tag = element.find(f"{schema}{child_element}")
-    if tag is not None:
-        text = element.find(f"{schema}{child_element}").text
-        return text
-    return None
-
-
 
 # Brute scripting, ugh
 

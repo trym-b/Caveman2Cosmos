@@ -8,7 +8,7 @@ import os
 import glob
 import sys
 import lxml.etree as ET
-from Common import load_tree
+from Common import load_tree, find_text
 
 # RUN SCRIPT WITH "-rename" to automatically rename entries in the defines, sounds folder
 actually_rename = bool(str(sys.argv[-1]) == '-rename')
@@ -43,11 +43,6 @@ era_dict = {
 # 'TECH_NAME' : [ *LIST* (singleplayer) , *LIST* (multiplayer) , 'ERA' , ['TXT_KEY_TECH_NAME','Tech Name'] ]
 # *LIST* = ['AS2D_TECH_...' , 'SND_TECH_...' , 'Sounds/Tech/...']
 tech_dict = {}
-
-# helper functions to slightly reduce retyping
-def find_text(element, schema, child_element):
-    text = element.find(f"{schema}{child_element}").text
-    return text
 
 # To find relevant xml files in modules, elsewhere
 def search_for_xml_ending(ending):
