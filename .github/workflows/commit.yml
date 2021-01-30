@@ -61,4 +61,4 @@ jobs:
             - name: Check for spelling mistakes
               run: |
                   python -m pip install lxml requests colorama pyspellchecker
-                  python ${{ github.workspace }}/Tools/Autocorrect/Autocorrect.py --help
+                  python ${{ github.workspace }}/Tools/Autocorrect/Autocorrect.py **/*.xml
