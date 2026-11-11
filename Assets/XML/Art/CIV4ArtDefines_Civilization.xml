@@ -2,19 +2,19 @@
 <Civ4ArtDefines xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="..\Schema\Caveman2Cosmos.xsd">
 	<CivilizationArtInfos>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_ANIMAL_BEAST</Type>
+			<Type>ART_DEF_CIVILIZATION_NPC_BEAST</Type>
 			<Button>Art/Interface/Buttons/Civilizations/Beast.dds</Button>
 			<Path>Art/Interface/TeamColor/FlagDecal_Beast.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_ANIMAL_PREDATOR</Type>
+			<Type>ART_DEF_CIVILIZATION_NPC_PREDATOR</Type>
 			<Button>Art/Interface/Buttons/Civilizations/Predator.dds</Button>
 			<Path>Art/Interface/TeamColor/FlagDecal_Predator.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_ANIMAL_PREY</Type>
+			<Type>ART_DEF_CIVILIZATION_NPC_PREY</Type>
 			<Button>Art/Interface/Buttons/Civilizations/Creature.dds</Button>
 			<Path>Art/Interface/TeamColor/FlagDecal_Creature.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
@@ -50,7 +50,7 @@
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_BARBARIAN</Type>
+			<Type>ART_DEF_CIVILIZATION_NPC_BARBARIAN</Type>
 			<Button>,Art/Interface/Buttons/Civilizations/Barbarian.dds,Art/Interface/Buttons/Civics_Civilizations_Religions_Atlas.dds,4,5</Button>
 			<Path>Art/Interface/TeamColor/FlagDECAL_Skullcrossbones.dds</Path>
 			<bWhiteFlag>0</bWhiteFlag>
@@ -64,8 +64,8 @@
 		<CivilizationArtInfo>
 			<Type>ART_DEF_CIVILIZATION_CARTHAGE</Type>
 			<Button>,Art/Interface/Buttons/Civilizations/Spain.dds,Art/Interface/Buttons/Warlords_Atlas_2.dds,5,1</Button>
-			<Path>Art/Interface/TeamColor/FlagDECAL_Carthage.dds</Path>
-			<bWhiteFlag>1</bWhiteFlag>
+			<Path>Art/Interface/TeamColor/FlagDECAL_Carthag.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
 			<Type>ART_DEF_CIVILIZATION_CELTS</Type>
@@ -188,7 +188,7 @@
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_NATIVE_AMERICA</Type>
+			<Type>ART_DEF_CIVILIZATION_SIOUX</Type>
 			<Button>Art/Interface/TeamColor/Siouxbutton.dds</Button>
 			<Path>Art/Interface/TeamColor/SiouxFlag.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
@@ -254,13 +254,13 @@
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_UNITED_STATES</Type>
+			<Type>ART_DEF_CIVILIZATION_AMERICA</Type>
 			<Button>Art/Interface/TeamColor/america.dds</Button>
 			<Path>Art/Interface/TeamColor/flagdecal_america.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
 		</CivilizationArtInfo>
 		<CivilizationArtInfo>
-			<Type>ART_DEF_CIVILIZATION_VIKINGS</Type>
+			<Type>ART_DEF_CIVILIZATION_SCANDINAVIAS</Type>
 			<Button>Art/Interface/TeamColor/norsebutton.dds</Button>
 			<Path>Art/Interface/TeamColor/flagdecal_norse.dds</Path>
 			<bWhiteFlag>1</bWhiteFlag>
@@ -275,6 +275,48 @@
 			<Type>ART_DEF_CIVILIZATION_POLYNESIA</Type>
 			<Button>art/Custom_Civilizations/Polynesia/Polynesia.dds</Button>
 			<Path>art/Custom_Civilizations/Polynesia/FlagDECAL_Polynesia.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_ABORIGINES</Type>
+			<Button>art/Custom_Civilizations/Aborigines/Aborigines.dds</Button>
+			<Path>art/Custom_Civilizations/Aborigines/FlagDECAL_Aborigines.dds</Path>
+			<bWhiteFlag>0</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_BRAZIL</Type>
+			<Button>art/Custom_Civilizations/Brazil/Brazil.dds</Button>
+			<Path>art/Custom_Civilizations/Brazil/FlagDECAL_Brazil.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_ISRAEL</Type>
+			<Button>art/Custom_Civilizations/Israel/flags/israeli_small.dds</Button>
+			<Path>art/Custom_Civilizations/Israel/flags/FlagDECAL_Israel.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_JIVARO</Type>
+			<Button>art/Custom_Civilizations/Jivaro/Jivaro.dds</Button>
+			<Path>art/Custom_Civilizations/Jivaro/FlagDECAL_Jivaro.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_MAORI</Type>
+			<Button>art/Custom_Civilizations/Maori/Maori.dds</Button>
+			<Path>art/Custom_Civilizations/Maori/FlagDECAL_Maori.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_NEANDERTHAL_EMPIRE</Type>
+			<Button>art/Custom_Civilizations/Neanderthal/Flags/Neanderthal_Empire.dds</Button>
+			<Path>art/Custom_Civilizations/Neanderthal/Flags/FlagDecal_Neanderthal_Empire.dds</Path>
+			<bWhiteFlag>1</bWhiteFlag>
+		</CivilizationArtInfo>
+		<CivilizationArtInfo>
+			<Type>ART_DEF_CIVILIZATION_TUPI</Type>
+			<Button>art/Custom_Civilizations/Tupi/Tupi.dds</Button>
+			<Path>art/Custom_Civilizations/Tupi/FlagDECAL_Tupi.dds</Path>
 			<bWhiteFlag>0</bWhiteFlag>
 		</CivilizationArtInfo>
 	</CivilizationArtInfos>

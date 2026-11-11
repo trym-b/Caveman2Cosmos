@@ -27,7 +27,6 @@ class CvDawnOfMan:
 		xRes = SR.x
 		yRes = SR.y
 
-		W_TECH = 425
 		H_TECH = 80
 
 		W_MAIN_PANEL = 750
@@ -88,31 +87,27 @@ class CvDawnOfMan:
 		screen.enableWorldSounds(False)
 
 		# Create panels... Main Panel:
-		szMainPanel = "DawnOfManMainPanel"
 		screen.addPanel("", "", "", True, True, X_MAIN_PANEL, Y_MAIN_PANEL, W_MAIN_PANEL, H_MAIN_PANEL, PanelStyles.PANEL_STYLE_MAIN)
 
 		# Top
-		szHeaderPanel = "DawnOfManHeaderPanel"
 		screen.addPanel("", "", "", True, False, X_HEADER_PANEL, Y_HEADER_PANEL, W_HEADER_PANEL, H_HEADER_PANEL, PanelStyles.PANEL_STYLE_DAWNTOP)
 
 		# Bottom
-		szTextPanel = "DawnOfManTextPanel"
 		screen.addPanel("", "", "", True, True, X_TEXT_PANEL, Y_TEXT_PANEL, W_TEXT_PANEL, H_TEXT_PANEL, PanelStyles.PANEL_STYLE_DAWNBOTTOM)
 
 		# Add contents... Leaderhead graphic:
-		szLeaderPanel = "DawnOfManLeaderPanel"
 		screen.addPanel("", "", "", True, False, X_LEADER_ICON - 3, Y_LEADER_ICON - 5, W_LEADER_ICON + 6, H_LEADER_ICON + 8, PanelStyles.PANEL_STYLE_DAWNTOP)
 		screen.addLeaderheadGFC("", iLeader, AttitudeTypes.ATTITUDE_PLEASED, X_LEADER_ICON + 5, Y_LEADER_ICON + 5, W_LEADER_ICON - 10, H_LEADER_ICON - 10, eWidGen, 1, 1)
 
 		# Info/"Stats" text
 		szNameText = "<color=255,255,0,255><font=3b>%s</font>" % CvLeaderHead.getDescription().upper()
 		szNameText += "\n- %s -\n" % CyPlayer.getCivilizationDescription(0)
-		szNameText += CyGameTextMgr().parseLeaderTraits(iLeader, iCiv, True, False)
+		szNameText += CyGameTextMgr().parseLeaderTraits(iLeader, True, False)
 		screen.addMultilineText("", szNameText, X_LEADER_TITLE_TEXT, Y_LEADER_TITLE_TEXT, W_LEADER_TITLE_TEXT, H_LEADER_TITLE_TEXT, eWidGen, 1, 1, 1<<2)
 
 		Text_BoxText = CyGameTextMgr().parseCivInfos(iCiv, True)
 
-		screen.addMultilineText("", Text_BoxText, X_STATS_TEXT, Y_STATS_TEXT+30+H_TECH, W_STATS_TEXT - (iMarginSpace * 3), H_STATS_TEXT - (iMarginSpace * 4), eWidGen, 1, 1, 1<<0)
+		screen.addMultilineText("", Text_BoxText, X_STATS_TEXT, Y_STATS_TEXT+H_TECH, W_STATS_TEXT - (iMarginSpace * 3), H_STATS_TEXT - (iMarginSpace * 4), eWidGen, 1, 1, 1<<0)
 
 		# Fancy icon things
 		screen.addDDSGFC("", AFM.getCivilizationArtInfo(CvCiv.getArtDefineTag()).getButton(), X_FANCY_ICON1 , Y_FANCY_ICON , WH_FANCY_ICON, WH_FANCY_ICON, eWidGen, 0, 0)
@@ -121,7 +116,7 @@ class CvDawnOfMan:
 		# Main Body text
 		szDawnTitle = "<font=3>" + TRNSLTR.getText("TXT_KEY_DAWN_OF_MAN_SCREEN_TITLE", ()).upper()
 		screen.setLabel("", "", szDawnTitle, 1<<2,	X_TEXT_PANEL + (W_TEXT_PANEL / 2), Y_TEXT_PANEL + 15, -2.0, FontTypes.GAME_FONT, eWidGen, 1, 1)
-		bodyString = TRNSLTR.getText("TXT_KEY_DAWN_OF_MAN_TEXT", (CyGameTextMgr().getTimeStr(G.getGameTurn(), False), CyPlayer.getCivilizationAdjectiveKey(), CyPlayer.getNameKey()))
+		bodyString = TRNSLTR.getText("TXT_KEY_DAWN_OF_MAN", (CyGameTextMgr().getTimeStr(G.getGameTurn(), False), CyPlayer.getCivilizationAdjectiveKey(), CyPlayer.getNameKey()))
 		screen.addMultilineText("", bodyString, X_TEXT_PANEL + iMarginSpace, Y_TEXT_PANEL + iMarginSpace + iTEXT_PANEL_MARGIN, W_TEXT_PANEL - (iMarginSpace * 2), H_TEXT_PANEL - (iMarginSpace * 2) - 75, eWidGen, 1, 1, 1<<0)
 
 		screen.setButtonGFC("", EXIT_TEXT, "", X_EXIT, Y_EXIT, W_EXIT, H_EXIT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1, ButtonStyles.BUTTON_STYLE_STANDARD)

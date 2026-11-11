@@ -33,7 +33,7 @@ class WBProjectScreen:
 		screen.setDimensions(0,0, screen.getXResolution(), screen.getYResolution())
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 
-		screen.setText("WBProjectExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("WBProjectExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 		screen.setLabel("ProjectHeader", "Background", "<font=4b>" + CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_PROJECT", ()) + "</font>", 1<<2, screen.getXResolution()/2, 20, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		screen.addDropDownBoxGFC("CurrentTeam", 20, 20, screen.getXResolution()/5, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
@@ -88,7 +88,6 @@ class WBProjectScreen:
 		self.sortProjects()
 
 	def sortProjects(self):
-		screen = CyGInterfaceScreen( "WBProjectScreen", CvScreenEnums.WB_PROJECT)
 		global lProject
 		lProject = []
 		for i in xrange(GC.getNumProjectInfos()):
@@ -205,7 +204,7 @@ class WBProjectScreen:
 		if bApplyAll:
 			for i in xrange(GC.getMAX_TEAMS()):
 				pTeamX = GC.getTeam(i)
-				if pTeamX.isBarbarian() and bNoBarb: continue
+				if pTeamX.isNPC() and bNoBarb: continue
 				if pTeamX.isAlive():
 					self.modifyCount(item, pTeamX)
 		else:
@@ -220,13 +219,15 @@ class WBProjectScreen:
 			iCount = max(iCount, - pTeamX.getProjectCount(item))
 		else:
 			Info = GC.getProjectInfo(item)
-			iTeam = Info.getMaxTeamInstances()
+			iTeamMax = Info.getMaxTeamInstances()
 			iWorld = Info.getMaxGlobalInstances()
-			iMax = max(iTeam, iWorld)
-			if iTeam > -1 and iWorld > -1:
-				iMax = min(iTeam, iWorld)
+			iMax = max(iTeamMax, iWorld)
+			if iTeamMax > -1 and iWorld > -1:
+				iMax = min(iTeamMax, iWorld)
 			if iMax > -1:
 				iCount = min(iCount, iMax - pTeamX.getProjectCount(item))
+				if iCount <= 0:
+					return
 		pTeamX.changeProjectCount(item, iCount)
 		if WorldBuilder.bPython and iCount > 0:
 			pCapital = GC.getPlayer(pTeamX.getLeaderID()).getCapitalCity()

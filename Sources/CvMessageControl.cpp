@@ -1,3 +1,6 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvBuildLists.h"
 #include "CvGameAI.h"
@@ -229,6 +232,7 @@ void CvMessageControl::sendRecalculateModifiers()
 
 void CvMessageControl::sendBuildLists()
 {
+	PROFILE_EXTRA_FUNC();
 	if (NO_PLAYER != GC.getGame().getActivePlayer())
 	{
 		// Split the build list data into a sufficient number of messages
@@ -294,6 +298,14 @@ void CvMessageControl::sendMergeUnit(int iUnitID)
 	}
 }
 
+void CvMessageControl::sendMergeAll(int iHeadUnitID)
+{
+	if (NO_PLAYER != GC.getGame().getActivePlayer())
+	{
+		gDLL->sendMessageData(new CvNetMergeAll(GC.getGame().getActivePlayer(), iHeadUnitID));
+	}
+}
+
 void CvMessageControl::sendSplitUnit(bool bConfirm)
 {
 	if (NO_PLAYER != GC.getGame().getActivePlayer())
@@ -310,12 +322,9 @@ void CvMessageControl::sendImprovementUpgrade(ImprovementTypes eImprovement, int
 	}
 }
 
-void CvMessageControl::sendArrestUnit(int iUnitID, PlayerTypes ePlayerT)
+void CvMessageControl::sendArrestUnit(int iCopID, PlayerTypes eCopPlayer, int iVictimID, PlayerTypes eVictimPlayer)
 {
-	if (NO_PLAYER != GC.getGame().getActivePlayer())
-	{
-		gDLL->sendMessageData(new CvNetChooseArrestUnit(GC.getGame().getActivePlayer(), ePlayerT, iUnitID));
-	}
+	gDLL->sendMessageData(new CvNetChooseArrestUnit(iCopID, eCopPlayer, iVictimID, eVictimPlayer));
 }
 
 void CvMessageControl::sendAmbushConfirmation(bool bConfirm)

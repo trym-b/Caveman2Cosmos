@@ -1,23 +1,23 @@
 #include "CvGameCoreDLL.h"
+#include "CvDefines.h"
+#include "CityOutputHistory.h"
 #include "CvArea.h"
 #include "CvCity.h"
 #include "CyArea.h"
 #include "CyCity.h"
 #include "CyPlot.h"
+#include "CvGameAI.h"
 #include "CyUnit.h"
+#include "CvGame.h"
+#include "CvUnitSelectionCriteria.h"
 
 //
 // Python wrapper class for CvCity
 //
 
-CyCity::CyCity() : m_pCity(NULL)
-{
-	FErrorMsg("CyCity constructor should not be called with a no parameter");
-}
-
 CyCity::CyCity(CvCity* pCity) : m_pCity(pCity)
 {
-	FAssertMsg(m_pCity != NULL, "CyCity constructor should not be called with a NULL parameter");
+	FAssert(m_pCity != NULL);
 }
 
 void CyCity::kill()
@@ -65,6 +65,11 @@ void CyCity::updateRevIndexAverage()
 	m_pCity->updateRevIndexAverage();
 }
 
+int CyCity::getRevIndexDistanceMod() const
+{
+	return m_pCity->getRevIndexDistanceMod();
+}
+
 int CyCity::getReinforcementCounter() const
 {
 	return m_pCity->getReinforcementCounter();
@@ -97,7 +102,11 @@ void CyCity::changeRevolutionCounter(int iChange)
 
 CyPlot* CyCity::getCityIndexPlot(int iIndex) const
 {
-	return new CyPlot(m_pCity->getCityIndexPlot(iIndex));
+	if (m_pCity->getCityIndexPlot(iIndex))
+	{
+		return new CyPlot(m_pCity->getCityIndexPlot(iIndex));
+	}
+	return NULL;
 }
 
 bool CyCity::canWork(const CyPlot* pPlot) const
@@ -115,39 +124,39 @@ int CyCity::countNumWaterPlots() const
 	return m_pCity->countNumWaterPlots();
 }
 
-int CyCity::findBaseYieldRateRank(int /*YieldTypes*/ eYield) const
+int CyCity::findBaseYieldRateRank(YieldTypes eYield) const
 {
-	return m_pCity->findBaseYieldRateRank((YieldTypes) eYield);
+	return m_pCity->findBaseYieldRateRank(eYield);
 }
 
-int CyCity::findYieldRateRank(int /*YieldTypes*/ eYield) const
+int CyCity::findYieldRateRank(YieldTypes eYield) const
 {
-	return m_pCity->findYieldRateRank((YieldTypes) eYield);
+	return m_pCity->findYieldRateRank(eYield);
 }
 
-int CyCity::findCommerceRateRank(int /*CommerceTypes*/ eCommerce) const
+int CyCity::findCommerceRateRank(CommerceTypes eCommerce) const
 {
-	return m_pCity->findCommerceRateRank((CommerceTypes) eCommerce);
+	return m_pCity->findCommerceRateRank(eCommerce);
 }
 
-bool CyCity::canTrain(int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost, bool bIgnoreUpgrades) const
+bool CyCity::canTrain(UnitTypes eUnit, bool bContinue, bool bTestVisible, bool bIgnoreCost, bool bIgnoreUpgrades) const
 {
-	return m_pCity->canTrain((UnitTypes)eUnit, bContinue, bTestVisible, bIgnoreCost, bIgnoreUpgrades);
+	return m_pCity->canTrain(eUnit, bContinue, bTestVisible, bIgnoreCost, bIgnoreUpgrades);
 }
 
-bool CyCity::canConstruct(int /*BuildingTypes*/ eBuilding, bool bContinue, bool bTestVisible, bool bIgnoreCost) const
+bool CyCity::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestVisible, bool bIgnoreCost) const
 {
-	return m_pCity->canConstruct((BuildingTypes)eBuilding, bContinue, bTestVisible, bIgnoreCost);
+	return m_pCity->canConstruct(eBuilding, bContinue, bTestVisible, bIgnoreCost);
 }
 
-bool CyCity::canCreate(int /*ProjectTypes*/ eProject, bool bContinue, bool bTestVisible) const
+bool CyCity::canCreate(ProjectTypes eProject, bool bContinue, bool bTestVisible) const
 {
-	return m_pCity->canCreate((ProjectTypes)eProject, bContinue, bTestVisible);
+	return m_pCity->canCreate(eProject, bContinue, bTestVisible);
 }
 
-bool CyCity::canMaintain(int /*ProcessTypes*/ eProcess, bool bContinue) const
+bool CyCity::canMaintain(ProcessTypes eProcess) const
 {
-	return m_pCity->canMaintain((ProcessTypes)eProcess, bContinue);
+	return m_pCity->canMaintain(eProcess);
 }
 
 int CyCity::getFoodTurnsLeft() const
@@ -180,9 +189,9 @@ bool CyCity::isProductionProcess() const
 	return m_pCity->isProductionProcess();
 }
 
-int CyCity::getProductionExperience(int /*UnitTypes*/ eUnit) const
+int CyCity::getProductionExperience(UnitTypes eUnit) const
 {
-	return m_pCity->getProductionExperience((UnitTypes) eUnit);
+	return m_pCity->getProductionExperience(eUnit);
 }
 
 void CyCity::addProductionExperience(const CyUnit& kUnit, bool bConscript)
@@ -190,22 +199,22 @@ void CyCity::addProductionExperience(const CyUnit& kUnit, bool bConscript)
 	m_pCity->addProductionExperience(kUnit.getUnit(), bConscript);
 }
 
-int /*UnitTypes*/ CyCity::getProductionUnit() const
+UnitTypes CyCity::getProductionUnit() const
 {
 	return m_pCity->getProductionUnit();
 }
 
-int /*BuildingTypes*/ CyCity::getProductionBuilding() const
+BuildingTypes CyCity::getProductionBuilding() const
 {
 	return m_pCity->getProductionBuilding();
 }
 
-int /*ProjectTypes*/ CyCity::getProductionProject() const
+ProjectTypes CyCity::getProductionProject() const
 {
 	return m_pCity->getProductionProject();
 }
 
-int /*ProcessTypes*/ CyCity::getProductionProcess() const
+ProcessTypes CyCity::getProductionProcess() const
 {
 	return m_pCity->getProductionProcess();
 }
@@ -245,9 +254,9 @@ int CyCity::getNumTrainUnitAI(int /*UnitAITypes*/ eUnitAI) const
 	return m_pCity->getNumTrainUnitAI((UnitAITypes) eUnitAI);
 }
 
-int CyCity::getProduction() const
+int CyCity::getProductionProgress() const
 {
-	return m_pCity->getProduction();
+	return m_pCity->getProductionProgress();
 }
 
 int CyCity::getProductionNeeded() const
@@ -265,6 +274,11 @@ int CyCity::getUnitProductionTurnsLeft(int /*UnitTypes*/ iUnit, int iNum) const
 	return m_pCity->getProductionTurnsLeft((UnitTypes) iUnit, iNum);
 }
 
+int CyCity::getUnitProductionTurnsLeftPreMerged(int /*UnitTypes*/ iUnit) const
+{
+	return m_pCity->getProductionTurnsLeftPreMerged((UnitTypes) iUnit);
+}
+
 int CyCity::getBuildingProductionTurnsLeft(int /*BuildingTypes*/ iBuilding, int iNum) const
 {
 	return m_pCity->getProductionTurnsLeft((BuildingTypes) iBuilding, iNum);
@@ -272,22 +286,17 @@ int CyCity::getBuildingProductionTurnsLeft(int /*BuildingTypes*/ iBuilding, int 
 
 int CyCity::getProjectProductionTurnsLeft(int /*ProjectTypes*/ eProject, int iNum) const
 {
-	return m_pCity->getProductionTurnsLeft((ProjectTypes)eProject, iNum);
+	return m_pCity->getProductionTurnsLeft((ProjectTypes) eProject, iNum);
 }
 
-void CyCity::setProduction(int iNewValue)
+void CyCity::setProductionProgress(int iNewValue)
 {
-	m_pCity->setProduction(iNewValue);
+	m_pCity->setProductionProgress(iNewValue);
 }
 
 void CyCity::changeProduction(int iChange)
 {
 	m_pCity->changeProduction(iChange);
-}
-
-int CyCity::getProductionModifier() const
-{
-	return m_pCity->getProductionModifier();
 }
 
 int CyCity::getCurrentProductionDifference(bool bIgnoreFood, bool bOverflow) const
@@ -328,9 +337,9 @@ int CyCity::getBonusHappiness(int /*BonusTypes*/ iBonus) const
 	return m_pCity->getBonusHappiness((BonusTypes) iBonus);
 }
 
-int CyCity::getBonusPower(int /*BonusTypes*/ eBonus, bool bDirty) const
+int CyCity::getBonusPower(int /*BonusTypes*/ eBonus) const
 {
-	return m_pCity->getBonusPower((BonusTypes)eBonus, bDirty);
+	return m_pCity->getBonusPower((BonusTypes)eBonus);
 }
 
 int CyCity::getBonusYieldRateModifier(int /*YieldTypes*/ eIndex, int /*BonusTypes*/ eBonus) const
@@ -361,11 +370,6 @@ int /*ArtStyleTypes*/ CyCity::getArtStyleType() const
 bool CyCity::hasTrait(int /*TraitTypes*/ iTrait) const
 {
 	return m_pCity->hasTrait((TraitTypes) iTrait);
-}
-
-bool CyCity::isBarbarian() const
-{
-	return m_pCity->isBarbarian();
 }
 
 bool CyCity::isNPC() const
@@ -508,19 +512,19 @@ int CyCity::flatHurryAngerLength() const
 	return m_pCity->flatHurryAngerLength();
 }
 
-void CyCity::setNumRealBuilding(int /*BuildingTypes*/ iIndex, int iNewValue)
+void CyCity::changeHasBuilding(int /*BuildingTypes*/ iIndex, bool bNewValue)
 {
-	m_pCity->setNumRealBuilding((BuildingTypes) iIndex, iNewValue);
+	m_pCity->changeHasBuilding((BuildingTypes) iIndex, bNewValue);
 }
 
-int CyCity::getNumRealBuilding(int /*BuildingTypes*/ iIndex) const
+int CyCity::hasBuilding(int /*BuildingTypes*/ iIndex) const
 {
-	return m_pCity->getNumRealBuilding((BuildingTypes) iIndex);
+	return m_pCity->hasBuilding((BuildingTypes) iIndex);
 }
 
-int CyCity::getNumActiveBuilding(int /*BuildingTypes*/ iIndex) const
+bool CyCity::isActiveBuilding(int /*BuildingTypes*/ iIndex) const
 {
-	return m_pCity->getNumActiveBuilding((BuildingTypes) iIndex);
+	return m_pCity->isActiveBuilding((BuildingTypes) iIndex);
 }
 
 bool CyCity::isFreeBuilding(int /*BuildingTypes*/ iIndex) const
@@ -545,7 +549,11 @@ int CyCity::getY() const
 
 CyPlot* CyCity::plot() const
 {
-	return new CyPlot(m_pCity->plot());
+	if (m_pCity->plot())
+	{
+		return new CyPlot(m_pCity->plot());
+	}
+	return NULL;
 }
 
 bool CyCity::isConnectedTo(const CyCity& kCity) const
@@ -565,17 +573,22 @@ CyArea* CyCity::area() const
 
 CyArea* CyCity::waterArea() const
 {
-	return new CyArea(m_pCity->waterArea());
-}
-
-CyPlot* CyCity::getRallyPlot() const
-{
-	return new CyPlot(m_pCity->getRallyPlot());
+	CvArea* waterArea = m_pCity->waterArea();
+	return waterArea ? new CyArea(waterArea) : NULL;
 }
 
 int CyCity::getGameTurnFounded() const
 {
-	return m_pCity->getGameTurnFounded();
+	CvGame& GAME = GC.getGame();
+	bool bHistoricalCalendar = GAME.isModderGameOption(MODDERGAMEOPTION_USE_HISTORICAL_ACCURATE_CALENDAR);
+	return m_pCity->getGameTurnFounded(bHistoricalCalendar);
+}
+
+int CyCity::getGameDateFounded() const
+{
+	CvGame& GAME = GC.getGame();
+	bool bHistoricalCalendar = GAME.isModderGameOption(MODDERGAMEOPTION_USE_HISTORICAL_ACCURATE_CALENDAR);
+	return m_pCity->getGameDateFounded(bHistoricalCalendar);
 }
 
 int CyCity::getGameTurnAcquired() const
@@ -598,7 +611,7 @@ void CyCity::changePopulation(int iChange)
 	m_pCity->changePopulation(iChange);
 }
 
-int CyCity::getRealPopulation() const
+int64_t CyCity::getRealPopulation() const
 {
 	return m_pCity->getRealPopulation();
 }
@@ -873,6 +886,11 @@ int CyCity::getFoodKept() const
 	return m_pCity->getFoodKept();
 }
 
+int CyCity::getMaxProductionOverflow() const
+{
+	return m_pCity->getMaxProductionOverflow();
+}
+
 int CyCity::getOverflowProduction() const
 {
 	return m_pCity->getOverflowProduction();
@@ -958,16 +976,6 @@ bool CyCity::isPower() const
 	return m_pCity->isPower();
 }
 
-bool CyCity::isAreaCleanPower() const
-{
-	return m_pCity->isAreaCleanPower();
-}
-
-bool CyCity::isDirtyPower() const
-{
-	return m_pCity->isDirtyPower();
-}
-
 int CyCity::getDefenseDamage() const
 {
 	return m_pCity->getDefenseDamage();
@@ -1018,14 +1026,9 @@ bool CyCity::isNeverLost() const
 	return m_pCity->isNeverLost();
 }
 
-void CyCity::setNeverLost(int iNewValue)
+void CyCity::setNeverLost(bool bNewValue)
 {
-	m_pCity->setNeverLost(iNewValue);
-}
-
-int CyCity::getMADIncoming() const
-{
-	return m_pCity->getMADIncoming();
+	m_pCity->setNeverLost(bNewValue);
 }
 
 bool CyCity::isBombarded() const
@@ -1033,9 +1036,9 @@ bool CyCity::isBombarded() const
 	return m_pCity->isBombarded();
 }
 
-void CyCity::setBombarded(int iNewValue)
+void CyCity::setBombarded(bool bNewValue)
 {
-	m_pCity->setBombarded(iNewValue);
+	m_pCity->setBombarded(bNewValue);
 }
 
 bool CyCity::isDrafted() const
@@ -1043,9 +1046,9 @@ bool CyCity::isDrafted() const
 	return m_pCity->isDrafted();
 }
 
-void CyCity::setDrafted(int iNewValue)
+void CyCity::setDrafted(bool bNewValue)
 {
-	m_pCity->setDrafted(iNewValue);
+	m_pCity->setDrafted(bNewValue);
 }
 
 bool CyCity::isAirliftTargeted() const
@@ -1053,9 +1056,9 @@ bool CyCity::isAirliftTargeted() const
 	return m_pCity->isAirliftTargeted();
 }
 
-void CyCity::setAirliftTargeted(int iNewValue)
+void CyCity::setAirliftTargeted(bool bNewValue)
 {
-	m_pCity->setAirliftTargeted(iNewValue);
+	m_pCity->setAirliftTargeted(bNewValue);
 }
 
 bool CyCity::isCitizensAutomated() const
@@ -1075,7 +1078,7 @@ bool CyCity::isProductionAutomated() const
 
 void CyCity::setProductionAutomated(bool bNewValue)
 {
-	m_pCity->setProductionAutomated(bNewValue, false);
+	m_pCity->setProductionAutomated(bNewValue);
 }
 
 bool CyCity::isWallOverride() const
@@ -1133,19 +1136,9 @@ int CyCity::getCultureThreshold() const
 	return m_pCity->getCultureThreshold();
 }
 
-int CyCity::getSeaPlotYield(int /*YieldTypes*/ eIndex) const
+int CyCity::getPlotYield(int /*YieldTypes*/ eIndex) const
 {
-	return m_pCity->getSeaPlotYield((YieldTypes) eIndex);
-}
-
-int CyCity::getBaseYieldRate(int /*YieldTypes*/ eIndex) const
-{
-	return m_pCity->getBaseYieldRate((YieldTypes)eIndex);
-}
-
-void CyCity::changeBaseYieldRate(int /*YieldTypes*/ eIndex, int iNewValue)
-{
-	m_pCity->changeBaseYieldRate((YieldTypes)eIndex, iNewValue);
+	return m_pCity->getPlotYield((YieldTypes)eIndex);
 }
 
 int CyCity::getBaseYieldRateModifier(int /*YieldTypes*/ eIndex, int iExtra) const
@@ -1352,16 +1345,6 @@ void CyCity::setName(std::wstring szNewValue, bool bFound)
 	m_pCity->setName((CvWString)szNewValue, bFound);
 }
 
-void CyCity::changeNoBonusCount(int /*BonusTypes*/ eBonus, int iChange)
-{
-	m_pCity->changeNoBonusCount((BonusTypes)eBonus, iChange);
-}
-
-bool CyCity::isNoBonus(int /*BonusTypes*/ eBonus) const
-{
-	return m_pCity->isNoBonus((BonusTypes)eBonus);
-}
-
 int CyCity::getFreeBonus(int /*BonusTypes*/ eIndex) const
 {
 	return m_pCity->getFreeBonus((BonusTypes)eIndex);
@@ -1382,19 +1365,19 @@ bool CyCity::hasBonus(int /*BonusTypes*/ iBonus) const
 	return m_pCity->hasBonus((BonusTypes) iBonus);
 }
 
-int CyCity::getBuildingProduction(int /*BuildingTypes*/ iIndex) const
+int CyCity::getProgressOnBuilding(int /*BuildingTypes*/ iIndex) const
 {
-	return m_pCity->getBuildingProduction((BuildingTypes) iIndex);
+	return m_pCity->getProgressOnBuilding((BuildingTypes) iIndex);
 }
 
-void CyCity::setBuildingProduction(int /*BuildingTypes*/ iIndex, int iNewValue)
+void CyCity::setProgressOnBuilding(int /*BuildingTypes*/ iIndex, int iNewValue)
 {
-	m_pCity->setBuildingProduction((BuildingTypes) iIndex, std::max(0, iNewValue));
+	m_pCity->setProgressOnBuilding((BuildingTypes) iIndex, std::max(0, iNewValue));
 }
 
-int CyCity::getBuildingProductionTime(int /*BuildingTypes*/ eIndex) const
+int CyCity::getDelayOnBuilding(int /*BuildingTypes*/ eIndex) const
 {
-	return m_pCity->getBuildingProductionTime((BuildingTypes)eIndex);
+	return m_pCity->getDelayOnBuilding((BuildingTypes)eIndex);
 }
 
 bool CyCity::isBuildingProductionDecay(int /*BuildingTypes*/ eIndex) const
@@ -1407,34 +1390,29 @@ int CyCity::getBuildingProductionDecayTurns(int /*BuildingTypes*/ eIndex) const
 	return m_pCity->getBuildingProductionDecayTurns((BuildingTypes)eIndex);
 }
 
-int CyCity::getBuildingOriginalOwner(int /*BuildingTypes*/ iIndex) const
+int CyCity::getBuildingOriginalOwner(int /*BuildingTypes*/ iType) const
 {
-	return m_pCity->getBuildingOriginalOwner((BuildingTypes) iIndex);
+	return m_pCity->getBuildingData((BuildingTypes) iType).eBuiltBy;
 }
 
-int CyCity::getBuildingOriginalTime(int /*BuildingTypes*/ iIndex) const
+int CyCity::getBuildingOriginalTime(int /*BuildingTypes*/ iType) const
 {
-	return m_pCity->getBuildingOriginalTime((BuildingTypes) iIndex);
+	return m_pCity->getBuildingData((BuildingTypes) iType).iTimeBuilt;
 }
 
-void CyCity::setBuildingOriginalTime(int iIndex, int iNewValue)
+int CyCity::getProgressOnUnit(int iIndex) const
 {
-	m_pCity->setBuildingOriginalTime((BuildingTypes) iIndex, iNewValue);
+	return m_pCity->getProgressOnUnit((UnitTypes) iIndex);
 }
 
-int CyCity::getUnitProduction(int iIndex) const
+void CyCity::setProgressOnUnit(int iIndex, int iNewValue)
 {
-	return m_pCity->getUnitProduction((UnitTypes) iIndex);
+	m_pCity->setProgressOnUnit((UnitTypes)iIndex, iNewValue);
 }
 
-void CyCity::setUnitProduction(int iIndex, int iNewValue)
+int CyCity::getDelayOnUnit(int /*UnitTypes*/ eIndex) const
 {
-	m_pCity->setUnitProduction((UnitTypes)iIndex, iNewValue);
-}
-
-int CyCity::getUnitProductionTime(int /*UnitTypes*/ eIndex) const
-{
-	return m_pCity->getUnitProductionTime((UnitTypes)eIndex);
+	return m_pCity->getDelayOnUnit((UnitTypes)eIndex);
 }
 
 bool CyCity::isUnitProductionDecay(int /*UnitTypes*/ eIndex) const
@@ -1598,6 +1576,11 @@ void CyCity::pushOrder(OrderTypes eOrder, int iData1, int iData2, bool bSave, bo
 	m_pCity->pushOrder(eOrder, iData1, iData2, bSave, bPop, bAppend, bForce);
 }
 
+void CyCity::pushPreMergeTrainOrder(UnitTypes eUnit, bool bSave, bool bPop, bool bAppend, bool bForce)
+{
+	m_pCity->pushPreMergeTrainOrder(eUnit, bSave, bPop, bAppend, bForce);
+}
+
 void CyCity::popOrder(int iNum, bool bFinish, bool bChoose)
 {
 	m_pCity->popOrder(iNum, bFinish, bChoose);
@@ -1611,6 +1594,11 @@ int CyCity::getOrderQueueLength() const
 OrderData CyCity::getOrderFromQueue(int iIndex) const
 {
 	return m_pCity->getOrderAt(iIndex);
+}
+
+bool CyCity::AI_isEmphasizeSpecialist(int /*SpecialistTypes*/ iIndex) const
+{
+	return m_pCity->AI_isEmphasizeSpecialist((SpecialistTypes)iIndex);
 }
 
 bool CyCity::AI_isEmphasize(int iEmphasizeType) const
@@ -1703,14 +1691,14 @@ void CyCity::setWeLoveTheKingDay(bool bWeLoveTheKingDay)
 	m_pCity->setWeLoveTheKingDay(bWeLoveTheKingDay);
 }
 
-int CyCity::calculateCorporateTaxes() const
+int64_t CyCity::calcCorporateMaintenance() const
 {
-	return m_pCity->calculateCorporateTaxes();
+	return m_pCity->calcCorporateMaintenance();
 }
 
-void CyCity::changePowerCount(int iChange, bool bDirty)
+void CyCity::changePowerCount(int iChange)
 {
-	m_pCity->changePowerCount(iChange, bDirty);
+	m_pCity->changePowerCount(iChange);
 }
 
 void CyCity::changeEventAnger(int iChange)
@@ -1728,6 +1716,11 @@ int CyCity::getBonusCommercePercentChanges(int eIndex, int eBuilding) const
 	return m_pCity->getBonusCommercePercentChanges((CommerceTypes)eIndex, (BuildingTypes)eBuilding);
 }
 
+int CyCity::getBaseYieldRateFromBuilding100(int iYield, int iBuilding) const
+{
+	return m_pCity->getBaseYieldRateFromBuilding100((YieldTypes)iYield, (BuildingTypes)iBuilding);
+}
+
 bool CyCity::isAutomatedCanBuild(int /*BuildTypes*/ eIndex) const
 {
 	return m_pCity->isAutomatedCanBuild((BuildTypes)eIndex);
@@ -1741,6 +1734,11 @@ void CyCity::setAutomatedCanBuild(int /*BuildTypes*/ eIndex, bool bNewValue)
 CvProperties* CyCity::getProperties() const
 {
 	return m_pCity->getProperties();
+}
+
+const CityOutputHistory* CyCity::getCityOutputHistory() const
+{
+	return m_pCity->getCityOutputHistory();
 }
 
 bool CyCity::getBuildingListFilterActive(int eFilter)
@@ -1841,4 +1839,16 @@ int CyCity::getUnitListType(int iGroup, int iPos)
 bool CyCity::isEventOccured(int eEvent) const
 {
 	return m_pCity->isEventOccured((EventTypes)eEvent);
+}
+
+int CyCity::AI_bestUnit() const
+{
+	int iDummyValue;
+	return m_pCity->AI_bestUnit(iDummyValue, -1, NULL, true, NULL, true, false, NULL);
+}
+
+int CyCity::AI_bestUnitAI(UnitAITypes eUnitAITypes) const
+{
+	int iDummyValue;
+	return m_pCity->AI_bestUnitAI(eUnitAITypes, iDummyValue, true, true, &CvUnitSelectionCriteria().IgnoreGrowth(true));
 }

@@ -37,7 +37,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 		super(MoreCiv4lertsEvent, self).__init__(eventManager, *args, **kwargs)
 
 		eventManager.addEventHandler("BeginActivePlayerTurn", self.onBeginActivePlayerTurn)
-		eventManager.addEventHandler("cityAcquired", self.OnCityAcquired)
+		eventManager.addEventHandler("cityAcquiredAndKept", self.onCityAcquiredAndKept)
 		eventManager.addEventHandler("cityBuilt", self.OnCityBuilt)
 		eventManager.addEventHandler("cityRazed", self.OnCityRazed)
 		eventManager.addEventHandler("cityLost", self.OnCityLost)
@@ -50,6 +50,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 		self.reset()
 
 	def reset(self, argsList=None):
+		self.bFirstCheck = True
 		self.CurrAvailTechTrades = {}
 		self.PrevAvailTechTrades = {}
 		self.PrevAvailBonusTrades = {}
@@ -72,12 +73,12 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 		iPlayer = GAME.getActivePlayer()
 		self.CheckForAlerts(iPlayer, True)
 
-	def OnCityAcquired(self, argsList):
-		owner, playerType, city, bConquest, bTrade = argsList
-		iPlayer = city.getOwner()
-		if not self.getCheckForDomVictory(): return
-		if iPlayer == GAME.getActivePlayer():
-			self.CheckForAlerts(iPlayer, False)
+	def onCityAcquiredAndKept(self, argsList):
+		#iOwnerOld, iOwnerNew, city, bConquest, bTrade = argsList
+		if not self.getCheckForDomVictory():
+			return
+		if argsList[1] == GAME.getActivePlayer():
+			self.CheckForAlerts(argsList[1], False)
 
 	def OnCityBuilt(self, argsList):
 		CyCity = argsList[0]
@@ -117,6 +118,11 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 		CyTeam = GC.getTeam(CyPlayer.getTeam())
 		iGrowthCount = 0
 
+		bFirstCheck = getattr(self, "bFirstCheck", True)
+		if bFirstCheck:
+			self.lastPopCount = CyTeam.getTotalPopulation()
+			self.lastLandCount = CyTeam.getTotalLand()
+
 		bCheck1 = self.options.isShowDomPopAlert()
 		bCheck2 = bBeginTurn and self.options.isShowCityPendingExpandBorderAlert()
 
@@ -131,9 +137,12 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 				for cityX in CyPlayerX.cities():
 					if cityX.getFoodTurnsLeft() == 1 and not cityX.isFoodProduction() and not cityX.AI_isEmphasize(5):
 						iGrowthCount += 1
-					if bCheck2 and cityX.getCultureLevel() != GC.getNumCultureLevelInfos() - 1:
-						if cityX.getCulture(iPlayerX) + cityX.getCommerceRate(CommerceTypes.COMMERCE_CULTURE) >= cityX.getCultureThreshold():
-							msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_CITY_TO_EXPAND",(cityX.getName(),))
+					if bCheck2 and cityX.getCultureThreshold() > 0:
+						if cityX.getCulture(cityX.getOwner()) + cityX.getCommerceRate(CommerceTypes.COMMERCE_CULTURE) >= cityX.getCultureThreshold():
+							if GAME.isOption(GameOptionTypes.GAMEOPTION_CULTURE_REALISTIC_SPREAD):
+								msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_CITY_TO_EXPAND_RCS",(cityX.getName(),))
+							else:
+								msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_CITY_TO_EXPAND",(cityX.getName(),))
 							CvUtil.sendMessage(msg, iPlayer, EVENT_MESSAGE_TIME_LONG, icon, -1, cityX.getX(), cityX.getY(), True, True)
 
 		# Check Domination Limit
@@ -206,35 +215,36 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 				else:
 					previousTrades = set()
 				#Determine new bonuses
-				newTrades = currentTrades.difference(previousTrades).intersection(desiredBonuses)
-				if newTrades:
-					szNewTrades = self.buildBonusString(newTrades)
-					msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_NEW_BONUS_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szNewTrades))
-					self._addMessageNoIcon(iPlayer, msg)
-				#Determine removed bonuses
-				removedTrades = previousTrades.difference(currentTrades).intersection(desiredBonuses)
-				if removedTrades:
-					szRemovedTrades = self.buildBonusString(removedTrades)
-					msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_BONUS_NOT_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szRemovedTrades))
-					self._addMessageNoIcon(iPlayer, msg)
+				if not bFirstCheck:
+					newTrades = currentTrades.difference(previousTrades).intersection(desiredBonuses)
+					if newTrades:
+						szNewTrades = self.buildBonusString(newTrades)
+						msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_NEW_BONUS_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szNewTrades))
+						self._addMessageNoIcon(iPlayer, msg)
+					#Determine removed bonuses
+					removedTrades = previousTrades.difference(currentTrades).intersection(desiredBonuses)
+					if removedTrades:
+						szRemovedTrades = self.buildBonusString(removedTrades)
+						msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_BONUS_NOT_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szRemovedTrades))
+						self._addMessageNoIcon(iPlayer, msg)
 			#save curr trades for next time
 			self.PrevAvailBonusTrades = tradesByPlayer
 		# Tech
 		if self.options.isShowTechTradeAlert():
 			techsByPlayer = {}
 			researchTechs = set()
-			iTotalTechs = GC.getNumTechInfos()
 			tradeData.ItemType = TradeableItems.TRADE_TECHNOLOGIES
 			bCheck1 = True
 			for CyPlayerX in TradeUtil.getTechTradePartners(CyPlayer):
 				techsToTrade = set()
-				for iTech in range(iTotalTechs):
-					if bCheck1 and CyPlayer.canResearch(iTech):
-						researchTechs.add(iTech)
-					tradeData.iData = iTech
+				for i in xrange(CyTeam.getNumAdjacentResearch()):
+					iTechX = CyTeam.getAdjacentResearch(i)
+					if bCheck1 and CyPlayer.canResearch(iTechX, True, True):
+						researchTechs.add(iTechX)
+					tradeData.iData = iTechX
 					if CyPlayerX.canTradeItem(iPlayer, tradeData, False):
 						if CyPlayerX.getTradeDenial(iPlayer, tradeData) == DenialTypes.NO_DENIAL: # will trade
-							techsToTrade.add(iTech)
+							techsToTrade.add(iTechX)
 				bCheck1 = False
 				techsByPlayer[CyPlayerX.getID()] = techsToTrade
 
@@ -245,17 +255,18 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 				else:
 					previousTechs = set()
 				#Determine new techs
-				newTechs = currentTechs.difference(previousTechs).intersection(researchTechs)
-				if newTechs:
-					szNewTechs = self.buildTechString(newTechs)
-					msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_NEW_TECH_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szNewTechs))
-					self._addMessageNoIcon(iPlayer, msg)
-				#Determine removed techs
-				removedTechs = previousTechs.difference(currentTechs).intersection(researchTechs)
-				if removedTechs:
-					szRemovedTechs = self.buildTechString(removedTechs)
-					msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_TECH_NOT_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szRemovedTechs))
-					self._addMessageNoIcon(iPlayer, msg)
+				if not bFirstCheck:
+					newTechs = currentTechs.difference(previousTechs).intersection(researchTechs)
+					if newTechs:
+						szNewTechs = self.buildTechString(newTechs)
+						msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_NEW_TECH_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szNewTechs))
+						self._addMessageNoIcon(iPlayer, msg)
+					#Determine removed techs
+					removedTechs = previousTechs.difference(currentTechs).intersection(researchTechs)
+					if removedTechs:
+						szRemovedTechs = self.buildTechString(removedTechs)
+						msg = TRNSLTR.getText("TXT_KEY_MORECIV4LERTS_TECH_NOT_AVAIL", (GC.getPlayer(iLoopPlayer).getName(), szRemovedTechs))
+						self._addMessageNoIcon(iPlayer, msg)
 			#save curr trades for next time
 			self.PrevAvailTechTrades = techsByPlayer
 		# Map
@@ -263,7 +274,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_MAPS
 			oldSet = self.PrevAvailMapTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_MAP"
-			willTrade = self.getTrades(TradeUtil.getMapTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getMapTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailMapTrades = willTrade
 		# Open Borders
@@ -271,7 +282,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_OPEN_BORDERS
 			oldSet = self.PrevAvailOpenBordersTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_OPEN_BORDERS"
-			willTrade = self.getTrades(TradeUtil.getOpenBordersTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getOpenBordersTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailOpenBordersTrades = willTrade
 		# Defensive Pact
@@ -279,7 +290,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_DEFENSIVE_PACT
 			oldSet = self.PrevAvailDefensivePactTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_DEFENSIVE_PACT"
-			willTrade = self.getTrades(TradeUtil.getDefensivePactTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getDefensivePactTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailDefensivePactTrades = willTrade
 		# Alliance
@@ -287,7 +298,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_PERMANENT_ALLIANCE
 			oldSet = self.PrevAvailPermanentAllianceTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_PERMANENT_ALLIANCE"
-			willTrade = self.getTrades(TradeUtil.getPermanentAllianceTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getPermanentAllianceTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailPermanentAllianceTrades = willTrade
 		# Vassalage
@@ -295,7 +306,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_VASSAL
 			oldSet = self.PrevAvailVassalTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_VASSAL"
-			willTrade = self.getTrades(TradeUtil.getVassalTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getVassalTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailVassalTrades = willTrade
 		# Capitulate
@@ -303,7 +314,7 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.ItemType = TradeableItems.TRADE_SURRENDER
 			oldSet = self.PrevAvailSurrenderTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_SURRENDER"
-			willTrade = self.getTrades(TradeUtil.getCapitulationTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getCapitulationTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailSurrenderTrades = willTrade
 		# Peace Treaty
@@ -312,19 +323,25 @@ class MoreCiv4lertsEvent(AbstractMoreCiv4lertsEvent):
 			tradeData.iData = GC.getDefineINT("PEACE_TREATY_LENGTH")
 			oldSet = self.PrevAvailPeaceTrades
 			TXT_KEY = "TXT_KEY_MORECIV4LERTS_PEACE_TREATY"
-			willTrade = self.getTrades(TradeUtil.getPeaceTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY)
+			willTrade = self.getTrades(TradeUtil.getPeaceTradePartners(CyPlayer), iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck)
 			if willTrade != oldSet:
 				self.PrevAvailPeaceTrades = willTrade
 
-	def getTrades(self, aList, iPlayer, tradeData, oldSet, TXT_KEY):
+		self.bFirstCheck = False
+
+	def getTrades(self, aList, iPlayer, tradeData, oldSet, TXT_KEY, bFirstCheck=False):
 		aSet = set()
 		for CyPlayerX in aList:
 			if CyPlayerX.canTradeItem(iPlayer, tradeData, False):
 				if CyPlayerX.getTradeDenial(iPlayer, tradeData) == DenialTypes.NO_DENIAL:
 					aSet.add(CyPlayerX.getID())
-		newSet = aSet.difference(oldSet)
-		if newSet:
-			self._addMessageNoIcon(iPlayer, TRNSLTR.getText(TXT_KEY, (self.buildPlayerString(newSet),)))
+		if not bFirstCheck:
+			newSet = aSet.difference(oldSet)
+			if newSet:
+				self._addMessageNoIcon(iPlayer, TRNSLTR.getText(TXT_KEY, (self.buildPlayerString(newSet),)))
+			removedSet = oldSet.difference(aSet)
+			if removedSet:
+				self._addMessageNoIcon(iPlayer, TRNSLTR.getText(TXT_KEY + "_LOST", (self.buildPlayerString(removedSet),)))
 		return aSet
 
 	def buildTechString(self, techs):
@@ -349,7 +366,7 @@ def canSeeCityList(askedPlayer):
 	is not a vassal of a rival. They must be able to contact (trade with)
 	<player>, and OCC must be disabled. You can always see a teammate's cities.
 	"""
-	if GAME.isOption(GameOptionTypes.GAMEOPTION_ONE_CITY_CHALLENGE):
+	if GAME.isOption(GameOptionTypes.GAMEOPTION_CHALLENGE_ONE_CITY):
 		return False
 	iAskedTeam = askedPlayer.getTeam()
 	iAskingTeam = GAME.getActiveTeam()

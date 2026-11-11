@@ -24,7 +24,7 @@ namespace Cy {;
 			PyTracebackObject* tb = (PyTracebackObject*)st->curexc_traceback;
 			if (tb == NULL)
 			{
-				//fprintf(stderr, "  traceback is NULL in wxFatalSignalHandler\n"); 
+				//fprintf(stderr, "  traceback is NULL in wxFatalSignalHandler\n");
 				return;
 			}
 
@@ -39,6 +39,7 @@ namespace Cy {;
 
 	std::vector<StackFrame> get_stack_trace()
 	{
+		PROFILE_EXTRA_FUNC();
 		std::vector<StackFrame> trace;
 
 		PyInterpreterState* firstInterp = PyInterpreterState_Head();

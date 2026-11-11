@@ -1,208 +1,33 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvCity.h"
-#include "CvDllPythonEvents.h"
+#include "CvGameAI.h"
 #include "CvGlobals.h"
+#include "CvInfos.h"
+#include "CvInitCore.h"
+#include "CvPlayerAI.h"
 #include "CvPlot.h"
 #include "CvPython.h"
 #include "CvSelectionGroup.h"
+#include "CvTeamAI.h"
 #include "CvUnit.h"
+#include "CvDLLEngineIFaceBase.h"
+#include "CvDLLInterfaceIFaceBase.h"
+#include "CvDllPythonEvents.h"
+#include "CvDLLUtilityIFaceBase.h"
+#include "NiPoint.h"
 
-
-namespace logging {
-	template <>
-	static picojson::value make_json_value(CvWString value)
-	{
-		return picojson::value(CvString(value));
-	}
-
-	template < class Fn_, class Ty_ >
-	static picojson::object info_base(Ty_ id, Fn_ infoFn)
-	{
-		picojson::object obj;
-		obj["id"] = make_json_value(static_cast<int>(id));
-		if (id != -1)
-		{
-			const CvInfoBase& info = (GC.*infoFn)(id);
-			obj["desc"] = make_json_value(CvWString(info.getDescription()));
-		}
-		return obj;
-	}
-	template <>
-	static picojson::value make_json_value(UnitTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getUnitInfo));
-	}
-	template <>
-	static picojson::value make_json_value(FeatureTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getFeatureInfo));
-	}
-	template <>
-	static picojson::value make_json_value(BuildingTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getBuildingInfo));
-	}
-	template <>
-	static picojson::value make_json_value(ProjectTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getProjectInfo));
-	}
-	template <>
-	static picojson::value make_json_value(ProcessTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getProcessInfo));
-	}
-	template <>
-	static picojson::value make_json_value(HurryTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getHurryInfo));
-	}
-	template <>
-	static picojson::value make_json_value(MissionTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getMissionInfo));
-	}
-	template <>
-	static picojson::value make_json_value(PromotionTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getPromotionInfo));
-	}
-
-	template <>
-	static picojson::value make_json_value(ImprovementTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getImprovementInfo));
-	}
-	template <>
-	static picojson::value make_json_value(RouteTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getRouteInfo));
-	}
-	template <>
-	static picojson::value make_json_value(ReligionTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getReligionInfo));
-	}
-	template <>
-	static picojson::value make_json_value(BuildTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getBuildInfo));
-	}
-	template <>
-	static picojson::value make_json_value(GoodyTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getGoodyInfo));
-	}
-	template <>
-	static picojson::value make_json_value(CivicTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getCivicInfo));
-	}
-	template <>
-	static picojson::value make_json_value(TechTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getTechInfo));
-	}
-	template <>
-	static picojson::value make_json_value(CorporationTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getCorporationInfo));
-	}
-	template <>
-	static picojson::value make_json_value(VictoryTypes value)
-	{
-		return picojson::value(info_base(value, &cvInternalGlobals::getVictoryInfo));
-	}
-
-	template <>
-	static picojson::value make_json_value(PlayerTypes value)
-	{
-		picojson::object obj;
-		obj["id"] = make_json_value((int)value);
-		if(value != NO_PLAYER)
-		{
-			const CvPlayerAI& player = CvPlayerAI::getPlayer(value);
-			obj["name"] = make_json_value(CvString(player.getName()));
-		}
-		return picojson::value(obj);
-	}
-
-	template <>
-	static picojson::value make_json_value(TeamTypes value)
-	{
-		picojson::object obj;
-		obj["id"] = make_json_value((int)value);
-		if(value != NO_TEAM)
-		{
-			const CvTeamAI& team = CvTeamAI::getTeam(value);
-			obj["name"] = make_json_value(CvString(team.getName()));
-		}
-		return picojson::value(obj);
-	}
-
-	template <>
-	static picojson::value make_json_value(CvUnit* value)
-	{
-		picojson::object obj;
-		if(value != NULL)
-		{
-			obj["id"] = make_json_value(value->getID());
-			obj["name"] = make_json_value(value->getName());
-			obj["owner"] = make_json_value(value->getOwner());
-		}
-		else
-		{
-			obj["id"] = make_json_value(-1);
-		}
-		return picojson::value(obj);
-	}
-
-	template <>
-	static picojson::value make_json_value(CvCity* value)
-	{
-		picojson::object obj;
-		if(value != NULL)
-		{
-			obj["id"] = make_json_value(value->getID());
-			obj["name"] = make_json_value(value->getName());
-			obj["owner"] = make_json_value(value->getOwner());
-		}
-		else
-		{
-			obj["id"] = make_json_value(-1);
-		}
-		return picojson::value(obj);
-	}
-
-	template <>
-	static picojson::value make_json_value(CvPlot* value)
-	{
-		picojson::object obj;
-		if (value != NULL)
-		{
-			obj["x"] = make_json_value(value->getX());
-			obj["y"] = make_json_value(value->getY());
-			obj["owner"] = make_json_value(value->getOwner());
-		}
-		else
-		{
-			obj["id"] = make_json_value(-1);
-		}
-		return picojson::value(obj);
-	}
-};
 
 struct EventArgs
 {
 	Cy::Args pyArgs;
-	logging::JsonValues jsonArgs;
-	bool toJson;
 
-	EventArgs() : toJson(true) {}
+	EventArgs() {}
 
 	EventArgs& no_json()
 	{
-		toJson = false;
 		return *this;
 	}
 
@@ -210,28 +35,26 @@ struct EventArgs
 	EventArgs& arg(const std::string& name, const Ty_& value)
 	{
 		pyArgs.add(value);
-		jsonArgs << logging::JsonValue(name, value);
 		return *this;
 	}
 
-	template < class Ty_ >
-	EventArgs& arg(const std::string& name, const Cy::Array<Ty_>& value)
-	{
-		pyArgs.add(value);
-		std::vector<Ty_> arr;
-		for (int idx = 0; idx < value.len; ++idx)
-		{
-			arr.push_back(value.vals[idx]);
-		}
-		jsonArgs << logging::JsonValue(name, arr);
-		return *this;
-	}
+	//template < class Ty_ >
+	//EventArgs& arg(const std::string& name, const Cy::Array<Ty_>& value)
+	//{
+	//	pyArgs.add(value);
+	//	std::vector<Ty_> arr;
+	//	for (int idx = 0; idx < value.len; ++idx)
+	//	{
+	//		arr.push_back(value.vals[idx]);
+	//	}
+	//	jsonArgs << logging::JsonValue(name, arr);
+	//	return *this;
+	//}
 
 	template < class Ty_, class Ty2_ >
 	EventArgs& arg(const std::string& name, const Ty_& value, const Ty2_& valueJson)
 	{
 		pyArgs.add(value);
-		jsonArgs << logging::JsonValue(name, valueJson);
 		return *this;
 	}
 
@@ -260,16 +83,8 @@ static const CvString gSessionID = create_session_id();
 
 bool postEvent(EventArgs eventData, const char* eventName)
 {
+	PROFILE_EXTRA_FUNC();
 	FPythonAssert(gDLL->getPythonIFace()->isInitialized(), "CvEventInterface", "onEvent");
-
-	if (eventData.toJson)
-	{
-		eventData.jsonArgs << logging::JsonValue("game_name", GC.getInitCore().getGameName());
-		eventData.jsonArgs << logging::JsonValue("game_id", GC.getGame().getGameId());
-		eventData.jsonArgs << logging::JsonValue("session_id", gSessionID);
-
-		logging::log_json_event("pyevent", eventData.jsonArgs);
-	}
 
 	eventData.pyArgs << GC.getGame().isDebugMode();
 	eventData.pyArgs << false;
@@ -278,7 +93,7 @@ bool postEvent(EventArgs eventData, const char* eventName)
 	eventData.pyArgs << gDLL->shiftKey();
 	eventData.pyArgs << (gDLL->getChtLvl() > 0);
 
-#ifdef FP_PROFILE_ENABLE				// Turn Profiling On or Off .. 
+#ifdef FP_PROFILE_ENABLE				// Turn Profiling On or Off ..
 #ifdef USE_INTERNAL_PROFILER
 	static	std::map<int,ProfileSample*>*	g_pythonProfiles = NULL;
 
@@ -312,7 +127,7 @@ bool postEvent(EventArgs eventData, const char* eventName)
 		pSample = itr->second;
 	}
 
-	CProfileScope detailedScope(pSample);		
+	CProfileScope detailedScope(pSample);
 #endif
 #endif
 
@@ -376,19 +191,6 @@ void CvDllPythonEvents::reportInit()
 	eventData
 		.arg("event", "Init");
 	postEvent(eventData, "Init");
-}
-
-void CvDllPythonEvents::reportUpdate(float fDeltaTime)
-{
-	if (GC.getUSE_ON_UPDATE_CALLBACK())
-	{
-		EventArgs eventData;
-		eventData
-			.no_json()
-			.arg("event", "Update")
-			.arg("fDeltaTime", fDeltaTime);
-		postEvent(eventData, "Update");
-	}
 }
 
 void CvDllPythonEvents::reportUnInit()
@@ -650,8 +452,13 @@ void CvDllPythonEvents::reportCityBuilt( CvCity *pCity, CvUnit *pUnit )
 	EventArgs eventData;
 	eventData
 		.arg("event", "cityBuilt")
-		.arg("pCity", pCity)
-		.arg("pUnit", pUnit);
+		.arg("pCity", pCity);
+
+	if (pUnit)
+		eventData.arg("pUnit", pUnit);
+	else
+		eventData.arg("pUnit", NULL);
+
 	postEvent(eventData, "cityBuilt");
 }
 
@@ -665,26 +472,30 @@ void CvDllPythonEvents::reportCityRazed( CvCity *pCity, PlayerTypes ePlayer )
 	postEvent(eventData, "cityRazed");
 }
 
-void CvDllPythonEvents::reportCityAcquired(PlayerTypes eOldOwner, PlayerTypes ePlayer, CvCity* pOldCity, bool bConquest, bool bTrade)
+void CvDllPythonEvents::reportCityAcquired(PlayerTypes eOldOwner, PlayerTypes ePlayer, CvCity* city, bool bConquest, bool bTrade, bool bAutoRaze)
 {
 	EventArgs eventData;
 	eventData
 		.arg("event", "cityAcquired")
 		.arg("eOldOwner", eOldOwner)
 		.arg("ePlayer", ePlayer)
-		.arg("pOldCity", pOldCity)
+		.arg("city", city)
 		.arg("bConquest", bConquest)
-		.arg("bTrade", bTrade);
+		.arg("bTrade", bTrade)
+		.arg("bAutoRaze", bAutoRaze);
 	postEvent(eventData, "cityAcquired");
 }
 
-void CvDllPythonEvents::reportCityAcquiredAndKept(PlayerTypes ePlayer, CvCity* pOldCity)
+void CvDllPythonEvents::reportCityAcquiredAndKept(PlayerTypes eOldOwner, PlayerTypes ePlayer, CvCity* city, bool bConquest, bool bTrade)
 {
 	EventArgs eventData;
 	eventData
 		.arg("event", "cityAcquiredAndKept")
+		.arg("eOldOwner", eOldOwner)
 		.arg("ePlayer", ePlayer)
-		.arg("pOldCity", pOldCity);
+		.arg("city", city)
+		.arg("bConquest", bConquest)
+		.arg("bTrade", bTrade);
 	postEvent(eventData, "cityAcquiredAndKept");
 }
 
@@ -705,16 +516,6 @@ void CvDllPythonEvents::reportCultureExpansion( CvCity *pCity, PlayerTypes ePlay
 		.arg("pCity", pCity)
 		.arg("ePlayer", ePlayer);
 	postEvent(eventData, "cultureExpansion");
-}
-
-void CvDllPythonEvents::reportCityGrowth( CvCity *pCity, PlayerTypes ePlayer )
-{
-	EventArgs eventData;
-	eventData
-		.arg("event", "cityGrowth")
-		.arg("pCity", pCity)
-		.arg("ePlayer", ePlayer);
-	postEvent(eventData, "cityGrowth");
 }
 
 void CvDllPythonEvents::reportCityProduction( CvCity *pCity, PlayerTypes ePlayer )
@@ -793,7 +594,7 @@ void CvDllPythonEvents::reportCityHurry( CvCity *pCity, HurryTypes eHurry )
 	postEvent(eventData,"cityHurry");
 }
 
-void CvDllPythonEvents::reportSelectionGroupPushMission(CvSelectionGroup* pSelectionGroup, MissionTypes eMission)
+void CvDllPythonEvents::reportSelectionGroupPushMission(const CvSelectionGroup* pSelectionGroup, MissionTypes eMission)
 {
 	if (NULL == pSelectionGroup)
 	{
@@ -804,7 +605,7 @@ void CvDllPythonEvents::reportSelectionGroupPushMission(CvSelectionGroup* pSelec
 
 	//using namespace bst::lambda;
 
-	std::transform(pSelectionGroup->beginUnits(), pSelectionGroup->endUnits(), std::back_inserter(aiUnitIds), bst::bind(&CvUnit::getID, _1));
+	algo::transform(pSelectionGroup->units(), std::back_inserter(aiUnitIds), bind(&CvUnit::getID, _1));
 
 	EventArgs eventData;
 	eventData
@@ -816,41 +617,13 @@ void CvDllPythonEvents::reportSelectionGroupPushMission(CvSelectionGroup* pSelec
 	postEvent(eventData, "selectionGroupPushMission");
 }
 
-void CvDllPythonEvents::reportUnitMove(CvPlot* pPlot, CvUnit* pUnit, CvPlot* pOldPlot)
+void CvDllPythonEvents::reportUnitCreated(CvUnit* pUnit)
 {
 	EventArgs eventData;
 	eventData
-		.no_json()
-		.arg("event", "unitMove")
-		.arg("pPlot", pPlot)
-		.arg("pUnit", pUnit)
-		.arg("pOldPlot", pOldPlot);
-	postEvent(eventData, "unitMove");
-}
-
-void CvDllPythonEvents::reportUnitSetXY(CvPlot* pPlot, CvUnit* pUnit)
-{
-	if (GC.getUSE_ON_UNIT_SET_XY_CALLBACK())
-	{
-		EventArgs eventData;
-		eventData
-			.arg("event", "unitSetXY")
-			.arg("pPlot", pPlot)
-			.arg("pUnit", pUnit);
-		postEvent(eventData, "unitSetXY");
-	}
-}
-
-void CvDllPythonEvents::reportUnitCreated(CvUnit* pUnit)
-{
-	if (GC.getUSE_ON_UNIT_CREATED_CALLBACK())
-	{
-		EventArgs eventData;
-		eventData
-			.arg("event", "unitCreated")
-			.arg("pUnit", pUnit);
-		postEvent(eventData, "unitCreated");
-	}
+		.arg("event", "unitCreated")
+		.arg("pUnit", pUnit);
+	postEvent(eventData, "unitCreated");
 }
 
 void CvDllPythonEvents::reportUnitBuilt(CvCity *pCity, CvUnit* pUnit)
@@ -873,7 +646,6 @@ void CvDllPythonEvents::reportUnitKilled(CvUnit* pUnit, PlayerTypes eAttacker)
 	postEvent(eventData, "unitKilled");
 }
 
-// BUG - Unit Captured Event - start
 void CvDllPythonEvents::reportUnitCaptured(PlayerTypes eFromPlayer, UnitTypes eUnitType, CvUnit* pNewUnit)
 {
 	EventArgs eventData;
@@ -883,19 +655,6 @@ void CvDllPythonEvents::reportUnitCaptured(PlayerTypes eFromPlayer, UnitTypes eU
 		.arg("eUnitType", eUnitType)
 		.arg("pNewUnit", pNewUnit);
 	postEvent(eventData, "unitCaptured");
-}
-// BUG - Unit Captured Event - end
-
-void CvDllPythonEvents::reportUnitLost(CvUnit* pUnit)
-{
-	if (GC.getUSE_ON_UNIT_LOST_CALLBACK())
-	{
-		EventArgs eventData;
-		eventData
-			.arg("event", "unitLost")
-			.arg("pUnit", pUnit);
-		postEvent(eventData, "unitLost");
-	}
 }
 
 void CvDllPythonEvents::reportUnitPromoted(CvUnit* pUnit, PromotionTypes ePromotion)
@@ -908,7 +667,6 @@ void CvDllPythonEvents::reportUnitPromoted(CvUnit* pUnit, PromotionTypes ePromot
 	postEvent(eventData, "unitPromoted");
 }
 
-// BUG - Upgrade Unit Event - start
 void CvDllPythonEvents::reportUnitUpgraded(CvUnit* pOldUnit, CvUnit* pNewUnit, int iPrice)
 {
 	EventArgs eventData;
@@ -918,19 +676,6 @@ void CvDllPythonEvents::reportUnitUpgraded(CvUnit* pOldUnit, CvUnit* pNewUnit, i
 		.arg("pNewUnit", pNewUnit)
 		.arg("iPrice", iPrice);
 	postEvent(eventData, "unitUpgraded");
-}
-// BUG - Upgrade Unit Event - end
-
-void CvDllPythonEvents::reportUnitSelected(CvUnit* pUnit)
-{
-	if (GC.getUSE_ON_UNIT_SELECTED_CALLBACK())
-	{
-		EventArgs eventData;
-		eventData
-			.arg("event", "unitSelected")
-			.arg("pUnit", pUnit);
-		postEvent(eventData, "unitSelected");
-	}
 }
 
 void CvDllPythonEvents::reportUnitRename(CvUnit *pUnit)
@@ -994,9 +739,14 @@ void CvDllPythonEvents::reportGoodyReceived(PlayerTypes ePlayer, CvPlot *pGoodyP
 	eventData
 		.arg("event", "goodyReceived")
 		.arg("ePlayer", ePlayer)
-		.arg("pGoodyPlot", pGoodyPlot)
-		.arg("pGoodyUnit", pGoodyUnit)
-		.arg("eGoodyType", eGoodyType);
+		.arg("pGoodyPlot", pGoodyPlot);
+
+	if (pGoodyUnit)
+		eventData.arg("pGoodyUnit", pGoodyUnit);
+	else
+		eventData.arg("pGoodyUnit", NULL);
+
+	eventData.arg("eGoodyType", eGoodyType);
 	postEvent(eventData, "goodyReceived");
 }
 
@@ -1199,7 +949,6 @@ void CvDllPythonEvents::reportPlayerChangeStateReligion(PlayerTypes ePlayerID, R
 	postEvent(eventData, "playerChangeStateReligion");
 }
 
-
 void CvDllPythonEvents::reportPlayerGoldTrade(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, int iAmount)
 {
 	EventArgs eventData;
@@ -1210,20 +959,6 @@ void CvDllPythonEvents::reportPlayerGoldTrade(PlayerTypes eFromPlayer, PlayerTyp
 		.arg("iAmount", iAmount);
 	postEvent(eventData, "playerGoldTrade");
 }
-
-// BUG - Revolution Event - start
-void CvDllPythonEvents::reportPlayerRevolution(PlayerTypes ePlayerID, int iAnarchyLength, CivicTypes* paeOldCivics, CivicTypes* paeNewCivics)
-{
-	EventArgs eventData;
-	eventData
-		.arg("event", "playerRevolution")
-		.arg("ePlayerID", ePlayerID)
-		.arg("iAnarchyLength", iAnarchyLength)
-		.arg("paeOldCivics", Cy::Array<int>((const int*)paeOldCivics, GC.getNumCivicOptionInfos()))
-		.arg("paeNewCivics", Cy::Array<int>((const int*)paeNewCivics, GC.getNumCivicOptionInfos()));
-	postEvent(eventData, "playerRevolution");
-}
-// BUG - Revolution Event - end
 
 void CvDllPythonEvents::reportGenericEvent(const char* szEventName, void *pyArgs)
 {
@@ -1242,7 +977,6 @@ void CvDllPythonEvents::preSave()
 		.arg("event", "OnPreSave");
 	postEvent(eventData, "OnPreSave");
 }
-
 
 void CvDllPythonEvents::reportChangeTeam(TeamTypes eOld, TeamTypes eNew)
 {

@@ -7,7 +7,10 @@
 
 //#include "CvEnums.h"
 
-class CvInitCore : bst::noncopyable
+class CvTaggedSaveFormatWrapper;
+
+class CvInitCore
+	: private bst::noncopyable
 {
 
 public:
@@ -24,6 +27,12 @@ protected:
 	void setDefaults();
 
 	bool checkBounds( int iValue, int iLower, int iUpper ) const;
+
+private:
+	// Asset checksum of the current build
+	static uint32_t m_uiAssetCheckSum;
+	// Asset checksum of the build which created the save that was last loaded
+	static uint32_t m_uiSavegameAssetCheckSum;
 
 public:
 
@@ -70,7 +79,7 @@ public:
 	const CvWString & getAdminPassword() const	{ return m_szAdminPassword; }
 	DllExport void setAdminPassword(const CvWString & szAdminPassword, bool bEncrypt = true);
 
-	DllExport CvWString getMapScriptName() const;		
+	DllExport CvWString getMapScriptName() const;
 	DllExport void setMapScriptName(const CvWString & szMapScriptName);
 	DllExport bool getWBMapScript() const;
 
@@ -260,25 +269,20 @@ public:
 
 	DllExport const CvString & getXMLCheck(PlayerTypes eID) const;
 	DllExport void setXMLCheck(PlayerTypes eID, const CvString & iXMLCheck);
-									
+
 	DllExport void resetAdvancedStartPoints();
 
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
 
-/************************************************************************************************/
-/* MODULAR_LOADING_CONTROL                 11/30/07                                MRGENIE      */
-/*                                                                                              */
-/* Savegame compatibility                                                                       */
-/************************************************************************************************/
+	// MODULAR_LOADING_CONTROL - Savegame compatibility - 11/30/07 - MRGENIE
 	void reassignPlayerAdvanced(PlayerTypes eOldID, PlayerTypes eNewID);
-/************************************************************************************************/
-/* MODULAR_LOADING_CONTROL                 END                                                  */
-/************************************************************************************************/
-	unsigned int getAssetCheckSum() const;
-	unsigned int getSavegameAssetCheckSum() const;
+	// ! MODULAR_LOADING_CONTROL
+
 	void calculateAssetCheckSum();
 	void checkVersions();
+	void checkStackPromotionsOption();
+	void endGameSetup();
 
 // BUG - EXE/DLL Paths - start
 	// EF: should these be CvWString?
@@ -288,12 +292,6 @@ public:
 	CvString getExeName() const;
 // BUG - EXE/DLL Paths - end
 
-//Afforess
-	void checkInitialCivics();
-//End
-
-	void handleOldGameSpeed();
-
 protected:
 
 	void clearCustomMapOptions();
@@ -301,6 +299,7 @@ protected:
 
 	void clearVictories();
 	void refreshVictories();
+	void readStackPromotionsOption(CvTaggedSaveFormatWrapper& wrapper);
 
 	// ***
 	// CORE GAME INIT DATA
@@ -412,13 +411,8 @@ protected:
 	static CvString* exeName;
 	static bool bPathsSet;
 // BUG - EXE/DLL Paths - end
-
-	bool m_bRecalcRequestProcessed;
-
-	// Asset checksum of the current build
-	unsigned int m_uiAssetCheckSum;
-	// Asset checksum of the build which performed the save of the loaded game
-	unsigned int m_uiSavegameAssetCheckSum;
+	// Transient load-time offer; the saved option itself records either answer.
+	bool m_bStackPromotionsMissingFromSave;
 };
 
 #endif

@@ -1,7 +1,12 @@
 // gameAI.cpp
+#include "CvGameCoreDLL.h"
+
+#include "FProfiler.h"
 
 #include "CvGameAI.h"
 #include "CvGlobals.h"
+#include "CvGlobals.h"
+#include "CvInfos.h"
 #include "CvPlayerAI.h"
 #include "CvTeamAI.h"
 
@@ -45,6 +50,7 @@ void CvGameAI::AI_reset()
 
 void CvGameAI::AI_makeAssignWorkDirty()
 {
+	PROFILE_EXTRA_FUNC();
 	int iI;
 
 	for (iI = 0; iI < MAX_PLAYERS; iI++)
@@ -76,49 +82,35 @@ void CvGameAI::AI_updateAssignWork()
 
 int CvGameAI::AI_combatValue(const UnitTypes eUnit) const
 {
-	int iValue;
+	int iValue = 100;
+	const CvUnitInfo& unit = GC.getUnitInfo(eUnit);
 
-	iValue = 100;
-
-	if (GC.getUnitInfo(eUnit).getDomainType() == DOMAIN_AIR)
+	if (unit.getDomainType() == DOMAIN_AIR)
 	{
-		iValue *= GC.getUnitInfo(eUnit).getAirCombat();
+		iValue *= unit.getAirCombat();
 	}
 	else
 	{
-		iValue *= GC.getUnitInfo(eUnit).getCombat();
+		iValue *= unit.getCombat();
 		//TB Combat Mods Begin
-		iValue += (((100 + GC.getUnitInfo(eUnit).getArmor())/100)/5);
-		iValue += (((100 + GC.getUnitInfo(eUnit).getPuncture())/100)/5);
-		iValue += (((100 + GC.getUnitInfo(eUnit).getPrecisionModifier())/100)/5);
-		iValue += (((100 + GC.getUnitInfo(eUnit).getDodgeModifier())/100)/5);
-		iValue += (((100 + GC.getUnitInfo(eUnit).getDamageModifier())/100)/5);
+		// Inactive
+		//iValue += (((100 + unit.getArmor())/100)/5);
+		//iValue += (((100 + unit.getPuncture())/100)/5);
+		// Inactive END
+
+		// TOOD: rethink these calculations
+		//iValue += (((100 * unit.getPrecisionModifier())/100)/5);
+		//iValue += (((100 * unit.getDodgeModifier())/100)/5);
+		//iValue += (((100 * unit.getDamageModifier())/100)/5);
 		//TB Combat Mods End
 
-		iValue *= ((((GC.getUnitInfo(eUnit).getFirstStrikes() * 2) + GC.getUnitInfo(eUnit).getChanceFirstStrikes()) * (GC.getCOMBAT_DAMAGE() / 5)) + 100);
+		iValue *= 100 + (2 * unit.getFirstStrikes() + unit.getChanceFirstStrikes()) * GC.getCOMBAT_DAMAGE() / 5;
 		iValue /= 100;
-	}
-	if (GC.getGame().isOption(GAMEOPTION_SIZE_MATTERS))
-	{
-		iValue = CvUnit::applySMRank(iValue, GC.getUnitInfo(eUnit).getSMRankTotal() - 15, GC.getSIZE_MATTERS_MOST_MULTIPLIER());
 	}
 
 	iValue /= getBestLandUnitCombat();
 
 	return iValue;
-}
-
-
-int CvGameAI::AI_turnsPercent(int iTurns, const int iPercent) const
-{
-	FAssert(iPercent > 0);
-	if (iTurns != MAX_INT)
-	{
-		iTurns *= (iPercent);
-		iTurns /= 100;
-	}
-
-	return std::max(1, iTurns);
 }
 
 

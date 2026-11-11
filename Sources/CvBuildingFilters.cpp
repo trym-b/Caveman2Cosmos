@@ -6,6 +6,9 @@
 //  PURPOSE: Classes to filter buildings
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvBuildingFilters.h"
 #include "CvBuildingInfo.h"
@@ -48,6 +51,46 @@ BuildingFilterBase::~BuildingFilterBase()
 
 }
 
+namespace
+{
+	// Whether the building's XML definition has any capability to produce the given commerce type at all,
+	// regardless of whether the net effect in a specific city currently rounds down to zero.
+	bool hasIntrinsicCommerce(const CvBuildingInfo& buildingInfo, CommerceTypes eCommerce)
+	{
+		return buildingInfo.getCommerceChange(eCommerce) > 0
+			|| buildingInfo.getCommercePerPopChange(eCommerce) > 0
+			|| buildingInfo.getCommerceModifier(eCommerce) > 0
+			|| buildingInfo.getSpecialistExtraCommerce(eCommerce) > 0
+			|| buildingInfo.getGlobalCommerceModifier(eCommerce) > 0;
+	}
+
+	// Whether the building's XML definition has any capability to produce the given yield at all,
+	// regardless of whether the net effect in a specific city currently rounds down to zero.
+	bool hasIntrinsicYield(const CvBuildingInfo& info, YieldTypes eYield)
+	{
+		foreach_(const PlotArray& pair, info.getPlotYieldChanges())
+		{
+			if (pair.second[eYield] > 0)
+			{
+				return true;
+			}
+		}
+		foreach_(const TerrainArray& pair, info.getTerrainYieldChanges())
+		{
+			if (pair.second[eYield] > 0)
+			{
+				return true;
+			}
+		}
+		return info.getYieldChange(eYield) > 0
+			|| info.getYieldPerPopChange(eYield) > 0
+			|| info.getYieldModifier(eYield) > 0
+			|| info.getAreaYieldModifier(eYield) > 0
+			|| info.getGlobalYieldModifier(eYield) > 0
+			|| info.getGlobalSeaPlotYieldChange(eYield) > 0;
+	}
+}
+
 bool BuildingFilterCanBuild::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
 	if (pCity)
@@ -76,51 +119,68 @@ BuildingFilterIsCommerce::BuildingFilterIsCommerce(CommerceTypes eCommerce, bool
 
 bool BuildingFilterIsCommerce::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
-	if (pCity)
+	// Check the city-specific net effect first, but fall back to the building's intrinsic
+	// capability so a contribution that rounds down to zero in this particular city
+	// (e.g. less than 1 commerce) doesn't hide the building from the filter.
+	if (pCity && pCity->getAdditionalCommerceTimes100ByBuilding(m_eCommerce, eBuilding) > 0)
 	{
-		return pCity->getAdditionalCommerceTimes100ByBuilding(m_eCommerce, eBuilding) > 0;
+		return true;
 	}
-	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	return buildingInfo.getCommerceChange(m_eCommerce) > 0
-		|| buildingInfo.getCommercePerPopChange(m_eCommerce) > 0
-		|| buildingInfo.getCommerceModifier(m_eCommerce) > 0
-		|| buildingInfo.getSpecialistExtraCommerce(m_eCommerce) > 0
-		|| buildingInfo.getGlobalCommerceModifier(m_eCommerce) > 0;
+	return hasIntrinsicCommerce(GC.getBuildingInfo(eBuilding), m_eCommerce);
+}
+
+BuildingFilterIsYieldAndCommerce::BuildingFilterIsYieldAndCommerce(YieldTypes eYield, CommerceTypes eCommerce, bool bInvert)
+	: BuildingFilterBase(bInvert), m_eYield(eYield), m_eCommerce(eCommerce) {}
+
+bool BuildingFilterIsYieldAndCommerce::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
+{
+	// For both yield and commerce, check the city-specific net effect first, but fall back to the
+	// building's intrinsic capability so a contribution that rounds down to zero in this particular
+	// city (e.g. less than 1 commerce/yield) doesn't hide the building from the filter.
+	const CvBuildingInfo& info = GC.getBuildingInfo(eBuilding);
+
+	const bool bHasYield =
+	(
+		(pCity && pCity->getAdditionalYieldByBuilding(m_eYield, eBuilding, true) > 0)
+		|| hasIntrinsicYield(info, m_eYield)
+	);
+
+	const bool bHasCommerce =
+	(
+		(pCity && pCity->getAdditionalCommerceTimes100ByBuilding(m_eCommerce, eBuilding) > 0)
+		|| hasIntrinsicCommerce(info, m_eCommerce)
+	);
+
+	return bHasYield || bHasCommerce;
 }
 
 BuildingFilterIsYield::BuildingFilterIsYield(YieldTypes eYield, bool bInvert) : BuildingFilterBase(bInvert), m_eYield(eYield) {}
 
 bool BuildingFilterIsYield::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
-	if (pCity)
+	PROFILE_EXTRA_FUNC();
+	// Check the city-specific net effect first, but fall back to the building's intrinsic
+	// capability so a contribution that rounds down to zero in this particular city
+	// (e.g. less than 1 yield) doesn't hide the building from the filter.
+	if (pCity && pCity->getAdditionalYieldByBuilding(m_eYield, eBuilding, true) > 0)
 	{
-		return pCity->getAdditionalYieldByBuilding(m_eYield, eBuilding, true) > 0;
+		return true;
 	}
-	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	return buildingInfo.getYieldChange(m_eYield) > 0
-		|| buildingInfo.getYieldPerPopChange(m_eYield) > 0
-		|| buildingInfo.getYieldModifier(m_eYield) > 0
-		|| buildingInfo.getAreaYieldModifier(m_eYield) > 0
-		|| buildingInfo.getGlobalYieldModifier(m_eYield) > 0
-		|| buildingInfo.getGlobalSeaPlotYieldChange(m_eYield) > 0
-		|| buildingInfo.getSeaPlotYieldChange(m_eYield) > 0;
+	return hasIntrinsicYield(GC.getBuildingInfo(eBuilding), m_eYield);
 }
 
 bool BuildingFilterIsHappiness::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
-	//TB Note: isn't the following checking only buildings already built?
+	PROFILE_EXTRA_FUNC();
 	if (pCity)
 	{
 		return pCity->getAdditionalHappinessByBuilding(eBuilding) > 0;
 	}
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	if (buildingInfo.getNumTechHappinessTypes() > 0)
+	foreach_(const TechModifier& modifier, buildingInfo.getTechHappinessChanges())
 	{
-		for (int iI = 0; iI < GC.getNumTechInfos(); iI++)
-		{
-			if (buildingInfo.getTechHappinessType(iI) > 0)
-				return true;
-		}
+		if (modifier.second > 0)
+			return true;
 	}
 	return buildingInfo.getHappiness() > 0
 		|| buildingInfo.getAreaHappiness() > 0
@@ -129,18 +189,16 @@ bool BuildingFilterIsHappiness::isFilteredBuilding(const CvPlayer *pPlayer, CvCi
 
 bool BuildingFilterIsHealth::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	if (pCity)
 	{
 		return pCity->getAdditionalHealthByBuilding(eBuilding) > 0;
 	}
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	if (buildingInfo.getNumTechHealthTypes() > 0)
+	foreach_(const TechModifier& modifier, buildingInfo.getTechHealthChanges())
 	{
-		for (int iI = 0; iI < GC.getNumTechInfos(); iI++)
-		{
-			if (buildingInfo.getTechHealthType(iI) > 0)
-				return true;
-		}
+		if (modifier.second > 0)
+			return true;
 	}
 	return buildingInfo.getHealth() > 0
 		|| buildingInfo.getAreaHealth() > 0
@@ -149,18 +207,16 @@ bool BuildingFilterIsHealth::isFilteredBuilding(const CvPlayer *pPlayer, CvCity 
 
 bool BuildingFilterIsUnhappiness::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	if (pCity)
 	{
 		return pCity->getAdditionalHappinessByBuilding(eBuilding) < 0;
 	}
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	if (buildingInfo.getNumTechHappinessTypes() > 0)
+	foreach_(const TechModifier& modifier, buildingInfo.getTechHappinessChanges())
 	{
-		for (int iI = 0; iI < GC.getNumTechInfos(); iI++)
-		{
-			if (buildingInfo.getTechHappinessType(iI) < 0)
-				return true;
-		}
+		if (modifier.second < 0)
+			return true;
 	}
 	return buildingInfo.getHappiness() < 0
 		|| buildingInfo.getAreaHappiness() < 0
@@ -169,18 +225,16 @@ bool BuildingFilterIsUnhappiness::isFilteredBuilding(const CvPlayer *pPlayer, Cv
 
 bool BuildingFilterIsUnhealthiness::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	if (pCity)
 	{
 		return pCity->getAdditionalHealthByBuilding(eBuilding) < 0;
 	}
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	if (buildingInfo.getNumTechHealthTypes() > 0)
+	foreach_(const TechModifier& modifier, buildingInfo.getTechHealthChanges())
 	{
-		for (int iI = 0; iI < GC.getNumTechInfos(); iI++)
-		{
-			if (buildingInfo.getTechHealthType(iI) < 0)
-				return true;
-		}
+		if (modifier.second < 0)
+			return true;
 	}
 	return buildingInfo.getHealth() < 0
 		|| buildingInfo.getAreaHealth() < 0
@@ -192,50 +246,46 @@ bool BuildingFilterIsMilitary::isFilteredBuilding(const CvPlayer *pPlayer, CvCit
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
 	return buildingInfo.getMilitaryProductionModifier() > 0
 		|| buildingInfo.getFreeExperience() > 0
-		|| buildingInfo.getFreePromotion() != NO_PROMOTION
-		|| buildingInfo.getFreePromotion_2() != NO_PROMOTION
-		|| buildingInfo.getFreePromotion_3() != NO_PROMOTION
 		|| buildingInfo.getNumUnitCombatRetrainTypes() > 0
 		|| buildingInfo.getNumUnitCombatProdModifiers() > 0
-		|| buildingInfo.getNumFreePromoTypes() > 0
-		|| buildingInfo.getNumUnitCombatOngoingTrainingDurations() > 0
-		|| buildingInfo.isAnyUnitCombatFreeExperience()
+		|| !buildingInfo.getFreePromoTypes().empty()
+		|| !buildingInfo.getUnitCombatFreeExperience().empty()
 		|| buildingInfo.isAnyDomainFreeExperience();
 }
 
 bool BuildingFilterIsCityDefense::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
 	const CvBuildingInfo& buildingInfo = GC.getBuildingInfo(eBuilding);
-	if (GC.getGame().isOption(GAMEOPTION_SAD))
+	if (GC.getGame().isOption(GAMEOPTION_COMBAT_SURROUND_DESTROY))
 	{
 		if (buildingInfo.getLocalDynamicDefense() > 0)
 			return true;
 	}
 #ifdef STRENGTH_IN_NUMBERS
-	if (GC.getGame().isOption(GAMEOPTION_STRENGTH_IN_NUMBERS))
+	if (GC.getGame().isOption(GAMEOPTION_COMBAT_STRENGTH_IN_NUMBERS))
 	{
 		if(buildingInfo.getFrontSupportPercentModifier() > 0
-		|| buildingInfo.getShortRangeSupportPercentModifier() > 0 
-		|| buildingInfo.getMediumRangeSupportPercentModifier() > 0 
-		|| buildingInfo.getLongRangeSupportPercentModifier() > 0 
+		|| buildingInfo.getShortRangeSupportPercentModifier() > 0
+		|| buildingInfo.getMediumRangeSupportPercentModifier() > 0
+		|| buildingInfo.getLongRangeSupportPercentModifier() > 0
 		|| buildingInfo.getFlankSupportPercentModifier() > 0)
 		{
 			return true;
 		}
 	}
 #endif
-	return buildingInfo.getDefenseModifier() > 0 
+	return buildingInfo.getDefenseModifier() > 0
 		|| buildingInfo.getAllCityDefenseModifier() > 0
-		|| buildingInfo.getAdjacentDamagePercent() > 0 
+		|| buildingInfo.getAdjacentDamagePercent() > 0
 		|| buildingInfo.getBombardDefenseModifier() > 0
-		|| buildingInfo.getNumUnitCombatRepelModifiers() > 0 
-		|| buildingInfo.getLocalCaptureProbabilityModifier() > 0 
-		|| buildingInfo.getLocalCaptureResistanceModifier() > 0 
-		|| buildingInfo.getNationalCaptureResistanceModifier() > 0 
-		|| buildingInfo.getRiverDefensePenalty() < 0 
-		|| buildingInfo.getLocalRepel() > 0 
-		|| buildingInfo.getMinDefense() > 0 
-		|| buildingInfo.getBuildingDefenseRecoverySpeedModifier() > 0 
+		|| buildingInfo.getNumUnitCombatRepelModifiers() > 0
+		|| buildingInfo.getLocalCaptureProbabilityModifier() > 0
+		|| buildingInfo.getLocalCaptureResistanceModifier() > 0
+		|| buildingInfo.getNationalCaptureResistanceModifier() > 0
+		|| buildingInfo.getRiverDefensePenalty() < 0
+		|| buildingInfo.getLocalRepel() > 0
+		|| buildingInfo.getMinDefense() > 0
+		|| buildingInfo.getBuildingDefenseRecoverySpeedModifier() > 0
 		|| buildingInfo.getCityDefenseRecoverySpeedModifier() > 0
 		|| buildingInfo.getNumUnitCombatRepelAgainstModifiers() > 0
 		|| buildingInfo.getNumUnitCombatDefenseAgainstModifiers() > 0;
@@ -243,6 +293,7 @@ bool BuildingFilterIsCityDefense::isFilteredBuilding(const CvPlayer *pPlayer, Cv
 
 bool BuildingFilterIsProperty::isFilteredBuilding(const CvPlayer *pPlayer, CvCity *pCity, BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	const CvBuildingInfo& kInfo = GC.getBuildingInfo(eBuilding);
 	if ((kInfo.getProperties()->getValueByProperty(m_eProperty) != 0) || (kInfo.getPropertiesAllCities()->getValueByProperty(m_eProperty)))
 		return true;
@@ -273,6 +324,7 @@ bool BuildingFilterIsProperty::isFilteredBuilding(const CvPlayer *pPlayer, CvCit
 
 BuildingFilterList::BuildingFilterList(CvPlayer *pPlayer, CvCity *pCity)
 {
+	PROFILE_EXTRA_FUNC();
 	m_pPlayer = pPlayer;
 	m_pCity = pCity;
 
@@ -284,6 +336,7 @@ BuildingFilterList::BuildingFilterList(CvPlayer *pPlayer, CvCity *pCity)
 
 void BuildingFilterList::init()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_BUILDING_FILTERS; i++)
 	{
 		SAFE_DELETE(m_apBuildingFilters[i]);
@@ -301,7 +354,7 @@ void BuildingFilterList::init()
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_FOOD] = new BuildingFilterIsYield(YIELD_FOOD);
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_CULTURE] = new BuildingFilterIsCommerce(COMMERCE_CULTURE);
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_ESPIONAGE] = new BuildingFilterIsCommerce(COMMERCE_ESPIONAGE);
-	m_apBuildingFilters[BUILDING_FILTER_SHOW_GOLD] = new BuildingFilterIsCommerce(COMMERCE_GOLD);
+	m_apBuildingFilters[BUILDING_FILTER_SHOW_GOLD] = new BuildingFilterIsYieldAndCommerce(YIELD_COMMERCE, COMMERCE_GOLD);
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_PRODUCTION] = new BuildingFilterIsYield(YIELD_PRODUCTION);
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_HAPPINESS] = new BuildingFilterIsHappiness();
 	m_apBuildingFilters[BUILDING_FILTER_SHOW_HEALTH] = new BuildingFilterIsHealth();
@@ -321,6 +374,7 @@ void BuildingFilterList::init()
 
 BuildingFilterList::~BuildingFilterList()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_BUILDING_FILTERS; i++)
 	{
 		SAFE_DELETE(m_apBuildingFilters[i]);
@@ -351,6 +405,7 @@ bool BuildingFilterList::setFilterActive(BuildingFilterTypes i, bool bActive)
 
 bool BuildingFilterList::isFiltered(BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_BUILDING_FILTERS; i++)
 	{
 		if (!m_apBuildingFilters[i]->isFiltered(m_pPlayer, m_pCity, eBuilding))
@@ -361,6 +416,7 @@ bool BuildingFilterList::isFiltered(BuildingTypes eBuilding) const
 
 void BuildingFilterList::setFilterActiveAll(BuildingFilterTypes eFilter, bool bActive)
 {
+	PROFILE_EXTRA_FUNC();
 	for (int iI = 0; iI < MAX_PC_PLAYERS; ++iI)
 	{
 		CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);

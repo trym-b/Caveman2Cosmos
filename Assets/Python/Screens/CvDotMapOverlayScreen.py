@@ -79,15 +79,19 @@ class CvDotMapOverlayScreen:
 		Updates the current plot and its x/y location.
 		"""
 		plot = CyInterface().getMouseOverPlot()
+		if plot is None:
+			return
 		x = plot.getX()
 		y = plot.getY()
+		if x < 0 or y < 0:
+			return
 		self.currentPoint = (x, y)
 		g_DotMap.highlightCity(self.currentPoint, self.currentColor)
 		self.resetInterfaceMode()
 
 	def resetInterfaceMode(self):
-		if CyInterface().getInterfaceMode() != InterfaceModeTypes.INTERFACEMODE_PYTHON_PICK_PLOT:
-			CyInterface().setInterfaceMode(InterfaceModeTypes.INTERFACEMODE_PYTHON_PICK_PLOT)
+		if CyInterface().getInterfaceMode() != InterfaceModeTypes.INTERFACEMODE_DOTMAP:
+			CyInterface().setInterfaceMode(InterfaceModeTypes.INTERFACEMODE_DOTMAP)
 
 	def hideScreen(self):
 		g_DotMap.unhighlightCity()

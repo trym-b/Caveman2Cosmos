@@ -1,38 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Schema xmlns="urn:schemas-microsoft-com:xml-data" xmlns:dt="urn:schemas-microsoft-com:datatypes">
- <ElementType name="ReplacementCondition"/>
- <ElementType name="ReplacementID"/>
- <!-- Expressions added by AIAndy -->
- <ElementType name="Constant" content="textOnly"/>
- <ElementType name="Is" content="textOnly"/>
- <ElementType name="Python" content="textOnly"/>
- <ElementType name="BoolExpr"/>
- <ElementType name="Not"/>
- <ElementType name="And"/>
- <ElementType name="Or"/>
- <ElementType name="BEqual"/>
- <ElementType name="If"/>
- <ElementType name="IntegrateOr"/>
- <ElementType name="GOMType" content="textOnly"/>
- <ElementType name="ID" content="textOnly"/>
- <ElementType name="Has" content="eltOnly">
-	<element type="GOMType" minOccurs="1" maxOccurs="*"/>
-	<element type="ID" minOccurs="1" maxOccurs="*"/>
- </ElementType>
- <ElementType name="Greater"/>
- <ElementType name="GreaterEqual"/>
- <ElementType name="Equal"/>
- <ElementType name="Random"/>
- <ElementType name="Adapt"/>
- <ElementType name="Plus"/>
- <ElementType name="Minus"/>
- <ElementType name="Mult"/>
- <ElementType name="Div"/>
- <ElementType name="IntegrateSum"/>
- <ElementType name="IntegrateAvg"/>
- <ElementType name="IntegrateCount"/>
+	<ElementType name="ReplacementCondition"/>
+	<ElementType name="ReplacementID"/>
+	<!-- Expressions added by AIAndy -->
+	<ElementType name="Constant" content="textOnly"/>
+	<ElementType name="Is" content="textOnly"/>
+	<ElementType name="Python" content="textOnly"/>
+	<ElementType name="BoolExpr"/>
+	<ElementType name="Not"/>
+	<ElementType name="And"/>
+	<ElementType name="Or"/>
+	<ElementType name="BEqual"/>
+	<ElementType name="If"/>
+	<ElementType name="IntegrateOr"/>
+	<ElementType name="GOMType" content="textOnly"/>
+	<ElementType name="ID" content="textOnly"/>
+	<ElementType name="Has" content="eltOnly">
+		<element type="GOMType" minOccurs="1" maxOccurs="*"/>
+		<element type="ID" minOccurs="1" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="Greater"/>
+	<ElementType name="GreaterEqual"/>
+	<ElementType name="Equal"/>
+	<ElementType name="Random"/>
+	<ElementType name="Adapt"/>
+	<ElementType name="Plus"/>
+	<ElementType name="Minus"/>
+	<ElementType name="Mult"/>
+	<ElementType name="Div"/>
+	<ElementType name="IntegrateSum"/>
+	<ElementType name="IntegrateAvg"/>
+	<ElementType name="IntegrateCount"/>
 	<ElementType name="Type" content="textOnly"/>
-<!-- XMLCOPY				02/20/2008			MRGENIE -->
+	<!-- XMLCOPY				02/20/2008			MRGENIE -->
 	<ElementType name="DependencyType" content="textOnly"/>
 	<ElementType name="AndDependencyTypes" content="eltOnly">
 		<element type="DependencyType" minOccurs="1"/>
@@ -40,7 +40,7 @@
 	<ElementType name="OrDependencyTypes" content="eltOnly">
 		<element type="DependencyType" minOccurs="1"/>
 	</ElementType>
-<!-- XMLCOPY				END					MRGENIE -->
+	<!-- XMLCOPY				END					MRGENIE -->
 	<ElementType name="Description" content="textOnly"/>
 	<ElementType name="OtherPlayerPopup" content="textOnly"/>
 	<ElementType name="LocalInfoText" content="textOnly"/>
@@ -75,6 +75,7 @@
 	<ElementType name="FreeUnit" content="textOnly"/>
 	<ElementType name="bUnitsOnPlot" content="textOnly" dt:type="boolean"/>
 	<ElementType name="bOwnPlot" content="textOnly" dt:type="boolean"/>
+	<ElementType name="bNotOnCity" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iMaxNumReligions" content="textOnly" dt:type="int"/>
 	<ElementType name="iNumReligions" content="textOnly" dt:type="int"/>
 	<ElementType name="iNumCorporations" content="textOnly" dt:type="int"/>
@@ -82,6 +83,7 @@
 	<ElementType name="iNumUnitsGlobal" content="textOnly" dt:type="int"/>
 	<ElementType name="iNumFreeUnits" content="textOnly" dt:type="int"/>
 	<ElementType name="bDisbandUnit" content="textOnly" dt:type="boolean"/>
+	<ElementType name="bGameSpeedScale" content="textOnly" dt:type="boolean"/>
 	<ElementType name="iUnitDamagedWeight" content="textOnly" dt:type="int"/>
 	<ElementType name="iUnitDistanceWeight" content="textOnly" dt:type="int"/>
 	<ElementType name="iUnitExperienceWeight" content="textOnly" dt:type="int"/>
@@ -194,6 +196,9 @@
 	<ElementType name="TerrainType" content="textOnly"/>
 	<ElementType name="iTerrainChange" content="textOnly" dt:type="int"/>
 	<ElementType name="ImprovementsRequired" content="eltOnly">
+		<element type="ImprovementType" minOccurs="0" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="NotImprovementsRequired" content="eltOnly">
 		<element type="ImprovementType" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="ImprovementType" content="textOnly"/>
@@ -360,10 +365,10 @@
 	<!--TB's Tags end-->
 	<ElementType name="EventTriggerInfo" content="eltOnly">
 		<element type="Type"/>
-<!-- XMLCOPY				02/20/2008			MRGENIE -->
+		<!-- XMLCOPY				02/20/2008			MRGENIE -->
 		<element type="AndDependencyTypes" minOccurs="0"/>
 		<element type="OrDependencyTypes" minOccurs="0"/>
-<!-- XMLCOPY				END					MRGENIE -->
+		<!-- XMLCOPY				END					MRGENIE -->
 		<element type="OnGameOptions" minOccurs="0"/>
 		<element type="NotOnGameOptions" minOccurs="0"/>
 		<element type="WorldNewsTexts" minOccurs="0"/>
@@ -396,10 +401,12 @@
 		<element type="iNumBuildingsGlobal" minOccurs="0"/>
 		<element type="iNumPlotsRequired" minOccurs="0"/>
 		<element type="bOwnPlot" minOccurs="0"/>
+		<element type="bNotOnCity" minOccurs="0"/>
 		<element type="iPlotType" minOccurs="0"/>
 		<element type="FeaturesRequired" minOccurs="0"/>
 		<element type="TerrainsRequired" minOccurs="0"/>
 		<element type="ImprovementsRequired" minOccurs="0"/>
+		<element type="NotImprovementsRequired" minOccurs="0"/>
 		<element type="BonusesRequired" minOccurs="0"/>
 		<element type="RoutesRequired" minOccurs="0"/>
 		<element type="ReligionsRequired" minOccurs="0"/>
@@ -449,10 +456,10 @@
 	</ElementType>
 	<ElementType name="EventInfo" content="eltOnly">
 		<element type="Type"/>
-<!-- XMLCOPY				02/20/2008			MRGENIE -->
+		<!-- XMLCOPY				02/20/2008			MRGENIE -->
 		<element type="AndDependencyTypes" minOccurs="0"/>
 		<element type="OrDependencyTypes" minOccurs="0"/>
-<!-- XMLCOPY				END					MRGENIE -->
+		<!-- XMLCOPY				END					MRGENIE -->
 		<element type="Description" minOccurs="0"/>
 		<element type="LocalInfoText" minOccurs="0"/>
 		<element type="WorldNewsTexts" minOccurs="0"/>
@@ -482,6 +489,7 @@
 		<element type="FreeUnit" minOccurs="0"/>
 		<element type="iNumFreeUnits" minOccurs="0"/>
 		<element type="bDisbandUnit" minOccurs="0"/>
+		<element type="bGameSpeedScale" minOccurs="0"/>
 		<element type="iUnitExperience" minOccurs="0"/>
 		<element type="iUnitImmobileTurns" minOccurs="0"/>
 		<element type="UnitName" minOccurs="0"/>

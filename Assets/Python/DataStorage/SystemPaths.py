@@ -1,5 +1,4 @@
 # Data storage python, values are set in CvEventManager.onInit.
-from CvPythonExtensions import getModDir
 from os import path, mkdir
 
 def init():
@@ -29,17 +28,23 @@ def init():
 			userDir = myDocuments.encode('utf-8')
 		except:
 			print "Encoding error for 'My Documents' path"
+			userDir = None
+	else:
+		userDir = None
 
 	dirBtS = path.dirname(sys.executable).encode('utf-8')
 
 	modDir = dirBtS + "\\Mods\\Caveman2Cosmos"
-	#modDir = getModDir()
 
 	# Create UserSettings folders if missing.
 	userSettingsDir = modDir + "\\UserSettings"
 	initUserSettingsDir()
 
-	userDir += "\\My Games\\" + path.basename(dirBtS)
+	if userDir:
+		userDir += "\\My Games\\" + path.basename(dirBtS)
+	else:
+		print "SystemPaths - userDir could not be determined"
+		userDir = ""
 
 	sprint = "------------------------ SystemPaths.init ---------------------------\n"
 	sprint += " The following paths are now stored here with these variable names\n"
@@ -55,7 +60,9 @@ def init():
 
 def initUserSettingsDir():
 	if not path.isdir(userSettingsDir):
+		print "SystemPaths - initUserSettingsDir()\n\tUserSettings directory " + userSettingsDir + " not found, creating it."
 		mkdir(userSettingsDir)
+
 	if not path.isdir(userSettingsDir + "\\DomesticAdv"):
 		mkdir(userSettingsDir + "\\DomesticAdv")
 

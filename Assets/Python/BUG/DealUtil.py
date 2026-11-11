@@ -167,6 +167,9 @@ class Deal(object):
 	def __init__(self, deal):
 		self.deal = deal
 
+	def isReversed(self):
+		return False
+
 	def getID(self):
 		return self.deal.getID()
 
@@ -187,20 +190,6 @@ class Deal(object):
 
 	def kill(self):
 		self.deal.kill()
-
-	def isPeaceDeal(self):
-		return self.eitherHasType(TradeableItems.TRADE_PEACE_TREATY)
-
-	def isVassalDeal(self):
-		return self.eitherHasAnyType(VASSAL_TRADE_ITEMS)
-
-	def isUncancelableVassalDeal(self, eByPlayer):
-		# Note: Doesn't check if a surrendered vassal is not allowed to revolt.
-		return ((eByPlayer == self.getOtherPlayer() and self.hasAnyType(VASSAL_TRADE_ITEMS)) or
-				(eByPlayer == self.getPlayer() and self.otherHasAnyType(VASSAL_TRADE_ITEMS)))
-
-	def isReversed(self):
-		return False
 
 	def getPlayer(self):
 		return self.deal.getFirstPlayer()

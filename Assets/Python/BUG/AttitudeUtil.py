@@ -90,9 +90,9 @@ def getAttitudeCount(nPlayer, nTarget):
 	if sAttStr == None:
 		return
 	nAtt = 0
-	ltPlusAndMinuses = re.findall("[-+][0-9]+\s?: ", sAttStr)
-	for i in range(len(ltPlusAndMinuses)):
-		nAtt += int(ltPlusAndMinuses[i][:-2])
+	ltPlusAndMinuses = re.findall(r"([-+]\d+)\s?:", sAttStr)
+	for match in ltPlusAndMinuses:
+		nAtt += int(match)
 	return nAtt
 
 
@@ -119,7 +119,7 @@ def getAttitudeText(nPlayer, nTarget, bNumber, bSmily, bWorstEnemy, bWarPeace):
 		pTeam = GC.getTeam(nTeam)
 		nTargetTeam = pTarget.getTeam()
 		pTargetTeam = GC.getTeam(nTargetTeam)
-		if pTeam.isAtWar(nTargetTeam):
+		if pTeam.isAtWarWith(nTargetTeam):
 			szIcons += unichr(8525)
 		elif GAME.getActiveTeam() in (nTeam, nTargetTeam):
 			bPeace = False
@@ -150,12 +150,14 @@ def initModifiers(argsList=None):
 			if pMatch:
 				MODIFIER_STRING_TO_KEY[unicode(pMatch.group(1))] = sKey
 	for iMemType in range(MemoryTypes.NUM_MEMORY_TYPES):
-		sKey = str(GC.getMemoryInfo(iMemType).getTextKey())
-		sStr = BugUtil.getPlainText(sKey, "NONE")
-		if sStr != "NONE":
-			# These modifier strings have no extra text and so
-			# we can use them directly
-			MODIFIER_STRING_TO_KEY[unicode(sStr)] = sKey
+		pMemInfo = GC.getMemoryInfo(iMemType)
+		if pMemInfo:
+			sKey = unicode(pMemInfo.getTextKey())
+			sStr = BugUtil.getPlainText(sKey, "NONE")
+			if sStr != "NONE":
+				# These modifier strings have no extra text and so
+				# we can use them directly
+				MODIFIER_STRING_TO_KEY[unicode(sStr)] = sKey
 
 
 class Attitude:
@@ -284,8 +286,8 @@ class Attitude:
 				pThisTeam = GC.getTeam(iThisTeam)
 				iTargetTeam = pTargetPlayer.getTeam()
 				pTargetTeam = GC.getTeam(iTargetTeam)
-				if pThisTeam.isAtWar(iTargetTeam):
-					szText += u"%c" %(GC.getCommerceInfo(CommerceTypes.COMMERCE_GOLD).getChar() + 25)
+				if pThisTeam.isAtWarWith(iTargetTeam):
+					szText += unichr(8525)
 				elif GAME.getActiveTeam() in (iThisTeam, iTargetTeam):
 					bPeace = False
 					if pThisTeam.isForcePeace(iTargetTeam):
@@ -296,7 +298,7 @@ class Attitude:
 								bPeace = True
 								break
 					if bPeace:
-						szText += u"%c" %(GC.getCommerceInfo(CommerceTypes.COMMERCE_GOLD).getChar() + 26)
+						szText += unichr(8526)
 
 			return szText
 		return ""

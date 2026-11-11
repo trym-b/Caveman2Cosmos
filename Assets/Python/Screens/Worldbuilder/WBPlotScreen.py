@@ -3,11 +3,9 @@ import CvScreenEnums
 import WBEventScreen
 import WBPlayerUnits
 import WBCityEditScreen
-import WBUnitScreen
 import WBPlayerScreen
 import WBTeamScreen
 import WBInfoScreen
-import Popup
 
 GC = CyGlobalContext()
 
@@ -36,7 +34,7 @@ class WBPlotScreen:
 		screen.addPanel( "MainBG", u"", u"", True, False, -10, -10, screen.getXResolution() + 20, screen.getYResolution() + 20, PanelStyles.PANEL_STYLE_MAIN )
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 
-		screen.setText("PlotExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("PlotExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 
 		iX = 10
 		iY = 50
@@ -86,8 +84,8 @@ class WBPlotScreen:
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_INFO_SCREEN", ()), 11, 11, False)
 
 		iIndex = -1
-		for i in xrange(CyMap().numPlots()):
-			pLoopPlot = CyMap().plotByIndex(i)
+		for i in xrange(GC.getMap().numPlots()):
+			pLoopPlot = GC.getMap().plotByIndex(i)
 			if pLoopPlot.getX() == pPlot.getX() and pLoopPlot.getY() == pPlot.getY():
 				iIndex = i
 				break
@@ -173,7 +171,7 @@ class WBPlotScreen:
 		screen.setText("EditLandMark", "Background", sText, 1<<1, iX + iSignWidth, iY - 30, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		lSigns = []
-		for iPlayerX in xrange(GC.getMAX_PLAYERS()):
+		for _ in xrange(GC.getMAX_PLAYERS()):
 			lSigns.append(-1)
 		for i in xrange(CyEngine().getNumSigns()):
 			pSign = CyEngine().getSignByIndex(i)
@@ -234,9 +232,9 @@ class WBPlotScreen:
 		iX = screen.getXResolution()/2
 		iY = screen.getYResolution()/2
 		screen.setLabel("PlotRiverHeader", "Background", "<font=3b>" + CyTranslator().getText("TXT_KEY_MISC_RIVERS", ()) + "</font>", 1<<2, iX, iY - 30, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		pWestPlot = CyMap().plot(pPlot.getX() - 1, pPlot.getY())
-		pNorthPlot = CyMap().plot(pPlot.getX(), pPlot.getY() + 1)
-		if not pNorthPlot.isNone():
+		pWestPlot = GC.getMap().plot(pPlot.getX() - 1, pPlot.getY())
+		pNorthPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() + 1)
+		if pNorthPlot:
 			screen.addCheckBoxGFC("RiverNorthAButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_BUTTONS_LEFT").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX - 36, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 			screen.addCheckBoxGFC("RiverNorthBButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
@@ -248,24 +246,24 @@ class WBPlotScreen:
 			screen.setState("RiverNorthCButton", pNorthPlot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 
 		iY += 24
-		if not pWestPlot.isNone():
+		if pWestPlot:
 			screen.addCheckBoxGFC("RiverWestAButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_GENERAL_UPARROW").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX - 60, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 		screen.addCheckBoxGFC("RiverEastAButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_GENERAL_UPARROW").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX + 36, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 		iY += 24
-		if not pWestPlot.isNone():
+		if pWestPlot:
 			screen.addCheckBoxGFC("RiverWestBButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX - 60, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 		screen.addCheckBoxGFC("RiverEastBButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX + 36, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 		iY += 24
-		if not pWestPlot.isNone():
+		if pWestPlot:
 			screen.addCheckBoxGFC("RiverWestCButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_GENERAL_DOWNARROW").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX - 60, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
 		screen.addCheckBoxGFC("RiverEastCButton", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_GENERAL_DOWNARROW").getPath(), CyArtFileMgr().getInterfaceArtInfo("BUTTON_HILITE_SQUARE").getPath(),
 				iX + 36, iY, 24, 24, WidgetTypes.WIDGET_GENERAL, -1, -1, ButtonStyles.BUTTON_STYLE_LABEL)
-		if not pWestPlot.isNone():
+		if pWestPlot:
 			screen.setState("RiverWestAButton", pWestPlot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 			screen.setState("RiverWestBButton", pWestPlot.getRiverNSDirection() == CardinalDirectionTypes.NO_CARDINALDIRECTION)
 			screen.setState("RiverWestCButton", pWestPlot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
@@ -447,7 +445,7 @@ class WBPlotScreen:
 
 		screen.addTableControlGFC("WBPlotType", 1, iX, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 		screen.setTableColumnHeader("WBPlotType", 0, "", iWidth)
-		for iTerrain in xrange(PlotTypes.NUM_PLOT_TYPES):
+		for _ in xrange(PlotTypes.NUM_PLOT_TYPES):
 			screen.appendTableRow("WBPlotType")
 
 		iTerrain = GC.getInfoTypeForString("TERRAIN_PEAK")
@@ -455,7 +453,6 @@ class WBPlotScreen:
 		TerrainInfo = GC.getTerrainInfo(iTerrain)
 		if pPlot.getPlotType() == PlotTypes.PLOT_PEAK:
 			sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			sHeader = TerrainInfo.getDescription()
 		sText = "<font=3>" + sColor + TerrainInfo.getDescription() + "</font></color>"
 		screen.setTableText("WBPlotType", 0, 0, sText, TerrainInfo.getButton(), WidgetTypes.WIDGET_PYTHON, 7875, iTerrain, 1<<0)
 
@@ -464,7 +461,6 @@ class WBPlotScreen:
 		TerrainInfo = GC.getTerrainInfo(iTerrain)
 		if pPlot.getPlotType() == PlotTypes.PLOT_HILLS:
 			sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			sHeader = TerrainInfo.getDescription()
 		sText = "<font=3>" + sColor + TerrainInfo.getDescription() + "</font></color>"
 		screen.setTableText("WBPlotType", 0, 1, sText, TerrainInfo.getButton(), WidgetTypes.WIDGET_PYTHON, 7875, iTerrain, 1<<0)
 
@@ -473,7 +469,6 @@ class WBPlotScreen:
 		TerrainInfo = GC.getTerrainInfo(iTerrain)
 		if pPlot.getPlotType() == PlotTypes.PLOT_LAND:
 			sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			sHeader = TerrainInfo.getDescription()
 		sText = "<font=3>" + sColor + TerrainInfo.getDescription() + "</font></color>"
 		screen.setTableText("WBPlotType", 0, 2, sText, TerrainInfo.getButton(), WidgetTypes.WIDGET_PYTHON, 7875, iTerrain, 1<<0)
 
@@ -482,7 +477,6 @@ class WBPlotScreen:
 		TerrainInfo = GC.getTerrainInfo(iTerrain)
 		if pPlot.getPlotType() == PlotTypes.PLOT_OCEAN:
 			sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			sHeader = TerrainInfo.getDescription()
 		sText = "<font=3>" + sColor + TerrainInfo.getDescription() + "</font></color>"
 		screen.setTableText("WBPlotType", 0, 3, sText, TerrainInfo.getButton(), WidgetTypes.WIDGET_PYTHON, 7875, iTerrain, 1<<0)
 
@@ -523,7 +517,7 @@ class WBPlotScreen:
 			elif iIndex == 5:
 				pUnit = pPlot.getUnit(0)
 				if pUnit:
-					WBUnitScreen.WBUnitScreen(self.WB).interfaceScreen(pUnit)
+					self.WB.goToSubScreen("UnitScreen", [pUnit])
 			elif iIndex == 6:
 				WBPlayerUnits.WBPlayerUnits(self.WB).interfaceScreen(iPlayer)
 			elif iIndex == 11:
@@ -532,44 +526,44 @@ class WBPlotScreen:
 				WBInfoScreen.WBInfoScreen(self.WB).interfaceScreen(iPlayer)
 
 		elif inputClass.getFunctionName() == "NextPlotUpButton":
-			pNewPlot = CyMap().plot(pPlot.getX(), pPlot.getY() + 1)
-			if not pNewPlot.isNone():
+			pNewPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() + 1)
+			if pNewPlot:
 				self.interfaceScreen(pNewPlot)
 		elif inputClass.getFunctionName() == "NextPlotDownButton":
-			pNewPlot = CyMap().plot(pPlot.getX(), pPlot.getY() - 1)
-			if not pNewPlot.isNone():
+			pNewPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() - 1)
+			if pNewPlot:
 				self.interfaceScreen(pNewPlot)
 		elif inputClass.getFunctionName() == "NextPlotLeftButton":
-			pNewPlot = CyMap().plot(pPlot.getX() - 1, pPlot.getY())
-			if not pNewPlot.isNone():
+			pNewPlot = GC.getMap().plot(pPlot.getX() - 1, pPlot.getY())
+			if pNewPlot:
 				self.interfaceScreen(pNewPlot)
 		elif inputClass.getFunctionName() == "NextPlotRightButton":
-			pNewPlot = CyMap().plot(pPlot.getX() + 1, pPlot.getY())
-			if not pNewPlot.isNone():
+			pNewPlot = GC.getMap().plot(pPlot.getX() + 1, pPlot.getY())
+			if pNewPlot:
 				self.interfaceScreen(pNewPlot)
 
 		elif inputClass.getFunctionName().find("BaseYield") > -1:
 			i = YieldTypes(inputClass.getData2())
 			if inputClass.getData1() == 1030:
-				CyGame().setPlotExtraYield(pPlot.getX(), pPlot.getY(), i, iChange)
+				pPlot.setExtraYield(i, iChange)
 			elif inputClass.getData1() == 1031:
 				iYield = pPlot.getYield(i)
 				iImprovement = pPlot.getImprovementType()
 				if iImprovement > -1:
 					iYield -= pPlot.calculateImprovementYieldChange(iImprovement, i, pPlot.getOwner(), False)
-				CyGame().setPlotExtraYield(pPlot.getX(), pPlot.getY(), i, - min(iChange, iYield))
+				pPlot.setExtraYield(i, - min(iChange, iYield))
 			self.placeStats()
 
 		elif inputClass.getFunctionName() == "RiverWestAButton":
-			pWestPlot = CyMap().plot(pPlot.getX() - 1, pPlot.getY())
+			pWestPlot = GC.getMap().plot(pPlot.getX() - 1, pPlot.getY())
 			pWestPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 			self.placeStats()
 		elif inputClass.getFunctionName() == "RiverWestBButton":
-			pWestPlot = CyMap().plot(pPlot.getX() - 1, pPlot.getY())
+			pWestPlot = GC.getMap().plot(pPlot.getX() - 1, pPlot.getY())
 			pWestPlot.setWOfRiver(False, CardinalDirectionTypes.NO_CARDINALDIRECTION)
 			self.placeStats()
 		elif inputClass.getFunctionName() == "RiverWestCButton":
-			pWestPlot = CyMap().plot(pPlot.getX() - 1, pPlot.getY())
+			pWestPlot = GC.getMap().plot(pPlot.getX() - 1, pPlot.getY())
 			pWestPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 			self.placeStats()
 
@@ -584,15 +578,15 @@ class WBPlotScreen:
 			self.placeStats()
 
 		elif inputClass.getFunctionName() == "RiverNorthAButton":
-			pNorthPlot = CyMap().plot(pPlot.getX(), pPlot.getY() + 1)
+			pNorthPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() + 1)
 			pNorthPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 			self.placeStats()
 		elif inputClass.getFunctionName() == "RiverNorthBButton":
-			pNorthPlot = CyMap().plot(pPlot.getX(), pPlot.getY() + 1)
+			pNorthPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() + 1)
 			pNorthPlot.setNOfRiver(False, CardinalDirectionTypes.NO_CARDINALDIRECTION)
 			self.placeStats()
 		elif inputClass.getFunctionName() == "RiverNorthCButton":
-			pNorthPlot = CyMap().plot(pPlot.getX(), pPlot.getY() + 1)
+			pNorthPlot = GC.getMap().plot(pPlot.getX(), pPlot.getY() + 1)
 			pNorthPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 			self.placeStats()
 
@@ -622,12 +616,11 @@ class WBPlotScreen:
 			if iEditType == 0:
 				pPlot.setPlotType(PlotTypes(inputClass.getData()), True, True)
 			elif iEditType == 1:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if pLoopPlot.getArea() == pPlot.getArea():
 						pLoopPlot.setPlotType(PlotTypes(inputClass.getData()), True, True)
 			else:
-				CyMap().setAllPlotTypes(PlotTypes(inputClass.getData()))
+				GC.getMap().setAllPlotTypes(PlotTypes(inputClass.getData()))
 			self.interfaceScreen(pPlot)
 
 		elif inputClass.getFunctionName() == "WBPlotTerrain":
@@ -635,8 +628,7 @@ class WBPlotScreen:
 			if iEditType == 0:
 				pPlot.setTerrainType(iTerrain, True, True)
 			else:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if iEditType == 1:
 						if pLoopPlot.getArea() == pPlot.getArea():
 							pLoopPlot.setTerrainType(iTerrain, True, True)
@@ -657,8 +649,7 @@ class WBPlotScreen:
 				else:
 					pPlot.setBonusType(-1)
 			else:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if iEditType == 1 and pLoopPlot.getArea() != pPlot.getArea(): continue
 					iOld = pLoopPlot.getBonusType(-1)
 					if bAdd:
@@ -679,8 +670,7 @@ class WBPlotScreen:
 				else:
 					pPlot.setImprovementType(-1)
 			else:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if iEditType == 1 and pLoopPlot.getArea() != pPlot.getArea(): continue
 					if bAdd:
 						if iImprovement > -1 and bSensibility and not pLoopPlot.canHaveImprovement(iImprovement, -1, True): continue
@@ -708,8 +698,7 @@ class WBPlotScreen:
 				else:
 					pPlot.setFeatureType(-1, 0)
 			else:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if iEditType == 1 and pLoopPlot.getArea() != pPlot.getArea(): continue
 					iOldFeature = pLoopPlot.getFeatureType()
 					iOldVariety = pLoopPlot.getFeatureVariety()
@@ -731,8 +720,7 @@ class WBPlotScreen:
 				else:
 					pPlot.setRouteType(-1)
 			else:
-				for pLoopPlot in CyMap().plots():
-					if pLoopPlot.isNone(): continue
+				for pLoopPlot in GC.getMap().plots():
 					if bSensibility:
 						if pLoopPlot.isImpassable(): continue
 						if pLoopPlot.isWater(): continue
@@ -745,11 +733,11 @@ class WBPlotScreen:
 			self.placeRoutes()
 
 		elif inputClass.getFunctionName() == "PlotEditScriptData":
-			popup = Popup.PyPopup(5555, EventContextTypes.EVENTCONTEXT_ALL)
-			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_SCRIPT", ()))
+			popup = CyPopup(5555, EventContextTypes.EVENTCONTEXT_ALL, True)
+			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_SCRIPT", ()), 1<<2)
 			popup.setUserData((pPlot.getX(), pPlot.getY()))
-			popup.createEditBox(pPlot.getScriptData())
-			popup.launch()
+			popup.createEditBox(pPlot.getScriptData(), 0)
+			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
 
 		elif inputClass.getFunctionName() == "EditLandMark":
 			iIndex = -1
@@ -763,11 +751,11 @@ class WBPlotScreen:
 					sText = pSign.getCaption()
 					break
 
-			popup = Popup.PyPopup(5009, EventContextTypes.EVENTCONTEXT_ALL)
-			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_LANDMARKS", ()))
+			popup = CyPopup(5009, EventContextTypes.EVENTCONTEXT_ALL, True)
+			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_LANDMARKS", ()), 1<<2)
 			popup.setUserData((pPlot.getX(), pPlot.getY(), iCulturePlayer, iIndex))
-			popup.createEditBox(sText)
-			popup.launch()
+			popup.createEditBox(sText, 0)
+			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
 
 		elif inputClass.getFunctionName() == "SensibilityCheck":
 			bSensibility = not bSensibility

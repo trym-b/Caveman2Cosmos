@@ -27,9 +27,9 @@
 			<DefaultUnitAI>UNITAI_SETTLE</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_NOMAD_CAMP</Description>
 			<Civilopedia>TXT_KEY_UNIT_NOMAD_CAMP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_NOMAD_CAMP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_GROWTH</Advisor>
 			<PrereqTech>TECH_PORTABLE_SHELTERS</PrereqTech>
+			<PrereqGameOption>GAMEOPTION_NOMADIC_START</PrereqGameOption>
 			<bFood>1</bFood>
 			<bFound>1</bFound>
 			<UnitAIs>
@@ -38,8 +38,7 @@
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
-			<iCost>-1</iCost>
-			<!--iCost>150</iCost-->
+			<iCost>150</iCost>
 			<iMoves>2</iMoves>
 			<iCombat>1</iCombat>
 			<iXPValueAttack>2</iXPValueAttack>

@@ -62,15 +62,9 @@
 			<iFlatMovement>16</iFlatMovement>
 			<BonusType>BONUS_STEEL_WARES</BonusType>
 			<PrereqOrBonuses>
-				<PrereqOrBonus>
-					<BonusType>BONUS_COAL</BonusType>
-				</PrereqOrBonus>
-				<PrereqOrBonus>
-					<BonusType>BONUS_OIL</BonusType>
-				</PrereqOrBonus>
-				<PrereqOrBonus>
-					<BonusType>BONUS_PETROLEUM_PRODUCTS</BonusType>
-				</PrereqOrBonus>
+				<BonusType>BONUS_COAL</BonusType>
+				<BonusType>BONUS_OIL</BonusType>
+				<BonusType>BONUS_PETROLEUM_PRODUCTS</BonusType>
 			</PrereqOrBonuses>
 			<Yields/>
 			<TechMovementChanges/>
@@ -87,9 +81,7 @@
 			<iFlatMovement>12</iFlatMovement>
 			<BonusType>BONUS_STEEL_WARES</BonusType>
 			<PrereqOrBonuses>
-				<PrereqOrBonus>
-					<BonusType>BONUS_COPPER_WARES</BonusType>
-				</PrereqOrBonus>
+				<BonusType>BONUS_COPPER_WARES</BonusType>
 			</PrereqOrBonuses>
 			<Yields/>
 			<TechMovementChanges/>
@@ -117,9 +109,7 @@
 			<iFlatMovement>11</iFlatMovement>
 			<BonusType>BONUS_COPPER_WARES</BonusType>
 			<PrereqOrBonuses>
-				<PrereqOrBonus>
-					<BonusType>BONUS_PLASTIC</BonusType>
-				</PrereqOrBonus>
+				<BonusType>BONUS_PLASTIC</BonusType>
 			</PrereqOrBonuses>
 			<Yields>
 				<iYield>0</iYield>
@@ -135,7 +125,7 @@
 			<Description>TXT_KEY_ROUTE_VACTRAIN</Description>
 			<iValue>9</iValue>
 			<iAdvancedStartCost>24</iAdvancedStartCost>
-			<iMovement>24</iMovement>
+			<iMovement>20</iMovement>
 			<iFlatMovement>8</iFlatMovement>
 			<BonusType>BONUS_TITANIUM_WARES</BonusType>
 			<Yields>
@@ -146,7 +136,7 @@
 			<TechMovementChanges>
 				<TechMovementChange>
 					<PrereqTech>TECH_SKYROADS</PrereqTech>
-					<iMovementChange>-8</iMovementChange>
+					<iMovementChange>-4</iMovementChange>
 				</TechMovementChange>
 			</TechMovementChanges>
 			<Button>art/interface/buttons/improvements/hyperloop.dds</Button>

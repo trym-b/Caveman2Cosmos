@@ -21,7 +21,8 @@ typedef std::vector<CombatResultRecord> TurnCombatResults;
 // Rolling record of this number of turns combat are kept for AI analysis
 #define COMBAT_RECORD_LENGTH 20
 
-class CvArea : bst::noncopyable
+class CvArea
+	: private bst::noncopyable // disable copy: we have owned pointers so we can't use the default copy implementation
 {
 //
 // Functions
@@ -107,14 +108,6 @@ public:
 	int getMaintenanceModifier(PlayerTypes eIndex) const;
 	void changeMaintenanceModifier(PlayerTypes eIndex, int iChange);
 
-	int getHomeAreaMaintenanceModifier(PlayerTypes eIndex) const;
-	void changeHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iChange);
-	void setHomeAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue);
-
-	int getOtherAreaMaintenanceModifier(PlayerTypes eIndex) const;
-	void changeOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iChange);
-	void setOtherAreaMaintenanceModifier(PlayerTypes eIndex, int iNewValue);
-
 	int getTotalAreaMaintenanceModifier(PlayerTypes ePlayer) const;
 
 	bool isHomeArea(PlayerTypes eIndex) const;
@@ -126,7 +119,6 @@ public:
 	int getNumRevealedFeatureTiles(TeamTypes eTeam, FeatureTypes eFeature) const;
 	int getNumRevealedTerrainTiles(TeamTypes eTeam, TerrainTypes eTerrain) const;
 
-	int getCleanPowerCount(TeamTypes eIndex) const;
 	bool isCleanPower(TeamTypes eIndex) const;
 	void changeCleanPowerCount(TeamTypes eIndex, int iChange);
 
@@ -168,11 +160,6 @@ public:
 	//	If eUnit is NO_UNITAI all types will be tallied
 	int	getRecentCombatDeathRate(PlayerTypes ePlayer, UnitAITypes eUnitAIType) const;
 
-private:
-	// disable copy: we have owned pointers so we can't use the default copy implementation
-	CvArea(const CvArea&);
-	CvArea& operator=(const CvArea&);
-
 //
 // Variables
 //
@@ -200,8 +187,6 @@ protected:
 	int* m_aiPower;
 	int* m_aiBestFoundValue;
 	int* m_aiMaintenanceModifier;
-	int* m_aiHomeAreaMaintenanceModifier;
-	int* m_aiOtherAreaMaintenanceModifier;
 	int* m_aiNumRevealedTiles;
 	int* m_aiCleanPowerCount;
 	int* m_aiBorderObstacleCount;

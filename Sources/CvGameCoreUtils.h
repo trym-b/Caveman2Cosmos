@@ -5,18 +5,16 @@
 #ifndef CIV4_GAMECORE_UTILS_H
 #define CIV4_GAMECORE_UTILS_H
 
+#include "FProfiler.h"
+
 #include "CvMap.h"
 #include "CvGlobals.h"
 
-class CvInfoBase;
-class CvInternalGlobals;
 class CvCity;
-//class CvMap;
 class CvPathGeneratorBase;
-class CvPlot;
+class CvRandom;
 class CvSelectionGroup;
 class CvUnit;
-class CvRandom;
 class FAStarNode;
 class FAStar;
 
@@ -200,7 +198,6 @@ CvPlot* plotCity(int iX, int iY, int iIndex);
 int plotCityXY(int iDX, int iDY);
 int plotCityXY(const CvCity* pCity, const CvPlot* pPlot);
 
-CardinalDirectionTypes getOppositeCardinalDirection(CardinalDirectionTypes eDir);
 DirectionTypes cardinalDirectionToDirection(CardinalDirectionTypes eCard);
 DllExport bool isCardinalDirection(DirectionTypes eDirection);
 DirectionTypes estimateDirection(int iDX, int iDY);
@@ -214,9 +211,8 @@ DllExport CvCity* getCity(IDInfo city);
 DllExport CvUnit* getUnit(IDInfo unit);
 
 bool isBeforeUnitCycle(const CvUnit* pFirstUnit, const CvUnit* pSecondUnit);
-bool isPromotionValid(PromotionTypes ePromotion, UnitTypes eUnit, bool bLeader);
 
-int getTechScore(TechTypes eTech);
+int getScoreValueOfTech(TechTypes eTech);
 int getWonderScore(BuildingTypes eWonder);
 
 ImprovementTypes finalImprovementUpgrade(ImprovementTypes eImprovement, int iCount = 0);
@@ -232,6 +228,12 @@ bool isTechRequiredForProject(TechTypes eTech, ProjectTypes eProject);
 bool isWorldUnit(UnitTypes eUnit);
 bool isNationalUnit(UnitTypes eUnit);
 bool isLimitedUnit(UnitTypes eUnit);
+
+// eUnit plus all its UnitUpgrades ancestors and descendants (units directly reachable by
+// repeatedly upgrading forward, or that repeatedly upgrade forward into eUnit). Does NOT include
+// unrelated units that merely share a common upgrade target/source with eUnit. Static XML-derived
+// data, cached on first use for the life of the process.
+const std::vector<UnitTypes>& getUnitUpgradeChainGroup(UnitTypes eUnit);
 
 bool isWorldWonder(BuildingTypes eBuilding);
 bool isTeamWonder(BuildingTypes eBuilding);
@@ -254,9 +256,7 @@ int getEspionageModifier(TeamTypes eOurTeam, TeamTypes eTargetTeam);
 
 DllExport void setTradeItem(TradeData* pItem, TradeableItems eItemType = TRADE_ITEM_NONE, int iData = 0);
 
-bool isPlotEventTrigger(EventTriggerTypes eTrigger);
-
-TechTypes getDiscoveryTech(UnitTypes eUnit, PlayerTypes ePlayer);
+TechTypes getDiscoveryTech(const UnitTypes eUnit, const PlayerTypes ePlayer);
 
 void setListHelp(wchar_t* szBuffer, const wchar_t* szStart, const wchar_t* szItem, const wchar_t* szSeparator, bool bFirst);
 void setListHelp(CvWString& szBuffer, const wchar_t* szStart, const wchar_t* szItem, const wchar_t* szSeparator, bool bFirst);
@@ -279,7 +279,6 @@ bool PUF_canSiege( const CvUnit* pUnit, int iData1, int iData2 = -1, const CvUni
 bool PUF_isPotentialEnemy( const CvUnit* pUnit, int iData1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_canDeclareWar( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_canDefend( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
-bool PUF_canAttack( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isCriminal(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isWantedCriminal(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isCityGarrison(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
@@ -292,7 +291,7 @@ bool PUF_canDefendPotentialEnemyAgainst(const CvUnit* pUnit, int iData1, int iDa
 bool PUF_canDefenselessPotentialEnemyAgainst(const CvUnit* pUnit, int iData1, int iData2, const CvUnit* pThis);
 bool PUF_canAirAttack( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_canAirDefend( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
-bool PUF_isFighting( const CvUnit* pUnit, int iData1, int iData2 = -1, const CvUnit* pThis = NULL);
+bool PUF_isInBattle( const CvUnit* pUnit, int iData1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isAnimal( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isMilitaryHappiness( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isInvestigate( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
@@ -310,14 +309,7 @@ bool PUF_isSelected( const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, cons
 bool PUF_makeInfoBarDirty(CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isNoMission(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isMissionAI(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
-
-/********************************************************************************/
-/* 	Worker Counting						03.08.2010				Fuyu			*/
-/********************************************************************************/
 bool PUF_isNoMissionAI(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
-/********************************************************************************/
-/* 	Worker Counting												END 			*/
-/********************************************************************************/
 bool PUF_isFiniteRange(const CvUnit* pUnit, int iData1 = -1, int iData2 = -1, const CvUnit* pThis = NULL);
 bool PUF_isAvailableUnitAITypeGroupie(const CvUnit* pUnit, int iData1, int iData2, const CvUnit* pThis = NULL);
 bool PUF_isUnitAITypeGroupie(const CvUnit* pUnit, int iData1, int iData2, const CvUnit* pThis = NULL);
@@ -364,11 +356,14 @@ bool NewPathTurnEndValidityCheckRequired(const CvSelectionGroup* pGroup, int iFl
 
 int baseYieldToSymbol(int iNumYieldTypes, int iYieldStack);
 
-bool isPickableName(const TCHAR* szName);
+bool isPickableName(const char* szName);
 
 DllExport int* shuffle(int iNum, CvRandom& rand);
 void shuffleArray(int* piShuffle, int iNum, CvRandom& rand);
+void shuffle(int* piShuffle, int iNum, CvRandom& rand);
 
+int calculateCurrentTick();
+int getMinimalTickForEras(GameSpeedTypes eGameSpeed);
 int getTurnMonthForGame(int iGameTurn, int iStartYear, CalendarTypes eCalendar, GameSpeedTypes eSpeed);
 int getTurnYearForGame(int iGameTurn, int iStartYear, CalendarTypes eCalendar, GameSpeedTypes eSpeed);
 
@@ -388,9 +383,32 @@ bool isAdjacentDirection(DirectionTypes eFacingDirection, DirectionTypes eOtherD
 //	Koshling - abstract treaty length from the define int to allow scaling
 int getTreatyLength();
 
-void AddDLLMessage(PlayerTypes ePlayer, bool bForce, int iLength, CvWString szString, LPCTSTR pszSound = NULL,
+void AddDLLMessage(PlayerTypes ePlayer, bool bForce, int iLength, CvWString szString, const char* pszSound = NULL,
 		InterfaceMessageTypes eType = MESSAGE_TYPE_INFO, LPCSTR pszIcon = NULL, ColorTypes eFlashColor = NO_COLOR,
 		int iFlashX = -1, int iFlashY = -1, bool bShowOffScreenArrows = false, bool bShowOnScreenArrows = false);
+
+template <class T1, class T2>
+bool isMapCategory(const T1& source1, const T2& source2)
+{
+	PROFILE_EXTRA_FUNC();
+	const std::vector<MapCategoryTypes>& mapCategories1 = source1.getMapCategories();
+	if (mapCategories1.empty())
+	{
+		return true;
+	}
+	const std::vector<MapCategoryTypes>& mapCategories2 = source2.getMapCategories();
+	if (mapCategories2.empty())
+	{
+		return true;
+	}
+	foreach_(const MapCategoryTypes eMapCategory, mapCategories1)
+	{
+		if (algo::any_of_equal(mapCategories2, eMapCategory))
+			return true;
+	}
+	return false;
+}
+
 
 //	Koshling - better checksum algorithm that can be used when reasonably high quality
 //	hashes are needed
@@ -407,5 +425,33 @@ protected:
 	WORD c2;
 	DWORD sum;
 };
+
+// Toffer
+void makeValueString(CvWString& szValue, const int iValue, const bool bWholeNumberCutDecimals = false, int iNumDecimals = 2);
+// ! Toffer
+
+int applyDistanceScoringFactor(int score, const CvPlot* sourcePlot, const CvPlot* targetPlot, const int currentPlotBoost = 1);
+
+int encodeACDateturn(int decodeda, int b);
+
+int decodeACDate(int n);
+
+int decodeACTurn(int n);
+
+int mapValue(int x);
+
+int inverseMapValue(int y);
+
+// Conversion enum -> brut string (MISSION_XXXXX
+CvString MissionAITypeToString(MissionAITypes eMissionAI);
+
+// Conversion enum -> brut string found a city..., Move to...
+CvString MissionAITypeToDescription(MissionAITypes eMissionAI);
+
+CvString AutomateTypeToDescription(AutomateTypes eAutomateAI);
+
+char remove_diacritic_char(unsigned char c);
+
+CvString remove_diacritics(const CvString& input);
 
 #endif

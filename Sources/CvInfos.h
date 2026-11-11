@@ -13,7 +13,8 @@
 #ifndef CV_INFO_H
 #define CV_INFO_H
 
-#include "CvXMLLoadUtilityModTools.h"
+#include "FProfiler.h"
+
 #include "CvProperties.h"
 #include "CvPropertySource.h"
 #include "CvPropertyInteraction.h"
@@ -25,15 +26,13 @@
 #include "BoolExpr.h"
 //#include "IntExpr.h"
 #include "IDValueMap.h"
-
-#pragma warning( disable: 4251 )		// needs to have dll-interface to be used by clients of class
-#pragma warning( disable: 4127 )
-
+#include <boost/python/list.hpp>
 
 extern bool shouldHaveType;
 
 class CvXMLLoadUtility;
 class IntExpr;
+struct CvInfoUtil;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -55,8 +54,8 @@ public:
 
 	bool isGraphicalOnly() const;
 
-	DllExport const TCHAR* getType() const;
-	virtual const TCHAR* getButton() const;
+	DllExport const char* getType() const;
+	virtual const char* getButton() const;
 
 	const wchar_t* getCivilopediaKey() const;
 	const wchar_t* getHelpKey() const;
@@ -78,17 +77,19 @@ public:
 	DllExport const wchar_t* getHelp() const;
 	const wchar_t* getStrategy() const;
 
-	virtual void read(FDataStreamBase* pStream) {}
-	virtual void write(FDataStreamBase* pStream) {}
+	virtual void read(FDataStreamBase*) {}
+	virtual void write(FDataStreamBase*) {}
 
+	virtual void getDataMembers(CvInfoUtil&) { FErrorMsg("Override this"); }
 	virtual bool read(CvXMLLoadUtility* pXML);
-	virtual bool readPass2(CvXMLLoadUtility* /*pXML*/) { FErrorMsg("Override this"); return false; }
+	virtual bool readPass2(CvXMLLoadUtility*) { FErrorMsg("Override this"); return false; }
 	virtual bool readPass3() { FErrorMsg("Override this"); return false; }
 	virtual void copyNonDefaults(const CvInfoBase* pClassInfo);
-	virtual void copyNonDefaultsReadPass2(CvInfoBase* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false)
+	virtual void copyNonDefaultsReadPass2(CvInfoBase*, CvXMLLoadUtility*, bool = false)
 	{ /* AIAndy: Default implementation for full copy of info without knowledge of one/twopass */ }
-	virtual void getCheckSum(unsigned int& iSum) const { };
-	virtual const wchar_t* getExtraHoverText() const { return L""; };
+	virtual void getCheckSum(uint32_t&) const { }
+	virtual void doPostLoadCaching(uint32_t) { }
+	virtual const wchar_t* getExtraHoverText() const { return L""; }
 
 protected:
 
@@ -162,10 +163,11 @@ public:
 	bool isAltDownAlt() const;
 	bool isShiftDownAlt() const;
 	bool isCtrlDownAlt() const;
-	const TCHAR* getHotKey() const;
-	const WCHAR* getHotKeyDescriptionKey() const;
-	const WCHAR* getHotKeyAltDescriptionKey() const;
-	const WCHAR* getHotKeyString() const;
+	const char* getHotKey() const;
+	const wchar_t* getHotKeyDescriptionKey() const;
+	const wchar_t* getHotKeyAltDescriptionKey() const;
+	const wchar_t* getHotKeyString() const;
+	std::wstring pyGetHotKeyString() const { return getHotKeyString(); }
 
 	std::wstring getHotKeyDescription() const;
 	void setHotKeyDescription(const wchar_t* szHotKeyDescKey, const wchar_t* szHotKeyAltDescKey, const wchar_t* szHotKeyString);
@@ -193,43 +195,7 @@ protected:
 	CvWString m_szHotKeyString;
 };
 
-class CvDiplomacyInfo;
-class CvDiplomacyResponse
-{
-//---------------------------PUBLIC INTERFACE---------------------------------
-public:
 
-	CvDiplomacyResponse();
-	virtual ~CvDiplomacyResponse();
-
-	int getNumDiplomacyText() const;
-
-	bool getCivilizationTypes(const int i) const;
-	bool* getCivilizationTypes() const;
-
-	bool getLeaderHeadTypes(const int i) const;
-	bool* getLeaderHeadTypes() const;
-
-	bool getAttitudeTypes(int i) const;
-	bool* getAttitudeTypes() const;
-
-	bool getDiplomacyPowerTypes(const int i) const;
-	bool* getDiplomacyPowerTypes() const;
-
-	const TCHAR* getDiplomacyText(int i) const;
-	const CvString* getDiplomacyText() const;
-
-	bool read(CvXMLLoadUtility* pXML);
-	void UpdateDiplomacies(CvDiplomacyInfo* pDiplomacyInfo, int iIndex);
-
-protected:
-	int m_iNumDiplomacyText;
-	bool* m_pbCivilizationTypes;
-	bool* m_pbLeaderHeadTypes;
-	bool* m_pbAttitudeTypes;
-	bool* m_pbDiplomacyPowerTypes;
-	CvString* m_paszDiplomacyText;
-};
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -238,7 +204,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSpecialistInfo : public CvHotkeyInfo
+class CvSpecialistInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -269,19 +237,25 @@ public:
 	int getCommerceChange(int i) const;
 	int getFlavorValue(int i) const;
 
-	const TCHAR* getTexture() const;
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
+	const char* getTexture() const;
 
 	//Team Project (1)
 	//TB Specialist Tags
 	// int
 	int getInsidiousness() const;
 	int getInvestigation() const;
-	// int vector utilizing struct with delayed resolution
-	int getNumTechHappinessTypes() const;
-	const TechModifier& getTechHappinessType(int iTech) const;
 
-	int getNumTechHealthTypes() const;
-	const TechModifier& getTechHealthType(int iTech) const;
+	//int getNumTechHappinessTypes() const;
+	int getTechHappiness(TechTypes eTech) const;
+	const IDValueMap<TechTypes, int>& getTechHappinessTypes() const { return m_aTechHappinessTypes; }
+
+	//int getNumTechHealthTypes() const;
+	int getTechHealth(TechTypes eTech) const;
+	const IDValueMap<TechTypes, int>& getTechHealthTypes() const { return m_aTechHealthTypes; }
 
 	int getNumUnitCombatExperienceTypes() const;
 	const UnitCombatModifier& getUnitCombatExperienceType(int iUnitCombat) const;
@@ -291,7 +265,7 @@ public:
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvSpecialistInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	CvPropertyManipulators m_PropertyManipulators;
@@ -324,10 +298,12 @@ protected:
 	//Team Project (1)
 	//TB Specialist Tags
 	// int vector utilizing struct with delayed resolution
-	std::vector<TechModifier> m_aTechHappinessTypes;
-	std::vector<TechModifier> m_aTechHealthTypes;
+	IDValueMap<TechTypes, int> m_aTechHappinessTypes;
+	IDValueMap<TechTypes, int> m_aTechHealthTypes;
 	std::vector<UnitCombatModifier> m_aUnitCombatExperienceTypes;
 	std::vector<UnitCombatModifier> m_aUnitCombatExperienceTypesNull;
+
+	std::vector<int> m_aiCategories;
 
 	CvString m_szTexture;
 };
@@ -339,21 +315,18 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvTechInfo : public CvInfoBase
+class CvTechInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
-
-friend class CvXMLLoadUtility;
-
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
 
 	CvTechInfo();
 	virtual ~CvTechInfo();
 
-	// Validate tech info da after load (debug only)
-	static void validate();
-
 	int getAdvisorType() const;
+	int getStackSupportLimitChange() const { return m_iStackSupportLimitChange; }
 	int getAIWeight() const;
 	int getAITradeModifier() const;
 	int getResearchCost() const;
@@ -397,6 +370,7 @@ public:
 	bool isIgnoreIrrigation() const;
 	bool isWaterWork() const;
 	bool isRiverTrade() const;
+	inline bool isLanguage() const { return m_bLanguage;}
 
 	bool isCanPassPeaks() const;
 	bool isMoveFastPeaks() const;
@@ -424,44 +398,39 @@ public:
 	int getPrereqOrBuildingType(int iIndex) const;
 	int getPrereqOrBuildingMinimumRequired(int iIndex) const;
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
 	bool isGlobal() const;
 
-	// Dale - AB: Bombing START
 	bool getDCMAirBombTech1() const;
 	bool getDCMAirBombTech2() const;
-protected:
-	bool m_bDCMAirBombTech1;
-	bool m_bDCMAirBombTech2;
-public:
-	// Dale - AB: Bombing END
+
 
 	std::wstring getQuote() const;
-	const TCHAR* getQuoteKey() const;
-	const TCHAR* getSound() const;
-	const TCHAR* getSoundMP() const;
-
-	// Arrays
+	const char* getQuoteKey() const;
+	const char* getSound() const;
+	const char* getSoundMP() const;
 
 	int getDomainExtraMoves(int i) const;
 	int getFlavorValue(int i) const;
-	int getPrereqOrTechs(int i) const;
-	int getPrereqAndTechs(int i) const;
+
+	const std::vector<TechTypes>& getPrereqOrTechs() const;
+	const std::vector<TechTypes>& getPrereqAndTechs() const;
 
 	bool isCommerceFlexible(int i) const;
 	bool isTerrainTrade(int i) const;
-	//ls612: Tech Commerce Modifiers
+
 	int getCommerceModifier(int i) const;
 	int* getCommerceModifierArray() const;
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvTechInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvTechInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
+	void getCheckSum(uint32_t& iSum) const;
 
-	void getCheckSum(unsigned int& iSum) const;
-
-	//----------------------PROTECTED MEMBER VARIABLES----------------------------
+	void doPostLoadCaching(uint32_t iThis);
+	const std::set<TechTypes>& getLeadsToTechs() const { return m_leadsTo; }
 
 protected:
 
@@ -473,12 +442,12 @@ protected:
 	int m_iTradeRoutes;
 	int m_iFeatureProductionModifier;
 	int m_iWorkerSpeedModifier;
-	//DPII < Maintenance Modifier >
+
 	int m_iMaintenanceModifier;
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iCoastalDistanceMaintenanceModifier;
-	//DPII < Maintenance Modifier >
+
 	int m_iFirstFreeUnit;
 	int m_iFirstFreeProphet;
 	int m_iHealth;
@@ -489,6 +458,14 @@ protected:
 
 	int m_iGridX;
 	int m_iGridY;
+
+	int m_iInflationModifier;
+	int m_iGlobalTradeModifier;
+	int m_iGlobalForeignTradeModifier;
+	int m_iTradeMissionModifier;
+	int m_iCorporationRevenueModifier;
+	int m_iCorporationMaintenanceModifier;
+	int m_iPrereqGameOption;
 
 	bool m_bRepeat;
 	bool m_bTrade;
@@ -509,27 +486,10 @@ protected:
 	bool m_bIgnoreIrrigation;
 	bool m_bWaterWork;
 	bool m_bRiverTrade;
-
-	CvString m_szQuoteKey;
-	CvString m_szSound;
-	CvString m_szSoundMP;
-
-	// Arrays
-
-	int* m_piDomainExtraMoves;
-	int* m_piFlavorValue;
-
-	int* m_piPrereqOrTechs;
-	int* m_piPrereqAndTechs;
-
-	bool* m_pbCommerceFlexible;
-	bool* m_pbTerrainTrade;
-	//ls612: Tech Commerce Modifiers
-	int* m_piCommerceModifier;
-
-	//TB Tech Tags
+	bool m_bLanguage;
+	bool m_bDCMAirBombTech1;
+	bool m_bDCMAirBombTech2;
 	bool m_bGlobal;
-	//TB Tech Tags end
 	bool m_bCanPassPeaks;
 	bool m_bMoveFastPeaks;
 	bool m_bCanFoundOnPeaks;
@@ -538,17 +498,42 @@ protected:
 	bool m_bRebaseAnywhere;
 	bool m_bEnablesDesertFarming;
 
-	int m_iInflationModifier;
-	int m_iGlobalTradeModifier;
-	int m_iGlobalForeignTradeModifier;
-	int m_iTradeMissionModifier;
-	int m_iCorporationRevenueModifier;
-	int m_iCorporationMaintenanceModifier;
-	int m_iPrereqGameOption;
+	CvString m_szQuoteKey;
+	CvString m_szSound;
+	CvString m_szSoundMP;
+
+
+	int* m_piDomainExtraMoves;
+	int* m_piFlavorValue;
+	int* m_piCommerceModifier;
 	int* m_piFreeSpecialistCount;
+
+	bool* m_pbCommerceFlexible;
+	bool* m_pbTerrainTrade;
+
+	std::vector<int> m_aiCategories;
+
+	std::vector<TechTypes> m_piPrereqOrTechs;
+	std::vector<TechTypes> m_piPrereqAndTechs;
 
 	std::vector<PrereqBuilding> m_aPrereqBuilding;
 	std::vector<PrereqBuilding> m_aPrereqOrBuilding;
+
+private:
+	std::set<TechTypes> m_leadsTo;
+	void setLeadsTo(const TechTypes eTech);
+public:
+	int getNumLeadsToTechs() const { return m_leadsTo.size(); }
+	int getLeadsToTech(const int iCount) const
+	{
+		PROFILE_EXTRA_FUNC();
+		std::set<TechTypes>::const_iterator itr = m_leadsTo.begin();
+		for (int i = 0; i < iCount; i++) itr++;
+		return *itr;
+	}
+
+private:
+	int m_iStackSupportLimitChange;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -558,19 +543,42 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvPromotionInfo :	public CvHotkeyInfo
+class CvPromotionInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
+
+	// Derived stack promotions are configuration, never permanent unit upgrades.
+	int getStackSupportKind() const { return m_iStackSupportKind; }
+	int getStackSupportProfile() const { return m_iStackSupportProfile; }
+	int getStackSupportFamily() const { return m_iStackSupportFamily; }
+	int getStackSupportTier() const { return m_iStackSupportTier; }
+	int getStackSupportWeight() const { return m_iStackSupportWeight; }
+	bool isStackSupportProviderDefensive() const { return m_bStackSupportProviderDefensive; }
+	bool isStackSupportProviderIntercept() const { return m_bStackSupportProviderIntercept; }
+	bool isStackSupportRecipientIntercept() const { return m_bStackSupportRecipientIntercept; }
+	bool isStackSupportAttackersOnly() const { return m_bStackSupportAttackersOnly; }
+	bool isStackSupportCarrier() const { return m_bStackSupportCarrier; }
+	DomainTypes getStackSupportDomain() const { return m_eStackSupportDomain; }
+	const std::vector<UnitCombatTypes>& getStackSupportProviders() const { return m_stackSupportProviders; }
+	const std::vector<UnitCombatTypes>& getStackSupportProviderAll() const { return m_stackSupportProviderAll; }
+	const std::vector<UnitCombatTypes>& getStackSupportProviderNot() const { return m_stackSupportProviderNot; }
+	const std::vector<UnitCombatTypes>& getStackSupportRecipients() const { return m_stackSupportRecipients; }
+	const std::vector<UnitCombatTypes>& getStackSupportRecipientNot() const { return m_stackSupportRecipientNot; }
+	const CvString& getStackSupportProviderUnits() const { return m_szStackSupportProviderUnits; }
+
 	CvPromotionInfo();
 	virtual ~CvPromotionInfo();
 
 	int getLayerAnimationPath() const;
-	int getPrereqPromotion() const;
-	int getPrereqOrPromotion1() const;
-	int getPrereqOrPromotion2() const;
+	PromotionTypes getPrereqPromotion() const { return m_iPrereqPromotion; }
+	PromotionTypes getPrereqOrPromotion1() const { return m_iPrereqOrPromotion1; }
+	PromotionTypes getPrereqOrPromotion2() const { return m_iPrereqOrPromotion2; }
 
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const;
+	BuildingTypes getGrantsBuildingOnFound() const;
 	int getMinEraType() const;
 	int getMaxEraType() const;
 	int getStateReligionPrereq() const;
@@ -638,12 +646,13 @@ public:
 	bool isBlitz() const;
 	bool isAmphib() const;
 	bool isRiver() const;
+	bool isRiverMoveIgnore() const;
 	bool isEnemyRoute() const;
 	bool isAlwaysHeal() const;
 	bool isHillsDoubleMove() const;
 	bool isImmuneToFirstStrikes() const;
 
-	const TCHAR* getSound() const;
+	const char* getSound() const;
 
 	bool changesMoveThroughPlots() const;
 	//	This really belongs on CvInfoBase but you can't change the size of that
@@ -671,27 +680,18 @@ public:
 	bool getTerrainDoubleMove(int i) const;
 	bool getFeatureDoubleMove(int i) const;
 	bool getUnitCombat(int i) const;
-
-/************************************************************************************************/
-/* Afforess					  Start		 12/9/09												*/
-/*																							  */
-/*																							  */
-/************************************************************************************************/
 	bool isCanMovePeaks() const;
 	//	Koshling - enhanced mountaineering mode to differentiate between ability to move through
 	//	mountains, and ability to lead a stack through mountains
 	bool isCanLeadThroughPeaks() const;
-	int getNumPromotionOverwrites() const;
-	PromotionTypes getPromotionOverwrites(int iI) const;
-	int getObsoleteTech() const;
+	//const std::vector<PromotionTypes>& getPromotionOverwrites() const { return m_vPromotionOverwrites; }
+	TechTypes getObsoleteTech() const;
 	int getControlPoints() const;
 	int getCommandRange() const;
 	bool isZoneOfControl() const;
-	int getAssetMultiplier() const;
-	int getPowerMultiplier() const;
 	int getIgnoreTerrainDamage() const;
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
@@ -704,8 +704,6 @@ public:
 	DomainTypes getDomainCargoChange() const;
 	SpecialUnitTypes getSpecialCargoChange() const;
 	SpecialUnitTypes getSpecialCargoPrereq() const;
-	SpecialUnitTypes getSMSpecialCargoChange() const;
-	SpecialUnitTypes getSMSpecialCargoPrereq() const;
 	SpecialUnitTypes getSMNotSpecialCargoChange() const;
 	SpecialUnitTypes getSMNotSpecialCargoPrereq() const;
 	SpecialUnitTypes setSpecialUnit() const;
@@ -764,13 +762,12 @@ public:
 	int getEnduranceChange() const;
 	int getRoundStunProbChange() const;
 	int getPoisonProbabilityModifierChange() const;
-	//Team Project (3)
+
 	int getCaptureProbabilityModifierChange() const;
 	int getCaptureResistanceModifierChange() const;
-	//Team Project (4)
+
 	//WorkRateMod
-	int getHillsWorkModifierChange() const;
-	int getPeaksWorkModifierChange() const;
+	int getPeaksWorkPercent() const;
 	//
 	int getBreakdownChanceChange() const;
 	int getBreakdownDamageChange() const;
@@ -890,20 +887,19 @@ public:
 	int getNumNoAutoEquiptoCombatClassTypes() const;
 	bool isNoAutoEquiptoCombatClassType(int i) const;
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
 
-	// bool vector with delayed resolution
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
+
 #ifdef OUTBREAKS_AND_AFFLICTIONS
 	int getCureAfflictionChangeType(int i) const;
 	int getNumCureAfflictionChangeTypes() const;
 	bool isCureAfflictionChangeType(int i) const;
-#endif
-	int getPrereqBonusType(int i) const;
-	int getNumPrereqBonusTypes() const;
-	bool isPrereqBonusType(int i) const;
+#endif // OUTBREAKS_AND_AFFLICTIONS
+
+	const std::vector<BonusTypes>& getPrereqBonuses() const { return m_aiPrereqBonusTypes; }
 
 	int getAddsBuildType(int i) const;
 	int getNumAddsBuildTypes() const;
@@ -1014,15 +1010,6 @@ public:
 	int getAidChange(int iProperty) const;
 	bool isAidChange(int iProperty) const;
 #endif
-	//Team Project (4)
-	//WorkRateMod
-	int getNumTerrainWorkRateModifierChangeTypes() const;
-	int getTerrainWorkRateModifierChangeType(int iTerrain) const;
-	bool isTerrainWorkRateModifierChangeType(int iTerrain) const;
-
-	int getNumFeatureWorkRateModifierChangeTypes() const;
-	int getFeatureWorkRateModifierChangeType(int iFeature) const;
-	bool isFeatureWorkRateModifierChangeType(int iFeature) const;
 
 	int getNumBuildWorkRateModifierChangeTypes() const;
 	int getBuildWorkRateModifierChangeType(int iBuild) const;
@@ -1091,7 +1078,12 @@ public:
 	bool isQualifiedUnitCombatType(int i) const;
 	void setQualifiedUnitCombatTypes();
 
+	int getDisqualifiedUnitCombatType(int i) const;
+	int getNumDisqualifiedUnitCombatTypes() const;
+	void setDisqualifiedUnitCombatTypes();
+
 	bool hasNegativeEffects() const;
+	inline bool isStarsign() const { return m_bStarsign; }
 
 protected:
 	bool m_bCanMovePeaks;
@@ -1099,36 +1091,32 @@ protected:
 	//	mountains, and ability to lead a stack through mountains
 	bool m_bCanLeadThroughPeaks;
 	int m_iNumPromotionOverwrites;
-	int* m_piPromotionOverwrites;
-	int m_iObsoleteTech;
+	//std::vector<PromotionTypes> m_vPromotionOverwrites;
+	TechTypes m_iObsoleteTech;
 	int m_iControlPoints;
 	int m_iCommandRange;
 	bool m_bZoneOfControl;
-	int m_iAssetMultiplier;
-	int m_iPowerMultiplier;
 	int m_iIgnoreTerrainDamage;
 	int m_zobristValue;
 public:
-/************************************************************************************************/
-/* Afforess						 END															*/
-/************************************************************************************************/
+	void getDataMembers(CvInfoUtil& util);
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvPromotionInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvPromotionInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
 
 private:
+	bool m_bStarsign;
 	CvPropertyManipulators m_PropertyManipulators;
 
 //----------------------PROTECTED MEMBER VARIABLES----------------------------
 
 protected:
 	int m_iLayerAnimationPath;
-	int m_iPrereqPromotion;
-	int m_iPrereqOrPromotion1;
-	int m_iPrereqOrPromotion2;
+	PromotionTypes m_iPrereqPromotion;
+	PromotionTypes m_iPrereqOrPromotion1;
+	PromotionTypes m_iPrereqOrPromotion2;
 
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
+	BuildingTypes m_eGrantsBuildingOnFound; // Beta: Nomadic Start - city building granted when the unit holding this promotion founds a city
 	int m_iStateReligionPrereq;
 	int m_iMinEraType;
 	int m_iMaxEraType;
@@ -1158,7 +1146,6 @@ protected:
 	int m_iHillsAttackPercent;
 	int m_iHillsDefensePercent;
 	int m_iHillsWorkPercent;
-	//ls612: Work rate modifiers
 	int m_iWorkRatePercent;
 	int m_iCommandType;
 	int m_iRevoltProtection;
@@ -1194,6 +1181,7 @@ protected:
 	bool m_bBlitz;
 	bool m_bAmphib;
 	bool m_bRiver;
+	bool m_bRiverMoveIgnore;
 	bool m_bEnemyRoute;
 	bool m_bAlwaysHeal;
 	bool m_bHillsDoubleMove;
@@ -1225,8 +1213,6 @@ protected:
 	DomainTypes m_eDomainCargoChange;
 	SpecialUnitTypes m_eSpecialCargoChange;
 	SpecialUnitTypes m_eSpecialCargoPrereq;
-	SpecialUnitTypes m_eSMSpecialCargoChange;
-	SpecialUnitTypes m_eSMSpecialCargoPrereq;
 	SpecialUnitTypes m_eSMNotSpecialCargoChange;
 	SpecialUnitTypes m_eSMNotSpecialCargoPrereq;
 	SpecialUnitTypes m_eSetSpecialUnit;
@@ -1279,13 +1265,12 @@ protected:
 	int m_iEnduranceChange;
 	int m_iRoundStunProbChange;
 	int m_iPoisonProbabilityModifierChange;
-	//Team Project (3)
+
 	int m_iCaptureProbabilityModifierChange;
 	int m_iCaptureResistanceModifierChange;
-	//Team Project (4)
+
 	//WorkRateMod
-	int m_iHillsWorkModifierChange;
-	int m_iPeaksWorkModifierChange;
+	int m_iPeaksWorkPercent;
 
 	int m_iBreakdownChanceChange;
 	int m_iBreakdownDamageChange;
@@ -1381,9 +1366,9 @@ protected:
 	std::vector<int> m_aiNotOnUnitCombatTypes;
 	std::vector<int> m_aiNotOnDomainTypes;
 	std::vector<int> m_aiNoAutoEquiptoCombatClassTypes;
-	std::vector<int> m_aiMapTypes;
-	// bool vector with delayed resolution
-	std::vector<int> m_aiPrereqBonusTypes;
+	std::vector<int> m_aiCategories;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
+	std::vector<BonusTypes> m_aiPrereqBonusTypes;
 	std::vector<int> m_aiAddsBuildTypes;
 	std::vector<int> m_aiNegatesInvisibilityTypes;
 	std::vector<int> m_aiPrereqTerrainTypes;
@@ -1414,10 +1399,7 @@ protected:
 #ifdef OUTBREAKS_AND_AFFLICTIONS
 	AidArray m_aAidChanges;
 #endif
-	//Team Project (4)
-		//WorkRateMod
-	TerrainModifierArray m_aTerrainWorkRateModifierChangeTypes;
-	FeatureModifierArray m_aFeatureWorkRateModifierChangeTypes;
+
 	BuildModifierArray m_aBuildWorkRateModifierChangeTypes;
 	InvisibilityArray m_aVisibilityIntensityChangeTypes;
 	InvisibilityArray m_aInvisibilityIntensityChangeTypes;
@@ -1444,7 +1426,27 @@ protected:
 
 	//Pediahelp
 	std::vector<int> m_aiQualifiedUnitCombatTypes;
+	std::vector<int> m_disqualifiedUnitCombatTypes;
 
+
+private:
+	int m_iStackSupportKind;
+	int m_iStackSupportProfile;
+	int m_iStackSupportFamily;
+	int m_iStackSupportTier;
+	int m_iStackSupportWeight;
+	bool m_bStackSupportProviderDefensive;
+	bool m_bStackSupportProviderIntercept;
+	bool m_bStackSupportRecipientIntercept;
+	bool m_bStackSupportAttackersOnly;
+	bool m_bStackSupportCarrier;
+	DomainTypes m_eStackSupportDomain;
+	std::vector<UnitCombatTypes> m_stackSupportProviders;
+	std::vector<UnitCombatTypes> m_stackSupportProviderAll;
+	std::vector<UnitCombatTypes> m_stackSupportProviderNot;
+	std::vector<UnitCombatTypes> m_stackSupportRecipients;
+	std::vector<UnitCombatTypes> m_stackSupportRecipientNot;
+	CvString m_szStackSupportProviderUnits;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1454,7 +1456,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvMissionInfo : public CvHotkeyInfo
+class CvMissionInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1471,14 +1475,14 @@ public:
 	bool getVisible() const;
 	DllExport EntityEventTypes getEntityEvent() const;
 
-	const TCHAR* getWaypoint() const;		// effect type, Exposed to Python
+	const char* getWaypoint() const;		// effect type, Exposed to Python
 
 	bool read(CvXMLLoadUtility* pXML);
 
 	void copyNonDefaults(const CvMissionInfo* pClassInfo);
 
 	// Should not be needed to checksum this as this will likely not get changed without DLL changes
-	//void getCheckSum(unsigned int& iSum) const;
+	//void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 
@@ -1493,7 +1497,6 @@ protected:
 	EntityEventTypes m_eEntityEvent;
 
 	CvString m_szWaypoint;
-
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1503,7 +1506,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvControlInfo : public CvHotkeyInfo
+class CvControlInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1526,7 +1531,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCommandInfo : public CvHotkeyInfo
+class CvCommandInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1560,7 +1567,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvAutomateInfo : public CvHotkeyInfo
+class CvAutomateInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1595,6 +1604,7 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvActionInfo
+	: private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1619,13 +1629,13 @@ public:
 	void setSubType(ActionSubTypes eSubType) { m_eSubType = eSubType; }
 
 	// functions to replace the CvInfoBase calls
-	const TCHAR* getType() const;
+	const char* getType() const;
 	const wchar_t* getDescription() const;
 	const wchar_t* getCivilopedia() const;
 	const wchar_t* getHelp() const;
 	const wchar_t* getStrategy() const;
 
-	virtual const TCHAR* getButton() const;
+	virtual const char* getButton() const;
 	const wchar_t* getTextKeyWide() const;
 
 	// functions to replace the CvHotkey calls
@@ -1643,7 +1653,7 @@ public:
 	DllExport bool isShiftDownAlt() const;
 	DllExport bool isCtrlDownAlt() const;
 
-	const TCHAR* getHotKey() const;
+	const char* getHotKey() const;
 
 	std::wstring getHotKeyDescription() const;
 
@@ -1655,8 +1665,7 @@ protected:
 	ActionSubTypes m_eSubType;
 
 private:
-	CvHotkeyInfo* getHotkeyInfo() const;
-
+	const CvHotkeyInfo* getHotkeyInfo() const;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1667,7 +1676,10 @@ private:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvArtInfoUnit;
-class CvUnitInfo : public CvHotkeyInfo
+
+class CvUnitInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -1701,7 +1713,6 @@ public:
 	int getEspionagePoints() const;
 	int getCombat() const;
 
-	void setCombat(int iNum);
 	int getCombatLimit() const;
 	//TB Tweaked for Size Matters
 	int getAirCombat() const;
@@ -1728,7 +1739,6 @@ public:
 	int getBombRate() const;
 	int getBombardRate() const;
 	int getSpecialCargo() const;
-	int getSMSpecialCargo() const;
 	int getSMNotSpecialCargo() const;
 	int getDomainCargo() const;
 	int getCargoSpace() const;
@@ -1740,16 +1750,16 @@ public:
 	int getAssetValue() const;
 	int getPowerValue() const;
 	int getSpecialUnitType() const;
-	int getUnitCaptureType() const;
+	UnitTypes getUnitCaptureType() const { return m_eUnitCaptureType; }
 	int getUnitCombatType() const;
-	int getDomainType() const;
-	int getDefaultUnitAIType() const;
+	DomainTypes getDomainType() const;
+	UnitAITypes getDefaultUnitAIType() const;
 	int getInvisibleType() const;
 	int getSeeInvisibleType(int i) const;
 	int getNumSeeInvisibleTypes() const;
 	int getAdvisorType() const;
 	int getMaxStartEra() const;
-	int getForceObsoleteTech() const;
+	int getObsoleteTech() const;
 	bool isStateReligion() const;
 	int getPrereqGameOption() const;
 	int getNotGameOption() const;
@@ -1779,7 +1789,6 @@ public:
 	bool isNoBadGoodies() const;
 	bool isOnlyDefensive() const;
 	bool isNoCapture() const;
-	bool isQuickCombat() const;
 	bool isRivalTerritory() const;
 	bool isMilitaryHappiness() const;
 	bool isMilitarySupport() const;
@@ -1824,19 +1833,18 @@ public:
 	bool isForceUpgrade() const;
 	bool isGreatGeneral() const;
 	bool isSlave() const;
-	int getPrereqOrVicinityBonuses(int i) const;
 	bool getPassableRouteNeeded(int i) const;
 	int getBaseFoodChange() const;
 	int getControlPoints() const;
 	int getCommandRange() const;
-	const TCHAR* getClassicalArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setClassicalArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getRennArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setRennArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getIndustrialArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setIndustrialArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getFutureArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setFutureArtDefineTag(int i, const TCHAR* szVal);
+	const char* getClassicalArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setClassicalArtDefineTag(int i, const char* szVal);
+	const char* getRennArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setRennArtDefineTag(int i, const char* szVal);
+	const char* getIndustrialArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setIndustrialArtDefineTag(int i, const char* szVal);
+	const char* getFutureArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setFutureArtDefineTag(int i, const char* szVal);
 
 	CvWString getCivilizationName(int i) const;
 	int getCivilizationNamesVectorSize() const;
@@ -1845,11 +1853,8 @@ public:
 
 	//TB Combat Mod Begin  TB SubCombat Mod begin
 	//Functions
-	void setReligionSubCombat();
-	void setCultureSubCombat();
 	int getEraInfo() const;
-	void setEraSubCombat();
-	//integers
+
 	int getAttackCombatModifier() const;
 	int getDefenseCombatModifier() const;
 	int getPursuit() const;
@@ -1881,7 +1886,7 @@ public:
 	int getMediumRangeSupportPercent() const;
 	int getLongRangeSupportPercent() const;
 	int getFlankSupportPercent() const;
-#endif
+#endif // STRENGTH_IN_NUMBERS
 	int getDodgeModifier() const;
 	int getPrecisionModifier() const;
 	int getPowerShots() const;
@@ -1893,14 +1898,10 @@ public:
 	int getEndurance() const;
 	int getRoundStunProb() const;
 	int getPoisonProbabilityModifier() const;
-	//Team Project (3)
 	int getCaptureProbabilityModifier() const;
 	int getCaptureResistanceModifier() const;
-	//Team Project (4)
-	//WorkRateMod
 	int getHillsWorkModifier() const;
 	int getPeaksWorkModifier() const;
-
 	int getBreakdownChance() const;
 	int getBreakdownDamage() const;
 	int getTaunt() const;
@@ -1926,12 +1927,13 @@ public:
 	int getAggression() const;
 	int getAnimalIgnoresBorders() const;
 	int getReligiousCombatModifier() const;
-	// booleans
+
 	bool isStampede() const;
 	bool isOnslaught() const;
 	bool isDealsColdDamage() const;
 	bool isColdImmune() const;
 	bool isAttackOnlyCities() const;
+	bool isOnlyAttackAnimals() const;
 	bool isIgnoreNoEntryLevel() const;
 	bool isIgnoreZoneofControl() const;
 	bool isFliesToMove() const;
@@ -1944,6 +1946,7 @@ public:
 	bool isBlendIntoCity() const;
 	bool isUpgradeAnywhere() const;
 	bool isAssassin() const;
+	bool isNoAmbush() const;
 	bool isStealthDefense() const;
 	bool isNoInvisibility() const;
 	bool isTriggerBeforeAttack() const;
@@ -1954,11 +1957,12 @@ public:
 	bool canAnimalIgnoresCities() const;
 	bool isNoNonTypeProdMods() const;
 	bool isGatherHerd() const;
+	bool canMergeSplit() const { return m_bCanMergeSplit; }
 
-	// boolean vectors without delayed resolution
-	int getSubCombatType(int i) const;
+	UnitCombatTypes getSubCombatType(int i) const;
 	int getNumSubCombatTypes() const;
-	bool isSubCombatType(int i) const;
+	bool isSubCombatType(UnitCombatTypes e) const;
+	const std::vector<UnitCombatTypes>& getSubCombatTypes() const;
 
 	int getCureAfflictionType(int i) const;
 	int getNumCureAfflictionTypes() const;
@@ -1967,20 +1971,14 @@ public:
 	int getHealAsType(int i) const;
 	int getNumHealAsTypes() const;
 	bool isHealAsType(int i) const;
-	void setHealAsTypes();
 
-	int getTerrainImpassableType(int i) const;
-	int getNumTerrainImpassableTypes() const;
-	bool isTerrainImpassableType(int i) const;
+	bool isTerrainImpassableType(TerrainTypes e) const;
+	const std::vector<TerrainTypes>& getImpassableTerrains() const { return m_vTerrainImpassableTypes; }
 
-	int getFeatureImpassableType(int i) const;
-	int getNumFeatureImpassableTypes() const;
-	bool isFeatureImpassableType(int i) const;
+	bool isFeatureImpassableType(FeatureTypes e) const;
+	const std::vector<FeatureTypes>& getImpassableFeatures() const { return m_vFeatureImpassableTypes; }
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
 
 	int getTrapSetWithPromotionType(int i) const;
 	int getNumTrapSetWithPromotionTypes() const;
@@ -1990,11 +1988,21 @@ public:
 	int getNumTrapImmunityUnitCombatTypes() const;
 	bool isTrapImmunityUnitCombatType(int i) const;
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
+#ifdef OUTBREAKS_AND_AFFLICTIONS
 	int getNumAfflictionFortitudeModifiers() const;
 	const PromotionLineModifier& getAfflictionFortitudeModifier(int iAffliction) const;
 
 	int getNumAfflictOnAttackTypes() const;
 	const AfflictOnAttack& getAfflictOnAttackType(int iAfflictionLine) const;
+
+	int getNumAidChanges() const;
+	int getAidChange(int iProperty) const;
+	bool isAidChange(int iProperty) const;
+#endif // OUTBREAKS_AND_AFFLICTIONS
 
 	int getNumHealUnitCombatTypes() const;
 	const HealUnitCombat& getHealUnitCombatType(int iUnitCombat) const;
@@ -2032,11 +2040,9 @@ public:
 	int getNumVisibleImprovementRangeChanges() const;
 	const AfflictionLineChanges& getDistanceAttackCommunicabilityTypeChange(int iIndex) const;
 
-	//Bool vector utilizing delayed resolution
 	int getNumEnabledCivilizationTypes() const;
 	const EnabledCivilizations& getEnabledCivilizationType(int iIndex) const;
 
-	// int vector utilizing pairing without delayed resolution
 	int getNumFlankingStrikesbyUnitCombatTypes() const;
 	int getFlankingStrengthbyUnitCombatType(int iUnitCombat) const;
 	bool isFlankingStrikebyUnitCombatType(int iUnitCombat) const;
@@ -2127,8 +2133,6 @@ public:
 	bool isVisibilityIntensityRangeType(int iInvisibility) const;
 	const InvisibilityArray& getVisibilityIntensityRangeTypes() const;
 
-	//Team Project (4)
-		//WorkRateMod
 	int getNumTerrainWorkRateModifierTypes() const;
 	int getTerrainWorkRateModifierType(int iTerrain) const;
 	bool isTerrainWorkRateModifierType(int iTerrain) const;
@@ -2141,40 +2145,27 @@ public:
 	int getBuildWorkRateModifierType(int iBuild) const;
 	bool isBuildWorkRateModifierType(int iBuild) const;
 
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	int getNumAidChanges() const;
-	int getAidChange(int iProperty) const;
-	bool isAidChange(int iProperty) const;
-#endif
-	// TB Combat Mod End TB SubCombat Mod end
-
 	bool hasUnitCombat(UnitCombatTypes eUnitCombat) const;
-	void setTotalModifiedCombatStrengthDetails();
-	int getCombatStrengthModifier() const;
-	int getTotalModifiedCombatStrength100() const;
-	int getTotalModifiedAirCombatStrength100() const;
-	int getApproaching0Return(int i) const;
+	int getTotalModifiedCombatStrength100(const bool bSizeMatters) const;
 	int getBaseGroupRank() const;
-	void setBaseCargoVolume();
 	int getBaseCargoVolume() const;
-	void setBaseSizeMattersZeroPoints();
-	int getSMRankTotal() const;
-	int getSMVolumetricRankTotal() const;
 
-	void setSM();
-	int getQualifiedPromotionType(int i) const;
-	int getNumQualifiedPromotionTypes() const;
 	bool isQualifiedPromotionType(int i) const;
+	bool setQualifiedPromotionType(const int iPromo, std::vector<int>& checklist);
 	void setQualifiedPromotionTypes();
 	void setCanAnimalIgnores();
 
-	virtual const wchar_t* getExtraHoverText() const;
+	const std::vector<BonusTypes>& getPrereqOrBonuses() const;
+	const std::vector<BonusTypes>& getPrereqOrVicinityBonuses() const;
+	const std::vector<TechTypes>& getPrereqAndTechs() const;
+	const std::vector<HeritageTypes>& getPrereqAndHeritage() const { return m_prereqAndHeritage; }
+	const std::vector<HeritageTypes>& getPrereqOrHeritage() const { return m_prereqOrHeritage; }
 
-	void getCheckSum(unsigned int& iSum) const;
+	virtual const wchar_t* getExtraHoverText() const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
-	BoolExpr* getTrainCondition() const;
+	const BoolExpr* getTrainCondition() const;
 
 protected:
 	int m_iMaxGlobalInstances;
@@ -2182,7 +2173,7 @@ protected:
 	bool m_bUnlimitedException;
 	int m_iInstanceCostModifier;
 	bool* m_pbPassableRouteNeeded;
-	int* m_piPrereqOrVicinityBonuses;
+	std::vector<BonusTypes> m_piPrereqOrVicinityBonuses;
 	bool m_bWorkerTrade;
 	bool m_bMilitaryTrade;
 	bool m_bForceUpgrade;
@@ -2203,7 +2194,7 @@ protected:
 	std::vector<CvString> m_aszCivilizationNamesforPass3;
 	std::vector<CvWString> m_aszCivilizationNamesValueforPass3;
 
-	BoolExpr* m_pExprTrainCondition;
+	const BoolExpr* m_pExprTrainCondition;
 
 public:
 	int getDCMBombRange() const;
@@ -2215,26 +2206,19 @@ public:
 	bool getDCMAirBomb5() const;
 	bool getDCMFighterEngage() const;
 
-	bool isCanBeRebel() const;
-	bool isCanRebelCapture() const;
-	bool isCannotDefect() const;
-	bool isCanQuellRebellion() const;
-
 	float getUnitMaxSpeed() const;
 	float getUnitPadTime() const;
 
 	bool canAcquireExperience() const;
 
 	// Arrays
-	int getPrereqAndTechs(int i) const;
-	int getPrereqOrBonuses(int i) const;
 	int getFlavorValue(int i) const;
 	int getTerrainAttackModifier(int i) const;
 	int getTerrainDefenseModifier(int i) const;
 	int getFeatureAttackModifier(int i) const;
 	int getFeatureDefenseModifier(int i) const;
-	int getUnitAttackModifier(int i) const;
-	int getUnitDefenseModifier(int i) const;
+	const IDValueMap<UnitTypes, int>& getUnitAttackModifiers() const { return m_piUnitAttackModifier; }
+	const IDValueMap<UnitTypes, int>& getUnitDefenseModifiers() const { return m_piUnitDefenseModifier; }
 	int getUnitCombatModifier(int i) const;
 	int getUnitCombatCollateralImmune(int i) const;
 	int getDomainModifier(int i) const;
@@ -2244,13 +2228,19 @@ public:
 	int getCorporationSpreads(int i) const;
 	int getTerrainPassableTech(int i) const;
 	int getFeaturePassableTech(int i) const;
-	int getFlankingStrikeUnit(int i) const;
+	const IDValueMap<UnitTypes, int, -1>& getFlankingStrikeUnits() const { return m_piFlankingStrikeUnit; }
 
 	bool isPrereqOrCivics(int i) const;
 
-	int CvUnitInfo::getPrereqAndBuilding(int i) const;
-	int CvUnitInfo::getNumPrereqAndBuildings() const;
-	bool CvUnitInfo::isPrereqAndBuilding(int i) const;
+	const std::vector<BuildTypes>& getBuilds() const { return m_workerBuilds; }
+	BuildTypes getBuild(int i) const;
+	short getNumBuilds() const;
+	bool hasBuild(BuildTypes e) const;
+
+	int getPrereqAndBuilding(int i) const;
+	int getNumPrereqAndBuildings() const;
+	bool isPrereqAndBuilding(int i) const;
+	bool isPrereqOrBuilding(int i) const;
 
 	int getTargetUnit(int i) const;
 	int getNumTargetUnits() const;
@@ -2269,21 +2259,22 @@ public:
 	bool isUnitUpgrade(int i) const;
 
 	std::vector<int> getUnitUpgradeChain() const;
-	void CvUnitInfo::addUnitToUpgradeChain(int i);
+	void addUnitToUpgradeChain(int i);
 
 	bool getTargetUnitCombat(int i) const;
 	bool getDefenderUnitCombat(int i) const;
 	bool getUnitAIType(int i) const;
 	bool getNotUnitAIType(int i) const;
-	bool getBuilds(int i) const;
 	bool getGreatPeoples(int i) const;
 
 	int getBuildings(int i) const;
 	bool getHasBuilding(int i) const;
 	int getNumBuildings() const;
 
-	//bool getTerrainImpassable(int i) const;
-	//bool getFeatureImpassable(int i) const;
+	int getHeritage(int i) const;
+	bool getHasHeritage(int i) const;
+	int getNumHeritage() const;
+
 	bool getTerrainNative(int i) const;
 	bool getFeatureNative(int i) const;
 	bool getFreePromotions(int i) const;
@@ -2296,34 +2287,32 @@ public:
 	MissionTypes getActionOutcomeMission(int index) const;
 	const CvOutcomeList* getActionOutcomeListByMission(MissionTypes eMission) const;
 	const CvOutcomeMission* getOutcomeMission(int index) const;
-	CvOutcomeMission* getOutcomeMissionByMission(MissionTypes eMission) const;
+	const CvOutcomeMission* getOutcomeMissionByMission(MissionTypes eMission) const;
 
-	const TCHAR* getEarlyArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setEarlyArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getLateArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setLateArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getMiddleArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
-	void setMiddleArtDefineTag(int i, const TCHAR* szVal);
-	const TCHAR* getUnitNames(int i) const;
-	const TCHAR* getFormationType() const;
+	const char* getEarlyArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setEarlyArtDefineTag(int i, const char* szVal);
+	const char* getLateArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setLateArtDefineTag(int i, const char* szVal);
+	const char* getMiddleArtDefineTag(int i, UnitArtStyleTypes eStyle) const;
+	void setMiddleArtDefineTag(int i, const char* szVal);
+	const char* getUnitNames(int i) const;
+	const char* getFormationType() const;
 
-	const TCHAR* getButton() const;
+	const char* getButton() const;
 	void updateArtDefineButton();
 
 	const CvArtInfoUnit* getArtInfo(int i, EraTypes eEra, UnitArtStyleTypes eStyle) const;
 
+	void getDataMembers(CvInfoUtil& util);
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
 	bool readPass3();
 	void copyNonDefaults(CvUnitInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvUnitInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
-
-	std::vector<int>& getSubCombatTypes();
+	void getCheckSum(uint32_t& iSum) const;
+	void doPostLoadCaching(uint32_t iThis);
 
 private:
 	CvPropertyManipulators m_PropertyManipulators;
 
-protected:
 	int m_iDCMBombRange;
 	int m_iDCMBombAccuracy;
 	bool m_bDCMFighterEngage;
@@ -2377,7 +2366,6 @@ protected:
 	int m_iBombRate;
 	int m_iBombardRate;
 	int m_iSpecialCargo;
-	int m_iSMSpecialCargo;
 	int m_iSMNotSpecialCargo;
 	int m_iDomainCargo;
 	int m_iCargoSpace;
@@ -2389,14 +2377,14 @@ protected:
 	int m_iAssetValue;
 	int m_iPowerValue;
 	int m_iSpecialUnitType;
-	int m_iUnitCaptureType;
+	UnitTypes m_eUnitCaptureType;
 	int m_iUnitCombatType;
-	int m_iDomainType;
-	int m_iDefaultUnitAIType;
+	DomainTypes m_iDomainType;
+	UnitAITypes m_iDefaultUnitAIType;
 	int m_iInvisibleType;
 	int m_iAdvisorType;
 	int m_iMaxStartEra;
-	int m_iForceObsoleteTech;
+	int m_iObsoleteTech;
 	bool m_bStateReligion;
 	int m_iPrereqGameOption;
 	int m_iNotGameOption;
@@ -2408,9 +2396,11 @@ protected:
 	int m_iPrereqAndTech;
 	int m_iPrereqAndBonus;
 
+	std::vector<BuildTypes> m_workerBuilds;
+	std::vector<HeritageTypes> m_prereqAndHeritage;
+	std::vector<HeritageTypes> m_prereqOrHeritage;
 	std::vector<int> m_aiPrereqAndBuildings;
 	std::vector<int> m_aiPrereqOrBuildings;
-
 	std::vector<int> m_aiTargetUnit;
 	std::vector<int> m_aiDefendAgainstUnit;
 	std::vector<int> m_aiSupersedingUnits;
@@ -2429,7 +2419,6 @@ protected:
 	bool m_bNoBadGoodies;
 	bool m_bOnlyDefensive;
 	bool m_bNoCapture;
-	bool m_bQuickCombat;
 	bool m_bRivalTerritory;
 	bool m_bMilitaryHappiness;
 	bool m_bMilitarySupport;
@@ -2462,10 +2451,6 @@ protected:
 	bool m_bFreeDrop;
 	bool m_bNoRevealMap;
 	bool m_bInquisitor;
-	bool m_bCanBeRebel;
-	bool m_bCanRebelCapture;
-	bool m_bCannotDefect;
-	bool m_bCanQuellRebellion;
 
 	//ls612: Can't enter non-Owned cities
 	bool m_bNoNonOwnedEntry;
@@ -2477,15 +2462,15 @@ protected:
 
 	// Arrays
 
-	int* m_piPrereqAndTechs;
-	int* m_piPrereqOrBonuses;
+	std::vector<TechTypes> m_piPrereqAndTechs;
+	std::vector<BonusTypes> m_piPrereqOrBonuses;
 	int* m_piFlavorValue;
 	int* m_piTerrainAttackModifier;
 	int* m_piTerrainDefenseModifier;
 	int* m_piFeatureAttackModifier;
 	int* m_piFeatureDefenseModifier;
-	int* m_piUnitAttackModifier;
-	int* m_piUnitDefenseModifier;
+	IDValueMap<UnitTypes, int> m_piUnitAttackModifier;
+	IDValueMap<UnitTypes, int> m_piUnitDefenseModifier;
 	int* m_piUnitCombatModifier;
 	int* m_piUnitCombatCollateralImmune;
 	int* m_piDomainModifier;
@@ -2495,7 +2480,7 @@ protected:
 	int* m_piCorporationSpreads;
 	int* m_piTerrainPassableTech;
 	int* m_piFeaturePassableTech;
-	int* m_piFlankingStrikeUnit;
+	IDValueMap<UnitTypes, int, -1> m_piFlankingStrikeUnit;
 
 	bool* m_pbPrereqOrCivics;
 
@@ -2503,9 +2488,9 @@ protected:
 	bool* m_pbDefenderUnitCombat;
 	bool* m_pbUnitAIType;
 	bool* m_pbNotUnitAIType;
-	bool* m_pbBuilds;
 	bool* m_pbGreatPeoples;
 	std::vector<int> m_pbBuildings;
+	std::vector<int> m_addHeritage;
 	bool* m_pbTerrainNative;
 	bool* m_pbFeatureNative;
 	//bool* m_pbTerrainImpassable;
@@ -2523,7 +2508,7 @@ protected:
 	std::vector<int> m_aiSeeInvisibleTypes;
 
 	CvOutcomeList m_KillOutcomeList;
-	std::vector<CvOutcomeMission*> m_aOutcomeMissions;
+	std::vector<const CvOutcomeMission*> m_aOutcomeMissions;
 
 	//TB Combat Mods Start  TB SubCombat Mod begin
 	//integers
@@ -2570,10 +2555,8 @@ protected:
 	int m_iEndurance;
 	int m_iRoundStunProb;
 	int m_iPoisonProbabilityModifier;
-	//Team Project (3)
 	int m_iCaptureProbabilityModifier;
 	int m_iCaptureResistanceModifier;
-	//Team Project (4)
 	//WorkRateMod
 	int m_iHillsWorkModifier;
 	int m_iPeaksWorkModifier;
@@ -2594,8 +2577,6 @@ protected:
 	int m_iCombatModifierPerSizeLess;
 	int m_iCombatModifierPerVolumeMore;
 	int m_iCombatModifierPerVolumeLess;
-	int m_iBaseSMRankTotal;
-	int m_iBaseSMVolumetricRankTotal;
 	int m_iSelfHealModifier;
 	int m_iNumHealSupport;
 	int m_iInsidiousness;
@@ -2616,6 +2597,7 @@ protected:
 	bool m_bDealsColdDamage;
 	bool m_bColdImmune;
 	bool m_bAttackOnlyCities;
+	bool m_bOnlyAttackAnimals;
 	bool m_bIgnoreNoEntryLevel;
 	bool m_bIgnoreZoneofControl;
 	bool m_bFliesToMove;
@@ -2628,6 +2610,7 @@ protected:
 	bool m_bBlendIntoCity;
 	bool m_bUpgradeAnywhere;
 	bool m_bAssassin;
+	bool m_bNoAmbush;
 	bool m_bStealthDefense;
 	bool m_bNoInvisibility;
 	bool m_bTriggerBeforeAttack;
@@ -2636,18 +2619,18 @@ protected:
 	bool m_bCanAnimalIgnoresCities;
 	bool m_bNoNonTypeProdMods;
 	bool m_bGatherHerd;
-	//boolean vectors without delayed resolution
-	std::vector<int> m_aiSubCombatTypes;
+	bool m_bCanMergeSplit;
+
+	std::vector<UnitCombatTypes> m_aiSubCombatTypes;
 	std::vector<int> m_aiCureAfflictionTypes;
 	std::vector<int> m_aiHealAsTypes;
-	std::vector<int> m_aiTerrainImpassableTypes;
-	std::vector<int> m_aiFeatureImpassableTypes;
-	std::vector<int> m_aiMapTypes;
+	std::vector<TerrainTypes> m_vTerrainImpassableTypes;
+	std::vector<FeatureTypes> m_vFeatureImpassableTypes;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
 	std::vector<int> m_aiTrapSetWithPromotionTypes;
 	std::vector<int> m_aiTrapImmunityUnitCombatTypes;
-	// int vectors utilizing struct with delayed resolution
-	std::vector<PromotionLineModifier> m_aAfflictionFortitudeModifiers;
-	std::vector<AfflictOnAttack> m_aAfflictOnAttackTypes;
+	std::vector<int> m_aiCategories;
+
 	std::vector<HealUnitCombat> m_aHealUnitCombatTypes;
 	std::vector<GroupSpawnUnitCombat> m_aGroupSpawnUnitCombatTypes;
 	std::vector<InvisibleTerrainChanges> m_aInvisibleTerrainChanges;
@@ -2659,9 +2642,7 @@ protected:
 	std::vector<InvisibleTerrainChanges> m_aVisibleTerrainRangeChanges;
 	std::vector<InvisibleFeatureChanges> m_aVisibleFeatureRangeChanges;
 	std::vector<InvisibleImprovementChanges> m_aVisibleImprovementRangeChanges;
-	std::vector<AfflictionLineChanges> m_aDistanceAttackCommunicabilityTypeChanges;
 	std::vector<EnabledCivilizations> m_aEnabledCivilizationTypes;
-	// int vectors utilizing pairing without delayed resolution
 	UnitCombatModifierArray m_aFlankingStrengthbyUnitCombatType;
 	TerrainModifierArray m_aWithdrawOnTerrainTypes;
 	FeatureModifierArray m_aWithdrawOnFeatureTypes;
@@ -2681,15 +2662,16 @@ protected:
 	InvisibilityArray m_aVisibilityIntensityTypes;
 	InvisibilityArray m_aInvisibilityIntensityTypes;
 	InvisibilityArray m_aVisibilityIntensityRangeTypes;
-	//Team Project (4)
-		//WorkRateMod
 	TerrainModifierArray m_aTerrainWorkRateModifierTypes;
 	FeatureModifierArray m_aFeatureWorkRateModifierTypes;
 	BuildModifierArray m_aBuildWorkRateModifierTypes;
 #ifdef OUTBREAKS_AND_AFFLICTIONS
+	std::vector<AfflictionLineChanges> m_aDistanceAttackCommunicabilityTypeChanges;
+	std::vector<PromotionLineModifier> m_aAfflictionFortitudeModifiers;
+	std::vector<AfflictOnAttack> m_aAfflictOnAttackTypes;
 	AidArray m_aAidChanges;
-#endif
-	//TB Combat Mods End  TB SubCombat Mod end
+#endif // OUTBREAKS_AND_AFFLICTIONS
+
 	//Pediahelp
 	std::vector<int> m_aiQualifiedPromotionTypes;
 };
@@ -2702,7 +2684,9 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-class CvSpawnInfo : public CvInfoBase
+class CvSpawnInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvSpawnInfo();
@@ -2711,22 +2695,18 @@ public:
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(CvSpawnInfo* pClassInfo);
 
-	int	getNumBonuses() const;
-	int	getNumTerrains() const;
-	int	getNumFeatures() const;
-	int	getNumFeatureTerrains() const;
-	int	getNumSpawnGroup() const;
+	const std::vector<BonusTypes>& getBonuses() const { return m_bonusTypes; }
+	const std::vector<UnitTypes>& getSpawnGroups() const { return m_spawnGroup; }
+	const std::vector<TerrainTypes>& getTerrain() const { return m_terrainTypes; }
+	const std::vector<FeatureTypes>& getFeatures() const { return m_featureTypes; }
+	const std::vector<TerrainTypes>& getFeatureTerrain() const { return m_featureTerrainTypes; }
+
 	PlayerTypes getPlayer() const;
-	BonusTypes getBonus(int index) const;
-	TerrainTypes getTerrain(int index) const;
-	FeatureTypes getFeature(int index) const;
-	TerrainTypes getFeatureTerrain(int index) const;
-	UnitTypes getSpawnGroup(int index) const;
 	int getTurnRate() const;
 	int getGlobalTurnRate() const;
 	int getMaxLocalDensity() const;
-	int getMaxAreaTotalDensity() const;
-	int getMaxAreaUnitDensity() const;
+	int getMinAreaPlotsPerPlayerUnit() const;
+	int getMinAreaPlotsPerUnitType() const;
 	int getStartDate() const;
 	int	getEndDate() const;
 	int	getMinLatitude() const;
@@ -2744,23 +2724,23 @@ public:
 	bool getFreshWaterOnly() const;
 	int getRateOverride() const;
 	UnitTypes getUnitType() const;
-	TechTypes getPrereqTechType() const;
-	TechTypes getObsoleteTechType() const;
+	TechTypes getPrereqTech() const			{ return m_ePrereqTech; }
+	TechTypes getObsoleteTech() const		{ return m_eObsoleteTechType; }
 
-	BoolExpr* getSpawnCondition() const;
+	const BoolExpr* getSpawnCondition() const;
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	UnitTypes				m_eUnitType;
-	TechTypes				m_ePrereqTechType;
+	TechTypes				m_ePrereqTech;
 	TechTypes				m_eObsoleteTechType;
 	int						m_iPlayerType;
 	int						m_iTurns;
 	int						m_iGlobalTurns;
 	int						m_iMaxLocalDensity;
-	int						m_iMaxAreaTotalDensity;
-	int						m_iMaxAreaUnitDensity;
+	int						m_iMinAreaPlotsPerPlayerUnit;
+	int						m_iMinAreaPlotsPerUnitType;
 	int						m_iStartDate;
 	int						m_iEndDate;
 	bool					m_bTreatAsBarbarian;
@@ -2785,7 +2765,7 @@ private:
 	std::vector<TerrainTypes>	m_featureTerrainTypes;
 	std::vector<UnitTypes>		m_spawnGroup;
 
-	BoolExpr*				m_pExprSpawnCondition;
+	const BoolExpr*				m_pExprSpawnCondition;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2821,7 +2801,9 @@ public:
 	float m_fFacingVariance;
 };
 
-class CvUnitFormationInfo : public CvInfoBase
+class CvUnitFormationInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -2829,7 +2811,7 @@ public:
 	DllExport CvUnitFormationInfo();
 	virtual ~CvUnitFormationInfo();
 
-	DllExport const TCHAR* getFormationType() const;
+	DllExport const char* getFormationType() const;
 	int getNumEventTypes() const;
 	const EntityEventTypes &getEventType(int index) const;
 	DllExport const std::vector<EntityEventTypes> & getEventTypes() const;
@@ -2864,8 +2846,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSpecialUnitInfo :
-	public CvInfoBase
+class CvSpecialUnitInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -2889,7 +2872,7 @@ public:
 
 	void copyNonDefaults(const CvSpecialUnitInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 
@@ -2914,8 +2897,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCivicOptionInfo :
-	public CvInfoBase
+class CvCivicOptionInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -2943,8 +2927,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCivicInfo :
-	public CvInfoBase
+class CvCivicInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -2985,7 +2970,7 @@ public:
 	int getWarWearinessModifier() const;
 	int getFreeSpecialist() const;
 	int getTradeRoutes() const;
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getCivicPercentAnger() const;
 	int getMaxConscript() const;
 	int getStateReligionHappiness() const;
@@ -3023,7 +3008,6 @@ public:
 	int getHurryCostModifier() const;
 	int getSharedCivicTradeRouteModifier() const;
 	int getCorporationSpreadRate() const;
-	int getRealCorporationMaintenanceModifier() const;
 	int getFreedomFighterChange() const;
 
 	float getRevIdxNationalityMod() const;
@@ -3048,7 +3032,6 @@ public:
 	bool IsFixedBorders() const;
 	bool isNoCapitalUnhappiness() const;
 	bool isNoLandmarkAnger() const;
-	bool isEnablesMAD() const;
 	bool isAllReligionsActive() const;
 	bool isBansNonStateReligions() const;
 	bool isFreedomFighter() const;
@@ -3076,6 +3059,10 @@ public:
 	int getBonusCommerceModifier(int i, int j) const;
 	int* getBonusCommerceModifierArray(int i) const;
 
+	int getBuildingProductionModifier(BuildingTypes e) const;
+	const IDValueMap<BuildingTypes, int>& getBuildingProductionModifiers() const { return m_aBuildingProductionModifier; }
+	const boost::python::list cyGetBuildingProductionModifiers() const { return m_aBuildingProductionModifier.makeList(); }
+
 	int getBuildingHappinessChanges(int i) const;
 	int getBuildingHealthChanges(int i) const;
 	int getFeatureHappinessChanges(int i) const;
@@ -3083,7 +3070,6 @@ public:
 	int getFreeSpecialistCount(int i) const;
 	int getFlavorValue(int i) const;
 	int getUnitCombatProductionModifier(int i) const;
-	int getBuildingProductionModifier(int i) const;
 	int getUnitProductionModifier(int i) const;
 	int getImprovementHappinessChanges(int i) const;
 	int getImprovementHealthPercentChanges(int i) const;
@@ -3117,10 +3103,15 @@ public:
 	CvString getCivicAttitudeReasonNamesVectorElement(int i) const;
 	CvString getCivicAttitudeReasonValuesVectorElement(int i) const;
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
 	bool readPass3();
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvCivicInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
+
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
@@ -3147,7 +3138,6 @@ protected:
 	int m_iSharedCivicTradeRouteModifier;
 	int m_iLandmarkHappiness;
 	int m_iCorporationSpreadRate;
-	int m_iRealCorporationMaintenanceModifier;
 	int m_iCityLimit;
 	int m_iCityOverLimitUnhappy;
 	int m_iForeignerUnhappyPercent;
@@ -3180,7 +3170,7 @@ protected:
 	int m_iWarWearinessModifier;
 	int m_iFreeSpecialist;
 	int m_iTradeRoutes;
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 	int m_iCivicPercentAnger;
 	int m_iMaxConscript;
 	int m_iStateReligionHappiness;
@@ -3211,7 +3201,6 @@ protected:
 	bool m_bFixedBorders;
 	bool m_bNoCapitalUnhappiness;
 	bool m_bNoLandmarkAnger;
-	bool m_bEnablesMAD;
 	bool m_bUpgradeAnywhere;
 	bool m_bAllowInquisitions;
 	bool m_bDisallowInquisitions;
@@ -3248,7 +3237,6 @@ protected:
 	int* m_piSpecialistExtraCommerce;
 
 	int* m_paiUnitCombatProductionModifier;
-	int* m_paiBuildingProductionModifier;
 	int* m_paiBuildingHappinessChanges;
 	int* m_paiBuildingHealthChanges;
 	int* m_paiFeatureHappinessChanges;
@@ -3265,6 +3253,10 @@ protected:
 	int** m_ppiBonusCommerceModifier;
 	int** m_ppiImprovementYieldChanges;
 
+	std::vector<int> m_aiCategories;
+
+	IDValueMap<BuildingTypes, int> m_aBuildingProductionModifier;
+
 	std::vector<CvString> m_aszUnitProdModforPass3;
 	std::vector<int> m_aiUnitProdModforPass3;
 
@@ -3276,63 +3268,23 @@ protected:
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-//  class : CvDiplomacyInfo
-//
-//  DESC:
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvDiplomacyInfo :
-	public CvInfoBase
-{
-
-	friend class CvXMLLoadUtility;		// so it can access private vars to initialize the class
-	//---------------------------PUBLIC INTERFACE---------------------------------
-public:
-
-	CvDiplomacyInfo();
-	virtual ~CvDiplomacyInfo();
-
-	void uninit();
-
-	const CvDiplomacyResponse& getResponse(int iNum) const;
-	int getNumResponses() const;
-
-	bool getCivilizationTypes(int i, int j) const;
-	bool getLeaderHeadTypes(int i, int j) const;
-	bool getAttitudeTypes(int i, int j) const;
-	bool getDiplomacyPowerTypes(int i, int j) const;
-
-	int getNumDiplomacyText(int i) const;
-
-	const TCHAR* getDiplomacyText(int i, int j) const;
-
-	bool read(CvXMLLoadUtility* pXML);
-	void copyNonDefaults(CvXMLLoadUtility* pXML);
-	bool FindResponseIndex(const CvDiplomacyResponse* pNewResponse, int iCase, int* iIndex) const;
-
-private:
-	std::vector<CvDiplomacyResponse*> m_pResponses;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
 //  class : CvSpecialBuildingInfo
 //
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSpecialBuildingInfo :
-	public CvInfoBase
+class CvSpecialBuildingInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
-
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
 
 	CvSpecialBuildingInfo();
 	virtual ~CvSpecialBuildingInfo();
 
-	int getObsoleteTech() const;
-	int getTechPrereq() const;
+	TechTypes getObsoleteTech() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getTechPrereqAnyone() const;
 	int getMaxPlayerInstances() const;
 
@@ -3342,13 +3294,13 @@ public:
 
 	void copyNonDefaults(const CvSpecialBuildingInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
 
-	int m_iObsoleteTech;
-	int m_iTechPrereq;
+	TechTypes m_iObsoleteTech;
+	TechTypes m_iTechPrereq;
 	int m_iTechPrereqAnyone;
 	int m_iMaxPlayerInstances;
 
@@ -3362,8 +3314,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvRiverModelInfo :
-	public CvInfoBase
+class CvRiverModelInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3371,13 +3324,13 @@ public:
 	CvRiverModelInfo();
 	virtual ~CvRiverModelInfo();
 
-	DllExport const TCHAR* getModelFile() const;
-	DllExport const TCHAR* getBorderFile() const;
+	DllExport const char* getModelFile() const;
+	DllExport const char* getBorderFile() const;
 
 	DllExport int getTextureIndex() const;
-	DllExport const TCHAR* getDeltaString() const;
-	DllExport const TCHAR* getConnectString() const;
-	DllExport const TCHAR* getRotateString() const;
+	DllExport const char* getDeltaString() const;
+	DllExport const char* getConnectString() const;
+	DllExport const char* getRotateString() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvRiverModelInfo* pClassInfo);
@@ -3389,9 +3342,9 @@ protected:
 	CvString m_szModelFile;					// The model filename
 	CvString m_szBorderFile;				// The border filename
 
-	TCHAR		m_szDeltaString[32];		// The delta type
-	TCHAR		m_szConnectString[32];		// The connections this cell makes ( N S E W NE NW SE SW )
-	TCHAR		m_szRotateString[32];		// The possible rotations for this cell ( 0 90 180 270 )
+	char		m_szDeltaString[32];		// The delta type
+	char		m_szConnectString[32];		// The connections this cell makes ( N S E W NE NW SE SW )
+	char		m_szRotateString[32];		// The possible rotations for this cell ( 0 90 180 270 )
 	int			m_iTextureIndex;
 };
 
@@ -3402,8 +3355,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvRouteModelInfo :
-	public CvInfoBase
+class CvRouteModelInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3411,17 +3365,17 @@ public:
 	CvRouteModelInfo();
 	virtual ~CvRouteModelInfo();
 
-	DllExport RouteTypes getRouteType() const;			// The route type
+	DllExport RouteTypes getRouteType() const;
 
-	DllExport const TCHAR* getModelFile() const;
-	DllExport const TCHAR* getLateModelFile() const;
-	const TCHAR* getModelFileKey() const;
+	DllExport const char* getModelFile() const;
+	DllExport const char* getLateModelFile() const;
+	const char* getModelFileKey() const;
 
 	DllExport bool isAnimated() const;
 
-	DllExport const TCHAR* getConnectString() const;
-	DllExport const TCHAR* getModelConnectString() const;
-	DllExport const TCHAR* getRotateString() const;
+	DllExport const char* getConnectString() const;
+	DllExport const char* getModelConnectString() const;
+	DllExport const char* getRotateString() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvRouteModelInfo* pClassInfo);
@@ -3437,9 +3391,9 @@ protected:
 	CvString m_szModelFileKey;			// The model file key reference
 	bool m_bAnimated;
 
-	TCHAR	m_szConnectString[32];		// The connections this cell makes ( N S E W NE NW SE SW )
-	TCHAR	m_szModelConnectString[32];	// The connections this model makes ( N S E W NE NW SE SW )
-	TCHAR	m_szRotateString[32];		// The possible rotations for this cell ( 0 90 180 270 )
+	char m_szConnectString[32];		// The connections this cell makes ( N S E W NE NW SE SW )
+	char m_szModelConnectString[32];	// The connections this model makes ( N S E W NE NW SE SW )
+	char m_szRotateString[32];		// The possible rotations for this cell ( 0 90 180 270 )
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3450,8 +3404,9 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvArtInfoCivilization;
-class CvCivilizationInfo :
-	public CvInfoBase
+class CvCivilizationInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3482,14 +3437,10 @@ public:
 	const wchar_t* getAdjectiveKey() const;
 	const std::wstring pyGetAdjectiveKey() const { return getAdjectiveKey(); }
 
-	DllExport const TCHAR* getFlagTexture() const;
-	const TCHAR* getArtDefineTag() const;
+	DllExport const char* getFlagTexture() const;
+	const char* getArtDefineTag() const;
 
-	// Arrays
-
-	int getCivilizationFreeUnits(int i) const;
 	int getCivilizationInitialCivics(int i) const;
-	// Afforess 04/05/10
 	void setCivilizationInitialCivics(int iCivicOption, int iCivic);
 
 	DllExport bool isLeaders(int i) const;
@@ -3504,9 +3455,9 @@ public:
 	std::string getCityNames(int i) const;
 
 	const CvArtInfoCivilization* getArtInfo() const;
-	const TCHAR* getButton() const;
+	const char* getButton() const;
 
-	int getDerivativeCiv() const;
+	CivilizationTypes getDerivativeCiv() const { return m_iDerivativeCiv; }
 
 	//TB Tags
 	//int
@@ -3517,24 +3468,19 @@ public:
 	bool isStronglyRestricted() const;
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvCivilizationInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvCivilizationInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
-
 protected:
-
 	int m_iDefaultPlayerColor;
 	int m_iArtStyleType;
-	int m_iUnitArtStyleType; // FlavorUnits by Impaler[WrG]
+	int m_iUnitArtStyleType;
 	int m_iNumCityNames;
 	int m_iNumLeaders;
 	int m_iSelectionSoundScriptId;
 	int m_iActionSoundScriptId;
-	int m_iDerivativeCiv;
+	CivilizationTypes m_iDerivativeCiv;
 	// TB Tags
 	int m_iSpawnRateModifier;
 	int m_iSpawnRateNPCPeaceModifier;
@@ -3548,7 +3494,6 @@ protected:
 	CvWString m_szShortDescriptionKey;
 	CvWString m_szAdjectiveKey;
 
-	int* m_piCivilizationFreeUnits;
 	int* m_piCivilizationInitialCivics;
 
 	bool* m_pbLeaders;
@@ -3570,8 +3515,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvVictoryInfo :
-	public CvInfoBase
+class CvVictoryInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3586,10 +3532,9 @@ public:
 	int getCityCulture() const;
 	int getNumCultureCities() const;
 	int getTotalCultureRatio() const;
-	//Sevo VCM
-	bool isTotalVictory() const;
 	int getVictoryDelayTurns() const;
 
+	bool isTotalVictory() const;
 	bool isTargetScore() const;
 	bool isEndScore() const;
 	bool isConquest() const;
@@ -3600,7 +3545,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvVictoryInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 
@@ -3620,7 +3565,6 @@ protected:
 	bool m_bConquest;
 	bool m_bDiploVote;
 	bool m_bPermanent;
-	//Sevo VCM
 	bool m_bTotalVictory;
 
 	CvString m_szMovie;
@@ -3633,31 +3577,32 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvHurryInfo :
-	public CvInfoBase
+class CvHurryInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
-	//---------------------------PUBLIC INTERFACE---------------------------------
-	public:
+//---------------------------PUBLIC INTERFACE---------------------------------
+public:
 
-		CvHurryInfo();
-		virtual ~CvHurryInfo();
+	CvHurryInfo();
+	virtual ~CvHurryInfo();
 
-		int getGoldPerProduction() const;
-		int getProductionPerPopulation() const;
+	int getGoldPerProduction() const;
+	int getProductionPerPopulation() const;
 
-		bool isAnger() const;
+	bool isAnger() const;
 
-		bool read(CvXMLLoadUtility* pXML);
-		void copyNonDefaults(const CvHurryInfo* pClassInfo);
-		void getCheckSum(unsigned int& iSum) const;
+	bool read(CvXMLLoadUtility* pXML);
+	void copyNonDefaults(const CvHurryInfo* pClassInfo);
+	void getCheckSum(uint32_t& iSum) const;
 
-	//---------------------------------------PUBLIC MEMBER VARIABLES---------------------------------
-	protected:
+//---------------------------------------PUBLIC MEMBER VARIABLES---------------------------------
+protected:
 
-		int m_iGoldPerProduction;
-		int m_iProductionPerPopulation;
+	int m_iGoldPerProduction;
+	int m_iProductionPerPopulation;
 
-		bool m_bAnger;
+	bool m_bAnger;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3667,8 +3612,9 @@ class CvHurryInfo :
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvHandicapInfo :
-	public CvInfoBase
+class CvHandicapInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3678,13 +3624,9 @@ public:
 
 	int getFreeWinsVsBarbs() const;
 	int getAnimalAttackProb() const;
-	int getStartingLocationPercent() const;
 	int getAdvancedStartPointsMod() const;
 	int getStartingGold() const;
 	int getUnitUpkeepPercent() const;
-	int getTrainPercent() const;
-	int getConstructPercent() const;
-	int getResearchPercent() const;
 	int getDistanceMaintenancePercent() const;
 	int getNumCitiesMaintenancePercent() const;
 	int getColonyMaintenancePercent() const;
@@ -3700,8 +3642,6 @@ public:
 	int getAttitudeChange() const;
 	int getNoTechTradeModifier() const;
 	int getTechTradeKnownModifier() const;
-	int getUnownedTilesPerGameAnimal() const;
-	int getUnownedTilesPerBarbarianUnit() const;
 	int getUnownedWaterTilesPerBarbarianUnit() const;
 	int getUnownedTilesPerBarbarianCity() const;
 	int getBarbarianCityCreationTurnsElapsed() const;
@@ -3709,12 +3649,12 @@ public:
 	int getAnimalCombatModifier() const;
 	int getBarbarianCombatModifier() const;
 	int getAIAnimalCombatModifier() const;
+	inline int getSubdueAnimalBonusAI() const { return m_iSubdueAnimalBonusAI; }
 	int getAIBarbarianCombatModifier() const;
 
 	int getStartingDefenseUnits() const;
 	int getStartingWorkerUnits() const;
 	int getStartingExploreUnits() const;
-	int getAIStartingUnitMultiplier() const;
 	int getAIStartingDefenseUnits() const;
 	int getAIStartingWorkerUnits() const;
 	int getAIStartingExploreUnits() const;
@@ -3749,21 +3689,16 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvHandicapInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	CvPropertyManipulators m_PropertyManipulators;
 
-protected:
 	int m_iFreeWinsVsBarbs;
 	int m_iAnimalAttackProb;
-	int m_iStartingLocationPercent;
 	int m_iAdvancedStartPointsMod;
 	int m_iStartingGold;
 	int m_iUnitUpkeepPercent;
-	int m_iTrainPercent;
-	int m_iConstructPercent;
-	int m_iResearchPercent;
 	int m_iDistanceMaintenancePercent;
 	int m_iNumCitiesMaintenancePercent;
 	int m_iColonyMaintenancePercent;
@@ -3771,16 +3706,12 @@ protected:
 	int m_iCorporationMaintenancePercent;
 	int m_iCivicUpkeepPercent;
 	int m_iInflationPercent;
-	/*** REVOLUTION 09/25/09 by DPII ***/
 	int m_iRevolutionIndexPercent;
-	/***********************************/
 	int m_iHealthBonus;
 	int m_iHappyBonus;
 	int m_iAttitudeChange;
 	int m_iNoTechTradeModifier;
 	int m_iTechTradeKnownModifier;
-	int m_iUnownedTilesPerGameAnimal;
-	int m_iUnownedTilesPerBarbarianUnit;
 	int m_iUnownedWaterTilesPerBarbarianUnit;
 	int m_iUnownedTilesPerBarbarianCity;
 	int m_iBarbarianCityCreationTurnsElapsed;
@@ -3788,12 +3719,12 @@ protected:
 	int m_iAnimalCombatModifier;
 	int m_iBarbarianCombatModifier;
 	int m_iAIAnimalCombatModifier;
+	int m_iSubdueAnimalBonusAI;
 	int m_iAIBarbarianCombatModifier;
 
 	int m_iStartingDefenseUnits;
 	int m_iStartingWorkerUnits;
 	int m_iStartingExploreUnits;
-	int m_iAIStartingUnitMultiplier;
 	int m_iAIStartingDefenseUnits;
 	int m_iAIStartingWorkerUnits;
 	int m_iAIStartingExploreUnits;
@@ -3816,15 +3747,12 @@ protected:
 	int m_iAIWarWearinessPercent;
 	int m_iAIPerEraModifier;
 	int m_iAIAdvancedStartPercent;
-	int m_iNumGoodies;
 
 	CvString m_szHandicapName;
 
 	IDValueMapPercent m_Percent;
 
-	// Arrays
-
-	int* m_piGoodies;
+	std::vector<int> m_piGoodies;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3834,8 +3762,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvGameSpeedInfo :
-	public CvInfoBase
+class CvGameSpeedInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3843,28 +3772,9 @@ public:
 	CvGameSpeedInfo();
 	virtual ~CvGameSpeedInfo();
 
-	int getGrowthPercent() const;
-	int getTrainPercent() const;
-	int getConstructPercent() const;
-	int getCreatePercent() const;
-	int getResearchPercent() const;
-	int getBuildPercent() const;
-	int getImprovementPercent() const;
-	int getGreatPeoplePercent() const;
-	int getAnarchyPercent() const;
-	int getBarbPercent() const;
-	int getFeatureProductionPercent() const;
-	int getUnitDiscoverPercent() const;
-	int getUnitHurryPercent() const;
-	int getUnitTradePercent() const;
-	int getUnitGreatWorkPercent() const;
-	int getGoldenAgePercent() const;
-	int getHurryPercent() const;
-	int getHurryConscriptAngerPercent() const;
-	int getOccupationTimePopulationPercent() const;
-	int getVictoryDelayPercent() const;
+	int getSpeedPercent() const;
+	int getHammerCostPercent() const;
 	int getNumTurnIncrements() const;
-	int getUnitMovementPercent() const;
 
 	const GameTurnInfo& getGameTurnInfo(int iIndex) const;
 	const CvDateIncrement& getDateIncrement(int iIndex) const;
@@ -3876,48 +3786,20 @@ public:
 
 	int getPercent(int iID) const;
 
-	//TB GameSpeed begin
-	int getTraitGainPercent() const;
-	//TB GameSpeed end
-
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvGameSpeedInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
 
-	int m_iGrowthPercent;
-	int m_iTrainPercent;
-	int m_iConstructPercent;
-	int m_iCreatePercent;
-	int m_iResearchPercent;
-	int m_iBuildPercent;
-	int m_iImprovementPercent;
-	int m_iGreatPeoplePercent;
-	int m_iAnarchyPercent;
-	int m_iBarbPercent;
-	int m_iFeatureProductionPercent;
-	int m_iUnitDiscoverPercent;
-	int m_iUnitHurryPercent;
-	int m_iUnitTradePercent;
-	int m_iUnitGreatWorkPercent;
-	int m_iGoldenAgePercent;
-	int m_iHurryPercent;
-	int m_iHurryConscriptAngerPercent;
-	int m_iOccupationTimePopulationPercent;
-	int m_iVictoryDelayPercent;
+	int m_iSpeedPercent;
 	int m_iNumTurnIncrements;
-	// Afforess 12/13/09
-	int m_iUnitMovementPercent;
 
 	CvString m_szGameSpeedName;
 	GameTurnInfo* m_pGameTurnInfo;
 	std::vector<CvDateIncrement> m_aIncrements;
 	bool m_bEndDatesCalculated;
-	//TB GameSpeed begin
-	int m_iTraitGainPercent;
-	//TB GameSpeed end
 
 	IDValueMapPercent m_Percent;
 };
@@ -3929,8 +3811,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvTurnTimerInfo :
-	public CvInfoBase
+class CvTurnTimerInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3947,7 +3830,7 @@ public:
 
 	void copyNonDefaults(const CvTurnTimerInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -3965,7 +3848,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvBuildInfo : public CvHotkeyInfo
+class CvBuildInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -3975,25 +3860,14 @@ public:
 
 	int getTime() const;
 	int getCost() const;
-	int getTechPrereq() const;
-	int getImprovement() const;
+	TechTypes getTechPrereq() const			{ return m_iTechPrereq; }
+	ImprovementTypes getImprovement() const	{ return m_iImprovement; }
 	int getRoute() const;
 	int getTerrainChange() const;
 	int getFeatureChange() const;
-	/************************************************************************************************/
-	/* Afforess					  Start		 05/25/10											   */
-	/*																							  */
-	/*																							  */
-	/************************************************************************************************/
-	int getObsoleteTech() const;
-	bool isMine() const;
-	bool isNoTechCanRemoveWithNoProductionGain(int i) const;
+	TechTypes getObsoleteTech() const;
 	bool isDisabled() const;
-	bool isHideObsoleteExempt() const;
 	void setDisabled(bool bNewVal);
-	/************************************************************************************************/
-	/* Afforess						 END															*/
-	/************************************************************************************************/
 	DllExport int getEntityEvent() const;
 	DllExport int getMissionType() const;
 	void setMissionType(int iNewType);
@@ -4002,73 +3876,53 @@ public:
 
 	// Arrays
 
-	int getFeatureTech(int i) const;
-	int getFeatureTime(int i) const;
-	int getFeatureProduction(int i) const;
+	TechTypes getFeatureTech(FeatureTypes e) const;
+	int getFeatureTime(FeatureTypes e) const;
+	int getFeatureProduction(FeatureTypes e) const;
+	bool isFeatureRemove(FeatureTypes e) const;
 
-	bool isFeatureRemove(int i) const;
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
 
-	// Vectors
-	int getPrereqBonusType(int i) const;
-	int getNumPrereqBonusTypes() const;
-	bool isPrereqBonusType(int i) const;
+	const std::vector<BonusTypes>& getPrereqBonuses() const			{ return m_aiPrereqBonusTypes; }
+	const std::vector<MapCategoryTypes>& getMapCategories() const	{ return m_aeMapCategoryTypes; }
+	const std::vector<TerrainStructs>& getTerrainStructs() const	{ return m_aTerrainStructs; }
+	const std::vector<PlaceBonusTypes>& getPlaceBonusTypes() const	{ return m_aPlaceBonusTypes; }
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
-
-	//Struct Vector with delayed resolution
-	int getNumTerrainStructs() const;
-	const TerrainStructs& getTerrainStruct(int iIndex) const;
-
-	int getNumPlaceBonusTypes() const;
-	const PlaceBonusTypes& getPlaceBonusType(int iIndex) const;
-
+	void getDataMembers(CvInfoUtil& util);
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvBuildInfo* pClassInfo);
+	void getCheckSum(uint32_t& iSum) const;
+	void doPostLoadCaching(uint32_t iThis);
 
-	void getCheckSum(unsigned int& iSum) const;
+	//----------------------PRIVATE MEMBER VARIABLES----------------------------
 
-	//----------------------PROTECTED MEMBER VARIABLES----------------------------
-
-protected:
+private:
+	bool m_bDisabled;
+	bool m_bKill;
 
 	int m_iTime;
 	int m_iCost;
-	int m_iTechPrereq;
-	int m_iImprovement;
+	TechTypes m_iTechPrereq;
+	ImprovementTypes m_iImprovement;
 	int m_iRoute;
-	/************************************************************************************************/
-	/* Afforess					  Start		 05/25/10											   */
-	/*																							  */
-	/*																							  */
-	/************************************************************************************************/
 	int m_iTerrainChange;
 	int m_iFeatureChange;
-	int m_iObsoleteTech;
-	bool m_bMine;
-	bool m_bDisabled;
-	bool m_bHideObsoleteExempt;
-	bool* m_pabNoTechCanRemoveWithNoProductionGain;
-	/************************************************************************************************/
-	/* Afforess						 END															*/
-	/************************************************************************************************/
+	TechTypes m_iObsoleteTech;
 	int m_iEntityEvent;
 	int m_iMissionType;
-
-	bool m_bKill;
 
 	// Arrays
 
 	int* m_paiFeatureTech;
 	int* m_paiFeatureTime;
 	int* m_paiFeatureProduction;
-
 	bool* m_pabFeatureRemove;
 
-	std::vector<int> m_aiPrereqBonusTypes;
-	std::vector<int> m_aiMapTypes;
+	std::vector<int> m_aiCategories;
+	std::vector<BonusTypes> m_aiPrereqBonusTypes;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
 
 	std::vector<TerrainStructs> m_aTerrainStructs;
 	std::vector<PlaceBonusTypes> m_aPlaceBonusTypes;
@@ -4081,8 +3935,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvGoodyInfo :
-	public CvInfoBase
+class CvGoodyInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4111,16 +3966,13 @@ public:
 	bool isBad() const;
 	bool isNaval() const;
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
 
-	const TCHAR* getSound() const;
+	const char* getSound() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvGoodyInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 
@@ -4147,10 +3999,9 @@ protected:
 	bool m_bBad;
 	bool m_bNaval;
 
-	std::vector<int> m_aiMapTypes;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
 
 	CvString m_szSound;
-
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4160,8 +4011,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvRouteInfo :
-	public CvInfoBase
+class CvRouteInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4176,15 +4028,18 @@ public:
 	int getFlatMovementCost() const;
 	int getPrereqBonus() const;
 
-	// JOOYO_ADDON, Added by Jooyo, 07/07/09
 	bool isSeaTunnel() const;
 
 	// Arrays
 	int getYieldChange(int i) const;
 	int* getYieldChangeArray() const;
 	int getTechMovementChange(int i) const;
-	int getPrereqOrBonus(int i) const;
-	bool isAnyPrereqOrBonus() const;
+
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
+	const std::vector<BonusTypes>& getPrereqOrBonuses() const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 	//	This really belongs on CvInfoBase but you can't change the size of that
@@ -4193,19 +4048,16 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvRouteInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	CvPropertyManipulators m_PropertyManipulators;
 
-protected:
 	int m_iAdvancedStartCost;
-
 	int m_iValue;
 	int m_iMovementCost;
 	int m_iFlatMovementCost;
 	int m_iPrereqBonus;
-
 	int m_zobristValue;
 
 	bool m_bSeaTunnel;
@@ -4213,7 +4065,8 @@ protected:
 	// Arrays
 	int* m_piYieldChange;
 	int* m_piTechMovementChange;
-	int* m_piPrereqOrBonuses;
+	std::vector<int> m_aiCategories;
+	std::vector<BonusTypes> m_piPrereqOrBonuses;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4223,12 +4076,12 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvImprovementBonusInfo :
-	public CvInfoBase
+class CvImprovementBonusInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
-
-friend class CvImprovementInfo;
-friend class CvXMLLoadUtility;
+	friend class CvImprovementInfo;
+	friend class CvXMLLoadUtility;
 
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4237,7 +4090,6 @@ public:
 	virtual ~CvImprovementBonusInfo();
 
 	int getDiscoverRand() const;
-	// Afforess 01/20/10
 	int getDepletionRand() const;
 
 	bool isBonusMakesValid() const;
@@ -4246,13 +4098,12 @@ public:
 
 	int getYieldChange(int i) const;
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
 
 	int m_iDiscoverRand;
-	// Afforess 01/20/10
 	int m_iDepletionRand;
 
 	bool m_bBonusMakesValid;
@@ -4261,237 +4112,6 @@ protected:
 
 	// Arrays
 	int* m_piYieldChange;
-
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//  class : CvImprovementInfo
-//
-//  DESC:
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvArtInfoImprovement;
-class CvImprovementInfo :
-	public CvInfoBase
-{
-	//---------------------------PUBLIC INTERFACE---------------------------------
-public:
-
-	CvImprovementInfo();
-	virtual ~CvImprovementInfo();
-
-	int getAdvancedStartCost() const;
-
-	int getTilesPerGoody() const;
-	int getGoodyUniqueRange() const;
-	int getFeatureGrowthProbability() const;
-	int getUpgradeTime() const;
-	int getAirBombDefense() const;
-	int getDefenseModifier() const;
-	int getHappiness() const;
-	int getPillageGold() const;
-	int getImprovementPillage() const;
-	int getImprovementUpgrade() const;
-	// Super Forts begin *XML*
-	int getCulture() const;
-	int getCultureRange() const;
-	int getVisibilityChange() const;
-	int getSeeFrom() const;
-	int getUniqueRange() const;
-	bool isBombardable() const;
-	bool isUpgradeRequiresFortify() const;
-	// Super Forts end
-	// Super forts C2C adaptation
-	bool isUniversalTradeBonusProvider() const;
-	// Super forts C2C adaptation end
-
-	bool isZOCSource() const;
-	bool isActsAsCity() const;
-	bool isHillsMakesValid() const;
-	bool isFreshWaterMakesValid() const;
-	bool isRiverSideMakesValid() const;
-	bool isNoFreshWater() const;
-	bool isRequiresFlatlands() const;
-	DllExport bool isRequiresRiverSide() const;
-	bool isRequiresIrrigation() const;
-	bool isCarriesIrrigation() const;
-	bool isRequiresFeature() const;
-	bool isPeakImprovement() const;
-	bool isWaterImprovement() const;
-	DllExport bool isGoody() const;
-	bool isPermanent() const;
-	bool isOutsideBorders() const;
-
-	const TCHAR* getArtDefineTag() const;
-
-	int getWorldSoundscapeScriptId() const;
-
-	// Arrays
-
-	int getPrereqNatureYield(int i) const;
-	int* getPrereqNatureYieldArray() const;
-	int getYieldChange(int i) const;
-	int* getYieldChangeArray() const;
-	int getRiverSideYieldChange(int i) const;
-	int* getRiverSideYieldChangeArray() const;
-	int getHillsYieldChange(int i) const;
-	int* getHillsYieldChangeArray() const;
-	int getIrrigatedYieldChange(int i) const;
-	int* getIrrigatedYieldChangeArray() const;		// For Moose - CvWidgetData XXX
-
-	bool getTerrainMakesValid(int i) const;
-	bool getFeatureMakesValid(int i) const;
-
-	int getTechYieldChanges(int i, int j) const;
-	int* getTechYieldChangesArray(int i) const;
-	int getRouteYieldChanges(int i, int j) const;
-	int* getRouteYieldChangesArray(int i) const;		// For Moose - CvWidgetData XXX
-
-	int getImprovementBonusYield(int i, int j) const;
-	bool isImprovementBonusMakesValid(int i) const;
-	bool isImprovementObsoleteBonusMakesValid(int i) const;
-	bool isImprovementBonusTrade(int i) const;
-	int getImprovementBonusDiscoverRand(int i) const;
-
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
-
-	const TCHAR* getButton() const;
-	DllExport const CvArtInfoImprovement* getArtInfo() const;
-
-	// Afforess 12/9/09
-	int getHealthPercent() const;
-	bool isPeakMakesValid() const;
-	int getImprovementBonusDepletionRand(int i) const;
-	int getPrereqTech() const;
-	//int getTraitYieldChanges(int i, int j) const;
-	//int* getTraitYieldChangesArray(int i) const;
-
-	//TB Improvements
-	//Object Indexes
-	int getBonusChange() const;
-	//booleans
-	bool isCanMoveSeaUnits() const;
-	bool isChangeRemove() const;
-	bool isNotOnAnyBonus() const;
-	bool isNational() const;
-	bool isGlobal() const;
-	// bool vector with delayed resolution
-	int getAlternativeImprovementUpgradeType(int i) const;
-	int getNumAlternativeImprovementUpgradeTypes() const;
-	bool isAlternativeImprovementUpgradeType(int i) const;
-
-	int getFeatureChangeType(int i) const;
-	int getNumFeatureChangeTypes() const;
-	bool isFeatureChangeType(int i) const;
-
-	//Post Load Functions
-	//void setHighestCost();
-	//int getHighestCost() const;
-
-protected:
-	bool m_bPeakMakesValid;
-	int m_iHealthPercent;
-	int m_iDepletionRand;
-	int m_iPrereqTech;
-	//int** m_ppiTraitYieldChanges;
-
-	std::vector<int> m_aiMapTypes;
-public:
-	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
-	void copyNonDefaults(const CvImprovementInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvImprovementInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
-
-	void getCheckSum(unsigned int& iSum) const;
-
-	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
-
-private:
-	CvPropertyManipulators m_PropertyManipulators;
-
-protected:
-	int m_iAdvancedStartCost;
-
-	int m_iTilesPerGoody;
-	int m_iGoodyUniqueRange;
-	int m_iFeatureGrowthProbability;
-	int m_iUpgradeTime;
-	int m_iAirBombDefense;
-	int m_iDefenseModifier;
-	int m_iHappiness;
-	int m_iPillageGold;
-	int m_iImprovementPillage;
-	int m_iImprovementUpgrade;
-	// Super Forts begin *XML*
-	int m_iCulture;
-	int m_iCultureRange;
-	int m_iVisibilityChange;
-	int m_iSeeFrom;
-	int m_iUniqueRange;
-	bool m_bBombardable;
-	bool m_bUpgradeRequiresFortify;
-	// Super Forts end
-	// Super forts C2C adaptation
-	bool m_bIsUniversalTradeBonusProvider;
-	bool m_bIsZOCSource;
-	// Super forts C2C adaptation end
-
-	bool m_bActsAsCity;
-	bool m_bHillsMakesValid;
-	bool m_bFreshWaterMakesValid;
-	bool m_bRiverSideMakesValid;
-	bool m_bNoFreshWater;
-	bool m_bRequiresFlatlands;
-	bool m_bRequiresRiverSide;
-	bool m_bRequiresIrrigation;
-	bool m_bCarriesIrrigation;
-	bool m_bRequiresFeature;
-	bool m_bPeakImprovement;
-	bool m_bWaterImprovement;
-	bool m_bGoody;
-	bool m_bPermanent;
-	bool m_bOutsideBorders;
-
-	CvString m_szArtDefineTag;
-
-	int m_iWorldSoundscapeScriptId;
-
-	// Arrays
-
-	int* m_piPrereqNatureYield;
-	int* m_piYieldChange;
-	int* m_piRiverSideYieldChange;
-	int* m_piHillsYieldChange;
-	int* m_piIrrigatedChange;
-
-	bool* m_pbTerrainMakesValid;
-	bool* m_pbFeatureMakesValid;
-
-	int** m_ppiTechYieldChanges;
-	int** m_ppiRouteYieldChanges;
-
-	CvImprovementBonusInfo* m_paImprovementBonus;
-
-	//TB Improvements
-	//Object Indexes
-	int m_iBonusChange;
-	//booleans
-	bool m_bCanMoveSeaUnits;
-	bool m_bChangeRemove;
-	bool m_bNotOnAnyBonus;
-	bool m_bNational;
-	bool m_bGlobal;
-	// bool vector with delayed resolution
-	std::vector<int> m_aiAlternativeImprovementUpgradeTypes;
-	std::vector<int> m_aiFeatureChangeTypes;
-
-	//Post Load Functions
-	//int m_iHighestCost;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4501,8 +4121,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvBonusClassInfo :
-	public CvInfoBase
+class CvBonusClassInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4514,148 +4135,11 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvBonusClassInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
 	int m_iUniqueRange;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//  class : CvBonusInfo
-//
-//  DESC:
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvArtInfoBonus;
-class CvBonusInfo :
-	public CvInfoBase
-{
-	//---------------------------PUBLIC INTERFACE---------------------------------
-public:
-
-	CvBonusInfo();
-	virtual ~CvBonusInfo();
-
-	int getBonusClassType() const;
-	int getChar() const;
-	void setChar(int i);
-	int getTechReveal() const;
-	int getTechCityTrade() const;
-	int getTechObsolete() const;
-	int getAITradeModifier() const;
-	int getAIObjective() const;
-	int getHealth() const;
-	int getHappiness() const;
-	int getMinAreaSize() const;
-	int getMinLatitude() const;
-	int getMaxLatitude() const;
-	int getPlacementOrder() const;
-	int getConstAppearance() const;
-	int getRandAppearance1() const;
-	int getRandAppearance2() const;
-	int getRandAppearance3() const;
-	int getRandAppearance4() const;
-	int getPercentPerPlayer() const;
-	int getTilesPer() const;
-	int getMinLandPercent() const;
-	int getUniqueRange() const;
-	int getGroupRange() const;
-	int getGroupRand() const;
-
-	bool isOneArea() const;
-	bool isHills() const;
-	bool isPeaks() const;
-	bool isFlatlands() const;
-	bool isBonusCoastalOnly() const;
-	bool isNoRiverSide() const;
-	bool isNormalize() const;
-
-	const TCHAR* getArtDefineTag() const;
-
-	// Arrays
-	int getYieldChange(int i) const;
-	int* getYieldChangeArray() const;
-	int getImprovementChange(int i) const;
-
-	bool isTerrain(int i) const;
-	bool isFeature(int i) const;
-	bool isFeatureTerrain(int i) const;
-
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
-
-	int getNumAfflictionCommunicabilityTypes() const;
-	PromotionLineAfflictionModifier getAfflictionCommunicabilityType(int iPromotionLine, bool bWorkedTile = false, bool bVicinity = false, bool bAccessVolume = false);
-
-	// Other
-	const TCHAR* getButton() const;
-	DllExport const CvArtInfoBonus* getArtInfo() const;
-
-	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
-
-	bool read(CvXMLLoadUtility* pXML);
-	void copyNonDefaults(const CvBonusInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
-
-	const std::vector<std::pair<ImprovementTypes,BuildTypes> >*	getTradeProvidingImprovements();
-
-private:
-	CvPropertyManipulators m_PropertyManipulators;
-
-protected:
-	int m_iBonusClassType;
-	int m_iChar;
-	int m_iTechReveal;
-	int m_iTechCityTrade;
-	int m_iTechObsolete;
-	int m_iAITradeModifier;
-	int m_iAIObjective;
-	int m_iHealth;
-	int m_iHappiness;
-	int m_iMinAreaSize;
-	int m_iMinLatitude;
-	int m_iMaxLatitude;
-	int m_iPlacementOrder;
-	int m_iConstAppearance;
-	int m_iRandAppearance1;
-	int m_iRandAppearance2;
-	int m_iRandAppearance3;
-	int m_iRandAppearance4;
-	int m_iPercentPerPlayer;
-	int m_iTilesPer;
-	int m_iMinLandPercent;
-	int m_iUniqueRange;
-	int m_iGroupRange;
-	int m_iGroupRand;
-
-	bool m_bOneArea;
-	bool m_bHills;
-	bool m_bPeaks;
-	bool m_bFlatlands;
-	bool m_bBonusCoastalOnly;
-	bool m_bNoRiverSide;
-	bool m_bNormalize;
-
-	CvString m_szArtDefineTag;
-
-	// Arrays
-
-	int* m_piYieldChange;
-	int* m_piImprovementChange;
-
-	bool* m_pbTerrain;
-	bool* m_pbFeature;
-	bool* m_pbFeatureTerrain;
-
-	std::vector<int> m_aiMapTypes;
-
-	std::vector<PromotionLineAfflictionModifier> m_aAfflictionCommunicabilityTypes;
-
-	volatile std::vector<std::pair<ImprovementTypes,BuildTypes> >* m_tradeProvidingImprovements;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4666,8 +4150,9 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvArtInfoFeature;
-class CvFeatureInfo :
-	public CvInfoBase
+class CvFeatureInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4692,30 +4177,31 @@ public:
 	bool isNoAdjacent() const;
 	bool isRequiresFlatlands() const;
 	bool isRequiresRiver() const;
+	inline bool isCoastalOnly() const { return m_bCoastalOnly; }
 	bool isAddsFreshWater() const;
 	bool isImpassable() const;
 	bool isNoCity() const;
 	bool isNoImprovement() const;
+	bool isNoBonus() const { return m_bNoBonus; }
 	bool isVisibleAlways() const;
 	bool isNukeImmune() const;
 // BUG - City Plot Status - start
 	bool isOnlyBad() const;
 	bool isCountsAsPeak() const;
 // BUG - City Plot Status - end
-	const TCHAR* getOnUnitChangeTo() const;
+	const char* getOnUnitChangeTo() const;
 
-	const TCHAR* getArtDefineTag() const;
+	const char* getArtDefineTag() const;
 
 	int getWorldSoundscapeScriptId() const;
 
-	const TCHAR* getEffectType() const;
+	const char* getEffectType() const;
 	int getEffectProbability() const;
 
 	// Arrays
 
 	int getYieldChange(int i) const;
 	int getRiverYieldChange(int i) const;
-	int getHillsYieldChange(int i) const;
 	int get3DAudioScriptFootstepIndex(int i) const;
 
 	bool isTerrain(int i) const;
@@ -4723,20 +4209,23 @@ public:
 
 	bool canBeSecondary() const;
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
 
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
+
+#ifdef OUTBREAKS_AND_AFFLICTIONS
 	int getNumAfflictionCommunicabilityTypes() const;
 	PromotionLineAfflictionModifier getAfflictionCommunicabilityType(int iPromotionLine, bool bWorkedTile = false, bool bVicinity = false, bool bAccessVolume = false);
+#endif // OUTBREAKS_AND_AFFLICTIONS
 
 	DllExport const CvArtInfoFeature* getArtInfo() const;
-	const TCHAR* getButton() const;
+	const char* getButton() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
-	const TCHAR* getGrowthSound() const;
+	const char* getGrowthSound() const;
 	int getSpreadProbability() const;
 	int getCultureDistance() const;
 	bool isIgnoreTerrainCulture() const;
@@ -4748,16 +4237,16 @@ protected:
 	bool m_bIgnoreTerrainCulture;
 	bool m_bCanGrowAnywhere;
 
-	std::vector<int> m_aiMapTypes;
+	std::vector<int> m_aiCategories;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
 public:
 
 	void copyNonDefaults(const CvFeatureInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
-	std::vector<PromotionLineAfflictionModifier> m_aAfflictionCommunicabilityTypes;
 	//	This really belongs on CvInfoBase but you can't change the size of that
 	//	object without crashing the core engine :-(
 	inline int	getZobristValue() const { return m_zobristValue; }
@@ -4765,7 +4254,6 @@ public:
 private:
 	CvPropertyManipulators m_PropertyManipulators;
 
-protected:
 	int m_iMovementCost;
 	int m_iSeeThroughChange;
 	int m_iHealthPercent;
@@ -4783,10 +4271,12 @@ protected:
 	bool m_bNoAdjacent;
 	bool m_bRequiresFlatlands;
 	bool m_bRequiresRiver;
+	bool m_bCoastalOnly;
 	bool m_bAddsFreshWater;
 	bool m_bImpassable;
 	bool m_bNoCity;
 	bool m_bNoImprovement;
+	bool m_bNoBonus;
 	bool m_bVisibleAlways;
 	bool m_bNukeImmune;
 	bool m_bCountsAsPeak;
@@ -4801,10 +4291,13 @@ protected:
 
 	int* m_piYieldChange;
 	int* m_piRiverYieldChange;
-	int* m_piHillsYieldChange;
 	int* m_pi3DAudioScriptFootstepIndex;
 
 	bool* m_pbTerrain;
+
+#ifdef OUTBREAKS_AND_AFFLICTIONS
+	std::vector<PromotionLineAfflictionModifier> m_aAfflictionCommunicabilityTypes;
+#endif // OUTBREAKS_AND_AFFLICTIONS
 
 private:
 	CvString m_szArtDefineTag;
@@ -4818,8 +4311,9 @@ private:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCommerceInfo :
-	public CvInfoBase
+class CvCommerceInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4839,7 +4333,7 @@ public:
 
 	void copyNonDefaults(const CvCommerceInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -4860,8 +4354,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvYieldInfo :
-	public CvInfoBase
+class CvYieldInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4873,8 +4368,8 @@ public:
 	void setChar(int i);
 	int getHillsChange() const;
 	int getPeakChange() const;
+	int getRiverChange() const;
 	int getCityChange() const;
-	int getPopulationChangeOffset() const;
 	int getPopulationChangeDivisor() const;
 	int getMinCity() const;
 	int getTradeModifier() const;
@@ -4885,13 +4380,13 @@ public:
 
 	// Arrays
 
-	const TCHAR* getSymbolPath(int i) const;
+	const char* getSymbolPath(int i) const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
 	void copyNonDefaults(const CvYieldInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -4899,8 +4394,8 @@ protected:
 	int m_iChar;
 	int m_iHillsChange;
 	int m_iPeakChange;
+	int m_iRiverChange;
 	int m_iCityChange;
-	int m_iPopulationChangeOffset;
 	int m_iPopulationChangeDivisor;
 	int m_iMinCity;
 	int m_iTradeModifier;
@@ -4910,7 +4405,6 @@ protected:
 	int m_iColorType;
 
 	CvString* m_paszSymbolPath;
-
 };
 
 
@@ -4922,8 +4416,9 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvArtInfoTerrain;
-class CvTerrainInfo :
-	public CvInfoBase
+class CvTerrainInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -4935,40 +4430,36 @@ public:
 	int getBuildModifier() const;
 	int getDefenseModifier() const;
 
-	bool isWaterTerrain() const;
+	inline ClimateZoneTypes getClimate() const { return m_eClimate; }
+	inline int getDistanceToLand() const { return m_iDistanceToLand; }
+	inline bool isWaterTerrain() const { return m_iDistanceToLand > 0; }
 	bool isImpassable() const;
 	bool isFound() const;
 	bool isFoundCoast() const;
 	bool isFoundFreshWater() const;
 	bool isFreshWaterTerrain() const;
 
-	DllExport const TCHAR* getArtDefineTag() const;
-
-	int getWorldSoundscapeScriptId() const;
-
-	// Arrays
+	DllExport const char* getArtDefineTag() const;
 
 	int getYield(int i) const;
-	int getRiverYieldChange(int i) const;
-	int getHillsYieldChange(int i) const;
+	int getWorldSoundscapeScriptId() const;
 	int get3DAudioScriptFootstepIndex(int i) const;
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
 
+#ifdef OUTBREAKS_AND_AFFLICTIONS
 	int getNumAfflictionCommunicabilityTypes() const;
 	PromotionLineAfflictionModifier getAfflictionCommunicabilityType(int iPromotionLine, bool bWorkedTile = false, bool bVicinity = false, bool bAccessVolume = false);
+#endif // OUTBREAKS_AND_AFFLICTIONS
 
 	const CvArtInfoTerrain* getArtInfo() const;
-	const TCHAR* getButton() const;
+	const char* getButton() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
 	void copyNonDefaults(const CvTerrainInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
@@ -4983,14 +4474,18 @@ public:
 	bool isColdDamage() const;
 	//TB Combat Mod end
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
 private:
 	CvPropertyManipulators m_PropertyManipulators;
 
 	CvString m_szArtDefineTag;
 	int	m_zobristValue;
+	int m_iDistanceToLand;
+	ClimateZoneTypes m_eClimate;
 
-protected:
-	bool m_bWaterTerrain;
 	bool m_bImpassable;
 	bool m_bFound;
 	bool m_bFoundCoast;
@@ -5007,13 +4502,13 @@ protected:
 
 	// Arrays
 	int* m_piYields;
-	int* m_piRiverYieldChange;
-	int* m_piHillsYieldChange;
 	int* m_pi3DAudioScriptFootstepIndex;
 
-	std::vector<int> m_aiMapTypes;
-
+	std::vector<int> m_aiCategories;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
+#ifdef OUTBREAKS_AND_AFFLICTIONS
 	std::vector<PromotionLineAfflictionModifier> m_aAfflictionCommunicabilityTypes;
+#endif // OUTBREAKS_AND_AFFLICTIONS
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -5023,8 +4518,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvInterfaceModeInfo :
-	public CvHotkeyInfo
+class CvInterfaceModeInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -5064,8 +4560,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvAdvisorInfo :
-	public CvInfoBase
+class CvAdvisorInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -5073,7 +4570,7 @@ public:
 	CvAdvisorInfo();
 	virtual ~CvAdvisorInfo();
 
-	const TCHAR* getTexture() const;
+	const char* getTexture() const;
 	int getNumCodes() const;
 	int getEnableCode(uint32_t uiCode) const;
 	int getDisableCode(uint32_t uiCode) const;
@@ -5095,8 +4592,9 @@ protected:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 class CvArtInfoLeaderhead;
-class CvLeaderHeadInfo :
-	public CvInfoBase
+class CvLeaderHeadInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -5192,7 +4690,7 @@ public:
 	int getFavoriteReligion() const;
 	int getFreedomAppreciation() const;
 
-	const TCHAR* getArtDefineTag() const;
+	const char* getArtDefineTag() const;
 
 	// Arrays
 	bool hasTrait(int i) const;
@@ -5220,6 +4718,18 @@ public:
 	void setConquestVictoryWeight(int i);
 	void setDominationVictoryWeight(int i);
 	void setDiplomacyVictoryWeight(int i);
+
+
+	//Int list Vector without delayed resolution
+
+	int getDefaultTrait(int i) const;
+	int getNumDefaultTraits() const;
+	bool isDefaultTrait(int i) const;
+
+	int getDefaultComplexTrait(int i) const;
+	int getNumDefaultComplexTraits() const;
+	bool isDefaultComplexTrait(int i) const;
+
 protected:
 	int m_iMilitaryUnitRefuseAttitudeThreshold;
 	int m_iWorkerRefuseAttitudeThreshold;
@@ -5229,14 +4739,14 @@ protected:
 	void setDefaultContactInfo();
 public:
 	DllExport const CvArtInfoLeaderhead* getArtInfo() const;
-	const TCHAR* getLeaderHead() const;
-	const TCHAR* getButton() const;
+	const char* getLeaderHead() const;
+	const char* getButton() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
 	void copyNonDefaults(const CvLeaderHeadInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -5324,6 +4834,11 @@ protected:
 	int m_iFavoriteCivic;
 	int m_iFavoriteReligion;
 
+	//Int list Vector without delayed resolution
+	std::vector<int> m_aiDefaultTraits;
+	std::vector<int> m_aiDefaultComplexTraits;
+
+
 	CvString m_szArtDefineTag;
 
 	// Arrays
@@ -5352,19 +4867,18 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvWorldInfo :
-	public CvInfoBase
+class CvWorldInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
-
 	CvWorldInfo();
 	virtual ~CvWorldInfo();
 
 	DllExport int getDefaultPlayers() const;
 	int getUnitNameModifier() const;
 	int getTargetNumCities() const;
-	int getNumFreeBuildingBonuses() const;
 	int getBuildingPrereqModifier() const;
 	int getMaxConscriptModifier() const;
 	int getWarWearinessModifier() const;
@@ -5372,7 +4886,6 @@ public:
 	int getGridHeight() const;
 	int getTerrainGrainChange() const;
 	int getFeatureGrainChange() const;
-	int getResearchPercent() const;
 	int getTradeProfitPercent() const;
 	int getDistanceMaintenancePercent() const;
 	int getNumCitiesMaintenancePercent() const;
@@ -5383,21 +4896,17 @@ public:
 	int getCommandersLevelThresholdsPercent() const;
 	int getOceanMinAreaSize() const;
 
-	bool read(CvXMLLoadUtility* pXML);
-
 	int getPercent(int iID) const;
 
+	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvWorldInfo* pClassInfo);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
-protected:
-
+private:
 	int m_iDefaultPlayers;
 	int m_iUnitNameModifier;
 	int m_iTargetNumCities;
-	int m_iNumFreeBuildingBonuses;
 	int m_iBuildingPrereqModifier;
 	int m_iMaxConscriptModifier;
 	int m_iWarWearinessModifier;
@@ -5405,7 +4914,6 @@ protected:
 	int m_iGridHeight;
 	int m_iTerrainGrainChange;
 	int m_iFeatureGrainChange;
-	int m_iResearchPercent;
 	int m_iTradeProfitPercent;
 	int m_iDistanceMaintenancePercent;
 	int m_iNumCitiesMaintenancePercent;
@@ -5417,50 +4925,52 @@ protected:
 	int m_iOceanMinAreaSize;
 
 	IDValueMapPercent m_Percent;
-
 };
-/*********************************/
-/***** Parallel Maps - Begin *****/
-/*********************************/
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvMapInfo
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-class CvMapInfo : public CvInfoBase
+class CvMapInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 public:
 	CvMapInfo();
 	virtual ~CvMapInfo();
 
-	int getGridWidth() const;
-	int getGridHeight() const;
+	int getGridWidth() const				{ return m_iGridWidth; }
+	int getGridHeight() const				{ return m_iGridHeight; }
 
-	int getWrapX() const;
-	int getWrapY() const;
+	int getWrapX() const					{ return m_iWrapX; }
+	int getWrapY() const					{ return m_iWrapY; }
 
-	const CvString getInitialWBMap() const;
-	const CvString getMapScript() const;
+	inline bool startRevealed() const		{ return m_bStartRevealed; }
+
+	const CvString getInitialWBMap() const	{ return m_szInitialWBMap; }
+	const CvString getMapScript() const		{ return m_szMapScript; }
 
 	bool read(CvXMLLoadUtility* pXML);
 
-protected:
+private:
 	int m_iGridWidth;
 	int m_iGridHeight;
+
 	int m_iWrapX;
 	int m_iWrapY;
+
+	bool m_bStartRevealed;
+
 	CvString m_szInitialWBMap;
 	CvString m_szMapScript;
 };
 
-/*******************************/
-/***** Parallel Maps - End *****/
-/*******************************/
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvClimateInfo
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvClimateInfo : public CvInfoBase
+class CvClimateInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -5503,7 +5013,9 @@ protected:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  class : CvSeaLevelInfo
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSeaLevelInfo :	public CvInfoBase
+class CvSeaLevelInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -5527,8 +5039,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvProcessInfo :
-	public CvInfoBase
+class CvProcessInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -5536,7 +5049,7 @@ public:
 	CvProcessInfo();
 	virtual ~CvProcessInfo();
 
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 
 	// Arrays
 
@@ -5544,12 +5057,12 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvProcessInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
 
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 
 	// Arrays
 	int* m_paiProductionToCommerceModifier;
@@ -5562,7 +5075,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvVoteInfo :	public CvInfoBase
+class CvVoteInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvVoteInfo();
@@ -5593,7 +5108,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvVoteInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 protected:
 
@@ -5629,8 +5144,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvProjectInfo :
-	public CvInfoBase
+class CvProjectInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -5639,7 +5155,7 @@ public:
 	virtual ~CvProjectInfo();
 
 	int getVictoryPrereq() const;
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getAnyoneProjectPrereq() const;
 	void setAnyoneProjectPrereq(int i);
 	int getMaxGlobalInstances() const;
@@ -5647,12 +5163,10 @@ public:
 	int getProductionCost() const;
 	int getNukeInterception() const;
 	int getTechShare() const;
-	//DPII < Maintenance Modifier >
 	int getGlobalMaintenanceModifier() const;
 	int getDistanceMaintenanceModifier() const;
 	int getNumCitiesMaintenanceModifier() const;
 	int getConnectedCityMaintenanceModifier() const;
-	//DPII < Maintenance Modifier >
 	int getEveryoneSpecialUnit() const;
 	int getEveryoneSpecialBuilding() const;
 	int getVictoryDelayPercent() const;
@@ -5662,8 +5176,8 @@ public:
 	bool isAllowsNukes() const;
 	const char* getMovieArtDef() const;
 
-	const TCHAR* getCreateSound() const;
-	void setCreateSound(const TCHAR* szVal);
+	const char* getCreateSound() const;
+	void setCreateSound(const char* szVal);
 
 	// Arrays
 
@@ -5672,14 +5186,15 @@ public:
 	int getVictoryMinThreshold(int i) const;
 	int getProjectsNeeded(int i) const;
 
-	int getMapType(int i) const;
-	int getNumMapTypes() const;
-	bool isMapType(int i) const;
-	const std::vector<int>& getMapTypes() const { return m_aiMapTypes; }
+	const std::vector<MapCategoryTypes>& getMapCategories() const { return m_aeMapCategoryTypes; }
+
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvProjectInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	int getWorldHappiness() const;
 	int getGlobalHappiness() const;
@@ -5702,45 +5217,41 @@ protected:
 	int m_iGlobalHealth;
 	int m_iWorldTradeRoutes;
 	int m_iInflationModifier;
-	bool m_bTechShareWithHalfCivs;
-	int* m_piCommerceModifier;
 	std::vector<CvString> m_aszProjectsNeededforPass3;
 	std::vector<int> m_aiProjectsNeededforPass3;
 
 	int m_iVictoryPrereq;
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 	int m_iAnyoneProjectPrereq;
 	int m_iMaxGlobalInstances;
 	int m_iMaxTeamInstances;
 	int m_iProductionCost;
 	int m_iNukeInterception;
 	int m_iTechShare;
-	//DPII < Maintenance Modifiers >
 	int m_iGlobalMaintenanceModifier;
 	int m_iDistanceMaintenanceModifier;
 	int m_iNumCitiesMaintenanceModifier;
 	int m_iConnectedCityMaintenanceModifier;
-	//DPII < Maintenance Modifiers >
 	int m_iEveryoneSpecialUnit;
 	int m_iEveryoneSpecialBuilding;
 	int m_iVictoryDelayPercent;
 	int m_iSuccessRate;
 
+	bool m_bTechShareWithHalfCivs;
 	bool m_bSpaceship;
 	bool m_bAllowsNukes;
 
 	CvString m_szCreateSound;
 	CvString m_szMovieArtDef;
 
-	// Arrays
-
+	int* m_piCommerceModifier;
 	int* m_piBonusProductionModifier;
 	int* m_piVictoryThreshold;
 	int* m_piVictoryMinThreshold;
 	int* m_piProjectsNeeded;
 
-	// Vectors
-	std::vector<int> m_aiMapTypes;
+	std::vector<MapCategoryTypes> m_aeMapCategoryTypes;
+	std::vector<int> m_aiCategories;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -5750,7 +5261,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvReligionInfo : public CvHotkeyInfo
+class CvReligionInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE----------------------------------------
 public:
@@ -5766,21 +5279,21 @@ public:
 	void setChar(int i);
 	int getHolyCityChar() const;
 	void setHolyCityChar(int i);
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getFreeUnit() const;
 	int getNumFreeUnits() const;
 	int getSpreadFactor() const;
 	int getMissionType() const;
 	void setMissionType(int iNewType);
 
-	const TCHAR* getTechButton() const;
-	const TCHAR* getGenericTechButton() const;
-	const TCHAR* getMovieFile() const;
-	const TCHAR* getMovieSound() const;
-	const TCHAR* getSound() const;
-	const TCHAR* getButtonDisabled() const;		//	Exposed to Python
+	const char* getTechButton() const;
+	const char* getGenericTechButton() const;
+	const char* getMovieFile() const;
+	const char* getMovieSound() const;
+	const char* getSound() const;
+	const char* getButtonDisabled() const;
 
-	void setAdjectiveKey(const TCHAR* szVal);
+	void setAdjectiveKey(const char* szVal);
 	const wchar_t* getAdjectiveKey() const;
 	std::wstring pyGetAdjectiveKey() const { return getAdjectiveKey(); }
 
@@ -5794,24 +5307,30 @@ public:
 	int* getStateReligionCommerceArray() const;
 	int getFlavorValue(int i) const;
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
+	const std::vector<BuildingTypes>& getShrineBuildings() const { return m_shrineBuildings; }
+	void addShrineBuilding(BuildingTypes eBuilding) { m_shrineBuildings.push_back(eBuilding); }
+
 	bool read(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvReligionInfo* pClassInfo);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
 private:
+
+
 	CvPropertyManipulators m_PropertyManipulators;
 
-protected:
 	// TGA_INDEXATION 01/21/08 MRGENIE
 	int m_iTGAIndex;
 
 	int m_iChar;
 	int m_iHolyCityChar;
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 	int m_iFreeUnit;
 	int m_iNumFreeUnits;
 	int m_iSpreadFactor;
@@ -5830,6 +5349,9 @@ protected:
 	int* m_paiHolyCityCommerce;
 	int* m_paiStateReligionCommerce;
 	int* m_piFlavorValue;
+
+	std::vector<int> m_aiCategories;
+	std::vector<BuildingTypes> m_shrineBuildings;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -5839,7 +5361,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCorporationInfo : public CvHotkeyInfo
+class CvCorporationInfo
+	: public CvHotkeyInfo
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE----------------------------------------
 public:
@@ -5850,12 +5374,11 @@ public:
 	int getChar() const;
 	// TGA_INDEXATION 01/21/08 MRGENIE
 	int getTGAIndex() const;
-	//void setTGAIndex(int i);
 
 	void setChar(int i);
 	int getHeadquarterChar() const;
 	void setHeadquarterChar(int i);
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getFreeUnit() const;
 	int getSpreadFactor() const;
 	int getSpreadCost() const;
@@ -5865,13 +5388,13 @@ public:
 
 	int getBonusProduced() const;
 
-	const TCHAR* getMovieFile() const;
-	const TCHAR* getMovieSound() const;
-	const TCHAR* getSound() const;
+	const char* getMovieFile() const;
+	const char* getMovieSound() const;
+	const char* getSound() const;
+
+	const std::vector<BonusTypes>& getPrereqBonuses() const;
 
 	// Arrays
-
-	int getPrereqBonus(int i) const;
 	int getHeadquarterCommerce(int i) const;
 	int* getHeadquarterCommerceArray() const;
 	int getCommerceProduced(int i) const;
@@ -5881,7 +5404,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 
-	int getObsoleteTech() const;
+	TechTypes getObsoleteTech() const;
 	int getSpread() const;
 	int getHealth() const;
 	int getHappiness() const;
@@ -5899,6 +5422,10 @@ public:
 	CvString getCompetingCorporationNamesVectorElement(const int i) const;
 	bool getCompetingCorporationValuesVectorElement(const int i) const;
 
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
 	bool readPass3();
 	int getYieldChange(int i) const;
 	int* getYieldChangeArray() const;
@@ -5907,11 +5434,14 @@ public:
 
 	void copyNonDefaults(const CvCorporationInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
 private:
+
+	std::vector<int> m_aiCategories;
+
 	CvPropertyManipulators m_PropertyManipulators;
 
 protected:
@@ -5920,7 +5450,7 @@ protected:
 
 	int m_iChar;
 	int m_iHeadquarterChar;
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 	int m_iFreeUnit;
 	int m_iSpreadFactor;
 	int m_iSpreadCost;
@@ -5928,7 +5458,7 @@ protected:
 	int m_iMissionType;
 	int m_iBonusProduced;
 
-	int m_iObsoleteTech;
+	TechTypes m_iObsoleteTech;
 	int m_iSpread;
 	int m_iHealth;
 	int m_iHappiness;
@@ -5951,473 +5481,12 @@ protected:
 	CvString m_szMovieSound;
 	CvString m_szSound;
 
-	// Arrays
+	std::vector<BonusTypes> m_vPrereqBonuses;
 
-	int* m_paiPrereqBonuses;
+	// Arrays
 	int* m_paiHeadquarterCommerce;
 	int* m_paiCommerceProduced;
 	int* m_paiYieldProduced;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//  class : CvTraitInfo
-//
-//  DESC:
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvTraitInfo :
-	public CvInfoBase
-{
-	//---------------------------PUBLIC INTERFACE---------------------------------
-public:
-
-	CvTraitInfo();
-	virtual ~CvTraitInfo();
-
-	int getHealth() const;
-	int getHappiness() const;
-	int getMaxAnarchy() const;
-	int getUpkeepModifier() const;
-	int getLevelExperienceModifier() const;
-	int getGreatPeopleRateModifier() const;
-	int getGreatGeneralRateModifier() const;
-	int getDomesticGreatGeneralRateModifier() const;
-	int getMaxGlobalBuildingProductionModifier() const;
-	int getMaxTeamBuildingProductionModifier() const;
-	int getMaxPlayerBuildingProductionModifier() const;
-
-/********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
-/**																				*/
-/**		RevTraitEffects															*/
-/********************************************************************************/
-	int getRevIdxLocal() const;
-	int getRevIdxNational() const;
-	int getRevIdxDistanceModifier() const;
-	int getRevIdxHolyCityGood() const;
-	int getRevIdxHolyCityBad() const;
-	float getRevIdxNationalityMod() const;
-	float getRevIdxBadReligionMod() const;
-	float getRevIdxGoodReligionMod() const;
-	bool isNonStateReligionCommerce() const;
-	bool isUpgradeAnywhere() const;
-/********************************************************************************/
-/**		REVDCM									END								*/
-/********************************************************************************/
-
-	const TCHAR* getShortDescription() const;
-	void setShortDescription(const TCHAR* szVal);
-
-	// Arrays
-
-	int getExtraYieldThreshold(int i) const;
-	int getTradeYieldModifier(int i) const;
-	int getCommerceChange(int i) const;
-	int getCommerceModifier(int i) const;
-/*
-	int isFreePromotion(int i) const;
-	int isFreePromotionUnitCombat(int i) const;
-*/
-
-	//TB Traits Mods begin
-	//Textual References
-	int getPrereqTrait() const;
-	int getPrereqOrTrait1() const;
-	int getPrereqOrTrait2() const;
-	PromotionLineTypes getPromotionLine() const;
-	int getGreatPeopleUnitType() const;
-	TechTypes getPrereqTech() const;
-	//Team Project (6)
-	SpecialistTypes getEraAdvanceFreeSpecialistType() const;
-	int getGoldenAgeonBirthofGreatPeopleType() const;
-	//integers
-	int getWarWearinessAccumulationModifier() const;
-	int getCivicAnarchyTimeModifier() const;
-	int getReligiousAnarchyTimeModifier() const;
-	int getImprovementUpgradeRateModifier() const;
-	int getWorkerSpeedModifier() const;
-	int getMaxConscript() const;
-	int getDistanceMaintenanceModifier() const;
-	int getNumCitiesMaintenanceModifier() const;
-	int getCorporationMaintenanceModifier() const;
-	int getStateReligionGreatPeopleRateModifier() const;
-	int getFreeExperience() const;
-	int getFreeUnitUpkeepCivilian() const;
-	int getFreeUnitUpkeepMilitary() const;
-	int getFreeUnitUpkeepCivilianPopPercent() const;
-	int getFreeUnitUpkeepMilitaryPopPercent() const;
-	int getCivilianUnitUpkeepMod() const;
-	int getMilitaryUnitUpkeepMod() const;
-	int getLargestCityHappiness() const;
-	int getHappyPerMilitaryUnit() const;
-	int getFreeSpecialist() const;
-	int getTradeRoutes() const;
-	int getStateReligionHappiness() const;
-	int getNonStateReligionHappiness() const;
-	int getStateReligionUnitProductionModifier() const;
-	int getStateReligionBuildingProductionModifier() const;
-	int getStateReligionFreeExperience() const;
-	int getExpInBorderModifier() const;
-	int getCityDefenseBonus() const;
-	int getMilitaryProductionModifier() const;
-	int getAttitudeModifier() const;
-	int getLinePriority() const;
-	int getEspionageDefense() const;
-	int getMinAnarchy() const;
-	int getMaxTradeRoutesChange() const;
-	int getGoldenAgeDurationModifier() const;
-	int getGreatPeopleRateChange() const;
-	int getHurryAngerModifier() const;
-	int getHurryCostModifier() const;
-	int getEnemyWarWearinessModifier() const;
-	int getForeignTradeRouteModifier() const;
-	int getBombardDefense() const;
-	int getUnitUpgradePriceModifier() const;
-	int getCoastalTradeRoutes() const;
-	int getGlobalPopulationgrowthratepercentage() const;
-	int getCityStartCulture(bool bForLoad = false) const;
-	int getGlobalAirUnitCapacity() const;
-	int getCapitalXPModifier() const;
-	int getHolyCityofStateReligionXPModifier() const;
-	int getHolyCityofNonStateReligionXPModifier() const;
-	int getBonusPopulationinNewCities() const;
-	int getMissileRange() const;
-	int getFlightOperationRange() const;
-	int getNavalCargoSpace() const;
-	int getMissileCargoSpace() const;
-	int getNationalCaptureProbabilityModifier() const;
-	int getNationalCaptureResistanceModifier() const;
-	int getStateReligionSpreadProbabilityModifier() const;
-	int getNonStateReligionSpreadProbabilityModifier() const;
-	int getFreedomFighterChange() const;
-
-	//Booleans
-	bool isMilitaryFoodProduction() const;
-	bool isNegativeTrait() const;
-	bool isImpurePropertyManipulators() const;
-	bool isImpurePromotions() const;
-	bool isCivilizationTrait() const;
-	bool isAllowsInquisitions() const;
-	bool isCoastalAIInfluence() const;
-	bool isBarbarianSelectionOnly() const;
-	bool isCitiesStartwithStateReligion() const;
-	bool isDraftsOnCityCapture() const;
-	bool isFreeSpecialistperWorldWonder() const;
-	bool isFreeSpecialistperNationalWonder() const;
-	bool isFreeSpecialistperTeamProject() const;
-	bool isExtraGoody() const;
-	bool isAllReligionsActive() const;
-	bool isBansNonStateReligions() const;
-	bool isFreedomFighter() const;
-	bool isValidTrait(bool bGameStart=false) const;
-
-	// bool vector without delayed resolution
-	int getNotOnGameOption(int i) const;
-	int getNumNotOnGameOptions() const;
-	bool isNotOnGameOption(int i) const;
-
-	int getOnGameOption(int i) const;
-	int getNumOnGameOptions() const;
-	bool isOnGameOption(int i) const;
-
-	//Arrays
-	int getSpecialistYieldChange(int i, int j) const;
-	int* getSpecialistYieldChangeArray(int i) const;
-	bool isAnySpecialistYieldChanges() const { return m_ppaiSpecialistYieldChange != NULL; }
-
-	int getYieldModifier(int i) const;
-	int* getYieldModifierArray() const;
-
-	int getCapitalYieldModifier(int i) const;
-	int* getCapitalYieldModifierArray() const;
-
-	int getCapitalCommerceModifier(int i) const;
-	int* getCapitalCommerceModifierArray() const;
-
-	int getSpecialistExtraCommerce(int i) const;
-	int* getSpecialistExtraCommerceArray() const;
-
-	int getSpecialistExtraYield(int i) const;
-	int* getSpecialistExtraYieldArray() const;
-
-	int getYieldChange(int i) const;
-
-	int getSpecialistCommerceChange(int i, int j) const;
-	int* getSpecialistCommerceChangeArray(int i) const;
-	bool isAnySpecialistCommerceChanges() const { return m_ppaiSpecialistCommerceChange != NULL; }
-
-	int getFlavorValue(int i) const;
-	int getLessYieldThreshold(int i) const;
-
-	int getSeaPlotYieldChanges(int i) const;
-	int* getSeaPlotYieldChangesArray() const;
-
-	int getImprovementYieldChange(int i, int j) const;
-	int* getImprovementYieldChangeArray(int i) const;
-
-	int getGoldenAgeYieldChanges(int i) const;
-	int* getGoldenAgeYieldChangesArray() const;
-
-	int getGoldenAgeCommerceChanges(int i) const;
-	int* getGoldenAgeCommerceChangesArray() const;
-
-	// int vector utilizing struct with delayed resolution
-
-	int getNumImprovementUpgradeModifierTypes() const;
-	ImprovementModifier getImprovementUpgradeModifier(int iImprovement) const;
-
-	int getNumBuildWorkerSpeedModifierTypes() const;
-	BuildModifier getBuildWorkerSpeedModifier(int iBuild) const;
-
-	int getNumDisallowedTraitTypes() const;
-	DisallowedTraitType isDisallowedTraitType(int iTrait) const;
-
-	int getNumDomainFreeExperiences() const;
-	DomainModifier getDomainFreeExperience(int iDomain) const;
-
-	int getNumDomainProductionModifiers() const;
-	DomainModifier getDomainProductionModifier(int iDomain) const;
-
-	int getNumTechResearchModifiers() const;
-	TechModifier getTechResearchModifier(int iTech) const;
-
-	int getNumBuildingProductionModifiers() const;
-	BuildingModifier getBuildingProductionModifier(int iBuilding) const;
-
-	int getNumSpecialBuildingProductionModifiers() const;
-	SpecialBuildingModifier getSpecialBuildingProductionModifier(int iSpecialBuilding) const;
-
-	int getNumBuildingHappinessModifiers() const;
-	BuildingModifier getBuildingHappinessModifier(int iBuilding) const;
-
-	int getNumUnitProductionModifiers() const;
-	UnitModifier getUnitProductionModifier(int iUnit) const;
-
-	int getNumSpecialUnitProductionModifiers() const;
-	SpecialUnitModifier getSpecialUnitProductionModifier(int iSpecialUnit) const;
-
-	int getNumCivicOptionNoUpkeepTypes() const;
-	CivicOptionTypeBool isCivicOptionNoUpkeepType(int iCivicOption) const;
-
-	int getNumUnitCombatFreeExperiences() const;
-	UnitCombatModifier getUnitCombatFreeExperience(int iUnitCombat) const;
-
-	int getNumUnitCombatProductionModifiers() const;
-	UnitCombatModifier getUnitCombatProductionModifier(int iUnitCombat) const;
-
-	int getNumBonusHappinessChanges() const;
-	BonusModifier getBonusHappinessChange(int iBonus) const;
-
-	const CvPropertyManipulators* getPropertyManipulators() const;
-
-	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
-	void copyNonDefaults(CvTraitInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvTraitInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
-	void getCheckSum(unsigned int& iSum) const;
-
-	bool isFreePromotionUnitCombats(int i, int j) const;
-
-private:
-	CvPropertyManipulators m_PropertyManipulators;
-
-protected:
-	bool** m_ppbFreePromotionUnitCombats;
-
-	int m_iHealth;
-	int m_iHappiness;
-	int m_iMaxAnarchy;
-	int m_iUpkeepModifier;
-	int m_iLevelExperienceModifier;
-	int m_iGreatPeopleRateModifier;
-	int m_iGreatGeneralRateModifier;
-	int m_iDomesticGreatGeneralRateModifier;
-	int m_iMaxGlobalBuildingProductionModifier;
-	int m_iMaxTeamBuildingProductionModifier;
-	int m_iMaxPlayerBuildingProductionModifier;
-
-/********************************************************************************/
-/**		REVDCM									2/16/10				phungus420	*/
-/**																				*/
-/**		RevTraitEffects															*/
-/********************************************************************************/
-	int m_iRevIdxLocal;
-	int m_iRevIdxNational;
-	int m_iRevIdxDistanceModifier;
-	int m_iRevIdxHolyCityGood;
-	int m_iRevIdxHolyCityBad;
-	float m_fRevIdxNationalityMod;
-	float m_fRevIdxGoodReligionMod;
-	float m_fRevIdxBadReligionMod;
-	bool m_bNonStateReligionCommerce;
-	bool m_bUpgradeAnywhere;
-/********************************************************************************/
-/**		REVDCM									END								*/
-/********************************************************************************/
-
-	CvString m_szShortDescription;
-
-	// Arrays
-
-	int* m_paiExtraYieldThreshold;
-	int* m_paiTradeYieldModifier;
-	int* m_paiCommerceChange;
-	int* m_paiCommerceModifier;
-
-//	bool* m_pabFreePromotion;
-//	bool* m_pabFreePromotionUnitCombat;
-
-	CvPropertyManipulators m_PropertyManipulatorsNull;
-
-	//TB Traits Mods begin
-	//Textual References
-	int m_iPrereqTrait;
-	int m_iPrereqOrTrait1;
-	int m_iPrereqOrTrait2;
-	TechTypes m_ePrereqTech;
-	PromotionLineTypes m_ePromotionLine;
-	int m_iGreatPeopleUnitType;
-	//Team Project (6)
-	SpecialistTypes m_eEraAdvanceFreeSpecialistType;
-	int m_iGoldenAgeonBirthofGreatPeopleType;
-	//integers
-	int m_iWarWearinessAccumulationModifier;
-	int m_iCivicAnarchyTimeModifier;
-	int m_iReligiousAnarchyTimeModifier;
-	int m_iImprovementUpgradeRateModifier;
-	int m_iWorkerSpeedModifier;
-	int m_iMaxConscript;
-	int m_iDistanceMaintenanceModifier;
-	int m_iNumCitiesMaintenanceModifier;
-	int m_iCorporationMaintenanceModifier;
-	int m_iStateReligionGreatPeopleRateModifier;
-	int m_iFreeExperience;
-	int m_iFreeUnitUpkeepCivilian;
-	int m_iFreeUnitUpkeepMilitary;
-	int m_iFreeUnitUpkeepCivilianPopPercent;
-	int m_iFreeUnitUpkeepMilitaryPopPercent;
-	int m_iCivilianUnitUpkeepMod;
-	int m_iMilitaryUnitUpkeepMod;
-	int m_iHappyPerMilitaryUnit;
-	int m_iLargestCityHappiness;
-	int m_iFreeSpecialist;
-	int m_iTradeRoutes;
-	int m_iStateReligionHappiness;
-	int m_iNonStateReligionHappiness;
-	int m_iStateReligionUnitProductionModifier;
-	int m_iStateReligionBuildingProductionModifier;
-	int m_iStateReligionFreeExperience;
-	int m_iExpInBorderModifier;
-	int m_iCityDefenseBonus;
-	int m_iMilitaryProductionModifier;
-	int m_iAttitudeModifier;
-	int m_iLinePriority;
-	int m_iEspionageDefense;
-	int m_iMinAnarchy;
-	int m_iMaxTradeRoutesChange;
-	int m_iGoldenAgeDurationModifier;
-	int m_iGreatPeopleRateChange;
-	int m_iHurryAngerModifier;
-	int m_iHurryCostModifier;
-	int m_iEnemyWarWearinessModifier;
-	int m_iForeignTradeRouteModifier;
-	int m_iBombardDefense;
-	int m_iUnitUpgradePriceModifier;
-	int m_iCoastalTradeRoutes;
-	int m_iGlobalPopulationgrowthratepercentage;
-	int m_iCityStartCulture;
-	int m_iGlobalAirUnitCapacity;
-	int m_iCapitalXPModifier;
-	int m_iHolyCityofStateReligionXPModifier;
-	int m_iHolyCityofNonStateReligionXPModifier;
-	int m_iBonusPopulationinNewCities;
-	int m_iMissileRange;
-	int m_iFlightOperationRange;
-	int m_iNavalCargoSpace;
-	int m_iMissileCargoSpace;
-	int m_iNationalCaptureProbabilityModifier;
-	int m_iNationalCaptureResistanceModifier;
-	int m_iStateReligionSpreadProbabilityModifier;
-	int m_iNonStateReligionSpreadProbabilityModifier;
-	int m_iFreedomFighterChange;
-	//booleans
-	bool m_bMilitaryFoodProduction;
-	bool m_bNegativeTrait;
-	bool m_bImpurePropertyManipulators;
-	bool m_bImpurePromotions;
-	bool m_bCivilizationTrait;
-	bool m_bAllowsInquisitions;
-	bool m_bCoastalAIInfluence;
-	bool m_bBarbarianSelectionOnly;
-	bool m_bCitiesStartwithStateReligion;
-	bool m_bDraftsOnCityCapture;
-	bool m_bFreeSpecialistperWorldWonder;
-	bool m_bFreeSpecialistperNationalWonder;
-	bool m_bFreeSpecialistperTeamProject;
-	bool m_bExtraGoody;
-	bool m_bAllReligionsActive;
-	bool m_bBansNonStateReligions;
-	bool m_bFreedomFighter;
-	// bool vector without delayed resolution
-	std::vector<int> m_aiNotOnGameOptions;
-	std::vector<int> m_aiOnGameOptions;
-	//Arrays
-	int** m_ppaiSpecialistYieldChange;
-	int* m_piYieldModifier;
-	int* m_piCapitalYieldModifier;
-	int* m_piCapitalCommerceModifier;
-	int* m_piSpecialistExtraCommerce;
-	int* m_piSpecialistExtraYield;
-	int* m_piYieldChange;
-	int** m_ppaiSpecialistCommerceChange;
-	int* m_piFlavorValue;
-	int* m_paiLessYieldThreshold;
-	int* m_piSeaPlotYieldChanges;
-	int** m_ppaiImprovementYieldChange;
-	//Team Project (7)
-	int* m_piGoldenAgeYieldChanges;
-	int* m_piGoldenAgeCommerceChanges;
-	//Arrays for Pure Traits
-	int* m_piBonusHappinessChangesFiltered;
-	int* m_paiExtraYieldThresholdFiltered;
-	int* m_paiTradeYieldModifierFiltered;
-	int* m_paiCommerceChangeFiltered;
-	int* m_paiCommerceModifierFiltered;
-	int** m_ppaiSpecialistYieldChangeFiltered;
-	int* m_piYieldModifierFiltered;
-	int* m_piCapitalYieldModifierFiltered;
-	int* m_piCapitalCommerceModifierFiltered;
-	int* m_piSpecialistExtraCommerceFiltered;
-	int* m_piSpecialistExtraYieldFiltered;
-	int* m_piYieldChangeFiltered;
-	int** m_ppaiSpecialistCommerceChangeFiltered;
-	int* m_paiLessYieldThresholdFiltered;
-	int* m_piSeaPlotYieldChangesFiltered;
-	int** m_ppaiImprovementYieldChangeFiltered;
-	//Team Project (7)
-	int* m_piGoldenAgeYieldChangesFiltered;
-	int* m_piGoldenAgeCommerceChangesFiltered;
-	// bool vector without delayed resolution
-	// int vector utilizing struct with delayed resolution
-	std::vector<ImprovementModifier> m_aImprovementUpgradeModifierTypes;
-	std::vector<BuildModifier> m_aBuildWorkerSpeedModifierTypes;
-	std::vector<DisallowedTraitType> m_aDisallowedTraitTypes;
-	std::vector<DomainModifier> m_aDomainFreeExperiences;
-	std::vector<DomainModifier> m_aDomainProductionModifiers;
-	std::vector<TechModifier> m_aTechResearchModifiers;
-	std::vector<BuildingModifier> m_aBuildingProductionModifiers;
-	std::vector<SpecialBuildingModifier> m_aSpecialBuildingProductionModifiers;
-	std::vector<BuildingModifier> m_aBuildingHappinessModifiers;
-	std::vector<UnitModifier> m_aUnitProductionModifiers;
-	std::vector<SpecialUnitModifier> m_aSpecialUnitProductionModifiers;
-	std::vector<CivicOptionTypeBool> m_aCivicOptionNoUpkeepTypes;
-	//Team Project (8)
-	std::vector<UnitCombatModifier> m_aUnitCombatFreeExperiences;
-	std::vector<UnitCombatModifier> m_aUnitCombatProductionModifiers;
-	std::vector<BonusModifier> m_aBonusHappinessChanges;
-	//TB Traits mods end
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -6427,7 +5496,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCursorInfo : public CvInfoBase
+class CvCursorInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6435,7 +5506,7 @@ public:
 	CvCursorInfo();
 	virtual ~CvCursorInfo();
 
-	DllExport const TCHAR* getPath();
+	DllExport const char* getPath();
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvCursorInfo* pClassInfo);
@@ -6453,7 +5524,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvThroneRoomCamera : public CvInfoBase
+class CvThroneRoomCamera
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6461,7 +5534,7 @@ public:
 	CvThroneRoomCamera();
 	virtual ~CvThroneRoomCamera();
 
-	DllExport const TCHAR* getFileName();
+	DllExport const char* getFileName();
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvThroneRoomCamera* pClassInfo);
@@ -6479,7 +5552,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvThroneRoomInfo : public CvInfoBase
+class CvThroneRoomInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6487,8 +5562,8 @@ public:
 	CvThroneRoomInfo();
 	virtual ~CvThroneRoomInfo();
 
-	DllExport const TCHAR* getEvent();
-	DllExport const TCHAR* getNodeName();
+	DllExport const char* getEvent();
+	DllExport const char* getNodeName();
 	DllExport int getFromState();
 	DllExport int getToState();
 	DllExport int getAnimation();
@@ -6513,7 +5588,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvThroneRoomStyleInfo : public CvInfoBase
+class CvThroneRoomStyleInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6521,9 +5598,9 @@ public:
 	CvThroneRoomStyleInfo();
 	virtual ~CvThroneRoomStyleInfo();
 
-	DllExport const TCHAR* getArtStyleType()	{ return m_szArtStyleType; }
-	DllExport const TCHAR* getEraType()			{ return m_szEraType; }
-	DllExport const TCHAR* getFileName()		{ return m_szFileName; }
+	DllExport const char* getArtStyleType()	{ return m_szArtStyleType; }
+	DllExport const char* getEraType()		{ return m_szEraType; }
+	DllExport const char* getFileName()		{ return m_szFileName; }
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvThroneRoomStyleInfo* pClassInfo);
@@ -6545,7 +5622,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSlideShowInfo : public CvInfoBase
+class CvSlideShowInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6553,8 +5632,8 @@ public:
 	CvSlideShowInfo();
 	virtual ~CvSlideShowInfo();
 
-	DllExport const TCHAR* getPath()			{ return m_szPath; }
-	DllExport const TCHAR* getTransitionType()	{ return m_szTransitionType; }
+	DllExport const char* getPath()				{ return m_szPath; }
+	DllExport const char* getTransitionType()	{ return m_szTransitionType; }
 	DllExport float getStartTime()				{ return m_fStartTime; }
 
 	bool read(CvXMLLoadUtility* pXML);
@@ -6575,7 +5654,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSlideShowRandomInfo : public CvInfoBase
+class CvSlideShowRandomInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6583,7 +5664,7 @@ public:
 	CvSlideShowRandomInfo();
 	virtual ~CvSlideShowRandomInfo();
 
-	DllExport const TCHAR* getPath();
+	DllExport const char* getPath();
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvSlideShowRandomInfo* pClassInfo);
@@ -6601,7 +5682,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvWorldPickerInfo : public CvInfoBase
+class CvWorldPickerInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6609,16 +5692,16 @@ public:
 	CvWorldPickerInfo();
 	virtual ~CvWorldPickerInfo();
 
-	DllExport const TCHAR* getMapName();
-	DllExport const TCHAR* getModelFile();
+	DllExport const char* getMapName();
+	DllExport const char* getModelFile();
 	DllExport int getNumSizes();
 	DllExport float getSize(int index);
 	DllExport int getNumClimates();
-	DllExport const TCHAR* getClimatePath(int index);
+	DllExport const char* getClimatePath(int index);
 	DllExport int getNumWaterLevelDecals();
-	DllExport const TCHAR* getWaterLevelDecalPath(int index);
+	DllExport const char* getWaterLevelDecalPath(int index);
 	DllExport int getNumWaterLevelGloss();
-	DllExport const TCHAR* getWaterLevelGlossPath(int index);
+	DllExport const char* getWaterLevelGlossPath(int index);
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(CvWorldPickerInfo* pClassInfo);
@@ -6641,7 +5724,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvSpaceShipInfo : public CvInfoBase
+class CvSpaceShipInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6649,9 +5734,9 @@ public:
 	CvSpaceShipInfo();
 	virtual ~CvSpaceShipInfo();
 
-	DllExport const TCHAR* getNodeName();
-	DllExport const TCHAR* getProjectName();
-	void setProjectName(const TCHAR* szVal);
+	DllExport const char* getNodeName();
+	DllExport const char* getProjectName();
+	void setProjectName(const char* szVal);
 	DllExport ProjectTypes getProjectType();
 	DllExport AxisTypes getCameraUpAxis();
 	DllExport SpaceShipInfoTypes getSpaceShipInfoType();
@@ -6685,7 +5770,9 @@ protected:
 typedef std::vector<std::pair<int,float> > CvAnimationPathDefinition;
 typedef std::pair<int,int >			CvAnimationCategoryDefinition;
 
-class CvAnimationPathInfo : public CvInfoBase
+class CvAnimationPathInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 	public:
@@ -6716,7 +5803,9 @@ class CvAnimationPathInfo : public CvInfoBase
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvAnimationCategoryInfo : public CvInfoBase
+class CvAnimationCategoryInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 	public:
@@ -6744,7 +5833,9 @@ class CvAnimationCategoryInfo : public CvInfoBase
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEntityEventInfo : public CvInfoBase
+class CvEntityEventInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 		//---------------------------PUBLIC INTERFACE---------------------------------
 	public:
@@ -6780,7 +5871,8 @@ class CvEntityEventInfo : public CvInfoBase
 //  DESC:  Used to store data from Art\Civ4ArtDefines.xml
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvAssetInfoBase : public CvInfoBase
+class CvAssetInfoBase
+	: public CvInfoBase
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -6788,11 +5880,11 @@ public:
 	CvAssetInfoBase()  {}
 	virtual ~CvAssetInfoBase() {}
 
-	const TCHAR* getTag() const;
-	void setTag(const TCHAR* szDesc);
+	const char* getTag() const;
+	void setTag(const char* szDesc);
 
-	DllExport const TCHAR* getPath() const;
-	void setPath(const TCHAR* szDesc);
+	DllExport const char* getPath() const;
+	void setPath(const char* szDesc);
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvAssetInfoBase* pClassInfo);
@@ -6803,18 +5895,19 @@ protected:
 	CvString m_szPath;
 };
 
-class CvArtInfoAsset : public CvAssetInfoBase
+class CvArtInfoAsset
+	: public CvAssetInfoBase
 {
 public:
 
 	CvArtInfoAsset() {}
 	virtual ~CvArtInfoAsset() {}
 
-	DllExport const TCHAR* getNIF() const;
-	DllExport const TCHAR* getKFM() const;
+	DllExport const char* getNIF() const;
+	DllExport const char* getKFM() const;
 
-	void setNIF(const TCHAR* szDesc);
-	void setKFM(const TCHAR* szDesc);
+	void setNIF(const char* szDesc);
+	void setKFM(const char* szDesc);
 
 	bool read(CvXMLLoadUtility* pXML);
 
@@ -6832,9 +5925,9 @@ protected:
 // Another base class
 //////////////////////////////////////////////////////////////////////////
 
-class CvArtInfoScalableAsset :
-	public CvArtInfoAsset,
-	public CvScalableInfo
+class CvArtInfoScalableAsset
+	: public CvArtInfoAsset
+	, public CvScalableInfo
 {
 public:
 	bool read(CvXMLLoadUtility* pXML);
@@ -6843,7 +5936,9 @@ public:
 
 // todoJS: Remove empty classes if additional items are not added
 
-class CvArtInfoInterface : public CvArtInfoAsset
+class CvArtInfoInterface
+	: public CvArtInfoAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6851,7 +5946,9 @@ public:
 	virtual ~CvArtInfoInterface() {}
 };
 
-class CvArtInfoMisc : public CvArtInfoScalableAsset
+class CvArtInfoMisc
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6859,7 +5956,9 @@ public:
 	virtual ~CvArtInfoMisc() {}
 };
 
-class CvArtInfoMovie : public CvArtInfoAsset
+class CvArtInfoMovie
+	: public CvArtInfoAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6871,7 +5970,9 @@ public:
 	void copyNonDefaults(const CvArtInfoMovie* pClassInfo);
 };
 
-class CvArtInfoUnit : public CvArtInfoScalableAsset
+class CvArtInfoUnit
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6882,15 +5983,15 @@ public:
 	DllExport bool getActAsLand() const;
 	DllExport bool getActAsAir() const;
 
-	DllExport const TCHAR* getShaderNIF() const;
-	void setShaderNIF(const TCHAR* szDesc);
+	DllExport const char* getShaderNIF() const;
+	void setShaderNIF(const char* szDesc);
 
-	DllExport const TCHAR* getShadowNIF() const;
+	DllExport const char* getShadowNIF() const;
 	DllExport float getShadowScale() const;
-	DllExport const TCHAR* getShadowAttachNode() const;
+	DllExport const char* getShadowAttachNode() const;
 	DllExport int getDamageStates() const;
 
-	DllExport const TCHAR* getTrailTexture() const;
+	DllExport const char* getTrailTexture() const;
 	DllExport float getTrailWidth() const;
 	DllExport float getTrailLength() const;
 	DllExport float getTrailTaper() const;
@@ -6908,8 +6009,8 @@ public:
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvArtInfoUnit* pClassInfo);
 
-	const TCHAR* getTrainSound() const;
-	void setTrainSound(const TCHAR* szVal);
+	const char* getTrainSound() const;
+	void setTrainSound(const char* szVal);
 	DllExport int getRunLoopSoundTag() const;
 	DllExport int getRunEndSoundTag() const;
 	DllExport int getPatrolSoundTag() const;
@@ -6952,7 +6053,9 @@ protected:
 	int m_iActionSoundScriptId;
 };
 
-class CvArtInfoBuilding : public CvArtInfoScalableAsset
+class CvArtInfoBuilding
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6960,7 +6063,7 @@ public:
 	virtual ~CvArtInfoBuilding();
 
 	bool isAnimated() const;
-	DllExport const TCHAR* getLSystemName() const;
+	DllExport const char* getLSystemName() const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
@@ -6972,7 +6075,9 @@ protected:
 	CvString m_szLSystemName;
 };
 
-class CvArtInfoCivilization : public CvArtInfoAsset
+class CvArtInfoCivilization
+	: public CvArtInfoAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -6989,17 +6094,19 @@ protected:
 	bool m_bWhiteFlag;
 };
 
-class CvArtInfoLeaderhead : public CvArtInfoAsset
+class CvArtInfoLeaderhead
+	: public CvArtInfoAsset
+	, private bst::noncopyable
 {
 public:
 
 	CvArtInfoLeaderhead() {}
 	virtual ~CvArtInfoLeaderhead() {}
 
-	DllExport const TCHAR* getNoShaderNIF() const;
-	void setNoShaderNIF(const TCHAR* szNIF);
-	DllExport const TCHAR* getBackgroundKFM() const;
-	void setBackgroundKFM( const TCHAR* szKFM);
+	DllExport const char* getNoShaderNIF() const;
+	void setNoShaderNIF(const char* szNIF);
+	DllExport const char* getBackgroundKFM() const;
+	void setBackgroundKFM( const char* szKFM);
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvArtInfoLeaderhead* pClassInfo);
@@ -7010,7 +6117,9 @@ protected:
 	CvString m_szBackgroundKFM;
 };
 
-class CvArtInfoBonus : public CvArtInfoScalableAsset
+class CvArtInfoBonus
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 	CvArtInfoBonus();
@@ -7018,8 +6127,8 @@ public:
 
 	int getFontButtonIndex() const;
 
-	DllExport const TCHAR* getShaderNIF() const;
-	void setShaderNIF(const TCHAR* szDesc);
+	DllExport const char* getShaderNIF() const;
+	void setShaderNIF(const char* szDesc);
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvArtInfoBonus* pClassInfo);
@@ -7029,15 +6138,17 @@ protected:
 	int m_iFontButtonIndex;
 };
 
-class CvArtInfoImprovement : public CvArtInfoScalableAsset
+class CvArtInfoImprovement
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 
 	CvArtInfoImprovement();
 	virtual ~CvArtInfoImprovement();
 
-	DllExport const TCHAR* getShaderNIF() const;
-	void setShaderNIF(const TCHAR* szDesc);
+	DllExport const char* getShaderNIF() const;
+	void setShaderNIF(const char* szDesc);
 
 	bool isExtraAnimations() const;
 
@@ -7052,7 +6163,9 @@ protected:
 
 typedef std::vector<std::pair<int, int> > CvTextureBlendSlotList;
 
-class CvArtInfoTerrain : public CvArtInfoAsset
+class CvArtInfoTerrain
+	: public CvArtInfoAsset
+	, private bst::noncopyable
 {
 public:
 	//!< number to blend textures.
@@ -7060,12 +6173,12 @@ public:
 
 	CvArtInfoTerrain();
 
-	DllExport const TCHAR* getBaseTexture();
-	void setBaseTexture(const TCHAR* szTmp);
-	DllExport const TCHAR* getGridTexture();
-	void setGridTexture(const TCHAR* szTmp);
-	DllExport const TCHAR* getDetailTexture();
-	void setDetailTexture(const TCHAR* szTmp);
+	DllExport const char* getBaseTexture();
+	void setBaseTexture(const char* szTmp);
+	DllExport const char* getGridTexture();
+	void setGridTexture(const char* szTmp);
+	DllExport const char* getDetailTexture();
+	void setDetailTexture(const char* szTmp);
 	DllExport int getLayerOrder();
 	DllExport bool useAlphaShader();
 	DllExport CvTextureBlendSlotList& getBlendList(int blendMask);
@@ -7088,7 +6201,9 @@ protected:
 	CvString m_pSlotNames[NUM_TEXTURE_BLENDS];
 };
 
-class CvArtInfoFeature : public CvArtInfoScalableAsset
+class CvArtInfoFeature
+	: public CvArtInfoScalableAsset
+	, private bst::noncopyable
 {
 public:
 
@@ -7149,7 +6264,7 @@ public:
 
 		const FeatureArtModel& getArtModel(int index) const
 		{
-			FAssertMsg((index >= 0) && (index < (int) m_aArtModels.size()), "[Jason] Invalid feature model file index.");
+			FASSERT_BOUNDS(0, (int)m_aArtModels.size(), index);
 			return m_aArtModels[index];
 		}
 
@@ -7197,15 +6312,15 @@ public:
 
 		const FeatureArtPiece& getFeatureArtPiece(int index) const
 		{
-			FAssertMsg((index >= 0) && (index < (int) m_aFeatureArtPieces.size()), "[Jason] Invalid feature art index.");
+			FASSERT_BOUNDS(0, (int)m_aFeatureArtPieces.size(), index);
 			return m_aFeatureArtPieces[index];
 		}
 
 		const FeatureArtPiece& getFeatureArtPieceFromConnectionMask(int connectionMask) const
 		{
-			for(int i=0;i<(int)m_aFeatureArtPieces.size();i++)
-				if(m_aFeatureArtPieces[i].getConnectionMask() == connectionMask)
-					return m_aFeatureArtPieces[i];
+			foreach_(const FeatureArtPiece& art, m_aFeatureArtPieces)
+				if (art.getConnectionMask() == connectionMask)
+					return art;
 
 			FErrorMsg("[Jason] Failed to find feature art piece with valid connection mask.");
 			return m_aFeatureArtPieces[0];
@@ -7213,10 +6328,10 @@ public:
 
 		const CvString getFeatureDummyNodeName(const CvString &tagName) const
 		{
-			for(int i=0;i<(int)m_aFeatureDummyNodes.size();i++)
+			foreach_(const FeatureDummyNode& dummy, m_aFeatureDummyNodes)
 			{
-				if(m_aFeatureDummyNodes[i].getTagName().CompareNoCase(tagName) == 0)
-					return m_aFeatureDummyNodes[i].getNodeName();
+				if (dummy.getTagName().CompareNoCase(tagName) == 0)
+					return dummy.getNodeName();
 			}
 
 			FErrorMsg("[Jason] Failed to find dummy tag name.");
@@ -7225,10 +6340,10 @@ public:
 
 		const CvString getFeatureDummyTag(const CvString &nodeName) const
 		{
-			for(int i=0;i<(int)m_aFeatureDummyNodes.size();i++)
+			foreach_(const FeatureDummyNode& dummy, m_aFeatureDummyNodes)
 			{
-				if(m_aFeatureDummyNodes[i].getNodeName().CompareNoCase(nodeName) == 0)
-					return m_aFeatureDummyNodes[i].getTagName();
+				if (dummy.getNodeName().CompareNoCase(nodeName) == 0)
+					return dummy.getTagName();
 			}
 
 			return "";
@@ -7236,9 +6351,9 @@ public:
 
 		FeatureArtPiece& createFeatureArtPieceFromConnectionMask(int connectionMask)
 		{
-			for(int i=0;i<(int)m_aFeatureArtPieces.size();i++)
-				if(m_aFeatureArtPieces[i].getConnectionMask() == connectionMask)
-					return m_aFeatureArtPieces[i];
+			foreach_(FeatureArtPiece& art, m_aFeatureArtPieces)
+				if (art.getConnectionMask() == connectionMask)
+					return art;
 
 			m_aFeatureArtPieces.push_back(FeatureArtPiece(connectionMask));
 			return m_aFeatureArtPieces.back();
@@ -7280,8 +6395,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEmphasizeInfo :
-	public CvInfoBase
+class CvEmphasizeInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -7327,8 +6443,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvUpkeepInfo :
-	public CvInfoBase
+class CvUpkeepInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 //---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -7341,7 +6458,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvUpkeepInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -7357,8 +6474,9 @@ protected:
 //  DESC:
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvCultureLevelInfo :
-	public CvInfoBase
+class CvCultureLevelInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -7366,9 +6484,11 @@ public:
 	CvCultureLevelInfo();
 	virtual ~CvCultureLevelInfo();
 
+	int getLevel() const { return m_iLevel; }
+	void setLevel(int iLevel) { m_iLevel = iLevel; }
+
 	int getCityDefenseModifier() const;
 
-	// JOOYO_ADDON, Added by Jooyo, 06/17/09
 	int getCityRadius() const;
 	int getMaxWorldWonders() const;
 	int getMaxTeamWonders() const;
@@ -7382,11 +6502,11 @@ public:
 
 	void copyNonDefaults(const CvCultureLevelInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
-
+	int m_iLevel;
 	int m_iCityDefenseModifier;
 	int m_iCityRadius;
 	int m_iMaxWorldWonders;
@@ -7396,7 +6516,6 @@ protected:
 	int m_iPrereqGameOption;
 
 	int* m_paiSpeedThreshold;
-
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -7406,8 +6525,9 @@ protected:
 //  DESC:   Used to manage different types of Art Styles
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEraInfo :
-	public CvInfoBase
+class CvEraInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -7434,12 +6554,11 @@ public:
 	int getEventChancePerTurn() const;
 	int getSoundtrackSpace() const;
 	int getNumSoundtracks() const;
-	int getBeelineStingsTechCostModifier() const;
+	int getCuttingEdgeCutsTechCostModifier() const;
+	int getInitialCityMaintenancePercent() const;
 
-	int getInitialCityMaintenancePercent() const; // Afforess 09/12/10
-
-	const TCHAR* getAudioUnitVictoryScript() const;
-	const TCHAR* getAudioUnitDefeatScript() const;
+	const char* getAudioUnitVictoryScript() const;
+	const char* getAudioUnitDefeatScript() const;
 
 	bool isNoGoodies() const;
 	bool isNoAnimals() const;
@@ -7454,7 +6573,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvEraInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 protected:
 
@@ -7478,9 +6597,8 @@ protected:
 	int m_iEventChancePerTurn;
 	int m_iSoundtrackSpace;
 	int m_iNumSoundtracks;
-	int m_iBeelineStingsTechCostModifier;
-
-	int m_iInitialCityMaintenancePercent; // Afforess 09/12/10
+	int m_iCuttingEdgeCutsTechCostModifier;
+	int m_iInitialCityMaintenancePercent;
 
 	CvString m_szAudioUnitVictoryScript;
 	CvString m_szAudioUnitDefeatScript;
@@ -7495,7 +6613,6 @@ protected:
 
 	int* m_paiSoundtracks;
 	int* m_paiCitySoundscapeSciptIds;
-
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -7505,8 +6622,9 @@ protected:
 //  DESC:   Used to manage different types of Art Styles
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvColorInfo :
-	public CvInfoBase
+class CvColorInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -7530,8 +6648,9 @@ protected:
 //  DESC:   Used to manage different types of Art Styles
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvPlayerColorInfo :
-	public CvInfoBase
+class CvPlayerColorInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -7560,8 +6679,9 @@ protected:
 //					XML/Terrain/TerrainSettings.xml
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvLandscapeInfo :
-	public CvInfoBase
+class CvLandscapeInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	public:
 
@@ -7589,11 +6709,11 @@ class CvLandscapeInfo :
 		DllExport float getPeakScale() const;
 		DllExport float getHillScale() const;
 
-		const TCHAR* getSkyArt() const		{ return m_szSkyArt; }
-		const TCHAR* getHeightMap() const	{ return m_szHeightMap; }
-		const TCHAR* getTerrainMap() const	{ return m_szTerrainMap; }
-		const TCHAR* getNormalMap() const	{ return m_szNormalMap; }
-		const TCHAR* getBlendMap() const	{ return m_szBlendMap; }
+		const char* getSkyArt() const		{ return m_szSkyArt; }
+		const char* getHeightMap() const	{ return m_szHeightMap; }
+		const char* getTerrainMap() const	{ return m_szTerrainMap; }
+		const char* getNormalMap() const	{ return m_szNormalMap; }
+		const char* getBlendMap() const		{ return m_szBlendMap; }
 
 		bool read(CvXMLLoadUtility* pXML);
 		void copyNonDefaults(const CvLandscapeInfo* pClassInfo);
@@ -7614,7 +6734,6 @@ class CvLandscapeInfo :
 		float m_fTextureScaleX;
 		float m_fTextureScaleY;
 		float m_fZScale;
-
 		float m_fPeakScale;
 		float m_fHillScale;
 
@@ -7627,7 +6746,6 @@ class CvLandscapeInfo :
 		CvString m_szTerrainMap;
 		CvString m_szNormalMap;
 		CvString m_szBlendMap;
-
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -7635,42 +6753,31 @@ class CvLandscapeInfo :
 //  class : CvGameText
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvGameText : public CvInfoBase
+class CvGameText
+	: public CvInfoBase
 {
 public:
 	DllExport CvGameText();
 
-	const wchar_t* getText() const;
-	void setText(const wchar_t* szText);
+	DllExport static int getNumLanguages()               { return NUM_LANGUAGES; }
+	DllExport static void setNumLanguages(int iNum)      { }
+	static void setLanguage(const CvWString& szLanguage) { m_szLanguage = szLanguage; }
 
-	// for Python
-	std::wstring pyGetText() const { return getText(); }
-
-	void setGender(const wchar_t* szGender) { m_szGender = szGender;	}
+	const wchar_t* getText() const   { return m_szText; }
 	const wchar_t* getGender() const { return m_szGender; }
-
-	void setPlural(const wchar_t* szPlural) { m_szPlural = szPlural; }
 	const wchar_t* getPlural() const { return m_szPlural; }
 
-	DllExport int getNumLanguages() const; // not static for Python access
-	DllExport void setNumLanguages(int iNum); // not static for Python access
+	std::wstring pyGetText() const   { return getText(); }	// for Python
 
 	bool read(CvXMLLoadUtility* pXML);
 
-	virtual void read(FDataStreamBase* pStream) {}
-	virtual void write(FDataStreamBase* pStream) {}
-
-	static void setLanguage(const CvWString& szLanguage) { m_szLanguage = szLanguage; }
-
 protected:
-
+	static int NUM_LANGUAGES;
 	static CvWString m_szLanguage;
 
 	CvWString m_szText;
 	CvWString m_szGender;
 	CvWString m_szPlural;
-
-	static int NUM_LANGUAGES;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -7679,11 +6786,14 @@ protected:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvDiplomacyTextInfo :	public CvInfoBase
+class CvDiplomacyTextInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	friend class CvXMLLoadUtility;		// so it can access private vars to initialize the class
 public:
 	struct Response
+		: private bst::noncopyable
 	{
 		Response() :
 			m_iNumDiplomacyText(0),
@@ -7713,7 +6823,7 @@ public:
 	};
 
 	CvDiplomacyTextInfo();
-	virtual ~CvDiplomacyTextInfo() { uninit(); }	// free memory - MT
+	virtual ~CvDiplomacyTextInfo() { uninit(); }
 
 	// note - Response member vars allocated by CvXmlLoadUtility
 	void init(int iNum);
@@ -7729,15 +6839,14 @@ public:
 
 	int getNumDiplomacyText(int i) const;
 
-	const TCHAR* getDiplomacyText(int i, int j) const;
+	const char* getDiplomacyText(int i, int j) const;
 
 	bool read(CvXMLLoadUtility* pXML);
 
 private:
 
-	int m_iNumResponses;			// set by init
+	int m_iNumResponses;
 	Response* m_pResponses;
-
 };
 
 
@@ -7747,17 +6856,18 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEffectInfo :
-	public CvInfoBase,
-	public CvScalableInfo
+class CvEffectInfo
+	: public CvInfoBase
+	, public CvScalableInfo
+	, private bst::noncopyable
 {
 public:
 
 	CvEffectInfo();
 	virtual ~CvEffectInfo();
 
-	DllExport const TCHAR* getPath() const { return m_szPath; }
-	void setPath(const TCHAR* szVal) { m_szPath = szVal; }
+	DllExport const char* getPath() const { return m_szPath; }
+	void setPath(const char* szVal) { m_szPath = szVal; }
 	float getUpdateRate( ) const { return m_fUpdateRate; };
 	void setUpdateRate( float fUpdateRate ) { m_fUpdateRate = fUpdateRate; }
 	bool isProjectile() const { return m_bProjectile; };
@@ -7783,17 +6893,18 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvAttachableInfo :
-	public CvInfoBase,
-	public CvScalableInfo
+class CvAttachableInfo
+	: public CvInfoBase
+	, public CvScalableInfo
+	, private bst::noncopyable
 {
 public:
 
 	CvAttachableInfo();
 	virtual ~CvAttachableInfo();
 
-	DllExport const TCHAR* getPath() const { return m_szPath; }
-	void setPath(const TCHAR* szVal) { m_szPath = szVal; }
+	DllExport const char* getPath() const { return m_szPath; }
+	void setPath(const char* szVal) { m_szPath = szVal; }
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvAttachableInfo* pClassInfo);
@@ -7805,134 +6916,13 @@ private:
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-//  class : CvQuestInfo
-//
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvQuestInfo :
-	public CvInfoBase
-{
-public:
-	struct QuestLink
-	{
-		// Stores the QuestLinks Type and Name
-		QuestLink() :
-		m_szQuestLinkType("No Type"),
-		m_szQuestLinkName("No Name")
-		{
-		}
-
-	CvString m_szQuestLinkType;
-	CvString m_szQuestLinkName;
-	};
-
-	CvQuestInfo();
-	virtual ~CvQuestInfo();
-
-	void reset();
-	bool initQuestLinks(int iNum);
-
-	int getNumQuestMessages() const;
-	int getNumQuestLinks() const;
-	int getNumQuestSounds() const;
-	const TCHAR* getQuestObjective() const;
-	const TCHAR* getQuestBodyText() const;
-	const TCHAR* getQuestMessages(int iIndex) const;
-	const TCHAR* getQuestLinkType(int iIndex) const;
-	const TCHAR* getQuestLinkName(int iIndex) const;
-	const TCHAR* getQuestSounds(int iIndex) const;
-	const TCHAR* getQuestScript() const;
-
-	void setNumQuestMessages(int iNum);
-	void setNumQuestSounds(int iNum);
-	void setQuestObjective(const TCHAR* szText);
-	void setQuestBodyText(const TCHAR* szText);
-	void setQuestMessages(int iIndex, const TCHAR* szText);
-	void setQuestSounds(int iIndex, const TCHAR* szText);
-	void setQuestScript(const TCHAR* szText);
-
-	bool read(CvXMLLoadUtility* pXML);
-	void copyNonDefaults(const CvQuestInfo* pClassInfo);
-
-private:
-	int m_iNumQuestMessages;
-	int m_iNumQuestLinks;
-	int m_iNumQuestSounds;
-
-	CvString m_szQuestObjective;
-	CvString m_szQuestBodyText;
-	CvString m_szQuestScript;
-
-	CvString* m_paszQuestMessages;
-	QuestLink* m_pQuestLinks;
-	CvString* m_paszQuestSounds;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//  class : CvTutorialInfo
-//
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvTutorialMessage
-{
-public:
-	CvTutorialMessage();
-	virtual ~CvTutorialMessage();
-
-	const TCHAR* getText() const;
-	const TCHAR* getImage() const;
-	const TCHAR* getSound() const;
-
-	void setText(const TCHAR* szText);
-	void setImage(const TCHAR* szText);
-	void setScript(int iIndex, const TCHAR* szText);
-
-	int getNumTutorialScripts() const;
-	const TCHAR* getTutorialScriptByIndex(int i) const;
-	bool read(CvXMLLoadUtility* pXML);
-
-private:
-	int m_iNumTutorialScripts;
-	CvString m_szTutorialMessageText;
-	CvString m_szTutorialMessageImage;
-	CvString m_szTutorialMessageSound;
-	CvString* m_paszTutorialScripts;
-};
-
-class CvTutorialMessage;
-class CvTutorialInfo :
-	public CvInfoBase
-{
-public:
-	CvTutorialInfo();
-	virtual ~CvTutorialInfo();
-
-	const TCHAR* getNextTutorialInfoType() const;
-	void setNextTutorialInfoType(const TCHAR* szVal);
-
-	bool initTutorialMessages(int iNum);
-	void resetMessages();
-
-	int getNumTutorialMessages() const;
-	const CvTutorialMessage* getTutorialMessage(int iIndex) const;
-
-	bool read(CvXMLLoadUtility* pXML);
-	void copyNonDefaults(const CvTutorialInfo* pClassInfo);
-
-private:
-	CvString m_szNextTutorialInfoType;
-	int m_iNumTutorialMessages;
-	CvTutorialMessage* m_paTutorialMessages;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
 //  class : CvGameOptionInfo
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvGameOptionInfo : public CvInfoBase
+class CvGameOptionInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvGameOptionInfo();
@@ -7949,7 +6939,7 @@ public:
 
 	void copyNonDefaults(const CvGameOptionInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	bool m_bDefault;
@@ -7965,8 +6955,9 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvMPOptionInfo :
-	public CvInfoBase
+class CvMPOptionInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvMPOptionInfo();
@@ -7978,7 +6969,7 @@ public:
 
 	void copyNonDefaults(const CvMPOptionInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	bool m_bDefault;
@@ -7990,8 +6981,9 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvForceControlInfo :
-	public CvInfoBase
+class CvForceControlInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvForceControlInfo();
@@ -8003,32 +6995,7 @@ public:
 
 	void copyNonDefaults(const CvForceControlInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
-
-private:
-	bool m_bDefault;
-};
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//  class : CvPlayerOptionInfo
-//
-//
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvPlayerOptionInfo :
-	public CvInfoBase
-{
-public:
-	CvPlayerOptionInfo();
-	virtual ~CvPlayerOptionInfo();
-
-	DllExport bool getDefault() const;
-
-	bool read(CvXMLLoadUtility* pXML);
-
-	void copyNonDefaults(const CvPlayerOptionInfo* pClassInfo);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	bool m_bDefault;
@@ -8040,8 +7007,9 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvGraphicOptionInfo :
-	public CvInfoBase
+class CvGraphicOptionInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 	CvGraphicOptionInfo();
@@ -8053,7 +7021,7 @@ public:
 
 	void copyNonDefaults(const CvGraphicOptionInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	bool m_bDefault;
@@ -8065,7 +7033,9 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEventTriggerInfo : public CvInfoBase
+class CvEventTriggerInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	friend class CvXMLLoadUtility;
 
@@ -8120,6 +7090,8 @@ public:
 	int getNumTerrainsRequired() const;
 	int getImprovementRequired(int i) const;
 	int getNumImprovementsRequired() const;
+	int getNotImprovementRequired(int i) const;
+	int getNumNotImprovementsRequired() const;
 	int getBonusRequired(int i) const;
 	int getNumBonusesRequired() const;
 	int getRouteRequired(int i) const;
@@ -8142,7 +7114,7 @@ public:
 	int getNumWorldNews() const;
 
 // Start EmperorFool: Events with Images
-	const TCHAR* getEventArt() const;
+	const char* getEventArt() const;
 // End EmperorFool: Events with Images
 
 	bool isSinglePlayer() const;
@@ -8159,6 +7131,7 @@ public:
 	bool isShowPlot() const;
 	bool isUnitsOnPlot() const;
 	bool isOwnPlot() const;
+	bool isNotOnCity() const;
 	bool isPickReligion() const;
 	bool isStateReligion() const;
 	bool isHolyCity() const;
@@ -8186,7 +7159,7 @@ public:
 
 	void copyNonDefaults(const CvEventTriggerInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	int m_iPercentGamesActive;
@@ -8231,6 +7204,7 @@ private:
 	std::vector<int> m_aiFeaturesRequired;
 	std::vector<int> m_aiTerrainsRequired;
 	std::vector<int> m_aiImprovementsRequired;
+	std::vector<int> m_aiNotImprovementsRequired;
 	std::vector<int> m_aiBonusesRequired;
 	std::vector<int> m_aiRoutesRequired;
 	std::vector<int> m_aiReligionsRequired;
@@ -8257,6 +7231,7 @@ private:
 	bool m_bShowPlot;
 	bool m_bUnitsOnPlot;
 	bool m_bOwnPlot;
+	bool m_bNotOnCity;
 	bool m_bPickReligion;
 	bool m_bStateReligion;
 	bool m_bHolyCity;
@@ -8271,7 +7246,6 @@ private:
 	CvString m_szPythonCanDoCity;
 	CvString m_szPythonCanDoUnit;
 
-	// bool vector without delayed resolution
 	std::vector<int> m_aiNotOnGameOptions;
 	std::vector<int> m_aiOnGameOptions;
 };
@@ -8282,7 +7256,9 @@ private:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEventInfo : public CvInfoBase
+class CvEventInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	friend class CvXMLLoadUtility;
 
@@ -8299,6 +7275,7 @@ public:
 	bool isGoldenAge() const;
 	bool isDeclareWar() const;
 	bool isDisbandUnit() const;
+	inline bool isGameSpeedScale() const { return m_bGameSpeedScale; }
 
 	int getGold() const;
 	int getRandomGold() const;
@@ -8308,7 +7285,7 @@ public:
 	int getTechPercent() const;
 	int getTechCostPercent() const;
 	int getTechMinTurnsLeft() const;
-	int getPrereqTech() const;
+	inline TechTypes getPrereqTech() const { return m_iPrereqTech; }
 	int getFreeUnit() const;
 	int getNumUnits() const;
 	int getBuilding() const;
@@ -8321,7 +7298,7 @@ public:
 	int getFoodPercent() const;
 	int getFeature() const;
 	int getFeatureChange() const;
-	int getImprovement() const;
+	inline ImprovementTypes getImprovement() const { return m_iImprovement; }
 	int getImprovementChange() const;
 	int getCommerceModifier(int i) const;
 	int getYieldModifier(int i) const;
@@ -8410,11 +7387,10 @@ private:
 public:
 
 	bool read(CvXMLLoadUtility* pXML);
-//	bool readPass2(CvXMLLoadUtility* pXML);
 
 	void copyNonDefaults(const CvEventInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 private:
 	int m_iPrereqGameOption;
@@ -8429,6 +7405,7 @@ private:
 	bool m_bGoldenAge;
 	bool m_bDeclareWar;
 	bool m_bDisbandUnit;
+	bool m_bGameSpeedScale;
 
 	int m_iGold;
 	int m_iRandomGold;
@@ -8438,7 +7415,7 @@ private:
 	int m_iTechPercent;
 	int m_iTechCostPercent;
 	int m_iTechMinTurnsLeft;
-	int m_iPrereqTech;
+	TechTypes m_iPrereqTech;
 	int m_iFreeUnit;
 	int m_iNumUnits;
 	int m_iBuilding;
@@ -8451,7 +7428,7 @@ private:
 	int m_iFoodPercent;
 	int m_iFeature;
 	int m_iFeatureChange;
-	int m_iImprovement;
+	ImprovementTypes m_iImprovement;
 	int m_iImprovementChange;
 	int m_iBonus;
 	int m_iBonusChange;
@@ -8513,7 +7490,9 @@ private:
 //  class : CvEspionageMissionInfo
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvEspionageMissionInfo : public CvInfoBase
+class CvEspionageMissionInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 	//---------------------------PUBLIC INTERFACE---------------------------------
 public:
@@ -8527,7 +7506,7 @@ public:
 	bool isTargetsCity() const;
 	bool isSelectPlot() const;
 
-	int getTechPrereq() const;
+	TechTypes getTechPrereq() const { return m_iTechPrereq; }
 	int getVisibilityLevel() const;
 	bool isInvestigateCity() const;
 	bool isSeeDemographics() const;
@@ -8568,7 +7547,7 @@ public:
 
 	void copyNonDefaults(const CvEspionageMissionInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	//----------------------PROTECTED MEMBER VARIABLES----------------------------
 protected:
@@ -8579,7 +7558,7 @@ protected:
 	bool m_bTargetsCity;
 	bool m_bSelectPlot;
 
-	int m_iTechPrereq;
+	TechTypes m_iTechPrereq;
 	int m_iVisibilityLevel;
 	bool m_bInvestigateCity;
 	bool m_bSeeDemographics;
@@ -8623,28 +7602,30 @@ protected:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvUnitArtStyleTypeInfo : public CvInfoBase
+class CvUnitArtStyleTypeInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
 	CvUnitArtStyleTypeInfo();
 	virtual ~CvUnitArtStyleTypeInfo();
 
-	const TCHAR* getEarlyArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setEarlyArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
-	const TCHAR* getLateArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setLateArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
-	const TCHAR* getMiddleArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setMiddleArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
+	const char* getEarlyArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setEarlyArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
+	const char* getLateArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setLateArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
+	const char* getMiddleArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setMiddleArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
 
-	const TCHAR* getClassicalArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setClassicalArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
-	const TCHAR* getRennArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setRennArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
-	const TCHAR* getIndustrialArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setIndustrialArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
-	const TCHAR* getFutureArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
-	void setFutureArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const TCHAR* szVal);
+	const char* getClassicalArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setClassicalArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
+	const char* getRennArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setRennArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
+	const char* getIndustrialArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setIndustrialArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
+	const char* getFutureArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j) const;
+	void setFutureArtDefineTag(int /*Mesh Index*/ i, int /*UnitType*/ j, const char* szVal);
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvUnitArtStyleTypeInfo* pClassInfo);
@@ -8674,7 +7655,9 @@ protected:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvVoteSourceInfo : public CvInfoBase
+class CvVoteSourceInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -8694,8 +7677,7 @@ public:
 
 	bool read(CvXMLLoadUtility* pXML);
 	void copyNonDefaults(const CvVoteSourceInfo* pClassInfo);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 protected:
 	int m_iVoteInterval;
@@ -8715,7 +7697,9 @@ protected:
 //
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvMainMenuInfo : public CvInfoBase
+class CvMainMenuInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -8744,7 +7728,9 @@ protected:
 /*																							  */
 /************************************************************************************************/
 // MLF loading
-class CvModLoadControlInfo : public CvInfoBase
+class CvModLoadControlInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -8777,8 +7763,9 @@ protected:
 //  DESC:   Contains info about generic properties which can be added to buildings
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvPropertyInfo :
-	public CvInfoBase
+class CvPropertyInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -8798,10 +7785,14 @@ public:
 	CvWString getChangeAllCitiesDisplayText() const;
 	CvWString getPrereqMinDisplayText() const;
 	CvWString getPrereqMaxDisplayText() const;
+
 	const PropertyBuilding& getPropertyBuilding(int index) const;
 	int getNumPropertyBuildings() const;
+	const std::vector<PropertyBuilding>& getPropertyBuildings() const { return m_aPropertyBuildings; }
+
 	const PropertyPromotion& getPropertyPromotion(int index) const;
 	int getNumPropertyPromotions() const;
+	const std::vector<PropertyPromotion>& getPropertyPromotions() const { return m_aPropertyPromotions; }
 
 	int getChangePropagator(const GameObjectTypes eFrom, const GameObjectTypes eTo) const;
 
@@ -8817,7 +7808,7 @@ public:
 
 	void copyNonDefaults(const CvPropertyInfo* pClassInfo);
 
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
 
@@ -8856,8 +7847,9 @@ protected:
 //  DESC:   Contains info about outcome types which can be the result of a kill or of actions
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvOutcomeInfo :
-	public CvInfoBase
+class CvOutcomeInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -8865,7 +7857,7 @@ public:
 	virtual ~CvOutcomeInfo();
 
 	CvWString getMessageText() const;
-	TechTypes getPrereqTech() const;
+	TechTypes getPrereqTech() const	{ return m_ePrereqTech; }
 	TechTypes getObsoleteTech() const;
 	CivicTypes getPrereqCivic() const;
 	bool getToCoastalCity() const;
@@ -8876,21 +7868,15 @@ public:
 	bool getCity() const;
 	bool getNotCity() const;
 	bool isCapture() const;
-	int getNumPrereqBuildings() const;
-	BuildingTypes getPrereqBuilding(int i) const;
+	const std::vector<BuildingTypes>& getPrereqBuildings() const { return m_aePrereqBuildings; }
 	int getNumExtraChancePromotions() const;
 	PromotionTypes getExtraChancePromotion(int i) const;
 	int getExtraChancePromotionChance(int i) const;
-	int getNumReplaceOutcomes() const;
-	OutcomeTypes getReplaceOutcome(int i) const;
+	const std::vector<OutcomeTypes>& getReplaceOutcomes() const { return m_aeReplaceOutcomes; }
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvOutcomeInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvOutcomeInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
 protected:
 
@@ -8919,15 +7905,16 @@ protected:
 //  DESC:   Contains info about Promotion Lines, definitions of promotion upgrade chains
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvPromotionLineInfo :
-	public CvInfoBase
+class CvPromotionLineInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
 	CvPromotionLineInfo();
 	virtual ~CvPromotionLineInfo();
 
-	TechTypes getPrereqTech() const;
+	TechTypes getPrereqTech() const	{ return m_ePrereqTech; }
 	TechTypes getObsoleteTech() const;
 	PropertyTypes getPropertyType() const;
 #ifdef OUTBREAKS_AND_AFFLICTIONS
@@ -8942,7 +7929,7 @@ public:
 	int getOutbreakModifier() const;
 	int getOvercomeModifier() const;
 	bool isAffliction() const { return m_bAffliction; }
-#endif
+#endif // OUTBREAKS_AND_AFFLICTIONS
 	bool isEquipment() const;
 	bool isCritical() const;
 	bool isNoSpreadonBattle() const;
@@ -8955,7 +7942,6 @@ public:
 	// bool vectors without delayed resolution
 	int getUnitCombatPrereqType(int i) const;
 	int getNumUnitCombatPrereqTypes() const;
-	bool isUnitCombatPrereqType(int i) const;
 
 	int getNotOnUnitCombatType(int i) const;
 	int getNumNotOnUnitCombatTypes() const;
@@ -8976,6 +7962,10 @@ public:
 	int getCriticalOriginCombatClassType(int i) const;
 	int getNumCriticalOriginCombatClassTypes() const;
 	bool isCriticalOriginCombatClassType(int i) const;
+
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
 
 	// int vector utilizing pairing without delayed resolution
 	int getNumUnitCombatContractChanceChanges() const;
@@ -8999,22 +7989,17 @@ public:
 	int getPromotion(int i) const;
 	int getNumPromotions() const;
 	bool isPromotion(int i) const;
-	void setPromotions();
 
 	int getBuilding(int i) const;
 	int getNumBuildings() const;
 	bool isBuilding(int i) const;
-	void setBuildings();
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvPromotionLineInfo* pClassInfo);
-
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
+	void doPostLoadCaching(uint32_t iThis);
 
 protected:
-
 	TechTypes m_ePrereqTech;
 	TechTypes m_eObsoleteTech;
 	PropertyTypes m_ePropertyType;
@@ -9030,7 +8015,7 @@ protected:
 	int m_iOutbreakModifier;
 	int m_iOvercomeModifier;
 	bool m_bAffliction;
-#endif
+#endif // OUTBREAKS_AND_AFFLICTIONS
 	bool m_bEquipment;
 	bool m_bCritical;
 	bool m_bNoSpreadonBattle;
@@ -9050,6 +8035,7 @@ protected:
 	std::vector<int> m_aiCriticalOriginCombatClassTypes;
 	std::vector<int> m_aiPromotions;
 	std::vector<int> m_aiBuildings;
+	std::vector<int> m_aiCategories;
 
 	// int vector utilizing pairing without delayed resolution
 	UnitCombatModifierArray m_aUnitCombatContractChanceChanges;
@@ -9059,646 +8045,24 @@ protected:
 };
 //TB Promotion Line Mod end
 
-// AIAndy: A proper info class for unit combat types
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-//  class : CvUnitCombatInfo
+//  class : CvMapCategoryInfo
 //
-//  DESC:   Contains unit combat types
+//  DESC:   Contains info about Map Category Types
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvUnitCombatInfo :
-	public CvInfoBase
+class CvMapCategoryInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
-
-	CvUnitCombatInfo();
-	virtual ~CvUnitCombatInfo();
+	CvMapCategoryInfo();
+	virtual ~CvMapCategoryInfo();
 
 	bool read(CvXMLLoadUtility* pXML);
-	void copyNonDefaults(CvUnitCombatInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
-
-	const CvOutcomeList* getKillOutcomeList() const;
-	int getNumActionOutcomes() const;
-	const CvOutcomeList* getActionOutcomeList(int index) const;
-	MissionTypes getActionOutcomeMission(int index) const;
-	const CvOutcomeList* getActionOutcomeListByMission(MissionTypes eMission) const;
-	const CvOutcomeMission* getOutcomeMission(int index) const;
-	CvOutcomeMission* getOutcomeMissionByMission(MissionTypes eMission) const;
-
-protected:
-	CvOutcomeList m_KillOutcomeList;
-	std::vector<CvOutcomeMission*> m_aOutcomeMissions;
-
-public:
-	// Textual References
-	ReligionTypes getReligion() const;
-	BonusTypes getCulture() const;
-	EraTypes getEra() const;
-	// integers
-	int getAssetMultiplier() const;
-	int getPowerMultiplier() const;
-	int getVisibilityChange() const;
-	int getMovesChange() const;
-	int getMoveDiscountChange() const;
-	int getAirRangeChange() const;
-	int getInterceptChange() const;
-	int getEvasionChange() const;
-	int getWithdrawalChange() const;
-	int getCargoChange() const;
-	int getSMCargoChange() const;
-	int getSMCargoVolumeChange() const;
-	int getSMCargoVolumeModifierChange() const;
-	int getCollateralDamageChange() const;
-	int getBombardRateChange() const;
-	int getFirstStrikesChange() const;
-	int getChanceFirstStrikesChange() const;
-	int getEnemyHealChange() const;
-	int getNeutralHealChange() const;
-	int getFriendlyHealChange() const;
-	int getSameTileHealChange() const;
-	int getAdjacentTileHealChange() const;
-	int getCombatPercent() const;
-	int getCityAttackPercent() const;
-	int getCityDefensePercent() const;
-	int getHillsAttackPercent() const;
-	int getHillsDefensePercent() const;
-	int getHillsWorkPercent() const;
-	int getWorkRatePercent() const;
-	int getRevoltProtection() const;
-	int getCollateralDamageProtection() const;
-	int getPillageChange() const;
-	int getUpgradeDiscount() const;
-	int getExperiencePercent() const;
-	int getKamikazePercent() const;
-	int getAirCombatLimitChange() const;
-	int getCelebrityHappy() const;
-	int getCollateralDamageLimitChange() const;
-	int getCollateralDamageMaxUnitsChange() const;
-	int getCombatLimitChange() const;
-	int getExtraDropRange() const;
-	int getSurvivorChance() const;
-	int getVictoryAdjacentHeal() const;
-	int getVictoryHeal() const;
-	int getVictoryStackHeal() const;
-	int getAttackCombatModifierChange() const;
-	int getDefenseCombatModifierChange() const;
-	int getPursuitChange() const;
-	int getEarlyWithdrawChange() const;
-	int getVSBarbsChange() const;
-	int getArmorChange() const;
-	int getPunctureChange() const;
-	int getOverrunChange() const;
-	int getRepelChange() const;
-	int getFortRepelChange() const;
-	int getRepelRetriesChange() const;
-	int getUnyieldingChange() const;
-	int getKnockbackChange() const;
-	int getKnockbackRetriesChange() const;
-#ifdef BATTLEWORN
-	int getStrAdjperAttChange() const;
-	int getStrAdjperDefChange() const;
-	int getWithdrawAdjperAttChange() const;
-#endif // BATTLEWORN
-	int getUnnerveChange() const;
-	int getEncloseChange() const;
-	int getLungeChange() const;
-	int getDynamicDefenseChange() const;
-	int getStrengthChange() const;
-	int getFortitudeChange() const;
-#ifdef STRENGTH_IN_NUMBERS
-	int getFrontSupportPercentChange() const;
-	int getShortRangeSupportPercentChange() const;
-	int getMediumRangeSupportPercentChange() const;
-	int getLongRangeSupportPercentChange() const;
-	int getFlankSupportPercentChange() const;
-#endif // STRENGTH_IN_NUMBERS
-	int getDodgeModifierChange() const;
-	int getPrecisionModifierChange() const;
-	int getPowerShotsChange() const;
-	int getPowerShotCombatModifierChange() const;
-	int getPowerShotPunctureModifierChange() const;
-	int getPowerShotPrecisionModifierChange() const;
-	int getPowerShotCriticalModifierChange() const;
-	int getCriticalModifierChange() const;
-	int getEnduranceChange() const;
-	int getRoundStunProbChange() const;
-	int getPoisonProbabilityModifierChange() const;
-	int getCaptureProbabilityModifierChange() const;
-	int getCaptureResistanceModifierChange() const;
-	int getHillsWorkModifierChange() const;
-	int getPeaksWorkModifierChange() const;
-	int getBreakdownChanceChange() const;
-	int getBreakdownDamageChange() const;
-	int getTauntChange() const;
-	int getMaxHPChange() const;
-	int getStrengthModifier() const;
-	int getQualityBase() const;
-	int getGroupBase() const;
-	int getSizeBase() const;
-	int getDamageModifierChange() const;
-	int getUpkeepModifier() const;
-	int getExtraUpkeep100() const;
-	int getRBombardDamageBase() const;
-	int getRBombardDamageLimitBase() const;
-	int getRBombardDamageMaxUnitsBase() const;
-	int getDCMBombRangeBase() const;
-	int getDCMBombAccuracyBase() const;
-	int getCombatModifierPerSizeMoreChange() const;
-	int getCombatModifierPerSizeLessChange() const;
-	int getCombatModifierPerVolumeMoreChange() const;
-	int getCombatModifierPerVolumeLessChange() const;
-	int getSelfHealModifier() const;
-	int getNumHealSupport() const;
-	int getExcileChange() const;
-	int getPassageChange() const;
-	int getNoNonOwnedCityEntryChange() const;
-	int getBarbCoExistChange() const;
-	int getBlendIntoCityChange() const;
-	int getInsidiousnessChange() const;
-	int getInvestigationChange() const;
-	int getStealthStrikesChange() const;
-	int getStealthCombatModifierChange() const;
-	int getStealthDefenseChange() const;
-	int getDefenseOnlyChange() const;
-	int getNoInvisibilityChange() const;
-	int getNoCaptureChange() const;
-	int getAnimalIgnoresBordersChange() const;
-	int getNoDefensiveBonusChange() const;
-	int getGatherHerdChange() const;
-	int getReligiousCombatModifierChange() const;
-
-	//booleans
-	bool isDefensiveVictoryMove() const;
-	bool isFreeDrop() const;
-	bool isOffensiveVictoryMove() const;
-	bool isOneUp() const;
-	bool isPillageEspionage() const;
-	bool isPillageMarauder() const;
-	bool isPillageOnMove() const;
-	bool isPillageOnVictory() const;
-	bool isPillageResearch() const;
-	bool isBlitz() const;
-	bool isAmphib() const;
-	bool isRiver() const;
-	bool isEnemyRoute() const;
-	bool isAlwaysHeal() const;
-	bool isHillsDoubleMove() const;
-	bool isImmuneToFirstStrikes() const;
-	bool isStampedeChange() const;
-	bool isRemoveStampede() const;
-	bool isOnslaughtChange() const;
-	bool isMakesDamageCold() const;
-	bool isMakesDamageNotCold() const;
-	bool isAddsColdImmunity() const;
-	bool isRemovesColdImmunity() const;
-	bool isAttackOnlyCitiesAdd() const;
-	bool isAttackOnlyCitiesSubtract() const;
-	bool isIgnoreNoEntryLevelAdd() const;
-	bool isIgnoreNoEntryLevelSubtract() const;
-	bool isIgnoreZoneofControlAdd() const;
-	bool isIgnoreZoneofControlSubtract() const;
-	bool changesMoveThroughPlots() const;
-	bool isCanMovePeaks() const;
-	bool isCanLeadThroughPeaks() const;
-	bool isZoneOfControl() const;
-	bool isSpy() const;
-	bool isFliesToMoveAdd() const;
-	bool isFliesToMoveSubtract() const;
-	bool isCannotMergeSplit() const;
-	bool isRBombardDirect() const;
-	bool isRBombardForceAbility() const;
-	bool isAlwaysInvisible() const;
-	bool isForMilitary() const;
-	bool isForNavalMilitary() const;
-	bool isHealsAs() const;
-	bool isNoSelfHeal() const;
-	// Inline Int
-	inline int	getZobristValue() const { return m_zobristValue; }
-
-	// Arrays
-	int getDomainModifierPercent(int i) const;
-	bool isAnyDomainModifierPercent() const;
-
-	// bool vector with delayed resolution
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	int getCureAfflictionChangeType(int i) const;
-	int getNumCureAfflictionChangeTypes() const;
-	bool isCureAfflictionChangeType(int i) const;
-#endif
-	int getTerrainIgnoreDamageChangeType(int i) const;
-	int getNumTerrainIgnoreDamageChangeTypes() const;
-	bool isTerrainIgnoreDamageChangeType(int i) const;
-
-	int getTerrainDoubleMoveChangeType(int i) const;
-	int getNumTerrainDoubleMoveChangeTypes() const;
-	bool isTerrainDoubleMoveChangeType(int i) const;
-
-	int getFeatureDoubleMoveChangeType(int i) const;
-	int getNumFeatureDoubleMoveChangeTypes() const;
-	bool isFeatureDoubleMoveChangeType(int i) const;
-
-	int getOnGameOption(int i) const;
-	int getNumOnGameOptions() const;
-	bool isOnGameOption(int i) const;
-
-	int getNotOnGameOption(int i) const;
-	int getNumNotOnGameOptions() const;
-	bool isNotOnGameOption(int i) const;
-
-	int getGGptsforUnitType(int i) const;
-	int getNumGGptsforUnitTypes() const;
-	bool isGGptsforUnitType(int i) const;
-
-	int getDefaultStatusType(int i) const;
-	int getNumDefaultStatusTypes() const;
-	bool isDefaultStatusType(int i) const;
-
-	int getTrapImmunityUnitCombatType(int i) const;
-	int getNumTrapImmunityUnitCombatTypes() const;
-	bool isTrapImmunityUnitCombatType(int i) const;
-
-	// int vector utilizing pairing without delayed resolution
-	int getNumWithdrawOnTerrainTypeChanges() const;
-	int getWithdrawOnTerrainTypeChange(int iTerrain) const;
-
-	int getNumWithdrawOnFeatureTypeChanges() const;
-	int getWithdrawOnFeatureTypeChange(int iFeature) const;
-
-	int getNumVisibilityIntensityChangeTypes() const;
-	int getVisibilityIntensityChangeType(int iInvisibility) const;
-	bool isVisibilityIntensityChangeType(int iInvisibility) const;
-
-	int getNumInvisibilityIntensityChangeTypes() const;
-	int getInvisibilityIntensityChangeType(int iInvisibility) const;
-	bool isInvisibilityIntensityChangeType(int iInvisibility) const;
-
-	int getNumVisibilityIntensityRangeChangeTypes() const;
-	int getVisibilityIntensityRangeChangeType(int iInvisibility) const;
-	bool isVisibilityIntensityRangeChangeType(int iInvisibility) const;
-
-	int getNumVisibilityIntensitySameTileChangeTypes() const;
-	int getVisibilityIntensitySameTileChangeType(int iInvisibility) const;
-	bool isVisibilityIntensitySameTileChangeType(int iInvisibility) const;
-
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	int getNumAidChanges() const;
-	int getAidChange(int iProperty) const;
-	bool isAidChange(int iProperty) const;
-
-	// int vector utilizing struct with delayed resolution
-	int getNumAfflictionFortitudeChangeModifiers() const;
-	const PromotionLineModifier& getAfflictionFortitudeChangeModifier(int iAfflictionLine) const;
-#endif
-	int getNumTerrainAttackChangeModifiers() const;
-	const TerrainModifier& getTerrainAttackChangeModifier(int iTerrain) const;
-
-	int getNumTerrainDefenseChangeModifiers() const;
-	const TerrainModifier& getTerrainDefenseChangeModifier(int iTerrain) const;
-
-	int getNumTerrainWorkChangeModifiers() const;
-	const TerrainModifier& getTerrainWorkChangeModifier(int iTerrain) const;
-
-	int getNumBuildWorkChangeModifiers() const;
-	const BuildModifier& getBuildWorkChangeModifier(int iBuild) const;
-
-	int getNumFeatureAttackChangeModifiers() const;
-	const FeatureModifier& getFeatureAttackChangeModifier(int iFeature) const;
-
-	int getNumFeatureDefenseChangeModifiers() const;
-	const FeatureModifier& getFeatureDefenseChangeModifier(int iFeature) const;
-
-	int getNumFeatureWorkChangeModifiers() const;
-	const FeatureModifier& getFeatureWorkChangeModifier(int iFeature) const;
-
-	int getNumUnitCombatChangeModifiers() const;
-	const UnitCombatModifier& getUnitCombatChangeModifier(int iUnitCombat) const;
-
-	int getNumFlankingStrengthbyUnitCombatTypesChange() const;
-	const UnitCombatModifier& getFlankingStrengthbyUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumWithdrawVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getWithdrawVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	//Fight or Flight only
-	int getNumPursuitVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getPursuitVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	//Heart of War only
-	int getNumRepelVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getRepelVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	//Heart of War only
-	int getNumKnockbackVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getKnockbackVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumPunctureVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getPunctureVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumArmorVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getArmorVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumDodgeVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getDodgeVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumPrecisionVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getPrecisionVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumCriticalVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getCriticalVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumRoundStunVSUnitCombatTypesChange() const;
-	const UnitCombatModifier& getRoundStunVSUnitCombatTypeChange(int iUnitCombat) const;
-
-	int getNumTrapAvoidanceUnitCombatTypes() const;
-	const UnitCombatModifier& getTrapAvoidanceUnitCombatType(int iIndex) const;
-
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	int getNumAfflictOnAttackChangeTypes() const;
-	const AfflictOnAttackChange& getAfflictOnAttackChangeType(int iAfflictionLine) const;
-#endif
-	int getNumInvisibleTerrainChanges() const;
-	const InvisibleTerrainChanges& getInvisibleTerrainChange(int iIndex) const;
-
-	int getNumInvisibleFeatureChanges() const;
-	const InvisibleFeatureChanges& getInvisibleFeatureChange(int iIndex) const;
-
-	int getNumInvisibleImprovementChanges() const;
-	const InvisibleImprovementChanges& getInvisibleImprovementChange(int iIndex) const;
-
-	int getNumVisibleTerrainChanges() const;
-	const InvisibleTerrainChanges& getVisibleTerrainChange(int iIndex) const;
-
-	int getNumVisibleFeatureChanges() const;
-	const InvisibleFeatureChanges& getVisibleFeatureChange(int iIndex) const;
-
-	int getNumVisibleImprovementChanges() const;
-	const InvisibleImprovementChanges& getVisibleImprovementChange(int iIndex) const;
-
-	int getNumVisibleTerrainRangeChanges() const;
-	const InvisibleTerrainChanges& getVisibleTerrainRangeChange(int iIndex) const;
-
-	int getNumVisibleFeatureRangeChanges() const;
-	const InvisibleFeatureChanges& getVisibleFeatureRangeChange(int iIndex) const;
-
-	int getNumVisibleImprovementRangeChanges() const;
-	const InvisibleImprovementChanges& getVisibleImprovementRangeChange(int iIndex) const;
-
-	int getNumDistanceAttackCommunicabilityTypeChanges() const;
-	const AfflictionLineChanges& getDistanceAttackCommunicabilityTypeChange(int iIndex) const;
-
-	const CvPropertyManipulators* getPropertyManipulators() const { return &m_PropertyManipulators; }
-
-private:
-	CvPropertyManipulators m_PropertyManipulators;
-
-protected:
-	// Textual References
-	ReligionTypes m_eReligion;
-	BonusTypes m_eCulture;
-	EraTypes m_eEra;
-	//Integers
-	int m_iAssetMultiplier;
-	int m_iPowerMultiplier;
-	int m_iIgnoreTerrainDamage;
-	int m_zobristValue;
-	int m_iVisibilityChange;
-	int m_iMovesChange;
-	int m_iMoveDiscountChange;
-	int m_iAirRangeChange;
-	int m_iInterceptChange;
-	int m_iEvasionChange;
-	int m_iWithdrawalChange;
-	int m_iCargoChange;
-	int m_iSMCargoChange;
-	int m_iSMCargoVolumeChange;
-	int m_iSMCargoVolumeModifierChange;
-	int m_iCollateralDamageChange;
-	int m_iBombardRateChange;
-	int m_iFirstStrikesChange;
-	int m_iChanceFirstStrikesChange;
-	int m_iEnemyHealChange;
-	int m_iNeutralHealChange;
-	int m_iFriendlyHealChange;
-	int m_iSameTileHealChange;
-	int m_iAdjacentTileHealChange;
-	int m_iCombatPercent;
-	int m_iCityAttackPercent;
-	int m_iCityDefensePercent;
-	int m_iHillsAttackPercent;
-	int m_iHillsDefensePercent;
-	int m_iHillsWorkPercent;
-	int m_iWorkRatePercent;
-	int m_iRevoltProtection;
-	int m_iCollateralDamageProtection;
-	int m_iPillageChange;
-	int m_iUpgradeDiscount;
-	int m_iExperiencePercent;
-	int m_iKamikazePercent;
-	int m_iAirCombatLimitChange;
-	int m_iCelebrityHappy;
-	int m_iCollateralDamageLimitChange;
-	int m_iCollateralDamageMaxUnitsChange;
-	int m_iCombatLimitChange;
-	int m_iExtraDropRange;
-	int m_iSurvivorChance;
-	int m_iVictoryAdjacentHeal;
-	int m_iVictoryHeal;
-	int m_iVictoryStackHeal;
-	int m_iAttackCombatModifierChange;
-	int m_iDefenseCombatModifierChange;
-	int m_iPursuitChange;
-	int m_iEarlyWithdrawChange;
-	int m_iVSBarbsChange;
-	int m_iArmorChange;
-	int m_iPunctureChange;
-	int m_iOverrunChange;
-	int m_iRepelChange;
-	int m_iFortRepelChange;
-	int m_iRepelRetriesChange;
-	int m_iUnyieldingChange;
-	int m_iKnockbackChange;
-	int m_iKnockbackRetriesChange;
-#ifdef BATTLEWORN
-	int m_iStrAdjperAttChange;
-	int m_iStrAdjperDefChange;
-	int m_iWithdrawAdjperAttChange;
-#endif // BATTLEWORN
-	int m_iUnnerveChange;
-	int m_iEncloseChange;
-	int m_iLungeChange;
-	int m_iDynamicDefenseChange;
-	int m_iStrengthChange;
-	int m_iFortitudeChange;
-#ifdef STRENGTH_IN_NUMBERS
-	int m_iFrontSupportPercentChange;
-	int m_iShortRangeSupportPercentChange;
-	int m_iMediumRangeSupportPercentChange;
-	int m_iLongRangeSupportPercentChange;
-	int m_iFlankSupportPercentChange;
-#endif
-	int m_iDodgeModifierChange;
-	int m_iPrecisionModifierChange;
-	int m_iPowerShotsChange;
-	int m_iPowerShotCombatModifierChange;
-	int m_iPowerShotPunctureModifierChange;
-	int m_iPowerShotPrecisionModifierChange;
-	int m_iPowerShotCriticalModifierChange;
-	int m_iCriticalModifierChange;
-	int m_iEnduranceChange;
-	int m_iRoundStunProbChange;
-	int m_iPoisonProbabilityModifierChange;
-	int m_iCaptureProbabilityModifierChange;
-	int m_iCaptureResistanceModifierChange;
-	int m_iHillsWorkModifierChange;
-	int m_iPeaksWorkModifierChange;
-	int m_iBreakdownChanceChange;
-	int m_iBreakdownDamageChange;
-	int m_iTauntChange;
-	int m_iMaxHPChange;
-	int m_iStrengthModifier;
-	int m_iQualityBase;
-	int m_iGroupBase;
-	int m_iSizeBase;
-	int m_iDamageModifierChange;
-
-	int m_iUpkeepModifier;
-	int m_iExtraUpkeep100;
-
-	int m_iRBombardDamageBase;
-	int m_iRBombardDamageLimitBase;
-	int m_iRBombardDamageMaxUnitsBase;
-	int m_iDCMBombRangeBase;
-	int m_iDCMBombAccuracyBase;
-	int m_iCombatModifierPerSizeMoreChange;
-	int m_iCombatModifierPerSizeLessChange;
-	int m_iCombatModifierPerVolumeMoreChange;
-	int m_iCombatModifierPerVolumeLessChange;
-	int m_iSelfHealModifier;
-	int m_iNumHealSupport;
-	int m_iExcileChange;
-	int m_iPassageChange;
-	int m_iNoNonOwnedCityEntryChange;
-	int m_iBarbCoExistChange;
-	int m_iBlendIntoCityChange;
-	int m_iInsidiousnessChange;
-	int m_iInvestigationChange;
-	int m_iStealthStrikesChange;
-	int m_iStealthCombatModifierChange;
-	int m_iStealthDefenseChange;
-	int m_iDefenseOnlyChange;
-	int m_iNoInvisibilityChange;
-	int m_iNoCaptureChange;
-	int m_iAnimalIgnoresBordersChange;
-	int m_iNoDefensiveBonusChange;
-	int m_iGatherHerdChange;
-	int m_iReligiousCombatModifierChange;
-
-	//Booleans
-	bool m_bCanMovePeaks;
-	bool m_bCanLeadThroughPeaks;
-	bool m_bZoneOfControl;
-	bool m_bDefensiveVictoryMove;
-	bool m_bFreeDrop;
-	bool m_bOffensiveVictoryMove;
-	bool m_bOneUp;
-	bool m_bPillageEspionage;
-	bool m_bPillageMarauder;
-	bool m_bPillageOnMove;
-	bool m_bPillageOnVictory;
-	bool m_bPillageResearch;
-	bool m_bBlitz;
-	bool m_bAmphib;
-	bool m_bRiver;
-	bool m_bEnemyRoute;
-	bool m_bAlwaysHeal;
-	bool m_bHillsDoubleMove;
-	bool m_bImmuneToFirstStrikes;
-	bool m_bStampedeChange;
-	bool m_bRemoveStampede;
-	bool m_bOnslaughtChange;
-	bool m_bMakesDamageCold;
-	bool m_bMakesDamageNotCold;
-	bool m_bAddsColdImmunity;
-	bool m_bRemovesColdImmunity;
-	bool m_bAttackOnlyCitiesAdd;
-	bool m_bAttackOnlyCitiesSubtract;
-	bool m_bIgnoreNoEntryLevelAdd;
-	bool m_bIgnoreNoEntryLevelSubtract;
-	bool m_bIgnoreZoneofControlAdd;
-	bool m_bIgnoreZoneofControlSubtract;
-	bool m_bSpy;
-	bool m_bFliesToMoveAdd;
-	bool m_bFliesToMoveSubtract;
-	bool m_bCannotMergeSplit;
-	bool m_bRBombardDirect;
-	bool m_bRBombardForceAbility;
-	bool m_bInvisible;
-	bool m_bForMilitary;
-	bool m_bForNavalMilitary;
-	bool m_bHealsAs;
-	bool m_bNoSelfHeal;
-
-	//Arrays
-	int* m_piDomainModifierPercent;
-
-	// bool vectors without delayed resolution
-	// bool vector with delayed resolution
-	std::vector<int> m_aiTerrainIgnoreDamageChangeTypes;
-	std::vector<int> m_aiTerrainDoubleMoveChangeTypes;
-	std::vector<int> m_aiFeatureDoubleMoveChangeTypes;
-	std::vector<int> m_aiOnGameOptions;
-	std::vector<int> m_aiNotOnGameOptions;
-	std::vector<int> m_aiGGptsforUnitTypes;
-	std::vector<int> m_aiDefaultStatusTypes;
-	std::vector<int> m_aiTrapImmunityUnitCombatTypes;
-	// int vectors utilizing pairing without delayed resolution
-	TerrainModifierArray m_aWithdrawOnTerrainTypesChange;
-	FeatureModifierArray m_aWithdrawOnFeatureTypesChange;
-	InvisibilityArray m_aVisibilityIntensityChangeTypes;
-	InvisibilityArray m_aInvisibilityIntensityChangeTypes;
-	InvisibilityArray m_aVisibilityIntensityRangeChangeTypes;
-	InvisibilityArray m_aVisibilityIntensitySameTileChangeTypes;
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	AidArray m_aAidChanges;
-#endif
-	// int vector utilizing struct with delayed resolution
-	std::vector<TerrainModifier> m_aTerrainAttackChangeModifiers;
-	std::vector<TerrainModifier> m_aTerrainDefenseChangeModifiers;
-	std::vector<TerrainModifier> m_aTerrainWorkChangeModifiers;
-	std::vector<BuildModifier> m_aBuildWorkChangeModifiers;
-	std::vector<FeatureModifier> m_aFeatureAttackChangeModifiers;
-	std::vector<FeatureModifier> m_aFeatureDefenseChangeModifiers;
-	std::vector<FeatureModifier> m_aFeatureWorkChangeModifiers;
-	std::vector<UnitCombatModifier> m_aUnitCombatChangeModifiers;
-	std::vector<UnitCombatModifier> m_aFlankingStrengthbyUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aWithdrawVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aPursuitVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aRepelVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aKnockbackVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aPunctureVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aArmorVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aDodgeVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aPrecisionVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aCriticalVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aRoundStunVSUnitCombatTypeChange;
-	std::vector<UnitCombatModifier> m_aTrapAvoidanceUnitCombatTypes;
-#ifdef OUTBREAKS_AND_AFFLICTIONS
-	std::vector<int> m_aiCureAfflictionChangeTypes;
-	std::vector<PromotionLineModifier> m_aAfflictionFortitudeChangeModifiers;
-	std::vector<AfflictOnAttackChange> m_aAfflictOnAttackChangeTypes;
-#endif
-	std::vector<InvisibleTerrainChanges> m_aInvisibleTerrainChanges;
-	std::vector<InvisibleFeatureChanges> m_aInvisibleFeatureChanges;
-	std::vector<InvisibleImprovementChanges> m_aInvisibleImprovementChanges;
-	std::vector<InvisibleFeatureChanges> m_aVisibleFeatureChanges;
-	std::vector<InvisibleImprovementChanges> m_aVisibleImprovementChanges;
-	std::vector<InvisibleTerrainChanges> m_aVisibleTerrainChanges;
-	std::vector<InvisibleFeatureChanges> m_aVisibleFeatureRangeChanges;
-	std::vector<InvisibleImprovementChanges> m_aVisibleImprovementRangeChanges;
-	std::vector<AfflictionLineChanges> m_aDistanceAttackCommunicabilityTypeChanges;
-	std::vector<InvisibleTerrainChanges> m_aVisibleTerrainRangeChanges;
+	void copyNonDefaults(const CvMapCategoryInfo* pClassInfo);
+	void getCheckSum(uint32_t& iSum) const;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -9708,8 +8072,9 @@ protected:
 //  DESC:   Contains info about Idea Class Types
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvIdeaClassInfo :
-	public CvInfoBase
+class CvIdeaClassInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -9717,18 +8082,12 @@ public:
 	virtual ~CvIdeaClassInfo();
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvIdeaClassInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvIdeaClassInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
+	void getCheckSum(uint32_t& iSum) const;
 
-	void getCheckSum(unsigned int& iSum) const;
-
-	//bools
 	bool isInitialized();
 
 protected:
-	//bools
 	bool m_bInitialized;
 };
 
@@ -9739,8 +8098,9 @@ protected:
 //  DESC:   Contains info about Idea Types
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvIdeaInfo :
-	public CvInfoBase
+class CvIdeaInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -9748,24 +8108,13 @@ public:
 	virtual ~CvIdeaInfo();
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvIdeaInfo* pClassInfo);
-	void copyNonDefaultsReadPass2(CvIdeaInfo* pClassInfo, CvXMLLoadUtility* pXML, bool bOver = false);
+	void getCheckSum(uint32_t& iSum) const;
 
-	void getCheckSum(unsigned int& iSum) const;
-
-	//References
 	IdeaClassTypes getIdeaClass() const;
-	//bools
-	/*bool isInitialized();*/
 
 protected:
-	//References
 	IdeaClassTypes m_eIdeaClass;
-
-	//bools
-	/*bool m_bInitialized;*/
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -9775,8 +8124,9 @@ protected:
 //  DESC:   Contains info about Invisible Types
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class CvInvisibleInfo :
-	public CvInfoBase
+class CvInvisibleInfo
+	: public CvInfoBase
+	, private bst::noncopyable
 {
 public:
 
@@ -9784,26 +8134,64 @@ public:
 	virtual ~CvInvisibleInfo();
 
 	bool read(CvXMLLoadUtility* pXML);
-	bool readPass2(CvXMLLoadUtility* pXML);
-
 	void copyNonDefaults(const CvInvisibleInfo* pClassInfo);
-	void getCheckSum(unsigned int& iSum) const;
+	void getCheckSum(uint32_t& iSum) const;
 
-	//References
-	//bools
-	//integers
-
-	//Processes
-	int getChar() const;
 	void setChar(int i);
-	int getFontButtonIndex() const;
+	int getChar() const { return m_iChar; }
 
-protected:
-	//References
-	//bools
-	//Processes
+	int getFontButtonIndex() const { return m_iFontButtonIndex; }
+
+	bool isIntrinsic() const { return m_bIntrinsic; }
+
+private:
 	int m_iChar;
 	int m_iFontButtonIndex;
+	bool m_bIntrinsic;
 };
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//  class : CvCategoryInfo
+//
+//  DESC:   Contains info about Category Types
+//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class CvCategoryInfo
+	: public CvInfoBase
+	, private bst::noncopyable
+{
+public:
+
+	CvCategoryInfo();
+	virtual ~CvCategoryInfo();
+
+	bool read(CvXMLLoadUtility* pXML);
+	void copyNonDefaults(const CvCategoryInfo* pClassInfo);
+	void getCheckSum(uint32_t& iSum) const;
+
+	bool isInitialized();
+
+	int getCategory(int i) const;
+	int getNumCategories() const;
+	bool isCategory(int i) const;
+
+protected:
+	bool m_bInitialized;
+	std::vector<int> m_aiCategories;
+};
+
+class CvUnitAIInfo : public CvInfoBase, private bst::noncopyable { };
+class CvDomainInfo : public CvInfoBase, private bst::noncopyable { };
+class CvConceptInfo : public CvInfoBase, private bst::noncopyable { };
+class CvNewConceptInfo : public CvInfoBase, private bst::noncopyable { };
+class CvCityTabInfo : public CvInfoBase, private bst::noncopyable { };
+class CvCalendarInfo : public CvInfoBase, private bst::noncopyable { };
+class CvSeasonInfo : public CvInfoBase, private bst::noncopyable { };
+class CvMonthInfo : public CvInfoBase, private bst::noncopyable { };
+class CvDenialInfo : public CvInfoBase, private bst::noncopyable { };
+class CvAttitudeInfo : public CvInfoBase, private bst::noncopyable { };
+class CvMemoryInfo : public CvInfoBase, private bst::noncopyable { };
+class CvHintInfo : public CvInfoBase, private bst::noncopyable { };
 
 #endif

@@ -4,16 +4,9 @@
 from CvPythonExtensions import *
 from CvScreenEnums import *
 import types
-
 import CvMainInterface
-
 import CvOptionsScreen
 import CvReplayScreen
-
-#import CvDiplomacy
-
-import CvEventInterface
-import CvPopupInterface
 import ScreenInput as PyScreenInput
 
 import BugCore
@@ -59,6 +52,12 @@ def reinitMainInterface():
 	mainInterface = CvMainInterface.CvMainInterface()
 	mainInterface.interfaceScreen()
 
+def initMinimap():
+	mainInterface.initMinimap()
+
+def showParallelMapsScreenButton():
+	mainInterface.showParallelMapsScreenButton()
+
 def numPlotListButtons(): return 0 # Called from exe
 
 def showTechChooser():
@@ -71,6 +70,14 @@ def showHallOfFame(argsList):
 def showCivicsScreen():
 	if CyGame().getActivePlayer() != -1:
 		screenMap[CIVICS_SCREEN].interfaceScreen()
+
+def showHeritageScreen():
+	if CyGame().getActivePlayer() != -1:
+		screenMap[HERITAGE_SCREEN].interfaceScreen()
+
+def showParallelMapsScreen():
+	if CyGame().getActivePlayer() != -1:
+		screenMap[PARALLEL_MAPS_SCREEN].interfaceScreen()
 
 def showReligionScreen():
 	if CyGame().getActivePlayer() != -1:
@@ -145,6 +152,9 @@ def showInfoScreen(argsList):
 def showDebugInfoScreen():
 	screenMap[DEBUG_INFO_SCREEN].interfaceScreen()
 
+def showDebugScreen():
+	screenMap[DEBUG_SCREEN].interfaceScreen()
+
 def configTechSplash(option=None, value=None):
 	if value is None:
 		TechWindowOpt = BugCore.game.TechWindow
@@ -218,7 +228,10 @@ def pediaJumpToBuilding(argsList):
 	screenMap[PEDIA].pediaJump(-3, "", argsList[0])
 
 def pediaJumpToUnit(argsList):
-	screenMap[PEDIA].pediaJump(-2, "", argsList[0])
+	if argsList[0] > -1:
+		screenMap[PEDIA].pediaJump(-2, "", argsList[0])
+	else:
+		screenMap[PEDIA].pediaJump(10, "UnitCombat", argsList[0] + 100000)
 
 def pediaMain(argsList):
 	screenMap[PEDIA].pediaJump(-1, "", argsList[0])
@@ -262,8 +275,8 @@ def pediaJumpToCivic(argsList):
 def pediaJumpToReligion(argsList):
 	screenMap[PEDIA].pediaJump(9, "Religion", argsList[0])
 
-def pediaJumpToUnitChart(argsList):
-	screenMap[PEDIA].pediaJump(10, "UnitCombat", argsList[0])
+def pediaJumpToHeritage(argsList):
+	screenMap[PEDIA].pediaJump(9, "Heritage", argsList[0])
 
 def pediaJumpToProject(argsList):
 	screenMap[PEDIA].pediaJump(10, "Project", argsList[0])
@@ -294,7 +307,7 @@ def showWorldBuilderScreen():
 
 def WorldBuilderExitCB():
 	print "WorldBuilderExitCB"
-	CyInterface().setWorldBuilder(False)
+	CyGame().exitWorldBuilder()
 
 def hideWorldBuilderScreen():
 	print "hideWorldBuilderScreen"
@@ -506,6 +519,13 @@ def forceScreenUpdate(argsList):
 	elif argsList[0] == ADVANCED_START_SCREEN:
 		advancedStartScreen.updateScreen()
 
+# Called by dll every time a players turn is set to active when the active player has finished his turn.
+# Only used to update what player one is waiting for while using "minimize AI turns" BUG option.
+def updateWaitingForPlayer(argsList):
+	if g_iScreenActive == MAIN_INTERFACE:
+		mainInterface.updateWaitingForPlayer(argsList[0])
+
+
 # Forced redraw (~7 ms)
 def forceScreenRedraw(argsList):
 	if argsList[0] == MAIN_INTERFACE:
@@ -676,13 +696,16 @@ def lateInit():
 	import CvEraMovieScreen
 	import CvVictoryScreen
 	import CvCivicsScreen
+	import HeritageScreen
+	import ParallelMapsScreen
 	import CvInfoScreen
 	import CvDawnOfMan
 	import CvTopCivs
 	import Forgetful
-	import CvDebugInfoScreen
 	import CvTechChooser
 	import BuildListScreen
+	import CvDebugInfoScreen
+	import DebugScreen
 	screenMap[CORPORATION_SCREEN]	= CvCorporationScreen.CvCorporationScreen()
 	screenMap[ESPIONAGE_ADVISOR]	= CvEspionageAdvisor.CvEspionageAdvisor()
 	screenMap[MILITARY_ADVISOR]		= CvMilitaryAdvisor.CvMilitaryAdvisor(MILITARY_ADVISOR)
@@ -693,13 +716,16 @@ def lateInit():
 	screenMap[ERA_MOVIE_SCREEN]		= CvEraMovieScreen.CvEraMovieScreen()
 	screenMap[VICTORY_SCREEN]		= CvVictoryScreen.CvVictoryScreen(VICTORY_SCREEN)
 	screenMap[CIVICS_SCREEN]		= CvCivicsScreen.CvCivicsScreen(CIVICS_SCREEN)
+	screenMap[HERITAGE_SCREEN]		= HeritageScreen.HeritageScreen(HERITAGE_SCREEN)
+	screenMap[PARALLEL_MAPS_SCREEN]	= ParallelMapsScreen.ParallelMapsScreen(PARALLEL_MAPS_SCREEN)
 	screenMap[INFO_SCREEN]			= CvInfoScreen.CvInfoScreen(INFO_SCREEN)
 	screenMap[DAWN_OF_MAN]			= CvDawnOfMan.CvDawnOfMan()
 	screenMap[TOP_CIVS]				= CvTopCivs.CvTopCivs(TOP_CIVS)
 	screenMap[FORGETFUL_SCREEN]		= Forgetful.Forgetful()
-	screenMap[DEBUG_INFO_SCREEN]	= CvDebugInfoScreen.CvDebugInfoScreen()
 	screenMap[TECH_CHOOSER]			= CvTechChooser.CvTechChooser()
 	screenMap[BUILD_LIST_SCREEN]	= BuildListScreen.BuildListScreen()
+	screenMap[DEBUG_INFO_SCREEN]	= CvDebugInfoScreen.CvDebugInfoScreen()
+	screenMap[DEBUG_SCREEN]			= DebugScreen.DebugScreen(DEBUG_SCREEN)
 
 	import WorldBuilder, CvAdvancedStartScreen
 	global worldBuilderScreen, advancedStartScreen
@@ -714,7 +740,6 @@ def lateInit():
 	import WBProjectScreen
 	import WBTeamScreen
 	import WBPlayerScreen
-	import WBUnitScreen
 	import WBPromotionScreen
 	import WBDiplomacyScreen
 	import WBPlayerUnits
@@ -730,7 +755,6 @@ def lateInit():
 	screenMap[WB_PROJECT]		= WBProjectScreen.WBProjectScreen(worldBuilderScreen)
 	screenMap[WB_TEAM]			= WBTeamScreen.WBTeamScreen(worldBuilderScreen)
 	screenMap[WB_PLAYER]		= WBPlayerScreen.WBPlayerScreen(worldBuilderScreen)
-	screenMap[WB_UNIT]			= WBUnitScreen.WBUnitScreen(worldBuilderScreen)
 	screenMap[WB_PROMOTION]		= WBPromotionScreen.WBPromotionScreen(worldBuilderScreen)
 	screenMap[WB_DIPLOMACY]		= WBDiplomacyScreen.WBDiplomacyScreen(worldBuilderScreen)
 	screenMap[WB_UNITLIST]		= WBPlayerUnits.WBPlayerUnits(worldBuilderScreen)
@@ -739,6 +763,8 @@ def lateInit():
 	screenMap[WB_INFO]			= WBInfoScreen.WBInfoScreen(worldBuilderScreen)
 	screenMap[WB_TRADE]			= WBTradeScreen.WBTradeScreen(worldBuilderScreen)
 
+	import CivicData
+	CivicData.initCivicData()
 
 
 def earlyInit():

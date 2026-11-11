@@ -12,14 +12,16 @@
 //-----------------------------------------------------------------------------
 //
 
+#include "CvArea.h"
 #include "CvMapInterfaceBase.h"
 #include "CvPlot.h"
+#include "index_iterator_base.h"
 
-class CvArea;
 class CvCity;
 class CvPlotGroup;
 class CvSelectionGroup;
 class CvViewport;
+struct TravelingUnit;
 
 inline int coordRange(int iCoord, int iRange, bool bWrap)
 {
@@ -46,7 +48,7 @@ class CvMap : public CvMapInterfaceBase
 	friend class CyMap;
 
 public:
-	explicit CvMap(/* Parallel Maps */ MapTypes eMap);
+	explicit CvMap(MapTypes eMap);
 	virtual ~CvMap();
 
 	CvMapInterfaceBase*	getUnderlyingMap() const { return const_cast<CvMap*>(this); }
@@ -55,10 +57,10 @@ public:
 	void setupGraphical();
 	void reset(CvMapInitData* pInitData);
 
-	void uninit();
 protected:
-
+	void uninit();
 	void setup();
+	void addViewport(int iXOffset, int iYOffset);
 
 public:
 	MapTypes getType() const;
@@ -66,13 +68,13 @@ public:
 	void beforeSwitch();
 	void afterSwitch();
 
-	//	Viewports are owned by their underlying maps
-	int	getNumViewports() const;
-	CvViewport* getViewport(int iIndex) const;
-	int addViewport(int iXOffset, int iYOffset, bool bIsFullMapContext);	//	Returns new viewport index
-	void deleteViewport(int iIndex);
-	void setCurrentViewport(int iIndex);
+	void updateIncomingUnits();
+	void moveUnitToMap(CvUnit& unit, int numTravelTurns);
+	void deleteOffMapUnits();
+
+	//void deleteViewport(int iIndex);
 	CvViewport* getCurrentViewport() const;
+	const std::vector<CvViewport*>& getViewports() const;
 
 	const char* getMapScript() const;
 
@@ -87,8 +89,8 @@ public:
 
 	void updateFlagSymbolsInternal(bool bForce);
 	void updateFlagSymbols();
-
-	void updateFog();
+	void updateFog(const bool bApplyDecay = false);
+	void InitFogDecay(const bool bWithRandom = false);
 	void updateVisibility();
 	void updateSymbolVisibility();
 	void updateSymbols();
@@ -102,7 +104,7 @@ public:
 
 	void verifyUnitValidPlot();
 
-	void combinePlotGroups(PlayerTypes ePlayer, CvPlotGroup* pPlotGroup1, CvPlotGroup* pPlotGroup2, bool bRecalculateBonuses);
+	static void combinePlotGroups(CvPlotGroup* pPlotGroup1, CvPlotGroup* pPlotGroup2, bool bRecalculateBonuses);
 
 	CvPlot* syncRandPlot(int iFlags = 0, int iArea = -1, int iMinUnitDistance = -1, int iTimeout = 100);
 
@@ -225,8 +227,10 @@ public:
 	void calculateCanalAndChokePoints();
 
 	// Plot danger cache
-	void invalidateIsActivePlayerNoDangerCache();
-	void invalidateIsTeamBorderCache(TeamTypes eTeam);
+	void invalidateActivePlayerPlotCache();
+	void invalidateBorderDangerCache(TeamTypes eTeam);
+
+	const std::pair<CvPlot*, CvPlot*> plots() const;
 
 	// Serialization:
 	 virtual void read(FDataStreamBase* pStream);
@@ -237,7 +241,13 @@ public:
 	void toggleUnitsDisplay();
 	void toggleCitiesDisplay();
 
-protected:
+	void setClimateZone(const int y, const ClimateZoneTypes eClimateZone);
+	ClimateZoneTypes getClimateZone(const int y);
+
+private:
+	void calculateAreas();
+
+	const MapTypes m_eType;
 
 	int m_iGridWidth;
 	int m_iGridHeight;
@@ -246,31 +256,27 @@ protected:
 	int m_iTopLatitude;
 	int m_iBottomLatitude;
 	int m_iNextRiverID;
-
-/*********************************/
-/***** Parallel Maps - Begin *****/
-/*********************************/
-	const MapTypes m_eType;
-	std::vector<CvViewport*> m_viewports;
 	int m_iCurrentViewportIndex;
-/*******************************/
-/***** Parallel Maps - End *****/
-/*******************************/
 
 	bool m_bWrapX;
 	bool m_bWrapY;
 
-	int* m_paiNumBonus;
-	int* m_paiNumBonusOnLand;
-
 	bool m_bCitiesDisplayed;
 	bool m_bUnitsDisplayed;
+
+	static bool m_bSwitchInProgress;
+
+	int* m_paiNumBonus;
+	int* m_paiNumBonusOnLand;
 
 	CvPlot* m_pMapPlots;
 
 	FFreeListTrashArray<CvArea> m_areas;
 
-	void calculateAreas();
+	std::vector<CvViewport*> m_viewports;
+
+	std::vector<TravelingUnit*> m_IncomingUnits;
+	ClimateZoneTypes* m_climateZones;
 };
 
 #endif

@@ -1,9 +1,8 @@
 #include "CvGameCoreDLL.h"
+#include "StackPromotions.h"
 #include "CvGlobals.h"
-
 #include <psapi.h>
 
-static CRITICAL_SECTION g_cPythonSection;
 #ifdef USE_INTERNAL_PROFILER
 static CRITICAL_SECTION cSampleSection;
 #endif
@@ -38,22 +37,20 @@ bool runProcess(const std::string& exe, const std::string& workingDir)
 
 // BUG - EXE/DLL Paths - end
 
-BOOL APIENTRY DllMain(HANDLE hModule, 
-					  DWORD  ul_reason_for_call, 
-					  LPVOID lpReserved)
+BOOL APIENTRY DllMain(HANDLE hModule,
+					  DWORD  ul_reason_for_call,
+					  LPVOID /*lpReserved*/)
 {
 	switch( ul_reason_for_call ) {
 	case DLL_PROCESS_ATTACH:
 		{
 		dllModule = hModule;
 
-		// The DLL is being loaded into the virtual address space of the current process as a result of the process starting up 
+		// The DLL is being loaded into the virtual address space of the current process as a result of the process starting up
 		OutputDebugString("[C2C] DLL_PROCESS_ATTACH\n");
 
-		InitializeCriticalSection(&g_cPythonSection);
-
 #ifdef USE_INTERNAL_PROFILER
-		InitializeCriticalSectionAndSpinCount(&cSampleSection,2000);
+		InitializeCriticalSectionAndSpinCount(&cSampleSection, 2000);
 #endif
 
 		// set timer precision
@@ -91,17 +88,17 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 				}
 			}
 		}
-		logging::createLogsFolder();
-		logging::deleteLogs();
 		}
 		break;
 	case DLL_THREAD_ATTACH:
 		OutputDebugString(CvString::format("[C2C] DLL_THREAD_ATTACH: %d\n", GetCurrentThreadId()).c_str());
 		break;
 	case DLL_THREAD_DETACH:
+		StackPromotions::releaseThreadCache();
 		OutputDebugString(CvString::format("[C2C] DLL_THREAD_DETACH: %d\n", GetCurrentThreadId()).c_str());
 		break;
 	case DLL_PROCESS_DETACH:
+		StackPromotions::releaseThreadCache();
 // BUG - EXE/DLL Paths - start
 		dllModule = NULL;
 // BUG - EXE/DLL Paths - end
@@ -120,7 +117,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 //	the debug stream (view with DbgView or a debugger)
 #define DETAILED_TRACE
 
-#define MAX_SAMPLES				1200
+#define MAX_SAMPLES				20000
 static __declspec( thread ) ProfileLinkageInfo* _currentSample = NULL;
 static __declspec(thread) bool bIsMainThread = false;
 static __declspec(thread) int iThreadSlot = -1;
@@ -166,7 +163,7 @@ void IFPProfileThread()
 	if ( iThreadSlot == -1 && (g_bTraceBackgroundThreads || bIsMainThread) )
 	{
 		EnterCriticalSection(&cSampleSection);
-		
+
 		for(int iI = 0; iI < MAX_PROFILED_THREADS; iI++)
 		{
 			if ( !bThreadSlotOccupied[iI] )
@@ -189,7 +186,7 @@ void IFPBeginSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 	{
 		bMainThreadSeen = true;
 		bIsMainThread = true;
-		
+
 		for(int iI = 0; iI < MAX_PROFILED_THREADS; iI++)
 		{
 			bThreadSlotOccupied[iI] = false;
@@ -230,46 +227,46 @@ void IFPBeginSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 
 		linkageInfo->parent = _currentSample;
 
-	#if 0
-		if ( !bAsConditional )
-		{
-			if ( ++depth == MAX_SAMPLES )
-			{
-				::MessageBox(NULL,"Sample stack overflow","CvGameCore",MB_OK);
-			}
-			else
-			{
-				sampleStack[depth] = sample;
-			}
-		}
-	#endif
+//	#if 0
+//		if ( !bAsConditional )
+//		{
+//			if ( ++depth == MAX_SAMPLES )
+//			{
+//				::MessageBox(NULL,"Sample stack overflow","CvGameCore",MB_OK);
+//			}
+//			else
+//			{
+//				sampleStack[depth] = sample;
+//			}
+//		}
+//	#endif
 
 		//InterlockedIncrement(&sample->ProfileInstances);
 		sample->ProfileInstances[iThreadSlot]++;
 
-#if 0
-		linkageInfo->bIsEntry = true;
-
-		if ( InterlockedIncrement(&sample->EntryCount) > 1 )
-		{
-			//	If the entry count is still positive it could be due to either recursion
-			//	or concurrency - we need to check for the recursion case and not accrue
-			//	time in a recursive call
-	#define	MAX_RECURSION_HORIZON	2
-			int	iRecursionHorizon  = MAX_RECURSION_HORIZON;
-			for(ProfileLinkageInfo* linkage = _currentSample; linkage != NULL && iRecursionHorizon-- > 0; linkage = linkage->parent)
-			{
-				if ( linkageInfo->sample == sample )
-				{
-					//	recursion
-					linkageInfo->bIsEntry = false;
-					break;
-				}
-			}
-		}
-#else
+//#if 0
+//		linkageInfo->bIsEntry = true;
+//
+//		if ( InterlockedIncrement(&sample->EntryCount) > 1 )
+//		{
+//			//	If the entry count is still positive it could be due to either recursion
+//			//	or concurrency - we need to check for the recursion case and not accrue
+//			//	time in a recursive call
+//	#define	MAX_RECURSION_HORIZON	2
+//			int	iRecursionHorizon  = MAX_RECURSION_HORIZON;
+//			for(ProfileLinkageInfo* linkage = _currentSample; linkage != NULL && iRecursionHorizon-- > 0; linkage = linkage->parent)
+//			{
+//				if ( linkageInfo->sample == sample )
+//				{
+//					//	recursion
+//					linkageInfo->bIsEntry = false;
+//					break;
+//				}
+//			}
+//		}
+//#else
 		linkageInfo->bIsEntry = (sample->EntryCount[iThreadSlot]++ == 0);
-#endif
+//#endif
 
 		if ( linkageInfo->bIsEntry )
 		{
@@ -286,36 +283,40 @@ void IFPBeginSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 			_currentSample = linkageInfo;
 		}
 
-	#if 0
-	#ifdef DETAILED_TRACE
-		if ( detailedTraceEnabled && lastExit != sample )
-		{
-			char buffer[300];
-
-			if ( exitCount != 0 )
-			{
-				GenerateTabString(buffer, depth);
-				sprintf(buffer+depth, "[%d]\n", exitCount);
-				OutputDebugString(buffer);
-
-				exitCount = 0;
-			}
-
-			GenerateTabString(buffer, depth);
-			sprintf(buffer+depth, "-->%s\n", sample->Name);
-
-			OutputDebugString(buffer);
-		}
-	#endif
-	#endif
+//	#if 0
+//	#ifdef DETAILED_TRACE
+//		if ( detailedTraceEnabled && lastExit != sample )
+//		{
+//			char buffer[300];
+//
+//			if ( exitCount != 0 )
+//			{
+//				GenerateTabString(buffer, depth);
+//				sprintf(buffer+depth, "[%d]\n", exitCount);
+//				OutputDebugString(buffer);
+//
+//				exitCount = 0;
+//			}
+//
+//			GenerateTabString(buffer, depth);
+//			sprintf(buffer+depth, "-->%s\n", sample->Name);
+//
+//			OutputDebugString(buffer);
+//		}
+//	#endif
+//	#endif
 	}
 }
 
 void IFPEndSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 {
+	if (!linkageInfo || !linkageInfo->sample)
+	{
+		return;
+	}
 	if ( iThreadSlot != -1 )
 	{
-		if ( !bAsConditional && _currentSample != linkageInfo && linkageInfo->sample->Parent != -1 )
+		if ( !bAsConditional && _currentSample != linkageInfo &&  linkageInfo->sample->Parent != -1 )
 		{
 			char	buffer[200];
 
@@ -323,30 +324,30 @@ void IFPEndSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 			MessageBox(NULL,buffer,"CvGameCore",MB_OK);
 		}
 
-	#if 0
-		if ( depth < 0 )
-		{
-			if ( sample->Parent != -1 )
-			{
-				MessageBox(NULL,"Too many end-samples","CvGameCore",MB_OK);
-			}
-		}
-		else 
-	#endif
+//	#if 0
+//		if ( depth < 0 )
+//		{
+//			if ( sample->Parent != -1 )
+//			{
+//				MessageBox(NULL,"Too many end-samples","CvGameCore",MB_OK);
+//			}
+//		}
+//		else
+//	#endif
 		{
 			if ( !bAsConditional )
 			{
-	#if 0
-				if ( depth == 0 )
-				{
-					_currentSample = NULL;
-					depth = -1;
-				}
-				else
-				{
-					_currentSample = sampleStack[--depth];
-				}
-	#endif
+//	#if 0
+//				if ( depth == 0 )
+//				{
+//					_currentSample = NULL;
+//					depth = -1;
+//				}
+//				else
+//				{
+//					_currentSample = sampleStack[--depth];
+//				}
+//	#endif
 				_currentSample = linkageInfo->parent;
 			}
 
@@ -382,24 +383,24 @@ void IFPEndSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 
 					if ( sample->IsInAlternateSet )
 					{
-		#if 0
-						for(int iI = 0; iI <= depth; iI++)
-						{
-							sampleStack[iI]->AlternateSampleSetTime.QuadPart += ellapsed;
-						}
-		#else
+//		#if 0
+//						for(int iI = 0; iI <= depth; iI++)
+//						{
+//							sampleStack[iI]->AlternateSampleSetTime.QuadPart += ellapsed;
+//						}
+//		#else
 						for(ProfileLinkageInfo* linkage = _currentSample; linkage != NULL; linkage = linkage->parent)
 						{
 							//InterlockedExchangeAdd64(&linkage->sample->AlternateSampleSetTime.QuadPart, ellapsed);
 							linkage->sample->AlternateSampleSetTime[iThreadSlot].QuadPart += ellapsed;
 						}
-		#endif
+//		#endif
 					}
 				}
 				else
 				{
 					EnterCriticalSection(&cSampleSection);
-					
+
 					for(int iI = 0; iI < numSamples; iI++)
 					{
 						ProfileSample* thisSample = sampleList[iI];
@@ -430,26 +431,26 @@ void IFPEndSample(ProfileLinkageInfo* linkageInfo, bool bAsConditional)
 				//LeaveCriticalSection(&cSampleSection);
 			}
 
-	#if 0
-	#ifdef DETAILED_TRACE
-			if ( detailedTraceEnabled && lastExit != sample )
-			{
-				char buffer[300];
-
-				GenerateTabString(buffer, depth+1);
-				strcpy(buffer+depth+1, "...\n");
-
-				OutputDebugString(buffer);
-				exitCount = 1;
-			}
-			else
-			{
-				exitCount++;
-			}
-
-			lastExit = sample;
-	#endif
-	#endif
+//	#if 0
+//	#ifdef DETAILED_TRACE
+//			if ( detailedTraceEnabled && lastExit != sample )
+//			{
+//				char buffer[300];
+//
+//				GenerateTabString(buffer, depth+1);
+//				strcpy(buffer+depth+1, "...\n");
+//
+//				OutputDebugString(buffer);
+//				exitCount = 1;
+//			}
+//			else
+//			{
+//				exitCount++;
+//			}
+//
+//			lastExit = sample;
+//	#endif
+//	#endif
 		}
 	}
 }
@@ -533,27 +534,27 @@ static ProfileLinkageInfo rootSampleLinkage;
 //
 void dumpProfileStack()
 {
-#if 0
-	int i = 0;
-	int dumpDepth = depth;
-	char buffer[200];
-
-	OutputDebugString("Profile stack:\n");
-
-	while(dumpDepth >= 0)
-	{
-		char* ptr = buffer;
-
-		i++;
-		for(int j = 0; j < i; j++)
-		{
-			*ptr++ = '\t';
-		}
-		strcpy(ptr,sampleStack[dumpDepth--]->Name);
-		strcat(ptr, "\n");
-		OutputDebugString(buffer);
-	}
-#endif
+//#if 0
+//	int i = 0;
+//	int dumpDepth = depth;
+//	char buffer[200];
+//
+//	OutputDebugString("Profile stack:\n");
+//
+//	while(dumpDepth >= 0)
+//	{
+//		char* ptr = buffer;
+//
+//		i++;
+//		for(int j = 0; j < i; j++)
+//		{
+//			*ptr++ = '\t';
+//		}
+//		strcpy(ptr,sampleStack[dumpDepth--]->Name);
+//		strcat(ptr, "\n");
+//		OutputDebugString(buffer);
+//	}
+//#endif
 }
 
 #endif  // Use internal profiler
@@ -611,7 +612,7 @@ void stopProfilingDLL(bool longLived)
 #endif
 }
 
-// Toffer - Square root with integer math, OOS safe.
+// Toffer - Square root with integer math.
 int intSqrt(unsigned int iValue, const bool bTreatNegAsPos)
 {
 	unsigned int iRem = 0;
@@ -687,9 +688,90 @@ int intPow(const int x, const int p)
 	}
 	return static_cast<int>(iResult);
 }
+
+int getModifiedIntValue(const int iValue, const int iMod)
+{
+	if (iMod > 0)
+	{
+		return iValue * (100 + iMod) / 100;
+	}
+	if (iMod < 0)
+	{
+		return iValue * 100 / (100 - iMod);
+	}
+	return iValue;
+}
+int64_t getModifiedIntValue64(const int64_t iValue, const int iMod)
+{
+	if (iMod > 0)
+	{
+		return iValue * (100 + iMod) / 100;
+	}
+	if (iMod < 0)
+	{
+		return iValue * 100 / (100 - iMod);
+	}
+	return iValue;
+}
 // ! Toffer
 
 const std::string getModDir()
 {
 	return modDir;
+}
+
+
+// Applies rank scaling to a value, with overflow protection.
+// rankMultiplier should be scaled up by 100 (e.g. 300 instead of 3).
+// rankChange can be positive or negative.
+// Equation demonstrated here: https://www.desmos.com/calculator/wivft5kfcc
+int applySMRank(int value, int rankChange, int rankMultiplier)
+{
+	FAssertMsg(rankMultiplier > 0, "rankMultiplier must be greater than 0");
+	int64_t lvalue = 100 * value;
+	if (rankChange > 0)
+	{
+		for (int iI = 0; iI < rankChange; iI++)
+		{
+			lvalue *= rankMultiplier;
+			lvalue /= 100;
+		}
+	}
+	else
+	{
+		for (int iI = 0; iI < -rankChange; iI++)
+		{
+			lvalue *= 100;
+			lvalue /= rankMultiplier;
+		}
+	}
+	return static_cast<int>(std::min<int64_t>(MAX_INT, lvalue / 100));
+}
+
+int64_t applySMRank64(int64_t value, int rankChange, int rankMultiplier, bool bScaleUp)
+{
+	FAssertMsg(rankMultiplier > 0, "rankMultiplier must be greater than 0");
+	if (bScaleUp) value *= 100;
+
+	if (rankChange > 0)
+	{
+		for (int iI = 0; iI < rankChange; iI++)
+		{
+			value *= rankMultiplier;
+			value /= 100;
+		}
+	}
+	else
+	{
+		for (int iI = 0; iI < -rankChange; iI++)
+		{
+			value *= 100;
+			value /= rankMultiplier;
+		}
+	}
+	if (bScaleUp)
+	{
+		return value / 100;
+	}
+	return value;
 }

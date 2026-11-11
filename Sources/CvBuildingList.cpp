@@ -6,6 +6,9 @@
 //  PURPOSE: Filter, group, sort and cache a building list for a city or player
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvBuildingList.h"
 #include "CvBuildingSort.h"
@@ -13,7 +16,7 @@
 #include "CvGlobals.h"
 #include "CvPlayerAI.h"
 
-CvBuildingList::CvBuildingList(CvPlayer* pPlayer, CvCity* pCity) 
+CvBuildingList::CvBuildingList(CvPlayer* pPlayer, CvCity* pCity)
 	: m_bFilteringValid(false)
 	, m_bGroupingValid(false)
 	, m_bSortingValid(false)
@@ -110,7 +113,7 @@ int CvBuildingList::getNumInGroup(int iGroup)
 	{
 		doGroup();
 	}
-	FASSERT_BOUNDS(0, (int)m_aaiGroupedBuildingList.size(), iGroup)
+	FASSERT_BOUNDS(0, static_cast<int>(m_aaiGroupedBuildingList.size()), iGroup);
 	return m_aaiGroupedBuildingList[iGroup].size();
 }
 
@@ -120,13 +123,14 @@ BuildingTypes CvBuildingList::getBuildingType(int iGroup, int iPos)
 	{
 		doSort();
 	}
-	FASSERT_BOUNDS(0, getGroupNum(), iGroup)
-	FASSERT_BOUNDS(0, getNumInGroup(iGroup), iPos)
+	FASSERT_BOUNDS(0, getGroupNum(), iGroup);
+	FASSERT_BOUNDS(0, getNumInGroup(iGroup), iPos);
 	return m_aaiGroupedBuildingList[iGroup][iPos];
 }
 
 void CvBuildingList::doFilter()
 {
+	PROFILE_EXTRA_FUNC();
 	m_aiBuildingList.clear();
 	for (int i = 0; i < GC.getNumBuildingInfos(); i++)
 	{
@@ -139,6 +143,7 @@ void CvBuildingList::doFilter()
 
 void CvBuildingList::doGroup()
 {
+	PROFILE_EXTRA_FUNC();
 	if (!m_bFilteringValid)
 		doFilter();
 
@@ -151,7 +156,7 @@ void CvBuildingList::doGroup()
 	{
 		mmap_Buildings.insert(std::pair<int, BuildingTypes>(m_BuildingGrouping.getGroup(m_aiBuildingList[i]), m_aiBuildingList[i]));
 	}
-	
+
 	int iLastKey = MIN_INT;
 	for (std::multimap<int, BuildingTypes>::iterator it = mmap_Buildings.begin(); it != mmap_Buildings.end(); ++it)
 	{
@@ -167,13 +172,14 @@ void CvBuildingList::doGroup()
 
 void CvBuildingList::doSort()
 {
+	PROFILE_EXTRA_FUNC();
 	if (!m_bGroupingValid)
 		doGroup();
 
 	std::auto_ptr<BuildingSortListWrapper> pWrapper(new BuildingSortListWrapper(&m_BuildingSort));
 	for (GroupedBuildingVector::iterator itr = m_aaiGroupedBuildingList.begin(); itr != m_aaiGroupedBuildingList.end(); ++itr)
 	{
-		std::stable_sort(itr->begin(), itr->end(), *pWrapper);
+		algo::stable_sort(*itr, *pWrapper);
 		pWrapper->deleteCache();
 	}
 	m_bSortingValid = true;
@@ -181,11 +187,12 @@ void CvBuildingList::doSort()
 
 int CvBuildingList::getBuildingSelectionRow()
 {
+	PROFILE_EXTRA_FUNC();
 	if (m_eSelectedBuilding != NO_BUILDING)
 	{
 		for (int i = 0; i < static_cast<int>(m_aaiGroupedBuildingList.size()); i++)
 		{
-			if (std::find(m_aaiGroupedBuildingList[i].begin(), m_aaiGroupedBuildingList[i].end(), m_eSelectedBuilding) != m_aaiGroupedBuildingList[i].end())
+			if (algo::any_of_equal(m_aaiGroupedBuildingList[i], m_eSelectedBuilding))
 				return i;
 		}
 		m_eSelectedBuilding = NO_BUILDING;
@@ -204,11 +211,12 @@ int CvBuildingList::getBuildingSelectionRow()
 
 int CvBuildingList::getWonderSelectionRow()
 {
+	PROFILE_EXTRA_FUNC();
 	if (m_eSelectedWonder != NO_BUILDING)
 	{
 		for (int i = 0; i < static_cast<int>(m_aaiGroupedBuildingList.size()); i++)
 		{
-			if (std::find(m_aaiGroupedBuildingList[i].begin(), m_aaiGroupedBuildingList[i].end(), m_eSelectedWonder) != m_aaiGroupedBuildingList[i].end())
+			if (algo::any_of_equal(m_aaiGroupedBuildingList[i], m_eSelectedWonder))
 				return i;
 		}
 		m_eSelectedWonder = NO_BUILDING;

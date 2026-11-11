@@ -3,6 +3,8 @@
 #ifndef CvString_h
 #define CvString_h
 
+#include "FProfiler.h"
+
 #include <string>
 #pragma warning( disable: 4251 )		// needs to have dll-interface to be used by clients of class
 
@@ -49,19 +51,19 @@ public:
 	}
 
 	// FString compatibility
-	const wchar_t* GetCString() const 	{ return c_str(); }	
+	const wchar_t* GetCString() const 	{ return c_str(); }
 
 	// implicit conversion
-	operator const wchar_t*() const 	{ return c_str(); }							
+	operator const wchar_t*() const 	{ return c_str(); }
 
 	// operators
 	wchar_t& operator[](int i) { return std::wstring::operator[](i);	}
 	wchar_t& operator[](std::wstring::size_type i) { return std::wstring::operator[](i);	}
 	const wchar_t operator[](int i) const { return std::wstring::operator[](i);	}
-	CvWString& operator=( const wchar_t* s) { if (s) assign(s); else clear();	return *this; }	
-	CvWString& operator=( const std::wstring& s) { assign(s.c_str());	return *this; }	
-	CvWString& operator=( const std::string& w) { Copy(w.c_str());	return *this; }	
-	CvWString& operator=( const CvWString& w) { assign(w.c_str());	return *this; }	
+	CvWString& operator=( const wchar_t* s) { if (s) assign(s); else clear();	return *this; }
+	CvWString& operator=( const std::wstring& s) { assign(s.c_str());	return *this; }
+	CvWString& operator=( const std::string& w) { Copy(w.c_str());	return *this; }
+	CvWString& operator=( const CvWString& w) { assign(w.c_str());	return *this; }
 	CvWString& operator=(const char* w) { if (w) Copy(w); else clear();	return *this; }
 
 	void Format( LPCWSTR lpszFormat, ... );
@@ -118,7 +120,7 @@ public:
 		memcpy(m_pBuffer + m_iLength, szCharacters, sizeof(wchar_t) * (inputLength + 1)); //null character
 		m_iLength = newLength;
 	}
-	
+
 	void append(const CvWString &szString)
 	{
 		append(szString.GetCString());
@@ -170,7 +172,7 @@ private:
 		{
 			m_iCapacity = 2 * newCapacity; //grow by %100
 			wchar_t* newBuffer = new wchar_t[m_iCapacity];
-			
+
 			//copy data
 			if(m_pBuffer != NULL)
 			{
@@ -197,7 +199,7 @@ class CvString : public std::string
 {
 public:
 	CvString() {}
-	
+
 	explicit CvString(int iLen) { reserve(iLen); }
 	// cppcheck-suppress noExplicitConstructor
 	CvString(const char* s) { operator=(s); }
@@ -222,20 +224,20 @@ public:
 		result.resize(size_needed);
 		WideCharToMultiByte(CP_UTF8, 0, w, len, &result[0], size_needed, nullptr, nullptr);
 		assign(result);
-}
+	}
 
 	// implicit conversion
-	operator const char*() const 	{ return c_str(); }							
-	//	operator const CvWString() const 	{ return CvWString(c_str()); }							
+	operator const char*() const 	{ return c_str(); }
+	//	operator const CvWString() const 	{ return CvWString(c_str()); }
 
 	// operators
 	char& operator[](int i) { return std::string::operator[](i);	}
 	char& operator[](std::string::size_type i) { return std::string::operator[](i);	}
 	const char operator[](int i) const { return std::string::operator[](i);	}
-	const CvString& operator=( const char* s) { if (s) assign(s); else clear();	return *this; }	
-	const CvString& operator=( const std::string& s) { assign(s.c_str());	return *this; }	
+	const CvString& operator=( const char* s) { if (s) assign(s); else clear();	return *this; }
+	const CvString& operator=( const std::string& s) { assign(s.c_str());	return *this; }
 //	const CvString& operator=( const std::wstring& w) { Copy(w.c_str());	return *this; }		// don't want accidental conversions down to narrow strings
-//	const CvString& operator=( const wchar_t* w) { Copy(w);	return *this; }	
+//	const CvString& operator=( const wchar_t* w) { Copy(w);	return *this; }
 
 	// FString compatibility
 	bool IsEmpty() const { return empty();	}
@@ -271,6 +273,7 @@ public:
 
 inline int CvString::Replace( char chOld, char chNew )
 {
+	PROFILE_EXTRA_FUNC();
 	int i, iCnt = 0;
 	for(i=0;i<(int)size();i++)
 	{
@@ -288,29 +291,31 @@ inline int CvString::Replace( char chOld, char chNew )
 /*                                                                                              */
 /*                                                                                              */
 /************************************************************************************************/
-inline int CvString::Replace(const CvString& searchString, const CvString& replaceString) 
-{ 
+inline int CvString::Replace(const CvString& searchString, const CvString& replaceString)
+{
+	PROFILE_EXTRA_FUNC();
 	int iCnt = 0;
-	std::string::size_type pos = this->find(searchString, 0); 
-	int intLengthSearch = searchString.length(); 
+	std::string::size_type pos = this->find(searchString, 0);
+	int intLengthSearch = searchString.length();
 
-	while(std::string::npos != pos) 
-	{ 
-		this->replace(pos, intLengthSearch, replaceString); 
+	while(std::string::npos != pos)
+	{
+		this->replace(pos, intLengthSearch, replaceString);
 		pos = this->find(searchString, pos + intLengthSearch);
 		iCnt++;
-	} 
+	}
 
-	return iCnt; 
-} 
+	return iCnt;
+}
 
 /************************************************************************************************/
 /* DEBUG_IS_MODULAR_ART                    END                                                  */
 /************************************************************************************************/
 inline void CvString::getTokens(const CvString& delimiters, std::vector<CvString>& tokensOut) const
 {
+	PROFILE_EXTRA_FUNC();
 	//tokenizer code taken from http://www.digitalpeer.com/id/simple
-	
+
 	// skip delimiters at beginning.
 	size_type lastPos = find_first_not_of(delimiters, 0);
 
@@ -322,7 +327,7 @@ inline void CvString::getTokens(const CvString& delimiters, std::vector<CvString
 		// found a token, parse it.
 		CvString token(substr(lastPos, pos - lastPos));
 		tokensOut.push_back(token);
-		
+
 		// skip delimiters.  Note the "not_of"
 		lastPos = find_first_not_of(delimiters, pos);
 
@@ -336,6 +341,7 @@ inline void CvString::getTokens(const CvString& delimiters, std::vector<CvString
 //
 inline bool CvString::formatv(std::string & out, const char * fmt, va_list args)
 {
+	PROFILE_EXTRA_FUNC();
 	char buf[2048];
 	char * pbuf = buf;
 	int attempts = 0;
@@ -378,6 +384,7 @@ inline bool CvString::formatv(std::string & out, const char * fmt, va_list args)
 //
 inline bool CvWString::formatv(std::wstring& out, const wchar_t* fmt, va_list args)
 {
+	PROFILE_EXTRA_FUNC();
 	wchar_t buf[2048];
 	wchar_t* pbuf = buf;
 	int attempts = 0;

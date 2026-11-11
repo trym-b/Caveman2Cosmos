@@ -6,15 +6,22 @@
 ## Copyright (c) 2008 The BUG Mod.
 
 from CvPythonExtensions import *
-import CvUtil
 
-# BUG - Options - end
+# BUG Options
 import BugCore
 TechWindowOpt = BugCore.game.TechWindow
-# BUG - Options - end
 
 GC = CyGlobalContext()
 TRNSLTR = CyTranslator()
+
+def isPromotionGameOptionValid(info):
+	for i in xrange(info.getNumOnGameOptions()):
+		if not GC.getGame().isOption(info.getOnGameOption(i)):
+			return False
+	for i in xrange(info.getNumNotOnGameOptions()):
+		if GC.getGame().isOption(info.getNotOnGameOption(i)):
+			return False
+	return True
 
 class CvTechSplashScreen:
 	"Splash screen for techs"
@@ -176,13 +183,13 @@ class CvTechSplashScreen:
 				self.X_SPECIAL_PANEL+self.iMarginSpace, self.Y_SPECIAL_PANEL, self.W_SPECIAL_PANEL-(self.iMarginSpace * 2), self.H_SPECIAL_PANEL, PanelStyles.PANEL_STYLE_IN )
 		screen.setStyle(szSpecialPanel, "Panel_Black25_Style")
 
-#---Eingef�gt START - kann komplett gel�scht werden-----------------
+#---Eingefgt START - kann komplett gelscht werden-----------------
 		# Allows PanelSIR
 		panelNameSIR = "SIR"
 		screen.addPanel( panelNameSIR, "", "", False, True,
                                  self.X_ALLOWS_PANELSIR+self.iMarginSpace, self.Y_ALLOWS_PANELSIR, self.W_ALLOWS_PANELSIR-(self.iMarginSpace * 2), self.H_ALLOWS_PANELSIR, PanelStyles.PANEL_STYLE_IN )
 		screen.setStyle(panelNameSIR, "Panel_Black25_Style")
-#---Eingef�gt ENDE -------------------------------------------------
+#---Eingefgt ENDE -------------------------------------------------
 
 		# Allows Panel
 		panelName = self.getNextWidgetName()
@@ -190,7 +197,7 @@ class CvTechSplashScreen:
                                  self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL, self.W_ALLOWS_PANEL-(self.iMarginSpace * 2), self.H_ALLOWS_PANEL, PanelStyles.PANEL_STYLE_IN )
 		screen.setStyle(panelName, "Panel_Black25_Style")
 
-#---Eingef�gt START - kann komplett gel�scht werden-----------------
+#---Eingefgt START - kann komplett gelscht werden-----------------
 		# Allows Panel2
 		panelName2 = "SIR2"
 		screen.addPanel( panelName2, "", "", False, True,
@@ -202,7 +209,7 @@ class CvTechSplashScreen:
 		screen.addPanel( panelName3, "", "", False, True,
                                  self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL3, self.W_ALLOWS_PANEL-(self.iMarginSpace * 2), self.H_ALLOWS_PANEL, PanelStyles.PANEL_STYLE_IN )
 		screen.setStyle(panelName3, "Panel_Black25_Style")
-#---Eingef�gt ENDE -------------------------------------------------
+#---Eingefgt ENDE -------------------------------------------------
 
 		# Add Contents
 
@@ -212,7 +219,7 @@ class CvTechSplashScreen:
 			self.X_TITLE, self.Y_TITLE, self.Z_CONTROLS, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 
 		# Tech Icon
-		screen.addDDSGFC(self.getNextWidgetName(), techInfo.getButton(), self.X_ICON, self.Y_ICON, self.W_ICON, self.H_ICON, WidgetTypes.WIDGET_PEDIA_JUMP_TO_TECH, self.iTech, -1 )
+		screen.addDDSGFC(self.getNextWidgetName(), techInfo.getButton(), self.X_ICON, self.Y_ICON, self.W_ICON, self.H_ICON, WidgetTypes.WIDGET_PEDIA_JUMP_TO_TECH, self.iTech, 2)
 
 		# Tech Quote
 		szTechQuote = techInfo.getQuote()
@@ -235,7 +242,7 @@ class CvTechSplashScreen:
 		szSpecialText = CyGameTextMgr().getTechHelp(self.iTech, True, False, False, True, -1)[1:]
 		screen.addMultilineText(listName, szSpecialText, self.X_SPECIAL_PANEL+10, self.Y_SPECIAL_PANEL+5, self.W_SPECIAL_PANEL-20, self.H_SPECIAL_PANEL-20, WidgetTypes.WIDGET_GENERAL, -1, -1, 1<<0)
 
-#---Eingef�gt START - kann komplett gel�scht werden --------------
+#---Eingefgt START - kann komplett gelscht werden --------------
 		# Allows -> LeadsTo
 		szAllowsTitleDescSIR = u"<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_LEADS_TO", ()) + ":" + u"</font>"
 		szAllowsTitleWidgetSIR = "AllowsTitleSIR"
@@ -243,21 +250,14 @@ class CvTechSplashScreen:
 			       self.X_ALLOWS_PANELSIR+self.iMarginSpace, self.Y_ALLOWS_PANELSIR - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for j in range(GC.getNumTechInfos()):
-			for k in range(GC.getDefineINT("NUM_OR_TECH_PREREQS")):
-				iPrereq = GC.getTechInfo(j).getPrereqOrTechs(k)
-				if (iPrereq == self.iTech):
-        				screen.attachImageButton( panelNameSIR, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False )
-			for k in range(GC.getDefineINT("NUM_AND_TECH_PREREQS")):
-				iPrereq = GC.getTechInfo(j).getPrereqAndTechs(k)
-				if (iPrereq == self.iTech):
-        				screen.attachImageButton( panelNameSIR, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False )
+			for iPrereq in GC.getTechInfo(j).getPrereqOrTechs():
+				if iPrereq == self.iTech:
+					screen.attachImageButton(panelNameSIR, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False)
+			for iPrereq in GC.getTechInfo(j).getPrereqAndTechs():
+				if iPrereq == self.iTech:
+					screen.attachImageButton(panelNameSIR, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False)
 
-#---Eingef�gt ENDE ------------------------------------------------
-		# Allows
-		# szAllowsTitleDesc = u"<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_ALLOWS", ()) + ":" + u"</font>"
-		# szAllowsTitleWidget = "AllowsTitle"
-		# screen.setText(szAllowsTitleWidget, "", szAllowsTitleDesc, 1<<0,
-		# 	       self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+#---Eingefgt ENDE ------------------------------------------------
 
 		# Units Enabled
 		szUnitsTitleDesc = u"<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_UNITS_ENABLED", ()) + ":" + u"</font>"
@@ -276,7 +276,6 @@ class CvTechSplashScreen:
 			       self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL2 - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for eLoopBuilding in range(GC.getNumBuildingInfos()):
-			bTechFound = 0
 			if (isTechRequiredForBuilding(self.iTech, eLoopBuilding)):
 				screen.attachImageButton( panelName2, "", GC.getBuildingInfo(eLoopBuilding).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM,
 						WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, eLoopBuilding, 1, False )
@@ -288,17 +287,16 @@ class CvTechSplashScreen:
 			       self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL3 - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for j in range(GC.getNumProjectInfos()):
-			bTechFound = 0
 			if (isTechRequiredForProject(self.iTech, j)):
 				screen.attachImageButton( panelName3, "", GC.getProjectInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM,
 							  WidgetTypes.WIDGET_PEDIA_JUMP_TO_PROJECT, j, 1, False )
 
 		for j in range(GC.getNumPromotionInfos()):
-			if (GC.getPromotionInfo(j).getTechPrereq() == self.iTech):
+			if (GC.getPromotionInfo(j).getTechPrereq() == self.iTech and isPromotionGameOptionValid(GC.getPromotionInfo(j))):
 				screen.attachImageButton( panelName3, "", GC.getPromotionInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM,
 							  WidgetTypes.WIDGET_PEDIA_JUMP_TO_PROMOTION, j, 1, False )
 
-#---Eingef�gt START - kann komplett gel�scht werden --------------
+#---Eingefgt START - kann komplett gelscht werden --------------
 
 		# Improvements
 		for j in range(GC.getNumBuildInfos()):
@@ -330,7 +328,7 @@ class CvTechSplashScreen:
 				screen.attachImageButton( panelName3, "", GC.getCivicInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM,
 							  WidgetTypes.WIDGET_PEDIA_JUMP_TO_CIVIC, j, 1, False )
 
-#---Eingef�gt ENDE ------------------------------------------------
+#---Eingefgt ENDE ------------------------------------------------
 
 	# returns a unique ID for a widget in this screen
 	def getNextWidgetName(self):

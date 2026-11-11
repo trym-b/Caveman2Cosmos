@@ -9,10 +9,10 @@
 // Python wrapper class for CvSelectionGroup
 //
 
-CySelectionGroup::CySelectionGroup() : m_pSelectionGroup(NULL) {}
-
-CySelectionGroup::CySelectionGroup(CvSelectionGroup* pSelectionGroup) : m_pSelectionGroup(pSelectionGroup) {}
-
+CySelectionGroup::CySelectionGroup(CvSelectionGroup* pSelectionGroup) : m_pSelectionGroup(pSelectionGroup)
+{
+	FAssert(m_pSelectionGroup != NULL);
+}
 
 void CySelectionGroup::pushMission(MissionTypes eMission, int iData1, int iData2, int iFlags, bool bAppend, bool bManual, MissionAITypes eMissionAI, const CyPlot& kMissionAIPlot, const CyUnit& kMissionAIUnit)
 {
@@ -49,16 +49,6 @@ bool CySelectionGroup::hasMoved() const
 	return m_pSelectionGroup->hasMoved();
 }
 
-bool CySelectionGroup::canMoveInto(const CyPlot& kPlot, bool bAttack) const
-{
-	return m_pSelectionGroup->canMoveInto(kPlot.getPlot(), bAttack);
-}
-
-bool CySelectionGroup::canMoveOrAttackInto(const CyPlot& kPlot, bool bDeclareWar) const
-{
-	return m_pSelectionGroup->canMoveOrAttackInto(kPlot.getPlot(), bDeclareWar);
-}
-
 bool CySelectionGroup::canFight() const
 {
 	return m_pSelectionGroup->canFight();
@@ -71,7 +61,11 @@ bool CySelectionGroup::isInvisible(int /*TeamTypes*/ eTeam) const
 
 CyPlot* CySelectionGroup::plot() const
 {
-	return new CyPlot(m_pSelectionGroup->plot());
+	if (m_pSelectionGroup->plot())
+	{
+		return new CyPlot(m_pSelectionGroup->plot());
+	}
+	return NULL;
 }
 
 CyArea* CySelectionGroup::area() const

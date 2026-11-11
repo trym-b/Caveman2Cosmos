@@ -13,6 +13,15 @@ TechWindowOpt = BugCore.game.TechWindow
 GC = CyGlobalContext()
 TRNSLTR = CyTranslator()
 
+def isPromotionGameOptionValid(info):
+	for i in xrange(info.getNumOnGameOptions()):
+		if not GC.getGame().isOption(info.getOnGameOption(i)):
+			return False
+	for i in xrange(info.getNumNotOnGameOptions()):
+		if GC.getGame().isOption(info.getNotOnGameOption(i)):
+			return False
+	return True
+
 class CvTechSplashScreen:
 	"Splash screen for techs"
 	def __init__(self, iScreenID):
@@ -156,14 +165,14 @@ class CvTechSplashScreen:
 		screen.setStyle(pnl, "Panel_Black25_Style")
 
 
-#---Eingefügt ENDE -------------------------------------------------
+#---Eingefï¿½gt ENDE -------------------------------------------------
 
 		# Allows Panel
 		panelName = self.getNextWidgetName()
 		screen.addPanel(panelName, "", "", False, True, self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL, self.W_ALLOWS_PANEL-(self.iMarginSpace * 2), self.H_ALLOWS_PANEL, PanelStyles.PANEL_STYLE_IN)
 		screen.setStyle(panelName, "Panel_Black25_Style")
 
-#---Eingefügt START - kann komplett gelöscht werden-----------------
+#---Eingefï¿½gt START - kann komplett gelï¿½scht werden-----------------
 		# Allows Panel2
 		panelName2 = "SIR2"
 		screen.addPanel(panelName2, "", "", False, True, self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL2, self.W_ALLOWS_PANEL-(self.iMarginSpace * 2), self.H_ALLOWS_PANEL, PanelStyles.PANEL_STYLE_IN)
@@ -178,16 +187,16 @@ class CvTechSplashScreen:
 		panelName4 = "SIR4"
 		screen.addPanel(panelName4, "", "", False, True, self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL4, self.W_ALLOWS_PANEL-(self.iMarginSpace * 2), self.H_ALLOWS_PANEL, PanelStyles.PANEL_STYLE_IN)
 		screen.setStyle(panelName4, "Panel_Black25_Style")
-#---Eingefügt ENDE -------------------------------------------------
+#---Eingefï¿½gt ENDE -------------------------------------------------
 
 		# Add Contents
 
 		# Title
 		szTech = techInfo.getDescription()
-		screen.setLabel(self.getNextWidgetName(), "Background", "<font=4>" + szTech.upper(), 1<<2, self.X_TITLE, self.Y_TITLE, self.Z_CONTROLS, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabel(self.getNextWidgetName(), "Background", "<font=4>" + szTech.upper() + "</font>", 1<<2, self.X_TITLE, self.Y_TITLE, self.Z_CONTROLS, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		# Tech Icon
-		screen.addDDSGFC(self.getNextWidgetName(), techInfo.getButton(), self.X_ICON, self.Y_ICON, self.W_ICON, self.H_ICON, WidgetTypes.WIDGET_PEDIA_JUMP_TO_TECH, self.iTech, -1)
+		screen.addDDSGFC(self.getNextWidgetName(), techInfo.getButton(), self.X_ICON, self.Y_ICON, self.W_ICON, self.H_ICON, WidgetTypes.WIDGET_PEDIA_JUMP_TO_TECH, self.iTech, 2)
 
 		# Tech Quote
 		szTechQuote = techInfo.getQuote()
@@ -199,7 +208,7 @@ class CvTechSplashScreen:
 		screen.addMultilineText("Text", szTechQuote, self.X_QUOTE, self.Y_QUOTE + iTextOffset, self.W_QUOTE, self.H_QUOTE - iTextOffset, WidgetTypes.WIDGET_GENERAL, -1, -1, 1<<0)
 
 		# Special
-		szSpecialTitle = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_SPECIAL_ABILITIES", ())
+		szSpecialTitle = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_SPECIAL_ABILITIES", ()) + "</font>"
 		szSpecialTitleWidget = "SpecialTitle"
 		screen.setText(szSpecialTitleWidget, "", szSpecialTitle, 1<<0, self.X_SPECIAL_PANEL+self.iMarginSpace, self.Y_SPECIAL_PANEL - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
@@ -208,28 +217,25 @@ class CvTechSplashScreen:
 		szSpecialText = CyGameTextMgr().getTechHelp(self.iTech, True, False, False, True, -1)[1:]
 		screen.addMultilineText(listName, szSpecialText, self.X_SPECIAL_PANEL+20, self.Y_SPECIAL_PANEL+20, self.W_SPECIAL_PANEL-50, self.H_SPECIAL_PANEL-30, WidgetTypes.WIDGET_GENERAL, -1, -1, 1<<0)
 
-#---Eingefügt START - kann komplett gelöscht werden --------------
+#---Eingefï¿½gt START - kann komplett gelï¿½scht werden --------------
 		# Allows -> LeadsTo
-		szAllowsTitleDescSIR = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_LEADS_TO", ()) + ":"
+		szAllowsTitleDescSIR = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_LEADS_TO", ()) + ":</font>"
 		screen.setText("AllowsTitleSIR", "", szAllowsTitleDescSIR, 1<<0, self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL4 - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for j in range(GC.getNumTechInfos()):
 
-			for k in range(GC.getDefineINT("NUM_OR_TECH_PREREQS")):
-				if self.iTech == GC.getTechInfo(j).getPrereqOrTechs(k):
+			for iPrereq in GC.getTechInfo(j).getPrereqOrTechs():
+				if self.iTech == iPrereq:
 					screen.attachImageButton(panelName4, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False)
 
-			for k in range(GC.getDefineINT("NUM_AND_TECH_PREREQS")):
-				if self.iTech == GC.getTechInfo(j).getPrereqAndTechs(k):
+			for iPrereq in GC.getTechInfo(j).getPrereqAndTechs():
+				if self.iTech == iPrereq:
 					screen.attachImageButton(panelName4, "", GC.getTechInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_DERIVED_TECH, j, self.iTech, False)
 
 #---EingefÃ¼gt ENDE ------------------------------------------------
-		# Allows
-		# szAllowsTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_ALLOWS", ()) + ":"
-		# screen.setText("AllowsTitle", "", szAllowsTitleDesc, 1<<0, self.X_ALLOWS_PANEL+self.iMarginSpace, self.Y_ALLOWS_PANEL - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		# Units Enabled
-		szUnitsTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_UNITS_ENABLED", ()) + ":"
+		szUnitsTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_UNITS_ENABLED", ()) + ":</font>"
 		screen.setText("UnitsTitle", "", szUnitsTitleDesc, 1<<0, self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for iUnit in range(GC.getNumUnitInfos()):
@@ -237,7 +243,7 @@ class CvTechSplashScreen:
 				screen.attachImageButton(panelName, "", GC.getUnitInfo(iUnit).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_UNIT, iUnit, 1, False)
 
 		# Buildings Enabled
-		szBuildingsTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_BUILDINGS_ENABLED", ()) + ":"
+		szBuildingsTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_BUILDINGS_ENABLED", ()) + ":</font>"
 		screen.setText("BuildingsTitle", "", szBuildingsTitleDesc, 1<<0, self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL2 - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for eLoopBuilding in range(GC.getNumBuildingInfos()):
@@ -246,7 +252,7 @@ class CvTechSplashScreen:
 				screen.attachImageButton(panelName2, "", GC.getBuildingInfo(eLoopBuilding).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_BUILDING, eLoopBuilding, 1, False)
 
 		# Improvements
-		szImprovesTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_CATEGORY_IMPROVEMENT", ()) + ":"
+		szImprovesTitleDesc = "<font=3b>" + TRNSLTR.getText("TXT_KEY_PEDIA_CATEGORY_IMPROVEMENT", ()) + ":</font>"
 		screen.setText("ImprovesTitle", "", szImprovesTitleDesc, 1<<0, self.X_ALLOWS_PANEL + self.iMarginSpace, self.Y_ALLOWS_PANEL3 - 20, 0, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		for j in range(GC.getNumProjectInfos()):
@@ -255,7 +261,7 @@ class CvTechSplashScreen:
 				screen.attachImageButton(panelName3, "", GC.getProjectInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_PROJECT, j, 1, False)
 
 		for j in range(GC.getNumPromotionInfos()):
-			if GC.getPromotionInfo(j).getTechPrereq() == self.iTech:
+			if GC.getPromotionInfo(j).getTechPrereq() == self.iTech and isPromotionGameOptionValid(GC.getPromotionInfo(j)):
 				screen.attachImageButton(panelName3, "", GC.getPromotionInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_PROMOTION, j, 1, False)
 
 #---EingefÃ¼gt START - kann komplett gelÃ¶scht werden --------------
@@ -286,7 +292,7 @@ class CvTechSplashScreen:
 			if GC.getCivicInfo(j).getTechPrereq() == self.iTech:
 				screen.attachImageButton(panelName3, "", GC.getCivicInfo(j).getButton(), GenericButtonSizes.BUTTON_SIZE_CUSTOM, WidgetTypes.WIDGET_PEDIA_JUMP_TO_CIVIC, j, 1, False)
 
-#---Eingefügt ENDE ------------------------------------------------
+#---Eingefï¿½gt ENDE ------------------------------------------------
 
 	# returns a unique ID for a widget in this screen
 	def getNextWidgetName(self):

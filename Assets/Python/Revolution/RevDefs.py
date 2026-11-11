@@ -7,7 +7,7 @@ from CvPythonExtensions import *
 # If your mod changes some of these XML variables, you'll need to find an appropriate replacement
 
 # Civs
-sXMLBarbarian = 'CIVILIZATION_BARBARIAN'
+sXMLBarbarian = 'CIVILIZATION_NPC_BARBARIAN'
 
 # Units
 sXMLGeneral = 'UNIT_GREAT_GENERAL'
@@ -85,6 +85,8 @@ playerData['CapitalName'] = None
 class RevoltData:
 
 	def __init__( self, iPlayer, iRevTurn, cityList, revType, bPeaceful, specialDataDict = dict() ) :
+		if specialDataDict is None:
+			specialDataDict = dict()
 
 		# Player whose cities are in revolt
 		self.iPlayer = iPlayer
@@ -176,11 +178,6 @@ pickHumanPopup = 7052
 changeCivPopup = 7060
 changeHumanPopup = 7061
 updateGraphicsPopup = 7062
-
-## ---------- Misc defines ---------- ##
-
-# Popup ids
-EventKeyDown=6
 
 #RevolutionDCM
 ## ---------- RevWatch defines ---------- ##

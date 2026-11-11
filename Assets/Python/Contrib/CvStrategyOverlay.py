@@ -249,25 +249,13 @@ class DotMapLayer(StrategyLayer):
 		self.bAlt = not self.bAlt
 
 	def reset(self):
+		super(DotMapLayer, self).reset()
 		self.cities = {}
-		self.dirty = False
 
 	def read(self):
 		data = SdToolKit.sdGetGlobal("StrategyOverlay", "CityDataDict")
 		self.clearCityLayers()
 		if data:
-			# // @SAVEBREAK DELETE
-			bFormat = False
-			for iPlayer, cities in data.iteritems():
-				for point, city in cities.iteritems():
-					if not hasattr(city, "bAlt"):
-						bFormat = True
-					break
-			if bFormat:
-				for iPlayer, cities in data.iteritems():
-					for point, city in cities.iteritems():
-						city.bAlt = False
-			# // SAVEBREAK@
 			self.cities = data
 			self.dirty = False
 		else:
@@ -388,8 +376,7 @@ class DotMapLayer(StrategyLayer):
 		if self.highlightedCity:
 			if self.highlightedCity == city:
 				return
-			else:
-				self.unhighlightCity()
+			self.unhighlightCity()
 		self.highlightedCity = city
 		ePlayer = GC.getGame().getActivePlayer()
 		existingCity = self.getCity(ePlayer, point)

@@ -40,12 +40,12 @@ class WBCityDataScreen:
 		screen.setRenderInterfaceOnly(True)
 		screen.addPanel("MainBG", u"", u"", True, False, -10, -10, screen.getXResolution() + 20, screen.getYResolution() + 20, PanelStyles.PANEL_STYLE_MAIN )
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
-		screen.setText("CityDataExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("CityDataExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 
 		screen.addDropDownBoxGFC("CurrentPage", 20, screen.getYResolution() - 42, iWidth - 20, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_CITY_DATA", ()), 0, 0, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_CITY_DATA2", ()), 1, 1, True)
-		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING", ()), 2, 2, False)
+		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_BUILDINGS", ()), 2, 2, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_PLAYER_DATA", ()), 3, 3, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_TEAM_DATA", ()), 4, 4, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_RELIGION", ()), 8, 8, False)
@@ -168,12 +168,12 @@ class WBCityDataScreen:
 		iX = screen.getXResolution()/4
 		iY = self.iTable_Y - 30
 
-		sText = CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING",())
+		sText = CyTranslator().getText("TXT_KEY_WB_BUILDINGS",())
 		screen.setLabel("ModifyHeader", "Background", "<font=3b>" + CyTranslator().getText("TXT_KEY_WB_MODIFY", (sText,)) + "</font>", 1<<2, iX + iTableWidth/2, iY, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		iY += 30
 		screen.addDropDownBoxGFC("BuildingType", iX, iY, 150, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
-		screen.addPullDownString("BuildingType", CyTranslator().getText("TXT_KEY_CONCEPT_BUILDINGS", ()), 0, 0, not bWonder)
+		screen.addPullDownString("BuildingType", CyTranslator().getText("TXT_KEY_WB_BUILDINGS", ()), 0, 0, not bWonder)
 		screen.addPullDownString("BuildingType", CyTranslator().getText("TXT_KEY_CONCEPT_WONDERS", ()), 1, 1, bWonder)
 
 		screen.addDropDownBoxGFC("YieldType", iX + iTableWidth - 150, iY, 150, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
@@ -181,12 +181,9 @@ class WBCityDataScreen:
 			screen.addPullDownString("YieldType", GC.getYieldInfo(i).getDescription(), i, i, iSelectedYield == i)
 		for i in xrange(CommerceTypes.NUM_COMMERCE_TYPES):
 			screen.addPullDownString("YieldType", GC.getCommerceInfo(i).getDescription(), i + YieldTypes.NUM_YIELD_TYPES, i + YieldTypes.NUM_YIELD_TYPES, iSelectedYield == i + YieldTypes.NUM_YIELD_TYPES)
-
-	## Disabled because neither is working correctly with BTS dll ##
-	#	iTotal = YieldTypes.NUM_YIELD_TYPES + CommerceTypes.NUM_COMMERCE_TYPES
-	#	screen.addPullDownString("YieldType", CyTranslator().getText("TXT_KEY_CONCEPT_HAPPINESS", ()), iTotal, iTotal, iSelectedYield == iTotal)
-	#	screen.addPullDownString("YieldType", CyTranslator().getText("TXT_KEY_CONCEPT_HEALTH", ()), iTotal + 1, iTotal + 1, iSelectedYield == iTotal + 1)
-	## Disabled because neither is working correctly with BTS dll ##
+		iHappyIndex = YieldTypes.NUM_YIELD_TYPES + CommerceTypes.NUM_COMMERCE_TYPES
+		screen.addPullDownString("YieldType", CyTranslator().getText("TXT_KEY_CONCEPT_HAPPINESS", ()), iHappyIndex, iHappyIndex, iSelectedYield == iHappyIndex)
+		screen.addPullDownString("YieldType", CyTranslator().getText("TXT_KEY_CONCEPT_HEALTH", ()), iHappyIndex + 1, iHappyIndex + 1, iSelectedYield == iHappyIndex + 1)
 
 		iY += 30
 		iHeight = (screen.getYResolution()/2 - iY) / 24 * 24 + 2
@@ -198,24 +195,24 @@ class WBCityDataScreen:
 			iRow = screen.appendTableRow("WBModifyBuilding")
 			screen.setTableText("WBModifyBuilding", 0, iRow, "<font=3>" + item[0] + "</font>", info.getButton(), WidgetTypes.WIDGET_HELP_BUILDING, item[1], -1, 1<<0)
 			sText = ""
-			iChange = pCity.getBuildingHappyChange(item[1])
-			if iChange > 0:
-				sText += u"%d%s" %(iChange, CyTranslator().getText("[ICON_HAPPY]", ()))
-			elif iChange < 0:
-				sText += u"%d%s" %(-iChange, CyTranslator().getText("[ICON_UNHAPPY]", ()))
-			iChange = pCity.getBuildingHealthChange(item[1])
-			if iChange > 0:
-				sText += u"%d%s" %(iChange, CyTranslator().getText("[ICON_HEALTHY]", ()))
-			elif iChange < 0:
-				sText += u"%d%s" %(-iChange, CyTranslator().getText("[ICON_UNHEALTHY]", ()))
+			iVal = pCity.getBuildingHappyChange(item[1])
+			if iVal > 0:
+				sText += u"%d%s" %(iVal, CyTranslator().getText("[ICON_HAPPY]", ()))
+			elif iVal < 0:
+				sText += u"%d%s" %(-iVal, CyTranslator().getText("[ICON_UNHAPPY]", ()))
+			iVal = pCity.getBuildingHealthChange(item[1])
+			if iVal > 0:
+				sText += u"%d%s" %(iVal, CyTranslator().getText("[ICON_HEALTHY]", ()))
+			elif iVal < 0:
+				sText += u"%d%s" %(-iVal, CyTranslator().getText("[ICON_UNHEALTHY]", ()))
 			for j in xrange(YieldTypes.NUM_YIELD_TYPES):
-				iChange = pCity.getBuildingYieldChange(item[1], j)
-				if iChange != 0:
-					sText += u"%d%c" %(iChange, GC.getYieldInfo(j).getChar())
+				iVal = pCity.getBuildingYieldChange(item[1], j)
+				if iVal != 0:
+					sText += u"%d%c" %(iVal, GC.getYieldInfo(j).getChar())
 			for j in xrange(CommerceTypes.NUM_COMMERCE_TYPES):
-				iChange = pCity.getBuildingCommerceChange(item[1], j)
-				if iChange != 0:
-					sText += u"%d%c" %(iChange, GC.getCommerceInfo(j).getChar())
+				iVal = pCity.getBuildingCommerceChange(item[1], j)
+				if iVal != 0:
+					sText += u"%d%c" %(iVal, GC.getCommerceInfo(j).getChar())
 			screen.setTableInt("WBModifyBuilding", 1, iRow, "<font=3>" + sText + "</font>", "", WidgetTypes.WIDGET_HELP_BUILDING, item[1], -1, 1<<0)
 
 	def placeSpecialist(self):
@@ -297,9 +294,8 @@ class WBCityDataScreen:
 		sText = CyTranslator().getText("[COLOR_SELECTED_TEXT]", ()) + "<font=4b>" + CyTranslator().getText("TXT_KEY_WB_CITY_ALL", ()) + " (+/-)</font></color>"
 		screen.setText("BonusAll", "Background", sText, 1<<1, iX + iWidth - 20, iY - 30, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
-		screen.addTableControlGFC( "WBBonus", 2, iX, self.iTable_Y, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD )
-		screen.setTableColumnHeader( "WBBonus", 0, "", 24)
-		screen.setTableColumnHeader( "WBBonus", 1, "", iWidth - 24)
+		screen.addTableControlGFC( "WBBonus", 1, iX, self.iTable_Y, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD )
+		screen.setTableColumnHeader( "WBBonus", 0, "", iWidth)
 
 		for item in lBonus:
 			iRow = screen.appendTableRow("WBBonus")
@@ -309,12 +305,7 @@ class WBCityDataScreen:
 			if iNum > 0:
 				sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
 				sItem += " (" + str(iNum) + ")"
-			if pCity.isNoBonus(item[1]):
-				screen.setTableText("WBBonus", 0, iRow, "", CyArtFileMgr().getInterfaceArtInfo("INTERFACE_BUTTONS_CANCEL").getPath(), WidgetTypes.WIDGET_PYTHON, 1030, item[1], 1<<0)
-			else:
-				sText = "<font=4>" + CyTranslator().getText("[ICON_TRADE]", ()) + "</font>"
-				screen.setTableText("WBBonus", 0, iRow, sText, "", WidgetTypes.WIDGET_PYTHON, 1031, item[1], 1<<0)
-			screen.setTableText("WBBonus", 1, iRow, "<font=3>" + sColor + sItem + "</font></color>", GC.getBonusInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7878, item[1], 1<<0 )
+			screen.setTableText("WBBonus", 0, iRow, "<font=3>" + sColor + sItem + "</font></color>", GC.getBonusInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7878, item[1], 1<<0 )
 
 	def handleInput(self, inputClass):
 		screen = CyGInterfaceScreen( "WBCityDataScreen", CvScreenEnums.WB_CITYDATA)
@@ -403,7 +394,7 @@ class WBCityDataScreen:
 			self.placeGreatPeople()
 
 		elif inputClass.getFunctionName() == "BonusClass":
-			iSelectedClass = inputClass.getData() - 1
+			iSelectedClass = inputClass.getData()
 			self.createBonusList()
 			self.placeBonus()
 
@@ -415,8 +406,6 @@ class WBCityDataScreen:
 		elif inputClass.getFunctionName() == "WBBonus":
 			if inputClass.getData1() == 7878:
 				self.editFreeBonus(inputClass.getData2())
-			else:
-				self.setNoBonusCB(inputClass.getData2())
 			self.placeBonus()
 
 		elif inputClass.getFunctionName() == "BuildingType":
@@ -456,12 +445,6 @@ class WBCityDataScreen:
 			iCount = - iChange
 			iCount = max(iCount, - pCity.getFreeBonus(item))
 		pCity.changeFreeBonus(item, iCount)
-
-	def setNoBonusCB(self, item):
-		if pCity.isNoBonus(item):
-			pCity.changeNoBonusCount(item, -1)
-		else:
-			pCity.changeNoBonusCount(item, 1)
 
 	def editGreatPeopleFlat(self, iCount):
 		if iCount < 0:

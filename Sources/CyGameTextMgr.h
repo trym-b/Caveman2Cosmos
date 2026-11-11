@@ -13,7 +13,7 @@ class CyUnit;
 class CyDeal;
 struct TradeData;
 
-class CyGameTextMgr 
+class CyGameTextMgr
 {
 public:
 	CyGameTextMgr();
@@ -30,8 +30,10 @@ public:
 	std::wstring getUnitHelp(int iUnit, bool bCivilopediaText, bool bStrategyText, bool bTechChooserText, CyCity* pCity);
 	std::wstring getSpecificUnitHelp(CyUnit* pUnit, bool bOneLine, bool bShort);
 	std::wstring getBuildingHelp(int iBuilding, bool bActual, CyCity* pCity, bool bCivilopediaText, bool bStrategyText, bool bTechChooserText);
+	std::wstring getHeritageHelp(int iType, CyCity* pCity, bool bCivilopediaText, bool bStrategyText, bool bTechChooserText);
 	std::wstring getProjectHelp(int iProject, bool bCivilopediaText, CyCity* pCity);
 	std::wstring getPromotionHelp(int iPromotion, bool bCivilopediaText);
+	std::wstring getUnitCombatHelp(int iUnitCombat, bool bCivilopediaText);
 	std::wstring getTraitHelp(int iTrait);
 	std::wstring getBonusHelp(int iBonus, bool bCivilopediaText);
 	std::wstring getProductionHelpCity(CyCity* pCity);
@@ -45,8 +47,8 @@ public:
 	std::wstring parseReligionInfo(int /*ReligionTypes*/ iReligionType, bool bCivilopediaText);
 	std::wstring parseCorporationInfo(int /*CorporationTypes*/ iCorporationType, bool bCivilopediaText);
 	std::wstring parseCivInfos(int /*CivilizationTypes*/ iCivilization, bool bDawnOfMan);
-	std::wstring parseLeaderTraits(int /*LeaderHeadTypes*/ iLeader, int /*CivilizationTypes*/ iCivilization, bool bDawnOfMan, bool bCivilopediaText);
-	std::wstring parseTraits(int /*TraitTypes*/ eTrait, int /*CivilizationTypes*/ eCivilization, bool bDawnOfMan, bool bEffectsOnly);
+	std::wstring parseLeaderTraits(int /*LeaderHeadTypes*/ iLeader, bool bDawnOfMan, bool bCivilopediaText);
+	std::wstring parseTraits(int /*TraitTypes*/ eTrait, bool bDawnOfMan, bool bEffectsOnly);
 	std::wstring getHappinessHelp();
 	std::wstring getTradeString(TradeData* pTradeData, int iPlayer1, int iPlayer2);
 	std::wstring getSpecialistHelp(int iSpecialist, bool bCivilopediaText);
@@ -59,6 +61,7 @@ public:
 	std::wstring getDealString(CyDeal* pDeal, int iPlayerPerspective);
 	std::wstring getFinanceUnitUpkeepString(int iPlayer);
 	std::wstring getDefenseHelp(CyCity* pCity);
+	std::wstring getFlagHelp();
 
 protected:
 	CvGameTextMgr* m_pGameTextMgr;

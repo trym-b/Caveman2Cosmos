@@ -6,6 +6,9 @@
 //  PURPOSE: Boolean Expressions for Civ4 classes
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvGameAI.h"
 #include "CvGlobals.h"
@@ -14,13 +17,15 @@
 #include "CvDLLPythonIFaceBase.h"
 #include "CheckSum.h"
 #include "IntExpr.h"
+#include "CvInfos.h"
 
 IntExpr::~IntExpr()
 {
 }
 
-IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
+const IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 {
+	PROFILE_EXTRA_FUNC();
 	// In general we assume no comments to simplify reading code
 
 	//TCHAR szTag[1024];
@@ -45,7 +50,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the subnode
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			pXML->MoveToXmlParent();
 			return new IntExprRandom(pExpr);
@@ -69,7 +74,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 			if (pXML->TryMoveToXmlFirstChild())
 			{
 				// read the subnode
-				IntExpr* pExpr = read(pXML);
+				const IntExpr* pExpr = read(pXML);
 
 				pXML->MoveToXmlParent();
 				return new IntExprAdapt(pExpr);
@@ -86,7 +91,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 				FErrorMsg("Adapt usb expression is not correctly constructed");
 			}
 			// read the subnode
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			pXML->MoveToXmlParent();
 			return new IntExprAdapt(pExpr, GC.getOrCreateInfoTypeForString(szTextVal));
@@ -102,7 +107,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 			if (pXML->TryMoveToXmlFirstChild())
 			{
 				// there is a subexpression, so no simple constant
-				IntExpr* pExpr = read(pXML);
+				const IntExpr* pExpr = read(pXML);
 				pXML->MoveToXmlParent();
 				return pExpr;
 			}
@@ -114,7 +119,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the first node
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			// read nodes until there are no more siblings
 			while (pXML->TryMoveToXmlNextSibling())
@@ -135,7 +140,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 			if (pXML->TryMoveToXmlFirstChild())
 			{
 				// there is a subexpression, so no simple constant
-				IntExpr* pExpr = read(pXML);
+				const IntExpr* pExpr = read(pXML);
 				pXML->MoveToXmlParent();
 				return pExpr;
 			}
@@ -147,7 +152,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the first node
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			// read nodes until there are no more siblings
 			while (pXML->TryMoveToXmlNextSibling())
@@ -170,7 +175,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the first node
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			// read the second node
 			if (pXML->TryMoveToXmlNextSibling())
@@ -193,7 +198,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the first node
-			IntExpr* pExpr = read(pXML);
+			const IntExpr* pExpr = read(pXML);
 
 			// read the second node
 			if (pXML->TryMoveToXmlNextSibling())
@@ -216,9 +221,9 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 		if (pXML->TryMoveToXmlFirstChild())
 		{
 			// read the if node
-			BoolExpr* pIfExpr = BoolExpr::read(pXML);
-			IntExpr* pThenExpr = NULL;
-			IntExpr* pElseExpr = NULL;
+			const BoolExpr* pIfExpr = BoolExpr::read(pXML);
+			const IntExpr* pThenExpr = NULL;
+			const IntExpr* pElseExpr = NULL;
 
 			// read the then node
 			if (pXML->TryMoveToXmlNextSibling())
@@ -242,14 +247,14 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 	{
 		CvString szTextVal;
 		pXML->GetChildXmlValByName(szTextVal, L"RelationType");
-		RelationTypes eRelation = (RelationTypes) pXML->GetInfoClass(szTextVal);
+		const RelationTypes eRelation = (RelationTypes) pXML->GetInfoClass(szTextVal);
 		int iData = -1;
 		pXML->GetOptionalChildXmlValByName(&iData, L"iDistance");
 		pXML->GetChildXmlValByName(szTextVal, L"GameObjectType");
-		GameObjectTypes eType = (GameObjectTypes) pXML->GetInfoClass(szTextVal);
+		const GameObjectTypes eType = (GameObjectTypes) pXML->GetInfoClass(szTextVal);
 
-		IntExpr* pExpr = NULL;
-		BoolExpr* pBExpr = NULL;
+		const IntExpr* pExpr = NULL;
+		const BoolExpr* pBExpr = NULL;
 		// Find the expression and read it
 		if (pXML->TryMoveToXmlFirstChild())
 		{
@@ -312,7 +317,7 @@ IntExpr* IntExpr::read(CvXMLLoadUtility *pXML)
 	if (pXML->TryMoveToXmlFirstChild())
 	{
 		// there is a subexpression, so no simple constant
-		IntExpr* pExpr = read(pXML);
+		const IntExpr* pExpr = read(pXML);
 		pXML->MoveToXmlParent();
 		return pExpr;
 	}
@@ -392,7 +397,7 @@ int IntExprAttribute::getBindingStrength() const
 	return 100;
 }
 
-void IntExprAttribute::getCheckSum(unsigned int &iSum) const
+void IntExprAttribute::getCheckSum(uint32_t& iSum) const
 {
 	CheckSum(iSum, (int)m_eAttribute);
 }
@@ -590,8 +595,9 @@ IntExprIntegrateOp::~IntExprIntegrateOp()
 
 int IntExprIntegrateOp::evaluate(const CvGameObject* pObject) const
 {
+	PROFILE_EXTRA_FUNC();
 	int iAcc = 0;
-	pObject->foreachRelated(m_eType, m_eRelation, bst::bind(getOp(), _1, m_pExpr, &iAcc));
+	pObject->foreachRelated(m_eType, m_eRelation, bind(getOp(), _1, m_pExpr, &iAcc));
 	return iAcc;
 }
 
@@ -617,7 +623,7 @@ void IntExprIntegrateOp::getCheckSum(uint32_t& iSum) const
 }
 
 
-void evalExprIntegrateSum(const CvGameObject* pObject, IntExpr* pExpr, int* iAcc)
+void evalExprIntegrateSum(const CvGameObject* pObject, const IntExpr* pExpr, int* iAcc)
 {
 	*iAcc = *iAcc + pExpr->evaluate(pObject);
 }
@@ -633,7 +639,7 @@ IntegrateOpFunc IntExprIntegrateSum::getOp() const
 }
 
 
-void evalExprIntegrateAvg(const CvGameObject* pObject, IntExpr* pExpr, int* iAcc, int* iCount)
+void evalExprIntegrateAvg(const CvGameObject* pObject, const IntExpr* pExpr, int* iAcc, int* iCount)
 {
 	*iAcc = *iAcc + pExpr->evaluate(pObject);
 	++*iCount;
@@ -646,9 +652,10 @@ IntExprTypes IntExprIntegrateAvg::getType() const
 
 int IntExprIntegrateAvg::evaluate(const CvGameObject* pObject) const
 {
+	PROFILE_EXTRA_FUNC();
 	int iAcc = 0;
 	int iCount = 0;
-	pObject->foreachRelated(m_eType, m_eRelation, bst::bind(evalExprIntegrateAvg, _1, m_pExpr, &iAcc, &iCount));
+	pObject->foreachRelated(m_eType, m_eRelation, bind(evalExprIntegrateAvg, _1, m_pExpr, &iAcc, &iCount));
 	return iCount ? iAcc/iCount : 0;
 }
 
@@ -658,7 +665,7 @@ IntegrateOpFunc IntExprIntegrateAvg::getOp() const
 }
 
 
-void evalExprIntegrateCount(const CvGameObject* pObject, BoolExpr* pExpr, int* iAcc)
+void evalExprIntegrateCount(const CvGameObject* pObject, const BoolExpr* pExpr, int* iAcc)
 {
 	if (pExpr->evaluate(pObject))
 	{
@@ -673,8 +680,9 @@ IntExprIntegrateCount::~IntExprIntegrateCount()
 
 int IntExprIntegrateCount::evaluate(const CvGameObject* pObject) const
 {
+	PROFILE_EXTRA_FUNC();
 	int iAcc = 0;
-	pObject->foreachRelated(m_eType, m_eRelation, bst::bind(evalExprIntegrateCount, _1, m_pExpr, &iAcc));
+	pObject->foreachRelated(m_eType, m_eRelation, bind(evalExprIntegrateCount, _1, m_pExpr, &iAcc));
 	return iAcc;
 }
 
@@ -758,12 +766,12 @@ void IntExprAdapt::getCheckSum(uint32_t& iSum) const
 
 int IntExprPython::evaluate(const CvGameObject* pObject) const
 {
-	return Cy::call<int>(PYRandomEventModule, m_szPythonCallback, Cy::Args() << const_cast<CvGameObject*>(pObject));
+	return Cy::call<int>("CvOutcomeInterface", m_szPythonCallback, Cy::Args() << const_cast<CvGameObject*>(pObject));
 }
 
 void IntExprPython::buildDisplayString(CvWStringBuffer &szBuffer) const
 {
-	CvWString szResult = Cy::call<CvWString>(PYRandomEventModule, m_szPythonCallback, Cy::Args() << false);
+	CvWString szResult = Cy::call<CvWString>("CvOutcomeInterface", m_szPythonCallback, Cy::Args() << false);
 	szBuffer.append(szResult);
 }
 

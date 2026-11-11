@@ -10,9 +10,8 @@ from CvPythonExtensions import *
 import wx
 import wx.wizard
 import wx.lib.scrolledpanel
-import time
 import string
-
+# potential mark for deletion TODO: MurderMesa/Scvijc
 bPublic = True
 bSaved = False
 bScenario = False

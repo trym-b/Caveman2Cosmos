@@ -57,7 +57,7 @@ class EventTriggerScreen:
 
 		stTxt = szFontEdge + CyTranslator().getText("TXT_KEY_POPUP_SELECT_EVENT",())
 		screen.setLabel("Header", "", stTxt, 1<<2, xRes / 2, 2, 0, eFontTitle, eWidGen, 1, 1)
-		stTxt = szFontEdge + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ())
+		stTxt = szFontEdge + CyTranslator().getText("TXT_WORD_EXIT", ())
 		screen.setText("Exit", "", stTxt, 1<<1, xRes - 8, 0, 0, eFontTitle, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1)
 
 		LIST = []
@@ -86,8 +86,7 @@ class EventTriggerScreen:
 					i = 0
 					iLetter = 0
 					iTemp = W_INDEX * iList
-					if iTemp - iX > 0:
-						iX = 4 + iTemp
+					iX = 4 + iTemp
 				szLetter = str(szName[:1])
 				szHeader = szFont + "<color=245,245,0,255>" + "-----  " + szLetter + "  -----"
 				do(LIST[iList], szHeader, eWidGen, -1, 0, 1<<2)
@@ -104,7 +103,6 @@ class EventTriggerScreen:
 
 		import HandleInputUtil
 		self.debugInput = HandleInputUtil.debugInput
-		self.mouseFlags = HandleInputUtil.MOUSE_FLAGS.get
 
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 
@@ -117,10 +115,7 @@ class EventTriggerScreen:
 			self.tooltip.handle(self.getScreen())
 
 	def handleInput(self, inputClass):
-
 		iCode	= inputClass.eNotifyCode
-		iData	= inputClass.iData
-		ID		= inputClass.iItemID
 		NAME	= inputClass.szFunctionName
 		iData1	= inputClass.iData1
 

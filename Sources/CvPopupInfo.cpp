@@ -1,3 +1,6 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvPopupInfo.h"
 
@@ -19,6 +22,7 @@ CvPopupInfo::~CvPopupInfo()
 
 const CvPopupInfo& CvPopupInfo::operator=(const CvPopupInfo& other)
 {
+	PROFILE_EXTRA_FUNC();
 	setButtonPopupType(other.getButtonPopupType());
 	setData1(other.getData1());
 	setData2(other.getData2());
@@ -98,13 +102,13 @@ const CvString& CvPopupInfo::getPythonModule() const
 
 const CvWString& CvPopupInfo::getPythonButtonText(int i) const
 {
-	FAssertMsg(i < (int)m_aPythonButtons.size(), "index out of range");
+	FASSERT_BOUNDS(0, (int)m_aPythonButtons.size(), i);
 	return m_aPythonButtons[i].szText;
 }
 
 const CvString& CvPopupInfo::getPythonButtonArt(int i) const
 {
-	FAssertMsg(i < (int)m_aPythonButtons.size(), "index out of range");
+	FASSERT_BOUNDS(0, (int)m_aPythonButtons.size(), i);
 	return m_aPythonButtons[i].szArt;
 }
 
@@ -190,6 +194,7 @@ int CvPopupInfo::getNumPythonButtons() const
 
 void CvPopupInfo::read(FDataStreamBase& stream)
 {
+	PROFILE_EXTRA_FUNC();
 	stream.Read(&m_iData1);
 	stream.Read(&m_iData2);
 	stream.Read(&m_iData3);
@@ -218,6 +223,7 @@ void CvPopupInfo::read(FDataStreamBase& stream)
 
 void CvPopupInfo::write(FDataStreamBase& stream) const
 {
+	PROFILE_EXTRA_FUNC();
 	stream.Write(m_iData1);
 	stream.Write(m_iData2);
 	stream.Write(m_iData3);

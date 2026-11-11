@@ -1,4 +1,9 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
+#include "CvGameCoreUtils.h"
+#include "CvRandom.h"
 #include "CyGameCoreUtils.h"
 #include "CyCity.h"
 #include "CyPlot.h"
@@ -36,12 +41,20 @@ int cyStepDistance(int iX1, int iY1, int iX2, int iY2)
 
 CyPlot* cyPlotDirection(int iX, int iY, DirectionTypes eDirection)
 {
-	return new CyPlot(plotDirection(iX, iY, eDirection));
+	if (plotDirection(iX, iY, eDirection))
+	{
+		return new CyPlot(plotDirection(iX, iY, eDirection));
+	}
+	return NULL;
 }
 
 CyPlot* cyPlotCardinalDirection(int iX, int iY, CardinalDirectionTypes eCardDirection)
 {
-	return new CyPlot(plotCardinalDirection(iX, iY, eCardDirection));
+	if (plotCardinalDirection(iX, iY, eCardDirection))
+	{
+		return new CyPlot(plotCardinalDirection(iX, iY, eCardDirection));
+	}
+	return NULL;
 }
 
 CyPlot* cysPlotCardinalDirection(int iX, int iY, CardinalDirectionTypes eCardDirection)
@@ -53,14 +66,22 @@ CyPlot* cysPlotCardinalDirection(int iX, int iY, CardinalDirectionTypes eCardDir
 
 CyPlot* cyPlotXY(int iX, int iY, int iDX, int iDY)
 {
-	return new CyPlot(plotXY(iX, iY, iDX, iDY));
+	if (plotXY(iX, iY, iDX, iDY))
+	{
+		return new CyPlot(plotXY(iX, iY, iDX, iDY));
+	}
+	return NULL;
 }
 
 CyPlot* cysPlotXY(int iX, int iY, int iDX, int iDY)
 {
-	static CyPlot plot;
-	plot.setPlot(plotXY(iX, iY, iDX, iDY));
-	return &plot;
+	if (plotXY(iX, iY, iDX, iDY))
+	{
+		static CyPlot plot;
+		plot.setPlot(plotXY(iX, iY, iDX, iDY));
+		return &plot;
+	}
+	return NULL;
 }
 
 DirectionTypes cyDirectionXYFromInt(int iDX, int iDY)
@@ -75,7 +96,11 @@ DirectionTypes cyDirectionXYFromPlot(const CyPlot& kFromPlot, const CyPlot& kToP
 
 CyPlot* cyPlotCity(int iX, int iY, int iIndex)
 {
-	return new CyPlot(plotCity(iX, iY, iIndex));
+	if (plotCity(iX, iY, iIndex))
+	{
+		return new CyPlot(plotCity(iX, iY, iIndex));
+	}
+	return NULL;
 }
 
 int cyPlotCityXYFromInt(int iDX, int iDY)
@@ -111,16 +136,6 @@ CyCity* cyGetCity(const IDInfo city)
 CyUnit* cyGetUnit(const IDInfo unit)
 {
 	return new CyUnit(getUnit(unit));
-}
-
-bool cyIsPromotionValid(int /*PromotionTypes*/ ePromotion, int /*UnitTypes*/ eUnit, bool bLeader)
-{
-	return isPromotionValid((PromotionTypes) ePromotion, (UnitTypes) eUnit, bLeader);
-}
-
-int cyGetTechScore(int /*TechTypes*/ eTech)
-{
-	return getTechScore((TechTypes)eTech);
 }
 
 int cyGetWonderScore(int /*BuildingTypes*/ eWonder)
@@ -221,4 +236,27 @@ int cyGetEspionageModifier(int iOurTeam, int iTargetTeam)
 int64_t cyIntSqrt64(uint64_t iValue)
 {
 	return intSqrt64(iValue);
+}
+
+int64_t cyGetModifiedIntValue64(uint64_t iValue, const int iMod)
+{
+	return getModifiedIntValue64(iValue, iMod);
+}
+
+
+void cyShufflePyList(python::list& pyList, CvRandom& rand)
+{
+	PROFILE_EXTRA_FUNC();
+	PyObject* pyObj = pyList.ptr();
+
+	for (int i = 0, size = PySequence_Length(pyObj); i < size; i++)
+	{
+		const int j = i + rand.get(size - i);
+		if (i != j)
+		{
+			PyObject* temp = PySequence_GetItem(pyObj, i);
+			PySequence_SetItem(pyObj, i, PySequence_GetItem(pyObj, j));
+			PySequence_SetItem(pyObj, j, temp);
+		}
+	}
 }

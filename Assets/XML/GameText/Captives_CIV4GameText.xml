@@ -1,0 +1,533 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Civ4GameText xmlns="http://www.firaxis.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.firaxis.com ../Schema/Civ4Gametext.xsd">
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_ARCHER</Tag>
+		<English>Upgrade a Captive to an Archer.</English>
+		<French>Convertir le Prisonnier en Archer.</French>
+		<Italian>Converti prigioniero in un arciere.</Italian>
+		<Polish>Ulepsz Je&#241;ca do &#163;ucznika.</Polish>
+		<Russian>Улучшить пленника до лучника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_AXEMAN</Tag>
+		<English>Upgrade a Captive to an Axeman.</English>
+		<French>Convertir le Prisonnier en Guerrier avec hache.</French>
+		<Italian>Converti prigioniero in un guerriero con ascia.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Topornika.</Polish>
+		<Russian>Улучшить пленника до секироносца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_GATHERER</Tag>
+		<English>Upgrade a Captive to an Gatherer.</English>
+		<French>Convertir la prisonnière en Cueilleuse</French>
+		<German>Bilde einen Gefangenen zum Sammler aus</German>
+		<Italian>Converti prigioniero in un raccoglitore.</Italian>
+		<Polish>Ulepsz do Zbieracza.</Polish>
+		<Russian>Улучшить до собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_IMMIGRANT</Tag>
+		<English>Upgrade a Captive to an Immigrant.</English>
+		<French>Convertir le prisonnier en Immigrant</French>
+		<Italian>Converti prigioniero in un emigrante.</Italian>
+		<Polish>Ulepsz do Immigranta.</Polish>
+		<Russian>Улучшить до иммигранта.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_NEANDERTHAL_GATHERER</Tag>
+		<English>Upgrade a Captive to a Neanderthal Gatherer.</English>
+		<French>Convertit la Prisonnière en une Cueilleuse Néanderthal.</French>
+		<Italian>Converti prigioniero in un raccoglitore neanderthal.</Italian>
+		<Russian>Улучшить пленника до неандертальского собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_NEANDERTHAL_TRACKER</Tag>
+		<English>Upgrade a Captive to a Neanderthal Chaser.</English>
+		<French>Convertir le Prisonnier en Cavaleur de Néanderthal.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_NEANDERTHAL_WARRIOR</Tag>
+		<English>Upgrade a Captive to a Neanderthal Warrior.</English>
+		<French>Convertir le Prisonnier en Guerrier de Néanderthal.</French>
+		<Italian>Converti prigioniero in un guerriero neanderthal.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Wojownika Neandertalczyk&#243;w.</Polish>
+		<Russian>Улучшить пленника до неандертальского воина.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_SETTLER</Tag>
+		<English>Upgrade a Captive to a Settler.</English>
+		<French>Convertir le Prisonnier en Colon</French>
+		<Italian>Converti prigioniero in un colonizzatore.</Italian>
+		<Polish>Ulepsz do Osadnika.</Polish>
+		<Russian>Улучшить до поселенца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_SPEARMAN</Tag>
+		<English>Upgrade a Captive to a Spearman.</English>
+		<French>Convertir le Prisonnier en Guerrier avec lance.</French>
+		<Italian>Converti prigioniero in un guerriero con lancia.</Italian>
+		<Polish>Ulepsz Je&#241;ca do W&#179;&#243;cznika.</Polish>
+		<Russian>Улучшить пленника до копейщика.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_STONE_THROWER</Tag>
+		<English>Upgrade a Captive to a Stone Thrower.</English>
+		<French>Convertir le Prisonnier en Lanceur de pierres.</French>
+		<German>Bilde einen Gefangenen zum Steinewerfer aus</German>
+		<Italian>Converti prigioniero in un lanciatore di pietre.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Kamieniarza.</Polish>
+		<Russian>Улучшить пленника до пращника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_CAPTIVE_UPGRADE_TO_WORKER</Tag>
+		<English>Upgrade a Captive to a Worker.</English>
+		<French>Convertir le Prisonnier en Ouvrier</French>
+		<German>Bilde einen Gefangenen zu einem beliebigen Arbeitstrupp aus</German>
+		<Italian>Converti prigioniero in un lavoratore.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Robotnika.</Polish>
+		<Russian>Улучшить до рабочего.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_FREE_CAPTIVE</Tag>
+		<English>Set a Captive free.</English>
+		<French>Libérer l'esclave Prisonnier.</French>
+		<Italian>Libera prigioniero.</Italian>
+		<Polish>Uwolnij je&#241;ca.</Polish>
+		<Russian>Освободить пленника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SLAY_ANIMAL</Tag>
+		<English>Slaughter animal.</English>
+		<French>Abattre l'animal.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_FREE_CAPTIVE_HELP</Tag>
+		<English>Setting a Captive free adds Food to the city store, as in Civ IV Food represents population growth.</English>
+		<French>Le fait de libérer un esclave augmente le stock de nourriture (dans Civ4, la nourriture représente l'accroissement de la population).</French>
+		<Italian>[NEWLINE]Aggiunge cibo alle riserve cittadine.</Italian>
+		<Polish>Uwolnienie je&#241;ca dodaje dostarcza miastu odrobin&#234; &#191;ywno&#156;ci, kt&#243;ra w CIV4 reprezentuje wzrost populacj&#234;.</Polish>
+		<Russian>Освобождение пленника увеличивает городские запасы еды, которая в Цивилизации IV отвечает за рост населения.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SLAY_ANIMAL_HELP</Tag>
+		<English>Slaying a Animal adds Food Hammers and Commerce to the city store.</English>
+		<French>Tuer un animal ajoute de la nourriture, de la production et du commerce à la réserve de la ville.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_JOIN_CITY_FREED_SLAVE</Tag>
+		<English>Join City. (Part population point increase)</English>
+		<French>Rejoindre la Ville. Augmente d'autant la population.</French>
+		<Italian>[NEWLINE]Unisci alla città (aumento popolazione)</Italian>
+		<Polish>Do&#179;&#185;cz do miasta. (Cz&#234;&#156;ciowy wzrost punkt&#243;w populacji)</Polish>
+		<Russian>Поселиться в городе (частично увеличить баллы населения)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_JOIN_CITY_POPULATION</Tag>
+		<English>Join City</English>
+		<French>Rejoindre la Ville</French>
+		<Italian>Unisci alla città</Italian>
+		<Polish>Do&#179;&#185;cz do miasta</Polish>
+		<Russian>Поселиться в городе</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_JOIN_CITY_POPULATION_HELP</Tag>
+		<English>Increases the population of the city by one. Unit is consumed.</English>
+		<French>Augmente de 1 la population. L'unité est détruite.</French>
+		<Italian>[NEWLINE]Incrementa la popolazione cittadina di uno. L'unità viene consumata.</Italian>
+		<Polish>Zwi&#234;ksza populacj&#234; miasta o 1. Jednostka zostaje usuni&#234;ta z gry.</Polish>
+		<Russian>Население города увеличится на одного жителя. Подразделение исчезнет.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_ARTISTS</Tag>
+		<English>The city had %d1 Artists. You killed %d1 and %d1 were captured. (Captive - Artist)</English>
+		<French>La Ville a %d1 Artistes. Vous en tuez %d1 et %d1 sont faits prisonniers. (Prisonnier - Artiste)</French>
+		<Italian>La città aveva %d1 artisti: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Polish>Miasto mia&#179;o %d1 Artyst&#243;w. Zabi&#179;e&#156; %d1 a %d1 zosta&#179;o pojmanych. (Jeniec - Artysta)</Polish>
+		<Russian>В городе находились художники в количестве: %d1. Вы убили: %d1, а захватили: %d1. (пленник-художник)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_DOCTORS</Tag>
+		<English>The city had %d1 Doctors. You killed %d1 and %d1 were captured. (Captive - Doctor)</English>
+		<French>La Ville a %d1 Médecins. Vous en tuez %d1 et %d1 sont faits prisonniers. (Prisonnier - Médecin)</French>
+		<Italian>La città aveva %d1 dottori: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Polish>Miasto mia&#179;o %d1 Lekarzy. Zabi&#179;e&#156; %d1 a %d1 zosta&#179;o pojmanych. (Jeniec - Lekarz)</Polish>
+		<Russian>В городе находились врачи в количестве: %d1. Вы убили: %d1, а захватили %d1. (пленник-врач)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_ENGINEERS</Tag>
+		<English>The city had %d1 Engineers. You killed %d1 and %d1 were captured. (Captive - Engineer)</English>
+		<French>La Ville a %d1 Ingénieurs. Vous en tuez %d1 et %d1 sont faits prisonniers. (Prisonnier - Ingénieur)</French>
+		<Italian>La città aveva %d1 ingegneri: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Polish>Miasto mia&#179;o %d1 In&#191;ynier&#243;w. Zabi&#179;e&#156; %d1 a %d1 zosta&#179;o pojmanych. (Jeniec - In&#191;ynier)</Polish>
+		<Russian>В городе находились инженеры в количестве: %d1. Вы убили: %d1, а захватили: %d1. (пленник-инженер)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_GENERALS</Tag>
+		<English>The city had %d1 Generals. You killed %d1. %d1 now lead rebels or partisans and %d1 were captured. (Captive - General)</English>
+		<French>La Ville a %d1 Généraux. Vous en tuez %d1. %d1 conduisent les rebelles et %d1 sont faits prisonniers. (Prisonnier - Général)</French>
+		<Italian>La città aveva %d1 generali: ne hai uccisi %d1, %d1 ora guidano ribelli o partigiani, mentre %d1 sono stati catturati.</Italian>
+		<Polish>Obron&#185; miasta dowodzi&#179;o %d1 Genera&#179;&#243;w. Zabi&#179;e&#156; %d1. %d1 przesz&#179;o do podziemia i dowodzi teraz partyzantami a %d1 zosta&#179;o pojmanych. (Jeniec - Genera&#179;)</Polish>
+		<Russian>В городе находились генералы в количестве: %d1. Убитых вами: %d1, возглавивших повстанцев или партизан: %d1, захваченых: %d1. (пленник-генерал)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_MERCHANTS</Tag>
+		<English>The city had %d1 Merchants. You killed %d1 and %d1 were captured. (Captive - Merchant)</English>
+		<French>La ville comptait %d1 marchands. Vous en avez tué %d1 et %d1 ont été capturés. (Captif - Marchand)</French>
+		<Italian>La città aveva %d1 mercanti: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Russian>В городе находились торговцы в количестве: %d1. Вы убили: %d1, а захватили: %d1. (пленник-торговец)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_PRIESTS</Tag>
+		<English>The city had %d1 Priests. You killed %d1 and %d1 were captured. (Captive - Priest)</English>
+		<French>La Ville a %d1 Prêtres. Vous en tuez %d1 et %d1 sont faits prisonniers. (Prisonnier - Prêtre)</French>
+		<Italian>La città aveva %d1 sacerdoti: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Polish>Miasto mia&#179;o %d1 Kap&#179;an&#243;w. Zabi&#179;e&#156; %d1 a %d1 zosta&#179;o pojmanych. (Jeniec - Kap&#179;an)</Polish>
+		<Russian>В городе находились священники в количестве: %d1. Вы убили: %d1, а захватили: %d1. (пленник-священник)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_SCIENTISTS</Tag>
+		<English>The city had %d1 Scientists. You killed %d1 and %d1 were captured. (Captive - Scientist)</English>
+		<French>La Ville a %d1 Scientifiques. Vous en tuez %d1 et %d1 sont faits prisonniers. (Prisonnier - Scientifique)</French>
+		<Italian>La città aveva %d1 scienziati: ne hai uccisi %d1 e catturati %d1.</Italian>
+		<Polish>Miasto mia&#179;o %d1 Naukowc&#243;w. Zabi&#179;e&#156; %d1 a %d1 zosta&#179;o pojmanych. (Jeniec - Naukowiec)</Polish>
+		<Russian>В городе находились ученые в количестве: %d1. Вы убили: %d1, а захватили: %d1. (пленник-ученый)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CITY_HAD_SPIES</Tag>
+		<English>It is rumoured the city had %d1 Great Spies. You captured %d1 (Captive - Spy). The rest are assumed dead or escaped.</English>
+		<French>Il semble que la ville possède %d1 Espions illustres. Vous en capturez %d1 (Prisonnier - Espion). Les autres sont considérés morts ou en fuite.</French>
+		<Italian>Secondo alcune voci la città aveva %d1 grandi spie: ne hai catturate %d1. Si ritiene che le altre siano morte o fuggite.</Italian>
+		<Polish>Chodzi&#179;y pog&#179;oski, &#191;e w mie&#156;cie rezydowa&#179;o %d1 Wielkich Szpieg&#243;w. Pojma&#179;e&#156; %d1 (Jeniec - Szpieg). Reszta poleg&#179;a lub uciek&#179;a.</Polish>
+		<Russian>По слухам, в городе находились великие шпионы в количестве: %d1. Вы заполучили пленников-шпионов: %d1. Остальные, предположительно, мертвы или сбежали.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_CIVILIAN_CAPTIVE</Tag>
+		<English>You have captured %d1 civilian unit(s) (Captive - Civilian).</English>
+		<French>Vous avez capturé %d1 unité civile (Prisonnier - Civil).</French>
+		<Italian>Hai catturato %d1 unità civile(i).</Italian>
+		<Russian>Вы захватили гражданские подразделения в количестве: %d1 (пленник-гражданский).</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_MILITARY_CAPTIVE</Tag>
+		<English>You have captured a military unit (Captive - Military).</English>
+		<French>Vous avez capturé une unité militaire (Prisonnier de Guerre).</French>
+		<Italian>Hai catturato un'unità militare.</Italian>
+		<Polish>Pojma&#179;e&#156; jednostk&#234; wojskow&#185; (Jeniec Wojenny).</Polish>
+		<Russian>Вы захватили военное подразделение (пленник-военный).</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_NEANDERTHAL_CAPTIVE</Tag>
+		<English>You have captured a Neanderthal unit (Captive - Neanderthal).</English>
+		<French>Vous avez capturé une unité de Néanderthal (Prisonnier - Neanderthal).</French>
+		<Italian>Hai catturato un'unità Neanderthal.</Italian>
+		<Polish>Pojma&#179;e&#156; Neandertalczyk&#243;w (Jeniec - Neandertalczyk).</Polish>
+		<Russian>Вы захватили неандертальское подразделение (пленник-неандерталец).</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_JOIN_CITY_FREED_SLAVE</Tag>
+		<English>Join City. (Part population point increase)</English>
+		<French>Rejoindre la Ville. Augmente d'autant la population.</French>
+		<Italian>Unisci alla città causando un aumento parziale di popolazione.</Italian>
+		<Polish>Do&#179;&#185;cz do miasta. (Cz&#234;&#156;ciowy wzrost punkt&#243;w populacji)</Polish>
+		<Russian>Поселиться в городе. (Частично увеличить баллы населения)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_JOIN_CITY_POPULATION</Tag>
+		<English>Join City</English>
+		<French>Rejoindre la Ville</French>
+		<Italian>Unisci alla città</Italian>
+		<Polish>Do&#179;&#185;cz do miasta</Polish>
+		<Russian>Поселиться в городе</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_JOIN_CITY_POPULATION_MESSAGE</Tag>
+		<English>Join City</English>
+		<French>Rejoindre la Ville</French>
+		<Italian>Unisci alla città</Italian>
+		<Polish>Do&#179;&#185;cz do miasta</Polish>
+		<Russian>Поселиться в городе</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SELL_CAPTIVE_NOT_SLAVERY</Tag>
+		<English>You can make more money if you adopt the Worldview Slavery.</English>
+		<French>Vous pouvez obtenir plus d'or en adoptant la Vision du monde Esclavage.</French>
+		<Italian>Puoi ottenere più denaro adottando la schiavitù come visione del mondo.</Italian>
+		<Polish>Mo&#191;esz zwi&#234;kszy&#230; swoje zyski adoptuj&#185;c Swiatopogl&#185;d - Niewolnictwo w Twoim imperium.</Polish>
+		<Russian>Вы сможете получить больше денег, если примите мировоззрение рабства.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SET_CAPTIVE_FREE</Tag>
+		<English>Free the Captive.</English>
+		<French>Libérer le Prisonnier.</French>
+		<Italian>Libera un prigioniero.</Italian>
+		<Polish>Uwolnij je&#241;ca.</Polish>
+		<Russian>Освободить пленника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SET_CAPTIVE_FREE_MESSAGE</Tag>
+		<English>The Captive has joined your city. This is represented as a boost to Food.</English>
+		<French>Le Prisonnier a rejoint votre ville. Représenté par un bonus de nourriture.</French>
+		<Italian>Il prigioniero si è unito alla tua città. Hai ricevuto un aumento di produzione di cibo.</Italian>
+		<Polish>Jeniec do&#179;&#185;czyl do Twojego miasta. Miasta uzysk&#179;o odrobin&#234; &#191;ywno&#156;ci z wzrostu populacji.</Polish>
+		<Russian>Пленник поселился в вашем городе. Это увеличило прирост пищи.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SLAY_ANIMAL</Tag>
+		<English>Slay animal.</English>
+		<French>Abattre l'animal.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SLAY_ANIMAL_MESSAGE</Tag>
+		<English>You have slaughtered the animal.</English>
+		<French>Vous avez abattu l'animal.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_ARCHER</Tag>
+		<English>Upgrade a Captive to a Archer.</English>
+		<French>Convertir en Archer.</French>
+		<Italian>Converti il prigioniero in un arciere.</Italian>
+		<Polish>Ulepsz do &#163;ucznika.</Polish>
+		<Russian>Улучшить до лучника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_ARCHER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to an Archer.</English>
+		<French>Votre Prisonnier a été converti en Archer.</French>
+		<Italian>Il prigioniero è diventato un arciere</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do &#163;ucznika.</Polish>
+		<Russian>Ваш пленник был повышен до лучника.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_AXEMAN</Tag>
+		<English>Upgrade a Captive to a Axeman.</English>
+		<French>Convertir en Guerrier avec hache.</French>
+		<Italian>Converti il prigioniero in un guerriero con ascia.</Italian>
+		<Polish>Ulepsz do Topornika.</Polish>
+		<Russian>Улучшить до секироносца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_AXEMAN_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to an Axeman.</English>
+		<French>Votre Prisonnier a été converti en Guerrier avec hache.</French>
+		<Italian>Il prigioniero è diventato un guerriero con ascia.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Topornika.</Polish>
+		<Russian>Ваш пленник был повышен до секироносца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_GATHERER</Tag>
+		<English>Upgrade a Captive to a Gatherer.</English>
+		<French>Convertir le prisonnier en Cueilleuse.</French>
+		<German>Ausbildung zum Sammler.</German>
+		<Italian>Il prigioniero è diventato un raccoglitore.</Italian>
+		<Polish>Ulepsz do Zbieracza.</Polish>
+		<Russian>Улучшить до собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_GATHERER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Gatherer.</English>
+		<French>Votre Prisonnier a été converti en Cueilleuse</French>
+		<German>Der Gefangene wurde zum Sammler ausgebildet.</German>
+		<Italian>Converti il prigioniero in un raccoglitore.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Zbieracza.</Polish>
+		<Russian>Ваш пленник был повышен до собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_IMMIGRANT</Tag>
+		<English>Upgrade a Captive to an Immigrant.</English>
+		<French>Convertir le prisonnier en Immigrant.</French>
+		<Italian>Converti il prigioniero in un emigrante.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Immigranta.</Polish>
+		<Russian>Улучшить пленника до иммигранта.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_IMMIGRANT_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to an Immigrant.</English>
+		<French>Votre Prisonnier a été converti en Immigrant.</French>
+		<Italian>Il prigioniero è diventato un emigrante.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Immigranta.</Polish>
+		<Russian>Ваш пленник был повышен до Иммигранта.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_GATHERER</Tag>
+		<English>Upgrade a Captive to a Neanderthal Gatherer.</English>
+		<French>Améliorer en Cueilleuse Néanderthal.</French>
+		<Italian>Converti il prigioniero in un raccoglitore neanderthal.</Italian>
+		<Russian>Улучшить до неандертальского собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_GATHERER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Neanderthal Gatherer.</English>
+		<French>Votre Prisonnière a été convertie en Cueilleuse Néanderthal.</French>
+		<Italian>Il prigioniero è diventato un raccoglitore neanderthal.</Italian>
+		<Russian>Ваш пленник был повышен до неандертальского собирателя.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_TRACKER</Tag>
+		<English>Upgrade a Captive to a Neanderthal Chaser.</English>
+		<French>Améliorer un captif en pisteur Néandertalien.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_TRACKER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Neanderthal Chaser.</English>
+		<French>Votre captif a été amélioré en pisteur Néandertalien.</French>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_WARRIOR</Tag>
+		<English>Upgrade a Captive to a Neanderthal Warrior.</English>
+		<French>Convertir en Guerrier Néanderthal.</French>
+		<Italian>Converti il prigioniero in un guerriero neanderthal.</Italian>
+		<Polish>Ulepsz do Wojownika Neandertalczyk&#243;w.</Polish>
+		<Russian>Улучшить до неандертальского воина.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_NEANDERTHAL_WARRIOR_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Neanderthal Warrior.</English>
+		<French>Votre Prisonnier a été converti en Guerrier Néanderthal.</French>
+		<Italian>Il prigioniero è diventato un guerriero neanderthal.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Wojownika Neandertalczyk&#243;w.</Polish>
+		<Russian>Ваш пленник был повышен до неандертальского воина.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_SETTLER</Tag>
+		<English>Upgrade a Captive to a Settler.</English>
+		<French>Convertir le prisonnier en Colon.</French>
+		<Italian>Converti il prigioniero in un'unità colonizzatore.</Italian>
+		<Polish>Ulepsz Je&#241;ca do Osadnika.</Polish>
+		<Russian>Улучшить пленника до поселенца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_SETTLER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Settler.</English>
+		<French>Votre Prisonnier a été converti en Colon.</French>
+		<Italian>Il prigioniero è diventato un'unità colonizzatore.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Osadnika.</Polish>
+		<Russian>Ваш пленник был повышен до поселенца.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_SPEARMAN</Tag>
+		<English>Upgrade a Captive to a Spearman.</English>
+		<French>Convertir en Guerrier avec lance.</French>
+		<Italian>Converti il prigioniero in un guerriero con lancia.</Italian>
+		<Polish>Ulepsz do W&#179;&#243;cznika.</Polish>
+		<Russian>Улучшить до копейщика.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_SPEARMAN_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Spearman.</English>
+		<French>Votre Prisonnier a été converti en Guerrier avec lance.</French>
+		<Italian>Il prigioniero è diventato un guerriero con lancia.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do W&#179;&#243;cznika.</Polish>
+		<Russian>Ваш пленник был повышен до копейщика.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_STONE_THROWER</Tag>
+		<English>Upgrade a Captive to a Stone Thrower.</English>
+		<French>Convertir en Lanceur de pierres.</French>
+		<German>Ausbildung zum Steinewerfer</German>
+		<Italian>Converti il prigioniero in un lanciatore di pietre.</Italian>
+		<Polish>Ulepsz do Kamieniarza.</Polish>
+		<Russian>Улучшить до метателя камней.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_STONE_THROWER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Stone Thrower.</English>
+		<French>Votre Prisonnier a été converti en Lanceur de Pierre</French>
+		<German>Der Gefangene wurde zum Steinewerfer ausgebildet.</German>
+		<Italian>Il prigioniero è diventato un lanciatore di pietre.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Kamieniarza.</Polish>
+		<Russian>Ваш пленник был повышен до метателя камней.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_WORKER</Tag>
+		<English>Upgrade a Captive to a Worker.</English>
+		<French>Convertir le prisonnier en Ouvrier</French>
+		<Italian>Converti il prigioniero in un'unità lavoratore.</Italian>
+		<Polish>Ulepsz do Robotnika.</Polish>
+		<Russian>Улучшить до рабочего.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_UPGRADE_TO_WORKER_MESSAGE</Tag>
+		<English>Your Captive has been upgraded to a Worker.</English>
+		<French>Votre Prisonnier a été converti en Ouvrier</French>
+		<Italian>Il prigioniero è diventato un'unità lavoratore.</Italian>
+		<Polish>Tw&#243;j jeniec zosta&#179; ulepszony do Robotnika.</Polish>
+		<Russian>Ваш пленник был повышен до рабочего.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_CIVILIAN</Tag>
+		<English>Captive - Civilian</English>
+		<French>Prisonnier - Civil</French>
+		<Italian>Prigioniero civile</Italian>
+		<Russian>Пленник-гражданский</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_CIVILIAN_HELP</Tag>
+		<English>[ICON_BULLET]May join your cities (of less than size 7) or be sacrificed for Culture or Production. If you are running Slavery can be sold into slavery.</English>
+		<French>[ICON_BULLET]Peut rejoindre vos villes (de moins de 7 de population) ou être sacrifiés pour de la culture ou de la production. Si vous acceptez l'esclavage, peux être vendus en tant qu'esclave.</French>
+		<Italian>[ICON_BULLET]L'unità può [COLOR_HIGHLIGHT_TEXT]unirsi alle città[COLOR_REVERT] con popolazione inferiore a [COLOR_HIGHLIGHT_TEXT]7[COLOR_REVERT], essere [COLOR_HIGHLIGHT_TEXT]sacrificata[COLOR_REVERT] per [COLOR_HIGHLIGHT_TEXT]cultura[COLOR_REVERT] o [COLOR_HIGHLIGHT_TEXT]produzione[COLOR_REVERT] o essere [COLOR_HIGHLIGHT_TEXT]venduta come schiavo[COLOR_REVERT] (se la [COLOR_HIGHLIGHT_TEXT]visione del mondo schiavitù[COLOR_REVERT] è attiva)</Italian> <!-- unit Captive - Civilian -->
+		<Russian>[ICON_BULLET] Можно поселить в ваших городах (только где менее 7 жителей) или принести в жертву для очков культуры или производства. А также продать в рабство, если задействовано соответствующее мировоззрение.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_CIVILIAN_PEDIA</Tag>
+		<English>Civilian units captured in battle or gained from raiding cities.</English>
+		<French>Unités civiles capturées au combat ou lors des attaques dans les villes.</French>
+		<Italian>Unità civili catturate in battaglia o da razzie di città.</Italian>
+		<Russian>Гражданские подразделения, захваченные в бою или при набеге на города.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_IMMIGRANT</Tag>
+		<English>Captive - Immigrant</English>
+		<French>Prisonnier - Immigrant</French>
+		<Italian>Prigioniero emigrante</Italian>
+		<Russian>Пленник-иммигрант</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_MILITARY</Tag>
+		<English>Captive - Military</English>
+		<French>Prisonnier - Militaire</French>
+		<Italian>Prigioniero militare</Italian>
+		<Russian>Пленник-военный</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_MILITARY_HELP</Tag>
+		<English>[ICON_BULLET]Upgrade to Military or Worker unit. Force build [COLOR_UNIT_TEXT]Building[COLOR_REVERT]. Sacrifice or join city.</English>
+		<French>[ICON_BULLET]Peut être converti en unité militaire ou ouvrière. Peut construire de manière forcée un [COLOR_UNIT_TEXT]aménagement[COLOR_REVERT] ou [COLOR_UNIT_TEXT]Bâtiment[COLOR_REVERT]. Peut être Sacrifié ou rejoindre une ville.</French>
+		<Italian>[ICON_BULLET]L'unità può essere [COLOR_HIGHLIGHT_TEXT]convertita[COLOR_REVERT] in un [COLOR_HIGHLIGHT_TEXT]unità lavoratore[COLOR_REVERT] o in un'[COLOR_HIGHLIGHT_TEXT]unità militare[COLOR_REVERT],  può [COLOR_HIGHLIGHT_TEXT]costruire edifici[COLOR_REVERT], [COLOR_HIGHLIGHT_TEXT]essere sacrificata[COLOR_REVERT] o [COLOR_REVERT]unirsi alla città[COLOR_HIGHLIGHT_TEXT]</Italian> <!-- unit Captive - military -->
+		<Russian>[ICON_BULLET]Можно улучшить в военное или рабочее подразделение, заставить ускорить строительство [COLOR_UNIT_TEXT]зданий[COLOR_REVERT], принести в жертву или поселить в городе.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_MILITARY_PEDIA</Tag>
+		<English>Military units captured in battle.</English>
+		<French>Unités Militaires capturées au combat.</French>
+		<Italian>Unità militari catturate in battaglia.</Italian>
+		<Russian>Военные единицы, плененные в бою.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_CAPTIVE_NEANDERTHAL</Tag>
+		<English>Captive - Neanderthal</English>
+		<French>Prisonnier - Néanderthal</French>
+		<Italian>Prigioniero neanderthal</Italian>
+		<Russian>Пленник-неандерталец</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_FREED_SLAVE</Tag>
+		<English>Captive - Freed Slave</English>
+		<French>Prisonnier - Esclave libéré</French>
+		<Italian>Prigioniero schiavo liberato</Italian>
+		<Russian>Пленник-освобожденный раб</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_FREED_SLAVE_HELP</Tag>
+		<English>[ICON_BULLET]May be set free (join your city population as Food) or be upgraded to Workers.</English>
+		<French>[ICON_BULLET]Peut être libéré (rejoint votre ville sous forme de réserve de nourriture) ou amélioré en ouvriers.</French>
+		<Russian>[ICON_BULLET]Может быть освобожден (увеличит количество еды в городе) или улучшен до рабочего.</Russian>
+		<Italian>[ICON_BULLET]L'unità può [COLOR_HIGHLIGHT_TEXT]essere liberata[COLOR_REVERT] (si unirà alla popolazione della città sotto forma di [COLOR_HIGHLIGHT_TEXT]cibo[COLOR_REVERT]) o essere [COLOR_HIGHLIGHT_TEXT]convertita in un'unità lavoratore[COLOR_REVERT]</Italian> <!-- unit Freed Slave -->
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_UNIT_FREED_SLAVE_PEDIA</Tag>
+		<English>If you capture a city which has settled slaves in it some of them will become eligible for upgrade into Workers. The cost of the upgrade represents the cost of providing them with the tools and infrastructure your other workers have.</English>
+		<French>Si vous capturez une ville qui y a installé des esclaves, certains d'entre eux deviendront éligibles pour être améliorés en ouvriers. Le coût de la mise à niveau représente le coût de leur fournir les outils et l'infrastructure dont disposent vos autres employés.</French>
+		<Italian>Se conquisti una città con degli schiavi, alcuni di loro potranno essere trasformati in lavoratori. Il costo della trasformazione rappresenta il costo del fornire loro gli strumenti e le infrastrutture che hanno gli altri lavoratori.</Italian>
+		<Russian>Если вы захватите город, где были поселены рабы, то некоторые из них получат шанс повышения до рабочих. Цена улучшения является затратами на обеспечение их инструментами и инфраструктурой, имеющимися у других ваших работников.</Russian>
+	</TEXT>
+</Civ4GameText>

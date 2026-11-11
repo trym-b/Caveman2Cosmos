@@ -15,13 +15,12 @@ class BugACOOptionsTab(BugOptionsTab.BugOptionsTab):
 		BugOptionsTab.BugOptionsTab.__init__(self, "ACO", "Advanced Combat Odds")
 
 	def create(self, screen):
-		tab = self.createTab(screen)
+		self.createTab(screen)
 		panel = self.createMainPanel(screen)
 		column = self.addOneColumnLayout(screen, panel)
 
 		left, right = self.addTwoColumnLayout(screen, column, "Page", True)
 
-		#self.addLabel(screen, left, "ACO", "Advanced Combat Odds:")
 		self.addCheckbox(screen, left, "ACO__Enabled")
 		self.addSpacer(screen, left, "ACO_Tab0")
 
@@ -51,7 +50,7 @@ class BugACOOptionsTab(BugOptionsTab.BugOptionsTab):
 		self.addSpacer(screen, rightR, "ACO_Tab2.2")
 		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowAverageHealth")
 		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowAttackerHealthBars")
-		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowDedenderHealthBars")
+		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowDefenderHealthBars")
 
 		self.addSpacer(screen, rightL, "ACO_Tab3.1")
 		self.addSpacer(screen, rightR, "ACO_Tab3.2")
@@ -62,4 +61,3 @@ class BugACOOptionsTab(BugOptionsTab.BugOptionsTab):
 		self.addSpacer(screen, rightR, "ACO_Tab4.2")
 		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowDefenseModifiers")
 		self.addTextDropdown(screen, rightL, rightR, "ACO__ShowTotalDefenseModifier")
-		

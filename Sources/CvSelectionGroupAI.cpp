@@ -1,5 +1,8 @@
 // selectionGroupAI.cpp
 
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvCity.h"
 #include "CvGlobals.h"
@@ -9,39 +12,16 @@
 #include "CvSelectionGroupAI.h"
 #include "CvTeamAI.h"
 #include "CvUnit.h"
+#include "CvImprovementInfo.h"
 
 // Public Functions...
 
-CvSelectionGroupAI::CvSelectionGroupAI()
-{
-	AI_reset();
-}
-
-
-CvSelectionGroupAI::~CvSelectionGroupAI()
-{
-	AI_uninit();
-}
-
-
-void CvSelectionGroupAI::AI_init()
-{
-	AI_reset();
-
-	//--------------------------------
-	// Init other game data
-}
-
-
-void CvSelectionGroupAI::AI_uninit()
-{
-}
+CvSelectionGroupAI::CvSelectionGroupAI() { AI_reset(); }
+CvSelectionGroupAI::~CvSelectionGroupAI() { }
 
 
 void CvSelectionGroupAI::AI_reset()
 {
-	AI_uninit();
-
 	m_iMissionAIX = INVALID_PLOT_COORD;
 	m_iMissionAIY = INVALID_PLOT_COORD;
 
@@ -83,7 +63,7 @@ namespace {
 		foreach_(CvUnit* unit, group->units() | filtered(predicateFn))
 		{
 			unit->joinGroup(NULL);
-			FAssertMsg(!algo::contains(group->units(), unit), "Failed to remove unit from group");
+			FAssertMsg(algo::none_of_equal(group->units(), unit), "Failed to remove unit from group");
 			if (unit->plot()->getTeam() == group->getTeam())
 			{
 				unit->getGroup()->pushMission(MISSION_SKIP);
@@ -100,17 +80,17 @@ void CvSelectionGroupAI::AI_separate()
 
 void CvSelectionGroupAI::AI_separateNonAI(UnitAITypes eUnitAI)
 {
-	separateIf(this, bst::bind(matchNonAI, _1, eUnitAI));
+	separateIf(this, bind(matchNonAI, _1, eUnitAI));
 }
 
 void CvSelectionGroupAI::AI_separateAI(UnitAITypes eUnitAI)
 {
-	separateIf(this, bst::bind(matchAI, _1, eUnitAI));
+	separateIf(this, bind(matchAI, _1, eUnitAI));
 }
 
 void CvSelectionGroupAI::AI_separateImpassable()
 {
-	separateIf(this, bst::bind(matchImpassable, _1, bst::ref(GET_PLAYER(getOwner()))));
+	separateIf(this, bind(matchImpassable, _1, bst::ref(GET_PLAYER(getOwner()))));
 }
 
 void CvSelectionGroupAI::AI_separateEmptyTransports()
@@ -137,6 +117,20 @@ bool CvSelectionGroupAI::AI_update()
 
 	if (isForceUpdate())
 	{
+		
+		LOG_UNIT_BLOCK(4, {
+			UnitAITypes eUnitAi = this->getHeadUnit()->AI_getUnitAIType();
+			MissionAITypes eMissionAI = AI_getMissionAIType();
+			CvWString StrunitAIType = GC.getUnitAIInfo(eUnitAi).getType();
+			CvWString MissionInfos = MissionAITypeToString(eMissionAI);
+			CvWString StrUnitName = this->getHeadUnit()->getNameNoDesc();
+			if (StrUnitName.length() == 0)
+			{
+				StrUnitName = this->getHeadUnit()->getName(0).GetCString();
+			}
+
+			logBBAI("Player %d Group ID %d, men� par %d %S of Type %S, at (%d, %d), Mission %S [stack size %d], Was fortified/BuildUp, Force to Awake...", getOwner(), m_iID, this->getHeadUnit()->getID(), StrUnitName.GetCString(), StrunitAIType.GetCString(), getX(), getY(), MissionInfos.GetCString(), getNumUnits());
+		});
 		clearMissionQueue(); // XXX ???
 		setActivityType(ACTIVITY_AWAKE);
 		setForceUpdate(false);
@@ -156,57 +150,84 @@ bool CvSelectionGroupAI::AI_update()
 	while (m_bGroupAttack && !bFailedAlreadyFighting || readyToMove())
 	{
 		iTempHack++;
-		if (iTempHack > 90 && iTempHack < 100)
+		if (iTempHack > 45 && iTempHack < 50)
 		{
-			FAssert(false);
 			CvUnit* pHeadUnit = getHeadUnit();
 			if (NULL != pHeadUnit)
 			{
-				//if (GC.getLogging())
-				//{
-					int iPass = iTempHack - 90;
-					TCHAR szOut[1024];
-					CvWString szTempString;
-					getUnitAIString(szTempString, pHeadUnit->AI_getUnitAIType());
-					sprintf
-					(
-						szOut, "Unit stuck in loop( Warning before short circuit (pass: %d) ): %S(%S)[%d, %d] (%S)\n",
-						iPass, pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
-						pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString()
-					);
-					gDLL->messageControlLog(szOut);
-				//}
+				int iPass = iTempHack - 45;
+				char szOut[1024];
+				CvWString szTempString;
+				getUnitAIString(szTempString, pHeadUnit->AI_getUnitAIType());
+				LOG_PLAYER_BLOCK(1, {
+					logAiEvaluations(1, "Unit stuck in loop( Warning before short circuit (pass: %d) ): %S(%S)[%d, %d] (%S)\n",
+					iPass, pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
+					pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString());
+				});
+				sprintf
+				(
+					szOut, "Unit stuck in loop( Warning before short circuit (pass: %d) ): %S(%S)[%d, %d] (%S)\n",
+					iPass, pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
+					pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString()
+				);
+				gDLL->messageControlLog(szOut);
+
+				FErrorMsg(szOut);
 			}
+			else FErrorMsg("error");
 		}
-		if (iTempHack >= 100)
+		else if (iTempHack >= 50)
 		{
-			FAssert(false);
 			CvUnit* pHeadUnit = getHeadUnit();
 			if (NULL != pHeadUnit)
 			{
-				if (GC.getLogging())
-				{
-					TCHAR szOut[1024];
-					CvWString szTempString;
-					getUnitAIString(szTempString, pHeadUnit->AI_getUnitAIType());
-					sprintf
-					(
-						szOut, "Unit stuck in loop: %S(%S)[%d, %d] (%S)\n",
-						pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
-						pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString()
-					);
-					gDLL->messageControlLog(szOut);
-				}
+				char szOut[1024];
+				CvWString szTempString;
+				getUnitAIString(szTempString, pHeadUnit->AI_getUnitAIType());
+				LOG_PLAYER_BLOCK(1, {
+					logAiEvaluations(1, "Unit stuck in loop: %S(%S)[%d, %d] (%S)\n",
+					pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
+					pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString());
+				});
+				sprintf
+				(
+					szOut, "Unit stuck in loop: %S(%S)[%d, %d] (%S)\n",
+					pHeadUnit->getName().GetCString(), GET_PLAYER(pHeadUnit->getOwner()).getName(),
+					pHeadUnit->getX(), pHeadUnit->getY(), szTempString.GetCString()
+				);
+				gDLL->messageControlLog(szOut);
+
+				FErrorMsg(szOut);
+
 				pHeadUnit->finishMoves();
 			}
+			
 			else if (readyToMove())
 			{
+				FErrorMsg("splitting group");
+				LOG_PLAYER_BLOCK(1, {
+					CvPlot * pPlot = this->plot();
+					int XCoord = -99;
+					int YCoord = -99;
+					if (pPlot != NULL)
+					{
+						XCoord = pPlot->getX();
+						YCoord = pPlot->getY();
+					}
+					logAiEvaluations(1, "pHeadUnit NULL, Splitting Group %d [%d, %d]",
+					this->m_iID,
+					XCoord, YCoord);
+				});
 				splitGroup(1);
 				break;
 			}
+			else
+			{
+				FErrorMsg("error in CvSelectionGroupAI::AI_update()");
+			}
+
 			break;
 		}
-
 		// if we want to force the group to attack, force another attack
 		if (m_bGroupAttack)
 		{
@@ -214,16 +235,14 @@ bool CvSelectionGroupAI::AI_update()
 
 			groupAttack(m_iGroupAttackX, m_iGroupAttackY, MOVE_DIRECT_ATTACK, bFailedAlreadyFighting);
 		}
-		// else pick AI action
-		else
+		else // pick AI action
 		{
 			CvUnit* pHeadUnit = getHeadUnit();
 
-			if (pHeadUnit == NULL || pHeadUnit->isDelayedDeath())
+			if (!pHeadUnit || pHeadUnit->isDelayedDeath())
 			{
 				break;
 			}
-
 			resetPath();
 
 			if (pHeadUnit->AI_update())
@@ -248,7 +267,15 @@ bool CvSelectionGroupAI::AI_update()
 		}
 	}
 
-	if (!bDead && !isHuman() && !AI_isAwaitingContract())
+	// Human AUTOMATED groups are AI-controlled too (they pass the AI_isControlled() gate at
+    // the top of this function), so they need the same end-of-update termination safety as AI
+    // groups -- in particular the MISSION_SKIP fallback below. Without it, an automated unit
+    // that stays readyToMove() after the update loop (e.g. an automated hunter that heals
+    // without consuming its move and is then re-awakened by CvUnitAI::AI_update) is re-offered
+    // every outer AI_unitUpdate pass: it re-runs its whole cascade each pass (observed ~196x/
+    // turn via [UNT/act] heal-spam) and, in rare states, the turn never terminates. The
+    // original !isHuman() guard wrongly excluded automated human groups from this safety.
+    if (!bDead && (!isHuman() || isAutomated()) && !AI_isAwaitingContract())
 	{
 		bool bFollow = false;
 
@@ -277,11 +304,7 @@ bool CvSelectionGroupAI::AI_update()
 		{
 			pushMission(MISSION_SKIP);
 		}
-
-		// AI should never put units to sleep, how does this ever happen?
-		//FAssert( getHeadUnit()->isCargo() || getActivityType() != ACTIVITY_SLEEP );
 	}
-
 	return !bDead && (isBusy() || isCargoBusy());
 }
 
@@ -333,24 +356,12 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 
 		FAssert(getOwner() != NO_PLAYER);
 
-	/************************************************************************************************/
-	/* BETTER_BTS_AI_MOD                      02/21/10                                jdog5000      */
-	/*                                                                                              */
-	/* Efficiency, Lead From Behind                                                                 */
-	/************************************************************************************************/
-		// From Lead From Behind by UncutDragon
-	/* original code
-		if (pPlot->getBestDefender(NO_PLAYER, getOwner(), NULL, !bPotentialEnemy, bPotentialEnemy) == NULL)
-	*/	// modified
-		if (!pPlot->hasDefender(false, NO_PLAYER, getOwner(), getHeadUnit(), !bPotentialEnemy, bPotentialEnemy))//disagrees with earlier count
-	/************************************************************************************************/
-	/* BETTER_BTS_AI_MOD                       END                                                  */
-	/************************************************************************************************/
+		if (!pPlot->hasDefender(false, NO_PLAYER, getOwner(), getHeadUnit(), !bPotentialEnemy, bPotentialEnemy))
 		{
-			return 100;
+			return 100; // Disagrees with earlier count
 		}
-		
-		//	Initialize predicted health for all units involved
+
+		// Initialize predicted health for all units involved
 		int iStartAttackerMaxStrength = 0;
 		int iNumDefenders = 0;
 		bool bAttackingGroupHasAlwaysHostileUnits = false;
@@ -363,20 +374,20 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 			pLoopUnit->AI_setPredictedHitPoints(-1);
 
 #ifdef _DEBUG
-			sprintf(buffer,"Attacker id %d has start cur HP %d\n",pLoopUnit->getID(),pLoopUnit->currHitPoints());
+			sprintf(buffer,"Attacker id %d has start cur HP %d\n", pLoopUnit->getID(), pLoopUnit->getHP());
 			OutputDebugString(buffer);
 #endif
-			if ( pLoopUnit->currHitPoints() > 0 )
+			if ( pLoopUnit->getHP() > 0 )
 			{
 				int iStr = pLoopUnit->maxCombatStr(pPlot, pLoopUnit);
 
-				iStartAttackerMaxStrength += iStr;	//	Really want a more general valuation here that accounts
-													//	for all promotions, not just those in action at this plot
+				iStartAttackerMaxStrength += iStr; // Really want a more general valuation here that accounts
+												//	for all promotions, not just those in action at this plot
 #ifdef _DEBUG
-				sprintf(buffer,"Attacker id %d has start str %d\n",pLoopUnit->getID(),iStr);
+				sprintf(buffer,"Attacker id %d has start str %d\n", pLoopUnit->getID(), iStr);
 				OutputDebugString(buffer);
 #endif
-				pLoopUnit->AI_setPredictedHitPoints(pLoopUnit->currHitPoints());
+				pLoopUnit->AI_setPredictedHitPoints(pLoopUnit->getHP());
 
 				if ( pLoopUnit->isAlwaysHostile(pPlot) )
 				{
@@ -393,7 +404,7 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 			{
 				//	If we have always hostile untis attacking then any unit that isn't the same team is a target
 				if ((bAttackingGroupHasAlwaysHostileUnits ? (pLoopUnit->getTeam() != getTeam()) : ::isPotentialEnemy(getTeam(),GET_PLAYER(pLoopUnit->getCombatOwner(getTeam(), pPlot)).getTeam())) &&
-					pLoopUnit->currHitPoints() > 0)
+					pLoopUnit->getHP() > 0)
 				{
 					pLoopUnit->AI_setPredictedHitPoints(-1);
 
@@ -405,8 +416,8 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 					sprintf(buffer,"Defender id %d has start str %d\n",pLoopUnit->getID(),iStr);
 					OutputDebugString(buffer);
 #endif
-					pLoopUnit->AI_setPredictedHitPoints(pLoopUnit->currHitPoints());
-					
+					pLoopUnit->AI_setPredictedHitPoints(pLoopUnit->getHP());
+
 					//This is a routine to ensure that the attackers are not all invisible to this unit.  If they are, the unit won't have the opportunity to attack back afterwards and could sway the perception of needed strength to overcome a counterattack.
 					if (plot()->getNumVisibleEnemyUnits(pLoopUnit) > 0)
 					{
@@ -433,7 +444,7 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 		do
 		{
 			int iOdds = 0;
-			pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds, bForce, false, &pDefender);
+			pAttacker = AI_getBestGroupAttacker(pPlot, bPotentialEnemy, iOdds, bForce, &pDefender);
 
 			if ( pDefender != NULL && pAttacker != NULL )
 			{
@@ -455,6 +466,10 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 		{
 			//	There was no attacker in the first place!
 			iResult = 0;
+			if ( bWin != NULL )
+            {
+                *bWin = false;
+            }
 		}
 		else
 		{
@@ -473,7 +488,7 @@ int CvSelectionGroupAI::AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy,
 			foreach_(CvUnit* pLoopUnit, units())
 			{
 #ifdef _DEBUG
-				sprintf(buffer,"Attacker id %d has end cur HP %d, predicted %d\n",pLoopUnit->getID(),pLoopUnit->currHitPoints(),pLoopUnit->AI_getPredictedHitPoints());
+				sprintf(buffer,"Attacker id %d has end cur HP %d, predicted %d\n",pLoopUnit->getID(),pLoopUnit->getHP(),pLoopUnit->AI_getPredictedHitPoints());
 				OutputDebugString(buffer);
 #endif
 				if ( pLoopUnit->AI_getPredictedHitPoints() > 0 )
@@ -570,30 +585,23 @@ static bool isClearlySuperior(CvUnit* pUnit, CvUnit* pOtherUnit, const CvPlot* p
 {
 	PROFILE_FUNC();
 
-	int	iValue = pUnit->currEffectiveStr(pPlot,pUnit);
-	int	iOtherValue = pOtherUnit->currEffectiveStr(pPlot,pOtherUnit);
+	if (pUnit->currEffectiveStr(pPlot, pUnit) < pOtherUnit->currEffectiveStr(pPlot, pOtherUnit)
+	// First strikes
+	|| pUnit->getCombatFirstStrikes() < pOtherUnit->getCombatFirstStrikes())
+	{
+		return false;
+	}
 	int	iTotalCombatMods = 0;
 	int	iOtherTotalCombatMods = 0;
-
-	if ( iValue < iOtherValue )
-	{
-		return false;
-	}
-
-	//	First strikes
-	if ( pUnit->getCombatFirstStrikes() < pOtherUnit->getCombatFirstStrikes() )
-	{
-		return false;
-	}
 
 	//	Unit combat modifiers
 	const CvUnitInfo& kUnit = pUnit->getUnitInfo();
 	const CvUnitInfo& kOtherUnit = pOtherUnit->getUnitInfo();
-	const int numUnitCombatInfos = GC.getNumUnitCombatInfos();
-	for(int iJ = 0; iJ < numUnitCombatInfos; iJ++)
+
+	for (int i = GC.getNumUnitCombatInfos() - 1; i > -1; i--)
 	{
-		iTotalCombatMods += kUnit.getUnitCombatModifier(iJ);
-		iOtherTotalCombatMods += kOtherUnit.getUnitCombatModifier(iJ);
+		iTotalCombatMods += kUnit.getUnitCombatModifier(i);
+		iOtherTotalCombatMods += kOtherUnit.getUnitCombatModifier(i);
 	}
 
 	for (std::map<UnitCombatTypes, UnitCombatKeyedInfo>::const_iterator it = pUnit->getUnitCombatKeyedInfo().begin(), end = pUnit->getUnitCombatKeyedInfo().end(); it != end; ++it)
@@ -604,9 +612,21 @@ static bool isClearlySuperior(CvUnit* pUnit, CvUnit* pOtherUnit, const CvPlot* p
 	if (!pUnit->isCommander())
 	{
 		const CvUnit* pCommander = pUnit->getCommander();
-		if (pCommander != NULL)
+		if (pCommander)
 		{
 			for (std::map<UnitCombatTypes, UnitCombatKeyedInfo>::const_iterator it = pCommander->getUnitCombatKeyedInfo().begin(), end = pCommander->getUnitCombatKeyedInfo().end(); it != end; ++it)
+			{
+				iTotalCombatMods += it->second.m_iExtraUnitCombatModifier;
+			}
+		}
+	}
+
+	if (!pUnit->isCommodore())
+	{
+		const CvUnit* pCommodore = pUnit->getCommodore();
+		if (pCommodore)
+		{
+			for (std::map<UnitCombatTypes, UnitCombatKeyedInfo>::const_iterator it = pCommodore->getUnitCombatKeyedInfo().begin(), end = pCommodore->getUnitCombatKeyedInfo().end(); it != end; ++it)
 			{
 				iTotalCombatMods += it->second.m_iExtraUnitCombatModifier;
 			}
@@ -621,7 +641,7 @@ static bool isClearlySuperior(CvUnit* pUnit, CvUnit* pOtherUnit, const CvPlot* p
 	if (!pOtherUnit->isCommander())
 	{
 		const CvUnit* pOtherCommander = pOtherUnit->getCommander();
-		if (pOtherCommander != NULL)
+		if (pOtherCommander)
 		{
 			for (std::map<UnitCombatTypes, UnitCombatKeyedInfo>::const_iterator it = pOtherCommander->getUnitCombatKeyedInfo().begin(), end = pOtherCommander->getUnitCombatKeyedInfo().end(); it != end; ++it)
 			{
@@ -630,10 +650,31 @@ static bool isClearlySuperior(CvUnit* pUnit, CvUnit* pOtherUnit, const CvPlot* p
 		}
 	}
 
-	return (iTotalCombatMods >= iOtherTotalCombatMods);
+    if (!pOtherUnit->isCommodore())
+    	{
+    		const CvUnit* pOtherCommodore = pOtherUnit->getCommodore();
+    		if (pOtherCommodore)
+    		{
+    			for (std::map<UnitCombatTypes, UnitCombatKeyedInfo>::const_iterator it = pOtherCommodore->getUnitCombatKeyedInfo().begin(), end = pOtherCommodore->getUnitCombatKeyedInfo().end(); it != end; ++it)
+    			{
+    				iOtherTotalCombatMods += it->second.m_iExtraUnitCombatModifier;
+    			}
+    		}
+    	}
+
+	return iTotalCombatMods >= iOtherTotalCombatMods;
 }
 
-CvUnit* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot, bool bPotentialEnemy, int& iUnitOdds, bool bForce, bool bNoBlitz, CvUnit** ppDefender, bool bAssassinate, bool bSuprise) const
+CvUnit* CvSelectionGroupAI::AI_getBestGroupAttacker(
+	const CvPlot* pPlot,
+	bool bPotentialEnemy,
+	int& iUnitOdds,
+	bool bForce,
+	CvUnit** ppDefender,
+	bool bAssassinate,
+	bool bSuprise,
+	bool bIgnoreMadeAttack,
+	const std::set<int>& ignoreUnitID) const
 {
 	PROFILE_FUNC();
 
@@ -649,57 +690,72 @@ CvUnit* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot, bool bP
 	int iBestValue = 0;
 	CvUnit* pBestUnit = NULL;
 
-	foreach_(CvUnit* pLoopUnit, units())
+	foreach_(CvUnit* unitX, units())
 	{
-		if (!pLoopUnit->isDead())
+		if (unitX->isDead()
+		|| ignoreUnitID.find(unitX->getID()) != ignoreUnitID.end()
+		|| pBestUnit && isClearlySuperior(pBestUnit, unitX, pPlot))
 		{
-			if (pBestUnit != NULL && isClearlySuperior(pBestUnit, pLoopUnit, pPlot))
+			continue;
+		}
+		if (
+			(
+				unitX->getDomainType() == DOMAIN_AIR
+				?
+				unitX->canAirAttack()
+				:
+				unitX->canAttack()
+				&&
+				(
+					bIgnoreMadeAttack
+					||
+					unitX->isBlitz()
+					||
+					!unitX->isMadeAttack()
+				)
+			)
+		&& (bSuprise || !unitX->AI_getHasAttacked())
+		&& (bForce || unitX->canMove()))
+		{
+			CvUnit* pBestDefender = NULL;
+			if (bForce || unitX->canEnterPlot(pPlot, moveCheckFlags, &pBestDefender))
 			{
-				continue;
-			}
+				PROFILE("AI_getBestGroupAttacker.RegularAttackOdds");
 
-			if (pLoopUnit->getDomainType() == DOMAIN_AIR ? pLoopUnit->canAirAttack() : (pLoopUnit->canAttack() && !(bNoBlitz && pLoopUnit->isBlitz() && pLoopUnit->isMadeAttack())))
-			{
-				if ((!pLoopUnit->AI_getHasAttacked() || bSuprise) && (bForce || pLoopUnit->canMove()))
+				const int iOdds =
+				(
+					pBestDefender
+					?
+					unitX->AI_attackOddsAtPlot(pPlot, (CvUnitAI*)pBestDefender)
+					:
+					unitX->AI_attackOdds(pPlot, bPotentialEnemy, 0, bAssassinate)
+				);
+				int iValue = iOdds;
+				FAssertMsg(iValue > 0, "iValue is expected to be greater than 0");
+
+				if (unitX->collateralDamage() > 0)
 				{
-					CvUnit* pBestDefender = NULL;
-					if (bForce || pLoopUnit->canMoveInto(pPlot, moveCheckFlags, &pBestDefender))
+					const int iPossibleTargets = std::min((pPlot->getNumVisiblePotentialEnemyDefenders(unitX) - 1), unitX->collateralDamageMaxUnits());
+
+					if (iPossibleTargets > 0)
 					{
-						PROFILE("AI_getBestGroupAttacker.RegularAttackOdds");
-
-						const int iOdds = pBestDefender? 
-							pLoopUnit->AI_attackOddsAtPlot(pPlot, (CvUnitAI*)pBestDefender)
-							:
-							pLoopUnit->AI_attackOdds(pPlot, bPotentialEnemy, 0, bAssassinate);
-
-						int iValue = iOdds;
-						FAssertMsg(iValue > 0, "iValue is expected to be greater than 0");
-	
-						if (pLoopUnit->collateralDamage() > 0)
-						{
-							const int iPossibleTargets = std::min((pPlot->getNumVisiblePotentialEnemyDefenders(pLoopUnit) - 1), pLoopUnit->collateralDamageMaxUnits());
-	
-							if (iPossibleTargets > 0)
-							{
-								iValue *= (100 + ((pLoopUnit->collateralDamage() * iPossibleTargets) / 5));
-								iValue /= 100;
-							}
-						}
-	
-						// if non-human, prefer the last unit that has the best value (so as to avoid splitting the group)
-						if (iValue > iBestValue || (!bIsHuman && iValue > 0 && iValue == iBestValue))
-						{
-							iBestValue = iValue;
-							iBestOdds = iOdds;
-							pBestUnit = pLoopUnit;
-						}
+						iValue *= (100 + ((unitX->collateralDamage() * iPossibleTargets) / 5));
+						iValue /= 100;
 					}
+				}
+
+				// if non-human, prefer the last unit that has the best value (so as to avoid splitting the group)
+				if (iValue > iBestValue || (!bIsHuman && iValue > 0 && iValue == iBestValue))
+				{
+					iBestValue = iValue;
+					iBestOdds = iOdds;
+					pBestUnit = unitX;
 				}
 			}
 		}
 	}
 
-	if ( ppDefender != NULL && pBestUnit != NULL )
+	if (ppDefender && pBestUnit)
 	{
 		PROFILE("AI_getBestGroupAttacker.FinalOdds");
 
@@ -708,38 +764,42 @@ CvUnit* CvSelectionGroupAI::AI_getBestGroupAttacker(const CvPlot* pPlot, bool bP
 		//	had previously, but should not change the unit choice
 		iBestOdds = pBestUnit->AI_attackOdds(pPlot, bPotentialEnemy, ppDefender);
 	}
-	
 	iUnitOdds = iBestOdds;
 	return pBestUnit;
 }
 
-CvUnit* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot, bool bPotentialEnemy, bool bForce, bool bNoBlitz, bool bSuprise) const
+CvUnit* CvSelectionGroupAI::AI_getBestGroupSacrifice(const CvPlot* pPlot, bool bForce, bool bNoBlitz) const
 {
+	PROFILE_EXTRA_FUNC();
+
 	int iBestValue = 0;
 	CvUnit* pBestUnit = NULL;
 
-	foreach_(CvUnit* pLoopUnit, units())
+	foreach_(CvUnit* unitX, units())
 	{
-		if (!pLoopUnit->isDead())
+		if (!unitX->isDead()
+		&& (
+				unitX->getDomainType() == DOMAIN_AIR
+				?
+				unitX->canAirAttack()
+				:
+				unitX->canAttack()
+				&&
+				(bNoBlitz ? !unitX->isMadeAttack() : unitX->isBlitz() || !unitX->isMadeAttack())
+			)
+		&& (bForce || unitX->canMove() && unitX->canEnterPlot(pPlot, MoveCheck::Attack)))
 		{
-			if (pLoopUnit->getDomainType() == DOMAIN_AIR ? pLoopUnit->canAirAttack() : (pLoopUnit->canAttack() && !(bNoBlitz && pLoopUnit->isBlitz() && pLoopUnit->isMadeAttack())))
-			{
-				if (bForce || (pLoopUnit->canMove() && pLoopUnit->canMoveInto(pPlot, MoveCheck::Attack)))
-				{
-					const int iValue = pLoopUnit->AI_sacrificeValue(pPlot);
-					FAssertMsg(iValue >= 0, "iValue is expected to be greater than 0");
+			const int iValue = unitX->AI_sacrificeValue(pPlot);
+			FASSERT_NOT_NEGATIVE(iValue);
 
-					// we want to pick the last unit of highest value, so pick the last unit with a good value
-					if (iValue > 0 && iValue >= iBestValue)
-					{
-						iBestValue = iValue;
-						pBestUnit = pLoopUnit;
-					}
-				}
+			// we want to pick the last unit of highest value, so pick the last unit with a good value
+			if (iValue > 0 && iValue >= iBestValue)
+			{
+				iBestValue = iValue;
+				pBestUnit = unitX;
 			}
 		}
 	}
-
 	return pBestUnit;
 }
 
@@ -763,7 +823,8 @@ int CvSelectionGroupAI::AI_compareStacks(const CvPlot* pPlot, StackCompare::flag
 	}
 
 	bool bDivideFirst = false;
-	int compareRatio = AI_sumStrength(pPlot, eDomainType, flags);
+	int iAttackStrength = AI_sumStrength(pPlot, eDomainType, flags);
+	int compareRatio = iAttackStrength;
 	if (compareRatio >= (MAX_INT/100))
 	{
 		compareRatio /= 100;
@@ -777,7 +838,7 @@ int CvSelectionGroupAI::AI_compareStacks(const CvPlot* pPlot, StackCompare::flag
 		eOwner = getHeadOwner();
 	}
 	FAssert(eOwner != NO_PLAYER);
-	
+
 /* original bts code
 	int defenderSum = pPlot->AI_sumStrength(NO_PLAYER, getOwner(), eDomainType, true, !bPotentialEnemy, bPotentialEnemy);
 */
@@ -794,18 +855,33 @@ int CvSelectionGroupAI::AI_compareStacks(const CvPlot* pPlot, StackCompare::flag
 		strengthFlags |= StrengthFlags::TestPotentialEnemy;
 	}
 	int defenderSum = pPlot->AI_sumStrength(NO_PLAYER, eOwner, eDomainType, strengthFlags, iRange);
-
 	if (bDivideFirst)
 	{
 		defenderSum /= 100;
 	}
 	compareRatio /= std::max(1, defenderSum);
+	LOG_UNIT_BLOCK(4, {
+		CvUnit* pUnit = this->getHeadUnit();
+		FAssert(pUnit != NULL);
+		UnitAITypes eUnitAi = pUnit->AI_getUnitAIType();
+		MissionAITypes eMissionAI = this->AI_getMissionAIType();
+		CvWString StrunitAIType = GC.getUnitAIInfo(eUnitAi).getType();
+		CvWString MissionInfos = MissionAITypeToString(eMissionAI);
+		CvWString StrUnitName = pUnit->getName();
+		if (StrUnitName.length() == 0)
+		{
+			StrUnitName = pUnit->getName(0).GetCString();
+		}
+		logAiEvaluations(4,"Player %d Group ID %d Head ID %d, %S of Type %S, at (%d, %d), Evaluation of Combat Odds [stack size %d], Attack %d Defense %d, Ratio %d", 
+			getOwner(), m_iID, pUnit->getID(), StrUnitName.GetCString(), StrunitAIType.GetCString(), pPlot->getX(), pPlot->getY(), getNumUnits(), iAttackStrength, defenderSum, compareRatio);
+	});
 
 	return compareRatio;
 }
 
 int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot, DomainTypes eDomainType, StackCompare::flags flags /*= StackCompare::None*/) const
 {
+	PROFILE_EXTRA_FUNC();
 	if (getNumUnits() == 0)
 		return 0;
 
@@ -826,8 +902,8 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot, DomainTypes 
 				|| (unit->getDomainType() != DOMAIN_AIR && unit->canAttack())
 			)
 			&& (!bCheckCanMove || unit->canMove())
-			//TB: canMoveInto may need simplified here somehow.
-			&& (!bCheckCanMove || pAttackedPlot == NULL || unit->canMoveInto(pAttackedPlot, MoveCheck::Attack | MoveCheck::DeclareWar | MoveCheck::IgnoreLocation))
+			//TB: canEnterPlot may need simplified here somehow.
+			&& (!bCheckCanMove || pAttackedPlot == NULL || unit->canEnterPlot(pAttackedPlot, MoveCheck::Attack | MoveCheck::DeclareWar | MoveCheck::IgnoreLocation))
 			&& (eDomainType == NO_DOMAIN || unit->getDomainType() == eDomainType)
 			)
 		{
@@ -836,19 +912,19 @@ int CvSelectionGroupAI::AI_sumStrength(const CvPlot* pAttackedPlot, DomainTypes 
 			strSum += (uint64_t)unit->currCombatStr(NULL,NULL);
 			// K-Mod estimate the attack power of collateral units
 			if (!bFastMode && unit->collateralDamage() > 0 && pAttackedPlot != plot())
-			{ 
-				const int iPossibleTargets = std::min(iNumPotentialDefenders, unit->collateralDamageMaxUnits()); 
+			{
+				const int iPossibleTargets = std::min(iNumPotentialDefenders, unit->collateralDamageMaxUnits());
 
-				if (iPossibleTargets > 0) 
-				{ 
-					// collateral damage is not trivial to calculate. This estimate is pretty rough. 
+				if (iPossibleTargets > 0)
+				{
+					// collateral damage is not trivial to calculate. This estimate is pretty rough.
 					strSum += (uint64_t)unit->baseCombatStrNonGranular() * COLLATERAL_COMBAT_DAMAGE * unit->collateralDamage() * iPossibleTargets / 100;
-				} 
-			} 
+				}
+			}
 
 			if (strSum >= MAX_INT)
 				break;
-			// K-Mod end 
+			// K-Mod end
 		}
 	}
 	return static_cast<int>(std::min<uint64_t>(MAX_INT, strSum));
@@ -931,7 +1007,7 @@ bool CvSelectionGroupAI::AI_isDeclareWar(const CvPlot* pPlot) const
 			return true;
 		}
 		break;
-		
+
 	case UNITAI_PARADROP:
 	case UNITAI_RESERVE:
 	case UNITAI_COUNTER:
@@ -986,7 +1062,7 @@ bool CvSelectionGroupAI::AI_isDeclareWar(const CvPlot* pPlot) const
 		break;
 
 	default:
-		FAssert(false);
+		FErrorMsg("error");
 		break;
 	}
 
@@ -1030,26 +1106,89 @@ void CvSelectionGroupAI::AI_noteSizeChange(int iChange, int iVolume)
 	}
 }
 
-void CvSelectionGroupAI::AI_setMissionAI(MissionAITypes eNewMissionAI, const CvPlot* pNewPlot, const CvUnit* pNewUnit)
+void CvSelectionGroupAI::AI_setMissionAI(MissionAITypes eNewMissionAI, const CvPlot* newPlot, const CvUnit* pNewUnit)
 {
 	PROFILE_FUNC();
+	const CvPlot* oldPlot = AI_getMissionAIPlot();
+	const MissionAITypes eOldMissionAI = m_eMissionAIType;
 
-	if ( m_eMissionAIType != NO_MISSIONAI )
+	if (oldPlot && eOldMissionAI != NO_MISSIONAI)
 	{
-		const CvPlot* pPlot = AI_getMissionAIPlot();
-
-		if ( pPlot != NULL )
-		{
-			GET_PLAYER(getOwner()).AI_noteMissionAITargetCountChange(m_eMissionAIType, pPlot, -getNumUnits(), plot(), -getNumUnitCargoVolumeTotal());
-		}
+		GET_PLAYER(getOwner()).AI_noteMissionAITargetCountChange(eOldMissionAI, oldPlot, -getNumUnits(), plot(), -getNumUnitCargoVolumeTotal());
 	}
 
+	// Worker city tracking
+	{
+		const CvPlot* plotX = newPlot ? newPlot : plot();
+		CvCity* cityX = plotX ? plotX->getWorkingCity() : NULL;
+
+		foreach_(CvUnit* unitX, units())
+		{
+			UnitCompWorker* workerComp = unitX->getWorkerComponent();
+			if (workerComp)
+			{
+				const int iAssignedCityID = workerComp->getAssignedCity();
+
+				if (cityX && cityX->getOwner() == getOwner())
+				{
+					if (iAssignedCityID != cityX->getID())
+					{
+						if (iAssignedCityID != -1)
+						{
+							CvCity* city = GET_PLAYER(getOwner()).getCity(iAssignedCityID);
+							if (city)
+							{
+								if (gUnitLogLevel > 2)
+								{
+									logBBAI("    Worker (%d) at (%d,%d) detaching from mission for city %S", unitX->getID(), unitX->getX(), unitX->getY(), city->getName().GetCString());
+								}
+								city->setWorkerHave(unitX->getID(), false);
+							}
+							else
+							{
+								FErrorMsg("Worker assigned to a NULL city...")
+								workerComp->setCityAssignment(-1);
+							}
+						}
+						if (gUnitLogLevel > 2)
+						{
+							logBBAI("Worker (%d) at (%d,%d) attaching to mission for city %S\n", unitX->getID(), unitX->getX(), unitX->getY(), cityX->getName().GetCString());
+						}
+						cityX->setWorkerHave(unitX->getID(), true);
+					}
+				}
+				else if (iAssignedCityID != -1)
+				{
+					CvCity* city = GET_PLAYER(getOwner()).getCity(iAssignedCityID);
+					if (city)
+					{
+						if (gUnitLogLevel > 2)
+						{
+							logBBAI("    Worker (%d) at (%d,%d) detaching from mission for city %S", unitX->getID(), unitX->getX(), unitX->getY(), city->getName().GetCString());
+						}
+						city->setWorkerHave(unitX->getID(), false);
+					}
+					else
+					{
+						FErrorMsg("Worker assigned to a NULL city...")
+						workerComp->setCityAssignment(-1);
+					}
+				}
+			}
+		}
+	}
+	// Set mission AI
 	m_eMissionAIType = eNewMissionAI;
 
-	if (pNewPlot != NULL)
+	if (newPlot)
 	{
-		m_iMissionAIX = pNewPlot->getX();
-		m_iMissionAIY = pNewPlot->getY();
+		m_iMissionAIX = newPlot->getX();
+		m_iMissionAIY = newPlot->getY();
+
+		if (eNewMissionAI != NO_MISSIONAI)
+		{
+			GET_PLAYER(getOwner()).AI_noteMissionAITargetCountChange(eNewMissionAI, newPlot, getNumUnits(), plot(), getNumUnitCargoVolumeTotal());
+		}
 	}
 	else
 	{
@@ -1057,24 +1196,11 @@ void CvSelectionGroupAI::AI_setMissionAI(MissionAITypes eNewMissionAI, const CvP
 		m_iMissionAIY = INVALID_PLOT_COORD;
 	}
 
-	if (pNewUnit != NULL)
+	if (pNewUnit)
 	{
 		m_missionAIUnit = pNewUnit->getIDInfo();
 	}
-	else
-	{
-		m_missionAIUnit.reset();
-	}
-
-	if ( m_eMissionAIType != NO_MISSIONAI )
-	{
-		const CvPlot* pPlot = AI_getMissionAIPlot();
-
-		if ( pPlot != NULL )
-		{
-			GET_PLAYER(getOwner()).AI_noteMissionAITargetCountChange(m_eMissionAIType, pPlot, getNumUnits(), plot(), getNumUnitCargoVolumeTotal());
-		}
-	}
+	else m_missionAIUnit.reset();
 }
 
 
@@ -1085,34 +1211,35 @@ CvUnit* CvSelectionGroupAI::AI_getMissionAIUnit() const
 
 bool CvSelectionGroupAI::AI_isFull() const
 {
+	PROFILE_EXTRA_FUNC();
 	FAssert(getNumUnits() > 0);
 
 	const UnitAITypes eUnitAI = getHeadUnitAI();
 	// do two passes, the first pass, we ignore units with speical cargo
 	int iSpecialCargoCount = 0;
 	int iCargoCount = 0;
-		
+
 	// first pass, count but ignore special cargo units
 	foreach_(const CvUnit* pLoopUnit, units())
 	{
 		if (pLoopUnit->AI_getUnitAIType() == eUnitAI)
 		{
-			if (pLoopUnit->cargoSpace() > 0 || pLoopUnit->SMcargoSpace() > 0)
+			if (pLoopUnit->cargoSpace() > 0)
 			{
 				iCargoCount++;
 			}
 
-			if (pLoopUnit->specialCargo() != NO_SPECIALUNIT)
+			if (pLoopUnit->getSpecialCargo() != NO_SPECIALUNIT)
 			{
 				iSpecialCargoCount++;
 			}
-			else if (!(pLoopUnit->isFull()))
+			else if (!pLoopUnit->isFull())
 			{
 				return false;
 			}
 		}
 	}
-	
+
 	// if every unit in the group has special cargo, then check those, otherwise, consider ourselves full
 	if (iSpecialCargoCount >= iCargoCount)
 	{
@@ -1129,7 +1256,8 @@ bool CvSelectionGroupAI::AI_isFull() const
 }
 
 int CvSelectionGroupAI::AI_getGenericValueTimes100(UnitValueFlags eFlags) const
-{	
+{
+	PROFILE_EXTRA_FUNC();
 	int iResult = 0;
 
 	foreach_(const CvUnit* pLoopUnit, units())
@@ -1140,11 +1268,12 @@ int CvSelectionGroupAI::AI_getGenericValueTimes100(UnitValueFlags eFlags) const
 	return iResult;
 }
 
-bool CvSelectionGroupAI::AI_hasBeneficialPropertyEffectForCity(const CvCity* pCity) const
+bool CvSelectionGroupAI::AI_hasBeneficialPropertyEffectForCity(const CvCity* pCity, PropertyTypes pProperty) const
 {
+	PROFILE_EXTRA_FUNC();
 	foreach_(const CvUnit* pLoopUnit, units())
 	{
-		if (pLoopUnit->AI_beneficialPropertyValueToCity(pCity, NO_PROPERTY) > 0)
+		if (pLoopUnit->AI_beneficialPropertyValueToCity(pCity, pProperty) > 0)
 		{
 			return true;
 		}
@@ -1154,7 +1283,8 @@ bool CvSelectionGroupAI::AI_hasBeneficialPropertyEffectForCity(const CvCity* pCi
 }
 
 CvUnit* CvSelectionGroupAI::AI_ejectBestPropertyManipulator(const CvCity* pTargetCity)
-{	
+{
+	PROFILE_EXTRA_FUNC();
 	CvUnit* pBestUnit = NULL;
 	int iBestUnitValue = 0;
 
@@ -1168,17 +1298,18 @@ CvUnit* CvSelectionGroupAI::AI_ejectBestPropertyManipulator(const CvCity* pTarge
 			pBestUnit = pLoopUnit;
 		}
 	}
-	
+
 	if (NULL != pBestUnit && getNumUnits() > 1)
 	{
 		pBestUnit->joinGroup(NULL);
 	}
-	
+
 	return pBestUnit;
 }
 
 CvUnit* CvSelectionGroupAI::AI_findBestDefender(const CvPlot* pDefendPlot, bool allowAllDefenders, bool bConsiderPropertyValues) const
-{	
+{
+	PROFILE_EXTRA_FUNC();
 	CvUnit* pBestUnit = NULL;
 	int iBestUnitValue = 0;
 
@@ -1201,7 +1332,7 @@ CvUnit* CvSelectionGroupAI::AI_findBestDefender(const CvPlot* pDefendPlot, bool 
 
 				iValue /= 100;
 			}
-			
+
 			if (plot()->isCity(true, getTeam()))
 			{
 				if ( bConsiderPropertyValues )
@@ -1216,9 +1347,9 @@ CvUnit* CvSelectionGroupAI::AI_findBestDefender(const CvPlot* pDefendPlot, bool 
 
 			iValue *= 100;
 			iValue /= std::max(1,100 + pLoopUnit->cityAttackModifier());
-			
+
 			iValue /= 2 + pLoopUnit->getLevel();
-			
+
 			if (iValue > iBestUnitValue || (pBestUnit == NULL && allowAllDefenders))
 			{
 				iBestUnitValue = iValue;
@@ -1238,7 +1369,7 @@ CvUnit* CvSelectionGroupAI::AI_ejectBestDefender(const CvPlot* pDefendPlot, bool
 	{
 		pBestUnit->joinGroup(NULL);
 	}
-	
+
 	return pBestUnit;
 }
 

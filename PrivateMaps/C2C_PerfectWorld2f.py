@@ -154,15 +154,10 @@
 ##
 
 from CvPythonExtensions import *
-import CvUtil
-import CvMapGeneratorUtil
 
 from array import array
-from random import random,randint,seed, shuffle
+from random import random, randint, seed
 import math
-import sys
-import time
-import os
 
 class MapConstants :
 		def __init__(self):
@@ -174,7 +169,7 @@ class MapConstants :
 
 				#Percent of land vs. water
 				self.landPercent = 0.29
-				self.SeaLevelFactor = 1.5
+				self.SeaLevelFactor = .5
 
 				#If this variable is set to False, a shower of colossal meteors will attempt to
 				#break up any pangea-like continents. Setting this variable to True will allow
@@ -839,42 +834,10 @@ def AngleDifference(a1,a2):
 		while(diff > 180.0):
 				diff -= 360.0
 		return diff
-def AppendUnique(theList,newItem):
-		if IsInList(theList,newItem) == False:
-				theList.append(newItem)
-		return
-
-def IsInList(theList,newItem):
-		itemFound = False
-		for item in theList:
-				if item == newItem:
-						itemFound = True
-						break
-		return itemFound
-
-def DeleteFromList(theList,oldItem):
-		for n in range(len(theList)):
-				if theList[n] == oldItem:
-						del theList[n]
-						break
-		return
 
 def ShuffleList(theList):
-	if (mc.UsePythonRandom):
-		shuffled = list(theList)
-		shuffle(shuffled)
-		return shuffled
-	else:
-		preshuffle = list()
-		shuffled	 = list()
-		numElements = len(theList)
-		for i in range(numElements):
-			preshuffle.append(theList[i])
-		for i in range(numElements):
-				n = PRand.randint(0, len(preshuffle) - 1)
-				shuffled.append(preshuffle[n])
-				del preshuffle[n]
-		return shuffled
+	shufflePyList(theList, CyGame().getMapRand())
+	return theList
 
 def GetInfoType(string):
 	cgc = CyGlobalContext()
@@ -883,26 +846,6 @@ def GetInfoType(string):
 def GetDistance(x,y,dx,dy):
 		distance = math.sqrt(abs((float(x - dx) * float(x - dx)) + (float(y - dy) * float(y - dy))))
 		return distance
-
-def GetOppositeDirection(direction):
-		opposite = mc.L
-		if direction == mc.N:
-				opposite = mc.S
-		elif direction == mc.S:
-				opposite = mc.N
-		elif direction == mc.E:
-				opposite = mc.W
-		elif direction == mc.W:
-				opposite = mc.E
-		elif direction == mc.NW:
-				opposite = mc.SE
-		elif direction == mc.SE:
-				opposite = mc.NW
-		elif direction == mc.SW:
-				opposite = mc.NE
-		elif direction == mc.NE:
-				opposite = mc.SW
-		return opposite
 
 def GetXYFromDirection(x,y,direction):
 		xx = x
@@ -1475,10 +1418,12 @@ class HeightMap :
 				gc = CyGlobalContext()
 				land = mc.landPercent
 				sea = gc.getSeaLevelInfo(gc.getMap().getSeaLevel()).getSeaLevelChange()
-				if sea < 0:
-					land *= mc.SeaLevelFactor
-				elif sea > 0:
-					land /= mc.SeaLevelFactor
+				if sea > 0:
+					land /= (1 + mc.SeaLevelFactor)
+				elif sea == -7:
+					land *= (1 + mc.SeaLevelFactor)
+ 				else:
+					land *= (1 + 2*mc.SeaLevelFactor)
 				self.seaLevel = FindValueFromPercent(self.heightMap,mc.hmWidth,mc.hmHeight,land,0.02,True)
 				return
 
@@ -3528,10 +3473,10 @@ class RiverMap :
 										#never go straight when you have other choices
 										count = len(drainList)
 										if count == 3:
-												oppDir = GetOppositeDirection(nonDrainList[0])
-												for n in range(count):
-														if drainList[n] == oppDir:
-																del drainList[n]
+												oppDir = getOppositeDirection(nonDrainList[0])
+												for dirX in drainList:
+														if dirX == oppDir:
+																del dirX
 																break
 												count = len(drainList)
 
@@ -3777,13 +3722,6 @@ class RiverMap :
 						print lineString2
 				lineString1 = " "
 				print lineString1
-class EuropeMap :
-		def __init__(self):
-				return
-		def initialize(self):
-				self.europeMap = array('i')
-				for i in range(mc.width*mc.height):
-						self.europeMap.append(0)
 
 
 class BonusPlacer:
@@ -3792,15 +3730,15 @@ class BonusPlacer:
 
 
 	def AddBonuses(self):
-		gc = CyGlobalContext()
-		gameMap = CyMap()
-		gameMap.recalculateAreas()
+		GC = CyGlobalContext()
+		GC.getMap().recalculateAreas()
+
 		self.AssignBonusAreas()
-		numBonuses = gc.getNumBonusInfos()
+		numBonuses = GC.getNumBonusInfos()
 
 		orderSet = {}
 		for i in range(numBonuses):  #Check which placement orders are used, discard -1
-			bonusInfo = gc.getBonusInfo(self.bonusList[i].eBonus)
+			bonusInfo = GC.getBonusInfo(self.bonusList[i].eBonus)
 			porder = bonusInfo.getPlacementOrder()
 			if porder >= 0:
 				orderSet[porder] = 1
@@ -3815,7 +3753,7 @@ class BonusPlacer:
 		for order in porderList:
 			placementList = []
 			for i in range(numBonuses):
-				bonusInfo = gc.getBonusInfo(self.bonusList[i].eBonus)
+				bonusInfo = GC.getBonusInfo(self.bonusList[i].eBonus)
 				if bonusInfo.getPlacementOrder() == order:
 					for n in range(self.bonusList[i].desiredBonusCount):
 						placementList.append(self.bonusList[i].eBonus)
@@ -3839,7 +3777,7 @@ class BonusPlacer:
 		#now report resources that simply could not be placed
 		for i in range(numBonuses):
 			bonus = self.bonusList[i]
-			bonusInfo = gc.getBonusInfo(bonus.eBonus)
+			bonusInfo = GC.getBonusInfo(bonus.eBonus)
 			if bonus.currentBonusCount == 0 and bonus.desiredBonusCount > 0:
 				print "No room at all found for %(bt)s!!!" % {"bt":bonusInfo.getType()}
 			print "Placed %(cb)d, desired %(db)d for %(bt)s" % {"cb":bonus.currentBonusCount, "db":bonus.desiredBonusCount, "bt":bonusInfo.getType()}
@@ -3979,8 +3917,8 @@ class BonusPlacer:
 
 	def AssignBonusAreas(self):
 		gc = CyGlobalContext()
-		self.areas = CvMapGeneratorUtil.getAreas()
 		gameMap = CyMap()
+		self.areas = gameMap.areas()
 		self.bonusList = list()
 
 		#Create and shuffle the bonus list and keep tally on
@@ -4118,6 +4056,10 @@ class BonusPlacer:
 			if plot.isFlatlands():
 				if not bonusInfo.isFlatlands():
 					return False
+
+		if bonusInfo.isBonusCoastalOnly() and not plot.isCoastal():
+			return False
+
 		if bonusInfo.isNoRiverSide():
 			if plot.isRiverSide():
 				return False
@@ -4154,14 +4096,9 @@ class BonusPlacer:
 		bonusInfo = gc.getBonusInfo(eBonus)
 		if bonusInfo.getPlacementOrder() < 0:
 			return 0
-		rand1 = PRand.randint(0, bonusInfo.getRandAppearance1())
-		rand2 = PRand.randint(0, bonusInfo.getRandAppearance2())
-		rand3 = PRand.randint(0, bonusInfo.getRandAppearance3())
-		rand4 = PRand.randint(0, bonusInfo.getRandAppearance4())
-		baseCount = bonusInfo.getConstAppearance() + rand1 + rand2 + rand3 + rand4
 		bIgnoreLatitude = False
 		bIgnoreArea = True
-		landTiles		= 0
+		landTiles = 0
 		numPossible = 0
 		if bonusInfo.getTilesPer() > 0:
 			for i in range(mc.width*mc.height):
@@ -4170,7 +4107,7 @@ class BonusPlacer:
 					numPossible += 1
 			landTiles += numPossible/bonusInfo.getTilesPer()
 		players = game.countCivPlayersAlive() * bonusInfo.getPercentPerPlayer() / 100
-		bonusCount = baseCount * (landTiles + players) / 100
+		bonusCount = bonusInfo.getRandAppearance() * (landTiles + players) / 100
 		bonusCount = max(1, int(bonusCount * mc.BonusBonus))
 		return bonusCount
 
@@ -4227,7 +4164,6 @@ class BonusPlacer:
 
 
 	def CalculateAreaSuitability(self, area, eBonus):
-		gc = CyGlobalContext()
 		gameMap = CyMap()
 		areaID = area.getID()
 		uniqueTypesInArea		 = self.GetUniqueBonusTypeCountInArea(area)
@@ -4282,9 +4218,8 @@ class StartingPlotFinder:
 		#try:
 			gc = CyGlobalContext()
 			gameMap = CyMap()
-			iPlayers = gc.getGame().countCivPlayersEverAlive()
 			gameMap.recalculateAreas()
-			areas = CvMapGeneratorUtil.getAreas()
+			areas = gameMap.areas()
 			#get old/new world status
 			areaOldWorld = self.setupOldWorldAreaList()
 			print "len(areaOldWorld) = %d" % len(areaOldWorld)
@@ -4402,11 +4337,10 @@ class StartingPlotFinder:
 
 
 	def setupOldWorldAreaList(self):
-		gc = CyGlobalContext()
 		gameMap = CyMap()
 		#get official areas and make corresponding lists that determines old
 		#world vs. new and also the pre-settled value.
-		areas = CvMapGeneratorUtil.getAreas()
+		areas = gameMap.areas()
 		areaOldWorld = list()
 		for i in range(len(areas)):
 			for pI in range(mc.width*mc.height):
@@ -4449,7 +4383,7 @@ class StartingPlotFinder:
 		sPlot = StartPlot(x, y, 0)
 		for i in range(21): #gc.getNUM_CITY_PLOTS()
 			plot = plotCity(x, y, i)
-			if not plot.isWater() and plot.getArea() != start.getArea():
+			if not plot or not plot.isWater() and plot.getArea() != start.getArea():
 				food, value = 0, 0
 			else:
 				if cached:
@@ -4541,9 +4475,9 @@ class StartingPlotFinder:
 				bProceed = True
 				if featureEnum != FeatureTypes.NO_FEATURE and buildInfo.isFeatureRemove(featureEnum):
 					if buildInfo.getFeatureTech(featureEnum) == TechTypes.NO_TECH or gc.getTechInfo(buildInfo.getFeatureTech(featureEnum)).getEra() <= max(game.getStartEra(), 1):
-						impCommerce		-= featureInfo.getYieldChange(YieldTypes.YIELD_COMMERCE)	 + featureInfo.getRiverYieldChange(YieldTypes.YIELD_COMMERCE)		+ featureInfo.getHillsYieldChange(YieldTypes.YIELD_COMMERCE)
-						impFood				-= featureInfo.getYieldChange(YieldTypes.YIELD_FOOD)			 + featureInfo.getRiverYieldChange(YieldTypes.YIELD_FOOD)				+ featureInfo.getHillsYieldChange(YieldTypes.YIELD_FOOD)
-						impProduction -= featureInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION) + featureInfo.getRiverYieldChange(YieldTypes.YIELD_PRODUCTION) + featureInfo.getHillsYieldChange(YieldTypes.YIELD_PRODUCTION)
+						impCommerce		-= featureInfo.getYieldChange(YieldTypes.YIELD_COMMERCE)	 + featureInfo.getRiverYieldChange(YieldTypes.YIELD_COMMERCE)
+						impFood				-= featureInfo.getYieldChange(YieldTypes.YIELD_FOOD)			 + featureInfo.getRiverYieldChange(YieldTypes.YIELD_FOOD)
+						impProduction -= featureInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION) + featureInfo.getRiverYieldChange(YieldTypes.YIELD_PRODUCTION)
 					else:
 						bProceed = False
 				if bProceed:
@@ -4585,7 +4519,6 @@ class StartingPlotFinder:
 
 
 	def boostCityPlotValue(self, x, y, bonuses, isCoastalCity):
-		mapGen = CyMapGenerator()
 		food,value = self.getCityPotentialValue(x, y)
 		gc = CyGlobalContext()
 		gameMap = CyMap()
@@ -4618,6 +4551,7 @@ class StartingPlotFinder:
 		plotList = ShuffleList(plotList)
 		for n in range(len(yields) * bonuses + 1):
 			for plot in plotList:
+				if not plot: continue
 				#NEW CODE - LM
 				if bonusCount >= bonuses:
 					return
@@ -4680,6 +4614,7 @@ class StartingPlotFinder:
 		plotList = []
 		for i in range(21): #gc.getNUM_CITY_PLOTS()
 			plot = plotCity(x, y, i)
+			if not plot: continue
 			featureInfo = gc.getFeatureInfo(plot.getFeatureType())
 			if plot.getX() == x and plot.getY() == y:
 				#remove bad feature on start but don't count it.
@@ -4850,7 +4785,6 @@ class StartingArea :
 				self.idealNumberOfPlayers = 0
 				return
 		def CalculatePlotList(self):
-				gc = CyGlobalContext()
 				gameMap = CyMap()
 
 				for y in range(mc.height):
@@ -4993,14 +4927,12 @@ class StartingArea :
 								sPlot.setImprovementType(-1)
 								playerID = self.playerList[n]
 								player = gc.getPlayer(playerID)
-								sPlot.setStartingPlot(True)
 								player.setStartingPlot(sPlot,True)
 								n += 1
 
 
 				return
 		def CalculateStartingPlotValues(self):
-				gameMap = CyMap()
 				numPlots = len(self.plotList)
 
 				for n in range(numPlots):
@@ -5116,7 +5048,7 @@ class StartPlot:
 
 	def isCoast(self):
 		waterArea = CyMap().plot(self.x, self.y).waterArea()
-		return not waterArea.isNone() and not waterArea.isLake()
+		return waterArea is not None and not waterArea.isLake()
 
 	def isRiverSide(self):
 		return CyMap().plot(self.x,self.y).isRiverSide()
@@ -5144,7 +5076,7 @@ hm = HeightMap()
 cm = ClimateMap()
 sm = SmallMaps()
 rm = RiverMap()
-em = EuropeMap()
+
 ###############################################################################
 #functions that civ is looking for
 ###############################################################################
@@ -5160,6 +5092,9 @@ def getWrapX():
 def getWrapY():
 		print "mc.WrapY == %d at getWrapY" % mc.WrapY
 		return mc.WrapY
+
+def getNumHiddenCustomMapOptions():
+	return 0
 
 def getNumCustomMapOptions():
 		"""
@@ -5511,52 +5446,52 @@ def cleanUpLake(x,y):
 		mmap = gc.getMap()
 		riversIntoLake = list()
 		plot = mmap.plot(x,y+1)#North
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_SOUTH:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x - 1,y)#West
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_EAST:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x + 1,y)#East
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_WEST:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x,y-1)#South
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_NORTH:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x-1,y+1)#Northwest
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_SOUTH:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_EAST:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x+1,y+1)#Northeast
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_WEST:
 						riversIntoLake.append(plot.getRiverID())
 				else:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 		plot = mmap.plot(x-1,y-1)#Southhwest
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_NORTH:
 						riversIntoLake.append(plot.getRiverID())
 				else:
@@ -5574,43 +5509,43 @@ def replaceRivers(x,y):
 		gc = CyGlobalContext()
 		mmap = gc.getMap()
 		plot = mmap.plot(x,y+1)#North
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_SOUTH:
 						#setting the river to what it already is will be ignored by the dll,
 						#so it must be unset and then set again.
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setWOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 		plot = mmap.plot(x - 1,y)#West
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_EAST:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setNOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 		plot = mmap.plot(x + 1,y)#East
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_WEST:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setNOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 		plot = mmap.plot(x,y-1)#South
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_NORTH:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setWOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 		plot = mmap.plot(x-1,y+1)#Northwest
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_SOUTH:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setWOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_EAST:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setNOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 		plot = mmap.plot(x+1,y+1)#Northeast
-		if plot != 0 and plot.isNOfRiver() == True:
+		if plot and plot.isNOfRiver() == True:
 				if plot.getRiverWEDirection() == CardinalDirectionTypes.CARDINALDIRECTION_WEST:
 						plot.setNOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setNOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 		plot = mmap.plot(x-1,y-1)#Southhwest
-		if plot != 0 and plot.isWOfRiver() == True:
+		if plot and plot.isWOfRiver() == True:
 				if plot.getRiverNSDirection() == CardinalDirectionTypes.CARDINALDIRECTION_NORTH:
 						plot.setWOfRiver(False,CardinalDirectionTypes.NO_CARDINALDIRECTION)
 						plot.setWOfRiver(True,CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
@@ -5797,7 +5732,6 @@ def addLakes():
 		print "Adding Lakes"
 		gc = CyGlobalContext()
 		mmap = gc.getMap()
-		terrainCoast = gc.getInfoTypeForString("TERRAIN_COAST")
 #		 PrintFlowMap()
 		oceanMap = Areamap(mc.width,mc.height,True,True)
 		oceanMap.defineAreas(isSmallWaterMatch)
@@ -5835,17 +5769,11 @@ def addFeatures():
 		print "Adding Features"
 		gc = CyGlobalContext()
 		mmap = gc.getMap()
-		featureIce = gc.getInfoTypeForString("FEATURE_ICE")
 		featureJungle = gc.getInfoTypeForString("FEATURE_JUNGLE")
 		featureForest = gc.getInfoTypeForString("FEATURE_FOREST")
 		featureOasis = gc.getInfoTypeForString("FEATURE_OASIS")
 		featureFloodPlains = gc.getInfoTypeForString("FEATURE_FLOOD_PLAINS")
 		## C2C start ##
-		terrainCoast = gc.getInfoTypeForString("TERRAIN_COAST")
-		#~ terrainSea = gc.getInfoTypeForString("TERRAIN_SEA")
-		terrainOcean = gc.getInfoTypeForString("TERRAIN_OCEAN")
-		featureReef = gc.getInfoTypeForString("FEATURE_REEF")
-		featureKelp = gc.getInfoTypeForString("FEATURE_KELP")
 		featureBog = gc.getInfoTypeForString("FEATURE_PEAT_BOG")
 		featureSwordGrass = gc.getInfoTypeForString("FEATURE_VERY_TALL_GRASS")
 		featureSwamp = gc.getInfoTypeForString("FEATURE_SWAMP")
@@ -5962,7 +5890,7 @@ def createIce():
 		for y in range(4):
 				for x in range(mc.width):
 						plot = mmap.plot(x,y)
-						if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
+						if plot and plot.isWater() == True and PRand.random() < iceChance:
 								plot.setFeatureType(featureIce,0)
 				iceChance *= .66
 		if mc.WrapY == True:
@@ -5972,25 +5900,24 @@ def createIce():
 		for y in range(mc.height - 1,mc.height - 5,-1):
 				for x in range(mc.width):
 						plot = mmap.plot(x,y)
-						if plot != 0 and plot.isWater() == True and PRand.random() < iceChance:
+						if plot and plot.isWater() == True and PRand.random() < iceChance:
 								plot.setFeatureType(featureIce,0)
 				iceChance *= .66
 
 def addBonuses():
-		bp.AddBonuses()
-		return
+	bp.AddBonuses()
+
 def assignStartingPlots():
-		gc = CyGlobalContext()
-		gameMap = CyMap()
-		iPlayers = gc.getGame().countCivPlayersEverAlive()
-		spf.SetStartingPlots()
+	spf.SetStartingPlots()
+
 def beforeInit():
-		print "Initializing Custom Map Options"
-		mc.initialize()
-		mc.initInGameOptions()
+	print "Initializing Custom Map Options"
+	mc.initialize()
+	mc.initInGameOptions()
 
 def afterGeneration():
-		CvMapGeneratorUtil.placeC2CBonuses()
+	import CvMapGeneratorUtil
+	CvMapGeneratorUtil.placeC2CBonuses()
 
 ##mc.initialize()
 ##PRand.seed()

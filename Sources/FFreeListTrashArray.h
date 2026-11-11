@@ -3,14 +3,15 @@
 #ifndef FFreeListTrashArray_h__
 #define FFreeListTrashArray_h__
 
+#include "FProfiler.h"
+
 #include "FDataStreamBase.h"
 #include "CvTaggedSaveFormatWrapper.h"
 #include "FFreeListArrayBase.h"
 
 #define USE_HASHMAP_FREELIST
 
-#define FLTA_ID_SHIFT				(13)
-#define FLTA_MAX_BUCKETS		(1 << FLTA_ID_SHIFT)
+#define FLTA_MAX_BUCKETS		(1 << 13)
 #define FLTA_INDEX_MASK			(FLTA_MAX_BUCKETS - 1)
 #define FLTA_ID_MASK				(~(FLTA_INDEX_MASK))
 #define FLTA_GROWTH_FACTOR	(2)
@@ -52,8 +53,8 @@ public:
 		int m_idx;
 		T* m_value;
 	};
-public:
 
+public:
 	FFreeListTrashArray();
 	~FFreeListTrashArray();
 
@@ -77,6 +78,9 @@ public:
 
 	iterator begin() const { return iterator(this); }
 	iterator end() const { return iterator(); }
+
+	typedef bst::iterator_range<iterator> Range_t;
+	Range_t range() const { return Range_t(begin(), end()); }
 
 	// Returns the iIndex after the last iIndex in the array containing an element
 	int getIndexAfterLast() const { return m_iLastIndex + 1; }
@@ -182,6 +186,7 @@ FFreeListTrashArray<T>::~FFreeListTrashArray()
 template <class T>
 void FFreeListTrashArray<T>::init(int iNumSlots)
 {
+	PROFILE_EXTRA_FUNC();
 	FAssertMsg(iNumSlots >= 0, "FFreeListTrashArray::init - iNumSlots must be >= 0");
 
 	// make sure it's binary...
@@ -249,6 +254,7 @@ T* FFreeListTrashArray<T>::beginIter(int* pIterIdx) const
 template <class T>
 T* FFreeListTrashArray<T>::nextIter(int* pIterIdx) const
 {
+	PROFILE_EXTRA_FUNC();
 	for (; (*pIterIdx) < getIndexAfterLast(); (*pIterIdx)++)
 	{
 		T* pObj = getAt((*pIterIdx));
@@ -273,6 +279,7 @@ T* FFreeListTrashArray<T>::endIter(int* pIterIdx) const
 template <class T>
 T* FFreeListTrashArray<T>::prevIter(int* pIterIdx) const
 {
+	PROFILE_EXTRA_FUNC();
 	for (; (*pIterIdx) >= 0; (*pIterIdx)--)
 	{
 		T* pObj = getAt((*pIterIdx));
@@ -289,24 +296,22 @@ T* FFreeListTrashArray<T>::prevIter(int* pIterIdx) const
 template <class T>
 T* FFreeListTrashArray<T>::add()
 {
-	int iIndex;
-
-	if (m_pArray == NULL) 
+	PROFILE_EXTRA_FUNC();
+	if (m_pArray == NULL)
 	{
 		init();
 	}
 	FAssertMsg(m_pArray != NULL, "Array is null after initialization");
 
-	if ((m_iLastIndex == m_iNumSlots - 1) &&
-		(m_iFreeListCount == 0))
+	if (m_iLastIndex == m_iNumSlots - 1 && m_iFreeListCount == 0)
 	{
-		if ((m_iNumSlots * FLTA_GROWTH_FACTOR) > FLTA_MAX_BUCKETS)
+		if (m_iNumSlots * FLTA_GROWTH_FACTOR > FLTA_MAX_BUCKETS)
 		{
 			return NULL;
 		}
-
 		growArray();
 	}
+	int iIndex;
 
 	if (m_iFreeListCount > 0)
 	{
@@ -336,7 +341,7 @@ T* FFreeListTrashArray<T>::add()
 		{
 			//    Didn't find one - just take the free list head node
 			if (m_iFreeListHead == FFreeList::INVALID_INDEX)
-			{					
+			{
 				m_iCorruptedAdjustment++;
 				m_iLastIndex++;
 				iIndex = m_iLastIndex;
@@ -389,12 +394,11 @@ T* FFreeListTrashArray<T>::getAt(int iID) const
 		return NULL;
 	}
 
-	int iIndex = (iID & FLTA_INDEX_MASK);
+	const int iIndex = (iID & FLTA_INDEX_MASK);
 
-	FASSERT_NOT_NEGATIVE(iIndex)
+	FASSERT_NOT_NEGATIVE(iIndex);
 
-	if ((iIndex <= m_iLastIndex) && 
-		(m_pArray[iIndex].pData != NULL))
+	if ((iIndex <= m_iLastIndex) && (m_pArray[iIndex].pData != NULL))
 	{
 		if (((iID & FLTA_ID_MASK) == 0) || (m_pArray[iIndex].pData->getID() == iID))
 		{
@@ -409,6 +413,7 @@ T* FFreeListTrashArray<T>::getAt(int iID) const
 template <class T>
 bool FFreeListTrashArray<T>::remove(const T* pData)
 {
+	PROFILE_EXTRA_FUNC();
 	FAssertMsg(m_pArray != NULL, "FFreeListTrashArray::remove - not initialized");
 
 	if (pData != NULL)
@@ -438,7 +443,7 @@ bool FFreeListTrashArray<T>::removeAt(int iID)
 
 	FAssertMsg(iIndex >= 0, "FFreeListTrashArray::removeAt - index part of iID is not a valid index");
 
-	if ((iIndex <= m_iLastIndex) && 
+	if ((iIndex <= m_iLastIndex) &&
 		(m_pArray[iIndex].pData != NULL))
 	{
 		if (((iID & FLTA_ID_MASK) == 0) || (m_pArray[iIndex].pData->getID() == iID))
@@ -465,6 +470,7 @@ bool FFreeListTrashArray<T>::removeAt(int iID)
 template <class T>
 void FFreeListTrashArray<T>::removeAll()
 {
+	PROFILE_EXTRA_FUNC();
 	if (m_pArray == NULL)
 	{
 		return;
@@ -509,7 +515,7 @@ void FFreeListTrashArray<T>::load(T* pData)
 template <class T>
 void FFreeListTrashArray<T>::growArray()
 {
-
+	PROFILE_EXTRA_FUNC();
 	FAssertMsg(m_pArray != NULL, "FFreeListTrashArray::growArray - not initialized");
 
 	FFreeListTrashArrayNode* pOldArray = m_pArray;
@@ -544,6 +550,7 @@ void FFreeListTrashArray<T>::growArray()
 template < class T >
 inline void FFreeListTrashArray< T >::Read( FDataStreamBase* pStream )
 {
+	PROFILE_EXTRA_FUNC();
 	CvTaggedSaveFormatWrapper&	wrapper = CvTaggedSaveFormatWrapper::getSaveFormatWrapper();
 
 	wrapper.AttachToStream(pStream);
@@ -584,6 +591,7 @@ inline void FFreeListTrashArray< T >::Read( FDataStreamBase* pStream )
 template < class T >
 inline void FFreeListTrashArray< T >::Write( FDataStreamBase* pStream )
 {
+	PROFILE_EXTRA_FUNC();
 	CvTaggedSaveFormatWrapper&	wrapper = CvTaggedSaveFormatWrapper::getSaveFormatWrapper();
 
 	wrapper.AttachToStream(pStream);
@@ -626,6 +634,7 @@ inline void FFreeListTrashArray< T >::Write( FDataStreamBase* pStream )
 template < class T >
 inline void ReadStreamableFFreeListTrashArray( FFreeListTrashArray< T >& flist, FDataStreamBase* pStream )
 {
+	PROFILE_EXTRA_FUNC();
 	CvTaggedSaveFormatWrapper&	wrapper = CvTaggedSaveFormatWrapper::getSaveFormatWrapper();
 
 	wrapper.AttachToStream(pStream);
@@ -670,6 +679,7 @@ inline void ReadStreamableFFreeListTrashArray( FFreeListTrashArray< T >& flist, 
 template < class T >
 inline void WriteStreamableFFreeListTrashArray( FFreeListTrashArray< T >& flist, FDataStreamBase* pStream )
 {
+	PROFILE_EXTRA_FUNC();
 	CvTaggedSaveFormatWrapper&	wrapper = CvTaggedSaveFormatWrapper::getSaveFormatWrapper();
 
 	wrapper.AttachToStream(pStream);

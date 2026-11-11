@@ -25,6 +25,8 @@ void CyMapPythonInterface()
 		.def("getViewportXFromMapX", &CyMap::getViewportXFromMapX, "int (int iX)")
 		.def("getViewportYFromMapY", &CyMap::getViewportYFromMapY, "int (int iY)")
 		.def("isInViewport", &CyMap::isInViewport, "bool (int iX, int iY)")
+		.def("setViewportActionState", &CyMap::setViewportActionState)
+		.def("isMidSwitch", &CyMap::isMidSwitch)
 
 		.def("closeAdvisor", &CyMap::closeAdvisor, "void (int advisorWidth, int iMinimapLeft, int iMinimapRight, int iMinimapTop, int iMinimapBottom)")
 		.def("bringIntoView", &CyMap::bringIntoView, "void (int iX, int iY, bool bDisplayCityScreen)")
@@ -42,12 +44,11 @@ void CyMapPythonInterface()
 		.def("findBiggestArea", &CyMap::findBiggestArea, python::return_value_policy<python::manage_new_object>(), "CyArea* ()")
 
 		.def("getMapFractalFlags", &CyMap::getMapFractalFlags, "int ()")
-		.def("findWater", &CyMap::findWater, "bool (CyPlot* pPlot, int iRange, bool bFreshWater)")
 		.def("isPlot", &CyMap::isPlot, "bool (iX,iY) - is (iX, iY) a valid plot?")
 		.def("numPlots", &CyMap::numPlots, "int () - total plots in the map")
-		.def("plotNum", &CyMap::plotNum, "int (iX,iY) - the index for a given plot") 
-		.def("plotX", &CyMap::plotX, "int (iIndex) - given the index of a plot, returns its X coordinate") 
-		.def("plotY", &CyMap::plotY, "int (iIndex) - given the index of a plot, returns its Y coordinate") 
+		.def("plotNum", &CyMap::plotNum, "int (iX,iY) - the index for a given plot")
+		.def("plotX", &CyMap::plotX, "int (iIndex) - given the index of a plot, returns its X coordinate")
+		.def("plotY", &CyMap::plotY, "int (iIndex) - given the index of a plot, returns its Y coordinate")
 		.def("getGridWidth", &CyMap::getGridWidth, "int () - the width of the map, in plots")
 		.def("getGridHeight", &CyMap::getGridHeight, "int () - the height of the map, in plots")
 
@@ -79,10 +80,11 @@ void CyMapPythonInterface()
 		.def("plot", &CyMap::plot, python::return_value_policy<python::manage_new_object>(), "CyPlot (iX,iY) - get CyPlot at (iX,iY)")
 		.def("sPlot", &CyMap::sPlot, python::return_value_policy<python::reference_existing_object>(), "CyPlot (iX,iY) - static - get CyPlot at (iX,iY)")
 		.def("pointToPlot", &CyMap::pointToPlot, python::return_value_policy<python::manage_new_object>())
-		.def("getIndexAfterLastArea", &CyMap::getIndexAfterLastArea, "int () - index for handling NULL areas")
+
 		.def("getNumAreas", &CyMap::getNumAreas, "int () - total areas")
 		.def("getNumLandAreas", &CyMap::getNumLandAreas, "int () - total land areas")
 		.def("getArea", &CyMap::getArea, python::return_value_policy<python::manage_new_object>(), "CyArea (iID) - get CyArea at iID")
+		.def("areas", &CyMap::areas)
 		.def("recalculateAreas", &CyMap::recalculateAreas, "void () - Recalculates the areaID for each plot. Should be preceded by CyMap.setPlotTypes(...)")
 		.def("resetPathDistance", &CyMap::resetPathDistance, "void ()")
 
@@ -98,7 +100,11 @@ void CyMapPythonInterface()
 		.def("getLastPathStepNum", &CyMap::getLastPathStepNum, "int ()")
 		.def("getLastPathPlotByIndex", &CyMap::getLastPathPlotByIndex, python::return_value_policy<python::manage_new_object>(), "CyPlot (index) - get a plot on the path by its Index")
 
-		// Super Forts *canal* *choke*
-		.def("calculateCanalAndChokePoints", &CyMap::calculateCanalAndChokePoints, "void ()")
-		;
+		.def("moveUnitToMap", &CyMap::moveUnitToMap)
+		.def("setClimateZone", &CyMap::setClimateZone, "void (int y, ClimateZoneType eClimate)")
+	;
+
+	python::enum_<ViewportDeferredActionState>("ViewportDeferredActionState")
+		.value("VIEWPORT_ACTION_STATE_AFTER_SWITCH", VIEWPORT_ACTION_STATE_AFTER_SWITCH)
+	;
 }

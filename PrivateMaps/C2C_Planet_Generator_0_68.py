@@ -107,10 +107,8 @@ v. 0.41
 """
 
 from CvPythonExtensions import *
-import CvUtil
 from CvUtil import *
 import CvMapGeneratorUtil
-from CvMapGeneratorUtil import *
 import math
 import sys
 import gc
@@ -118,7 +116,7 @@ try:
 	import cPickle as pickle
 except:
 	import pickle
-	
+
 
 VERSION = "0_68"
 
@@ -699,11 +697,11 @@ class probabilityArray:
 # multi dimensional array wrapper
 # usage:
 # - creating array:
-# a = mdArray([5,9],0) #creates 5�9 array with data:0 in every cell
-# b = mdArray([4,2,6],"nodata") #creates 4�2�6 array with data:"nodata" in every cell
+# a = mdArray([5,9],0) #creates 59 array with data:0 in every cell
+# b = mdArray([4,2,6],"nodata") #creates 426 array with data:"nodata" in every cell
 # - changing data:
-# a[0,1] = 5 #change 0�1 cell to 5
-# b[3,1,5] = "some data" #change 3�1�5 cell to "some data"
+# a[0,1] = 5 #change 01 cell to 5
+# b[3,1,5] = "some data" #change 315 cell to "some data"
 # - also:
 # print a[0,1]
 # print len(a)
@@ -2233,7 +2231,7 @@ def generatePlotTypes():
 			offset = world.getOffset([x,y])
 			if peakStartProbability > 0:
 				#collect peaks
-				#check if land area is 9�9 empty
+				#check if land area is 99 empty
 				if world[x,y] == PlotTypes.PLOT_LAND and world[x-1,y] == PlotTypes.PLOT_LAND and world[x+1,y] == PlotTypes.PLOT_LAND and world[x,y-1] == PlotTypes.PLOT_LAND and world[x,y+1] == PlotTypes.PLOT_LAND and (not world[x+1,y+1] == PlotTypes.PLOT_PEAK) and (not world[x-1,y+1] == PlotTypes.PLOT_PEAK) and (not world[x-1,y-1] == PlotTypes.PLOT_PEAK) and (not world[x+1,y-1] == PlotTypes.PLOT_PEAK):
 					if getRand(dice) < peakStartProbability:
 						world._data[offset] = PlotTypes.PLOT_PEAK
@@ -2241,7 +2239,7 @@ def generatePlotTypes():
 							peakArray[offset] = [x,y,1]
 			if hillStartProbability > 0:
 				#collect hills
-				#check if land area is 11�11 empty
+				#check if land area is 1111 empty
 				if world[x,y] == PlotTypes.PLOT_LAND and not hillIntersect(world,x,y,x,y,1):
 					if getRand(dice) < hillStartProbability:
 						world._data[offset] = PlotTypes.PLOT_HILLS
@@ -2689,19 +2687,28 @@ def addFeatures():
 	terrainDunes = cgc.getInfoTypeForString("TERRAIN_DUNES")
 	terrainScrub = cgc.getInfoTypeForString("TERRAIN_SCRUB")
 	terrainRocky = cgc.getInfoTypeForString("TERRAIN_ROCKY")
+	terrainBadland = cgc.getInfoTypeForString("TERRAIN_BADLAND")
+	terrainJagged = cgc.getInfoTypeForString("TERRAIN_JAGGED")
 	terrainBarren = cgc.getInfoTypeForString("TERRAIN_BARREN")
-	terrainPermafrost = cgc.getInfoTypeForString("TERRAIN_TUNDRA")
+	terrainPermafrost = cgc.getInfoTypeForString("TERRAIN_PERMAFROST")
 	terrainLush = cgc.getInfoTypeForString("TERRAIN_LUSH")
 	terrainMuddy = cgc.getInfoTypeForString("TERRAIN_MUDDY")
+
+	terrainCoast = cgc.getInfoTypeForString("TERRAIN_COAST")
+	terrainCoastPolar = cgc.getInfoTypeForString("TERRAIN_COAST_POLAR")
+	terrainCoastTropical = cgc.getInfoTypeForString("TERRAIN_COAST_TROPICAL")
+	terrainOceanType = cgc.getInfoTypeForString("TERRAIN_OCEAN")
+	terrainOceanPolar = cgc.getInfoTypeForString("TERRAIN_OCEAN_POLAR")
+	terrainOceanTropical = cgc.getInfoTypeForString("TERRAIN_OCEAN_TROPICAL")
 
 	featNone = -1
 	featIce = cgc.getInfoTypeForString("FEATURE_ICE")
 	featJungle = cgc.getInfoTypeForString("FEATURE_JUNGLE")
+	featMangrove = cgc.getInfoTypeForString("FEATURE_MANGROVE")
 	featOasis = cgc.getInfoTypeForString("FEATURE_OASIS")
 	featFlood = cgc.getInfoTypeForString("FEATURE_FLOOD_PLAINS")
 	featForest = cgc.getInfoTypeForString("FEATURE_FOREST")
 # Rise of Mankind 2.82 start
-	featStorm = cgc.getInfoTypeForString("FEATURE_STORM")
 	featSwamp = cgc.getInfoTypeForString("FEATURE_SWAMP")
 # Rise of Mankind 2.82 end
 
@@ -2744,15 +2751,22 @@ def addFeatures():
 			randomTerrain[7 * (climateHumidity / 2 + 0.75)] = terrainPermafrost
 
 		for x in range(iW):
-# Rise of Mankind 2.82 start
-			if ( y >= 5 and y <= (iH - 5)):
-				plot = map.plot(x,y)
-				if plot != 0 and plot.isWater() == True and getRand(dice) < stormChance:
-					plot.setFeatureType(featStorm,0)
-# Rise of Mankind 2.82 end
 
 			plot = map.sPlot(x,y)
 			if plot.isWater():
+				curWaterTerrain = plot.getTerrainType()
+				if tileTemperature > 25:
+					if curWaterTerrain == terrainCoast:
+						plot.setTerrainType(terrainCoastTropical,False,False)
+						if getRand(dice) < 0.3:
+							plot.setFeatureType(featMangrove,-1)
+					elif curWaterTerrain == terrainOceanType:
+						plot.setTerrainType(terrainOceanTropical,False,False)
+				elif tileTemperature < -10:
+					if curWaterTerrain == terrainCoast:
+						plot.setTerrainType(terrainCoastPolar,False,False)
+					elif curWaterTerrain == terrainOceanType:
+						plot.setTerrainType(terrainOceanPolar,False,False)
 				if allowLandNearIce:
 					if y < poleSeparation:
 						prob = (poleSeparation - y) / float(poleSeparation)
@@ -3145,6 +3159,7 @@ def addFeatures():
 
 	#Diversify terrain
 	for y in range(iH):
+		tileTemperature = getTileTemperature(y,iH)
 		for x in range(iW):
 			plot = map.sPlot(x,y)
 			if not (plot.isPeak() or plot.isWater()):
@@ -3153,21 +3168,32 @@ def addFeatures():
 					randomTerrain = probabilityArray()
 					randomTerrain[2] = terrainDesert
 					randomTerrain[1] = terrainSaltFlats
-					randomTerrain[2] = terrainDunes
-					randomTerrain[2] = terrainScrub
+					randomTerrain[4] = terrainDunes
+					randomTerrain[3] = terrainScrub
+					randomTerrain[2] = terrainBadland #hot arid rocky
 					plot.setTerrainType(randomTerrain.randomItem(dice),False,False)
 				elif terr == terrainPlains:
 					randomTerrain = probabilityArray()
-					randomTerrain[2] = terrainPlains
+					randomTerrain[3] = terrainPlains
 					randomTerrain[1] = terrainBarren
-					randomTerrain[1] = terrainRocky
+					if tileTemperature < 5:
+						randomTerrain[2] = terrainJagged #cold rocky
+					else:
+						randomTerrain[2] = terrainRocky
 					plot.setTerrainType(randomTerrain.randomItem(dice),False,False)
 				elif terr == terrainGrass:
 					randomTerrain = probabilityArray()
 					randomTerrain[2] = terrainGrass
-					randomTerrain[1] = terrainLush
+					randomTerrain[3] = terrainLush
 					randomTerrain[1] = terrainMuddy
 					plot.setTerrainType(randomTerrain.randomItem(dice),False,False)
+
+				#Mangrove on coastal marsh/lush/muddy flatland
+				if plot.getFeatureType() == featNone and plot.isCoastal():
+					terr = plot.getTerrainType()
+					if terr in (terrainMarsh, terrainLush, terrainMuddy):
+						if getRand(dice) < 0.5:
+							plot.setFeatureType(featMangrove,-1)
 
 				#Remove land features that are on wrong terrain (seems to remove some things incorrectly)
 				#if plot.canHaveFeature(plot.getFeatureType()) == False:
@@ -3710,7 +3736,7 @@ def normalizeAddExtras():
 					plot.setBonusType(bonusTypes._data[index+5][0])
 
 def cmpByPlacementOrder(x, y):
-	return x[1].getPlacementOrder() - y[0].getPlacementOrder()
+	return x[1].getPlacementOrder() - y[1].getPlacementOrder()
 
 def enumeratePlaceableBonusTypes():
 	cgc = CyGlobalContext()
@@ -3738,7 +3764,7 @@ def civFilePath():
 		return folder
 	except:
 		return ""
-			
+
 #----------------------------------------------
 """Other functions"""
 #----------------------------------------------
@@ -3759,6 +3785,9 @@ def isClimateMap():
 
 def isSeaLevelMap():
 	"""Uses the Sea Level options"""
+	return 0
+
+def getNumHiddenCustomMapOptions():
 	return 0
 
 def getNumCustomMapOptions():

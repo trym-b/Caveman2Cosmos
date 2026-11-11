@@ -31,30 +31,25 @@
 	<!-- Dexy - Surround and Destroy -->
 	<Define>
 		<DefineName>SAD_FACTOR_1</DefineName>
-		<fDefineFloatVal>6.0</fDefineFloatVal>
+		<iDefineIntVal>5</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SAD_FACTOR_2</DefineName>
-		<fDefineFloatVal>10.0</fDefineFloatVal>
+		<iDefineIntVal>8</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SAD_FACTOR_3</DefineName>
-		<fDefineFloatVal>15.0</fDefineFloatVal>
+		<iDefineIntVal>12</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SAD_FACTOR_4</DefineName>
-		<fDefineFloatVal>20.0</fDefineFloatVal>
+		<iDefineIntVal>16</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>SAD_MAX_MODIFIER</DefineName>
-		<iDefineIntVal>60</iDefineIntVal>
+		<iDefineIntVal>55</iDefineIntVal>
 	</Define>
 	<!-- \Dexy - Surround and Destroy -->
-	<Define>
-		<!-- Afforess: This sets the maximum bombard resistance a city can have. Set to 100 for normal games, less, for a lower minimum -->
-		<DefineName>MAX_BOMBARD_DEFENSE</DefineName>
-		<iDefineIntVal>70</iDefineIntVal>
-	</Define>
 	<Define>
 		<!-- Afforess: Units can not Claim Water Tiles -->
 		<DefineName>CANNOT_CLAIM_OCEAN</DefineName>
@@ -116,11 +111,11 @@
 	</Define>
 	<Define>
 		<DefineName>PEAK_EXTRA_DEFENSE</DefineName>
-		<iDefineIntVal>75</iDefineIntVal>
+		<iDefineIntVal>30</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>PEAK_EXTRA_MOVEMENT</DefineName>
-		<iDefineIntVal>3</iDefineIntVal>
+		<iDefineIntVal>2</iDefineIntVal> <!-- Applied on top of base 3 cost if lacking bMoveFastPeaks tech -->
 	</Define>
 	<Define>
 		<DefineName>PEAK_BUILD_TIME_MODIFIER</DefineName>
@@ -196,17 +191,20 @@
 		<iDefineIntVal>25</iDefineIntVal>
 	</Define>
 	<Define>
-		<!-- Base number of turns between decay, higher means lower decay rate -->
+		<!--
+			Base number of turns (10 equals 1 turn) between decay on normal gamespeed.
+			Higher value means slower decay rate.
+			Min value: 1 (means: decay 10 times per turn on Normal gamsepeed, decay every turn on eternity gamespeed)
+			Note: More than 1 hurry decay per turn is now possible,
+				so a value of 10 means it decay by 1 every turn on normal, and that it decays by 2 every turn on blitz.
+			Default value: 10 (Decay every turn on normal gamespeed, every 10 turns on eternity, with 0 modifiers from civics)
+		-->
 		<DefineName>HURRY_INFLATION_DECAY_RATE</DefineName>
-		<iDefineIntVal>2</iDefineIntVal>
+		<iDefineIntVal>10</iDefineIntVal>
 	</Define>
 	<Define>
 		<DefineName>FREE_TRADE_AGREEMENT_ESPIONAGE_MISSION_COST_MODIFIER</DefineName>
 		<iDefineIntVal>25</iDefineIntVal>
-	</Define>
-	<Define>
-		<DefineName>XML_LOGGING_ENABLED</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Realistic Corporations: Corporation will be founded when more players than X have the prereq tech for it. -->
@@ -248,10 +246,6 @@
 		<iDefineIntVal>0</iDefineIntVal>
 	</Define>
 	<Define>
-		<DefineName>ZOOM_CITY_FOR_PRODUCTION_POPUP</DefineName>
-		<iDefineIntVal>0</iDefineIntVal>
-	</Define>
-	<Define>
 		<!-- Use the following to determine what building art is displayed on cities.
 It is a bitmask of flags which may be added together:
 	1	= Wonders
@@ -269,10 +263,6 @@ We default to all of them (1+2+128 = 131)
 	<Define>
 		<DefineName>WASTAGE_GROWTH_FACTOR</DefineName>
 		<fDefineFloatVal>0.05</fDefineFloatVal>
-	</Define>
-	<Define>
-		<DefineName>CITY_THIRD_RING_EXTRA_GROWTH_THRESHOLD_PERCENT</DefineName>
-		<iDefineIntVal>100</iDefineIntVal>
 	</Define>
 	<Define>
 		<!-- Set to non-0 value to enable dynamic activation of unit graphics entities (reduced memory usage and growth) -->
@@ -317,6 +307,6 @@ The Great Wall is always dynamic if viewports are enabled regardless of this set
 	</Define>
 	<Define>
 		<DefineName>C2C_VERSION</DefineName>
-		<DefineTextVal>v41.2</DefineTextVal>
+		<DefineTextVal>v45.BETA</DefineTextVal>
 	</Define>
 </Civ4Defines>

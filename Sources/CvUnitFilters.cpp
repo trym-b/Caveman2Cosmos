@@ -6,10 +6,14 @@
 //  PURPOSE: Classes to filter units
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvCity.h"
 #include "CvGlobals.h"
 #include "CvPlayerAI.h"
+#include "CvInfos.h"
 
 void UnitFilterBase::Activate()
 {
@@ -64,8 +68,7 @@ bool UnitFilterIsCombat::isFilteredUnit(const CvPlayer *pPlayer, const CvCity *p
 
 bool UnitFilterIsCombats::isFilteredUnit(const CvPlayer *pPlayer, const CvCity *pCity, UnitTypes eUnit) const
 {
-	const UnitCombatTypes eCombat = (UnitCombatTypes)(GC.getUnitInfo(eUnit).getUnitCombatType());
-	return std::find(m_eCombats.begin(), m_eCombats.end(), eCombat) != m_eCombats.end();
+	return algo::any_of_equal(m_eCombats, (UnitCombatTypes)GC.getUnitInfo(eUnit).getUnitCombatType());
 }
 
 void UnitFilterIsCombats::addCombat(UnitCombatTypes eCombat)
@@ -80,7 +83,7 @@ bool UnitFilterIsCombats::isEmpty() const
 
 bool UnitFilterIsDomain::isFilteredUnit(const CvPlayer *pPlayer, const CvCity *pCity, UnitTypes eUnit) const
 {
-	return ((DomainTypes)GC.getUnitInfo(eUnit).getDomainType()) == m_eDomain;
+	return GC.getUnitInfo(eUnit).getDomainType() == m_eDomain;
 }
 
 bool UnitFilterIsDefense::isFilteredUnit(const CvPlayer *pPlayer, const CvCity *pCity, UnitTypes eUnit) const
@@ -102,6 +105,7 @@ UnitFilterList::UnitFilterList(const CvPlayer *pPlayer, const CvCity *pCity)
 
 UnitFilterList::~UnitFilterList()
 {
+	PROFILE_EXTRA_FUNC();
 	if(m_bInit)
 	{
 		for (int i = 0; i < NUM_UNIT_FILTERS; i++)
@@ -150,14 +154,14 @@ void UnitFilterList::init()
 		m_apUnitFilters[UNIT_FILTER_SHOW_MISSIONARY] = new UnitFilterIsCombat((UnitCombatTypes)GC.getInfoTypeForString("UNITCOMBAT_MISSIONARY"));
 
 		m_apUnitFilters[UNIT_FILTER_HIDE_UNBUILDABLE]->setActive(getBugOptionBOOL("CityScreen__HideUntrainableUnits", false));
-		
+
 		m_bInit = true;
 	}
 }
 
 bool UnitFilterList::isFilterActive(UnitFilterTypes i) const
 {
-	FASSERT_BOUNDS(0, NUM_UNIT_FILTERS, i)
+	FASSERT_BOUNDS(0, NUM_UNIT_FILTERS, i);
 	return m_apUnitFilters[i]->isActive();
 }
 
@@ -173,12 +177,13 @@ void UnitFilterList::setPlayer(const CvPlayer *pPlayer)
 
 bool UnitFilterList::setFilterActive(UnitFilterTypes i, bool bActive)
 {
-	FASSERT_BOUNDS(0, NUM_UNIT_FILTERS, i)
+	FASSERT_BOUNDS(0, NUM_UNIT_FILTERS, i);
 	return m_apUnitFilters[i]->setActive(bActive);
 }
 
 bool UnitFilterList::isFiltered(UnitTypes eUnit) const
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_UNIT_FILTERS; i++)
 	{
 		if (!m_apUnitFilters[i]->isFiltered(m_pPlayer, m_pCity, eUnit))
@@ -189,6 +194,7 @@ bool UnitFilterList::isFiltered(UnitTypes eUnit) const
 
 void UnitFilterList::setFilterActiveAll(UnitFilterTypes eFilter, bool bActive)
 {
+	PROFILE_EXTRA_FUNC();
 	for (int iI = 0; iI < MAX_PC_PLAYERS; ++iI)
 	{
 		CvPlayer& kLoopPlayer = GET_PLAYER((PlayerTypes)iI);

@@ -1,0 +1,1396 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Civ4GameText xmlns="http://www.firaxis.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.firaxis.com ../../../../Schema/Civ4Gametext.xsd">
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_AERIAL</Tag>
+		<English>Aerial Promotion Line</English>
+		<French>Spécialisation Aérien</French>
+		<Italian>Aereo</Italian>
+		<Russian>Aerial Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Lotnik)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_AGGRESSIVE_PROMOTION</Tag>
+		<English>Aggressive Promotion Line</English>
+		<French>Spécialisation Agressif</French>
+		<German>Aggressiv</German>
+		<Italian>Aggressione</Italian>
+		<Russian>Aggressive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Agresywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_ALOOF</Tag>
+		<English>Aloof Promotion Line</English>
+		<French>Spécialisation Distant</French>
+		<Italian>Distante</Italian>
+		<Russian>Aloof Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Pow&#156;ci&#185;gliwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_BARBARIC_PROMOTION</Tag>
+		<English>Barbaric Promotion Line</English>
+		<French>Spécialisation Barbare</French>
+		<Italian>Barbaro</Italian>
+		<Russian>Barbaric Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Barba&#191;y&#241;ca)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_BIGOT</Tag>
+		<English>Bigot Promotion Line</English>
+		<French>Spécialisation Bigot</French>
+		<Italian>Bigotto</Italian>
+		<Russian>Bigot Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Bigot)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CARELESS</Tag>
+		<English>Careless Promotion Line</English>
+		<French>Spécialisation Insouciant</French>
+		<Italian>Superficiale</Italian>
+		<Russian>Careless Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Nieostro&#191;ny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CIVILIZED</Tag>
+		<English>Civilized Promotion Line</English>
+		<French>Spécialisation Civilisé</French>
+		<Italian>Civilizzato</Italian>
+		<Russian>Civilized Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Cywilizowany)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CIVILIZED_PROMOTION</Tag>
+		<English>Civilized Promotion Line</English>
+		<French>Spécialisation Civilisé</French>
+		<Italian>Civilizzato2</Italian>
+		<Russian>Civilized Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Cywilizowany)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_COVETOUS</Tag>
+		<English>Covetous Promotion Line</English>
+		<French>Spécialisation Cupide</French>
+		<Italian>Avaro</Italian>
+		<Russian>Covetous Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Po&#191;&#185;dliwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_COWARDLY</Tag>
+		<English>Cowardly Promotion Line</English>
+		<French>Spécialisation Couardise</French>
+		<German>Feige</German>
+		<Italian>Codardo</Italian>
+		<Russian>Cowardly Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Tch&#243;rzliwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_COWARDLY_PROMOTION</Tag>
+		<English>Cowardly Promotion Line</English>
+		<French>Spécialisation Couard</French>
+		<German>Feige</German>
+		<Italian>Codardo2</Italian>
+		<Russian>Cowardly Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Tch&#243;rzliwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CROOKED</Tag>
+		<English>Crooked Promotion Line</English>
+		<French>Spécialisation Cagneux</French>
+		<Italian>Disonesto</Italian>
+		<Russian>Crooked Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Nieuczciwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CROOKED_PROMOTION</Tag>
+		<English>Crooked Promotion Line</English>
+		<French>Spécialisation Cagneux</French>
+		<Italian>Disonesto2</Italian>
+		<Russian>Crooked Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Nieuczciwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_CRUEL_PROMOTION</Tag>
+		<English>Cruel Promotion Line</English>
+		<French>Spécialisation Cruel</French>
+		<Italian>Crudele</Italian>
+		<Russian>Cruel Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Okrutny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_DECEIVER_PROMOTION</Tag>
+		<English>Deceiver Promotion Line</English>
+		<French>Spécialisation Trompeur</French>
+		<Italian>Imbroglione</Italian>
+		<Russian>Deceiver Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Zwodniczy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_DEFENSIVE</Tag>
+		<English>Defensive Promotion Line</English>
+		<French>Spécialisation Défensif</French>
+		<German>Defensiv</German>
+		<Italian>Difensivo</Italian>
+		<Russian>Defensive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Defensywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_DEFENSIVE_PROMOTION</Tag>
+		<English>Defensive Promotion Line</English>
+		<French>Spécialisation Défensif</French>
+		<German>Defensiv</German>
+		<Italian>Difensivo2</Italian>
+		<Russian>Defensive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Defensywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_DEVOTION_PROMOTION</Tag>
+		<English>Devotion Promotion Line</English>
+		<French>Spécialisation Dévot</French>
+		<German>Hingabe</German>
+		<Italian>Devoto</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Fanatyk)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_DYNAMIC</Tag>
+		<English>Dynamic Promotion Line</English>
+		<French>Spécialisation Dynamique</French>
+		<Italian>Dinamico</Italian>
+		<Russian>Dynamic Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Dynamiczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_EFFICIENT</Tag>
+		<English>Efficient Promotion Line</English>
+		<French>Spécialisation Efficient</French>
+		<Italian>Efficiente</Italian>
+		<Russian>Efficient Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Efektywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_FOREIGNER</Tag>
+		<English>Foreigner Promotion Line</English>
+		<French>Spécialisation Etranger</French>
+		<Italian>Straniero</Italian>
+		<Russian>Foreigner Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Cudzoziemiec)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_GLOOMY</Tag>
+		<English>Gloomy Promotion Line</English>
+		<French>Spécialisation Morne</French>
+		<Italian>Pessimista</Italian>
+		<Russian>Gloomy Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Ponury)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_GLORIOUS</Tag>
+		<English>Glorious Promotion Line</English>
+		<French>Spécialisation Glorieux</French>
+		<Italian>Glorioso</Italian>
+		<Russian>Glorious Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Wspania&#179;y)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_GLUTTONOUS</Tag>
+		<English>Warlike Promotion Line</English>
+		<French>Spécialisation Bélliqueux</French>
+		<Italian>Insaziabile</Italian>
+		<Russian>Warlike Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Wojowniczy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_GREEDY</Tag>
+		<English>Greedy Promotion Line</English>
+		<French>Spécialisation Gourmand</French>
+		<Italian>Avido</Italian>
+		<Russian>Greedy Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Chciwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_GRIM</Tag>
+		<English>Grim Promotion Line</English>
+		<French>Spécialisation Macabre</French>
+		<Italian>Severo</Italian>
+		<Russian>Grim Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Mroczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_HONEST</Tag>
+		<English>Honest Promotion Line</English>
+		<French>Spécialisation Honnête</French>
+		<Italian>Onesto</Italian>
+		<Russian>Honest Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Szczery)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_HUMANITARIAN_PROMOTION</Tag>
+		<English>Humanitarian Promotion Line</English>
+		<French>Spécialisation Humanitaire</French>
+		<Italian>Filantropo</Italian>
+		<Russian>Humanitarian Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Humanitarny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_HUMBLE</Tag>
+		<English>Humble Promotion Line</English>
+		<French>Spécialisation Humble</French>
+		<Italian>Umile</Italian>
+		<Russian>Humble Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Skromny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_IMPERIALIST_PROMOTION</Tag>
+		<English>Imperialist Promotion Line</English>
+		<French>Spécialisation Impérialiste</French>
+		<Italian>Imperialista</Italian>
+		<Russian>Imperialist Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Imperialista)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_IMPULSIVE</Tag>
+		<English>Impulsive Promotion Line</English>
+		<French>Spécialisation Impulsif</French>
+		<Italian>Impulsivo</Italian>
+		<Russian>Impulsive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Impulsywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_INNOVATIVE</Tag>
+		<English>Innovative Promotion Line</English>
+		<French>Spécialisation Innovant</French>
+		<Italian>Innovativo</Italian>
+		<Russian>Innovative Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Innowacyjny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_LAWFUL</Tag>
+		<English>Lawful Promotion Line</English>
+		<French>Spécialisation Légitime</French>
+		<Italian>Rispettoso della legge</Italian>
+		<Russian>Lawful Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Legalista)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_LAWFUL_PROMOTION</Tag>
+		<English>Lawful Promotion Line</English>
+		<French>Spécialisation Légitime</French>
+		<Italian>Rispettoso della legge2</Italian>
+		<Russian>Lawful Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Legalista)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_LAZY</Tag>
+		<English>Lazy Promotion Line</English>
+		<French>Spécialisation Paresseux</French>
+		<Italian>Pigro</Italian>
+		<Russian>Lazy Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Leniwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_LIAR</Tag>
+		<English>Liar Promotion Line</English>
+		<French>Spécialisation Menteur</French>
+		<Italian>Bugiardo</Italian>
+		<Russian>Liar Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (K&#179;amca)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_MEDICAL</Tag>
+		<English>Medical Promotion Line</English>
+		<French>Spécialisation Médical</French>
+		<Italian>Medico</Italian>
+		<Russian>Medical Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Medycyna)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_MEDICAL_PROMOTION</Tag>
+		<English>Medical Promotion Line</English>
+		<French>Spécialisation Médical</French>
+		<Italian>Medico2</Italian>
+		<Russian>Medical Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Medycyna)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_MEEK</Tag>
+		<English>Meek Promotion Line</English>
+		<French>Spécialisation Humble</French>
+		<Italian>Mite</Italian>
+		<Russian>Meek Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (&#163;agodny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_MEEK_PROMOTION</Tag>
+		<English>Meek Promotion Line</English>
+		<French>Spécialisation Doux</French>
+		<Italian>Mite2</Italian>
+		<Russian>Meek Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (&#163;agodny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_MINIMALIST</Tag>
+		<English>Minimalist Promotion Line</English>
+		<French>Spécialisation Minimaliste</French>
+		<Italian>Minimalista</Italian>
+		<Russian>Minimalist Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Minimalistyczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NAIVE</Tag>
+		<English>Naive Promotion Line</English>
+		<French>Spécialisation Naïf</French>
+		<Italian>Ingenuo</Italian>
+		<Russian>Naive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Naiwny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NAIVE_PROMOTION</Tag>
+		<English>Naive Promotion Line</English>
+		<French>Spécialisation Naïf</French>
+		<Italian>Ingenuo2</Italian>
+		<Russian>Naive Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Naiwny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NATURALIST</Tag>
+		<English>Naturalist Promotion Line</English>
+		<French>Spécialisation Naturaliste</French>
+		<Italian>Naturalista</Italian>
+		<Russian>Naturalist Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Przyrodnik)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NATURALIST_PROMOTION</Tag>
+		<English>Naturalist Promotion Line</English>
+		<French>Spécialisation Naturaliste</French>
+		<Italian>Naturalista2</Italian>
+		<Russian>Naturalist Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Przyrodnik)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NEGLIGENT</Tag>
+		<English>Negligent Promotion Line</English>
+		<French>Spécialisation Négligent</French>
+		<Italian>Negligente</Italian>
+		<Russian>Negligent Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Niedba&#179;y)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NEGLIGENT_PROMOTION</Tag>
+		<English>Negligent Promotion Line</English>
+		<French>Spécialisation Negligent</French>
+		<Italian>Negligente2</Italian>
+		<Russian>Negligent Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Niedba&#179;y)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NEGOTIATOR</Tag>
+		<English>Negotiator Promotion Line</English>
+		<French>Spécialisation Négociateur</French>
+		<Italian>Negoziatore</Italian>
+		<Russian>Negotiator Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Negocjator)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NOMADIC</Tag>
+		<English>Nomadic Promotion Line</English>
+		<French>Spécialisation Nomade</French>
+		<Italian>Nomade</Italian>
+		<Russian>Nomadic Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Nomad)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_NOMADIC_PROMOTION</Tag>
+		<English>Nomadic Promotion Line</English>
+		<French>Spécialisation Nomade</French>
+		<Italian>Nomade2</Italian>
+		<Russian>Nomadic Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Nomad)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PACIFIST</Tag>
+		<English>Pacifist Promotion Line</English>
+		<French>Spécialisation Pacifiste</French>
+		<German>Pazifist</German>
+		<Italian>Pacifista</Italian>
+		<Russian>Pacifist Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Pacyfista)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PIOUS</Tag>
+		<English>Pious Promotion Line</English>
+		<French>Spécialisation Pieux</French>
+		<Italian>Pio</Italian>
+		<Russian>Pious Promotion Line</Russian>
+		<Polish>&#140;cie&#191;ka awansu (Pobo&#191;ny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PRAGMATIC</Tag>
+		<English>Pragmatic Promotion Line</English>
+		<French>Spécialisation Pragmatique</French>
+		<Russian>Pragmatic Promotion Line</Russian>
+		<Italian>Pragmatico</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Pragmatyczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PREEMINENT</Tag>
+		<English>Preeminent Promotion Line</English>
+		<French>Spécialisation Prééminent</French>
+		<Russian>Preeminent Promotion Line</Russian>
+		<Italian>Centralista</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Wybitny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PROGRESSIVE</Tag>
+		<English>Progressive Promotion Line</English>
+		<French>Spécialisation Progressive</French>
+		<Russian>Progressive Promotion Line</Russian>
+		<Italian>Riformista</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Progresywny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PROLIFIC</Tag>
+		<English>Prolific Promotion Line</English>
+		<French>Spécialisation Prolifique</French>
+		<Russian>Prolific Promotion Line</Russian>
+		<Italian>Prolifico</Italian>
+		<Polish>&#140;cie&#191;ka awansu (P&#179;odny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PROMOTION_PACIFIST</Tag>
+		<English>Pacifist Promotion Line</English>
+		<French>Spécialisation Pacifist</French>
+		<Russian>Pacifist Promotion Line</Russian>
+		<Italian>Pacifista2</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Pacyfista)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_PROTECTIVE_PROMOTION</Tag>
+		<English>Protective Promotion Line</English>
+		<French>Spécialisation Protective</French>
+		<Russian>Protective Promotion Line</Russian>
+		<Italian>Protettivo</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Opieku&#241;czy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_SEAFARING_PROMOTION</Tag>
+		<English>Seafaring Promotion Line</English>
+		<French>Spécialisation Marin</French>
+		<Russian>Seafaring Promotion Line</Russian>
+		<Italian>Marinaio</Italian>
+		<Polish>&#140;cie&#191;ka awansu (&#175;eglarz)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_SLOB</Tag>
+		<English>Slob Promotion Line</English>
+		<French>Spécialisation Plouc</French>
+		<Russian>Slob Promotion Line</Russian>
+		<Italian>Sciatto</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Niechlujny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_SLOB_PROMOTION</Tag>
+		<English>Slob Promotion Line</English>
+		<French>Spécialisation Plouc</French>
+		<Russian>Slob Promotion Line</Russian>
+		<Italian>Sciatto2</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Niechlujny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_STRATEGIST</Tag>
+		<English>Strategist Promotion Line</English>
+		<French>Spécialisation Stratège</French>
+		<Russian>Strategist Promotion Line</Russian>
+		<Italian>Stratega</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Strateg)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_STUBBORN</Tag>
+		<English>Stubborn Promotion Line</English>
+		<French>Spécialisation Têtu</French>
+		<Russian>Stubborn Promotion Line</Russian>
+		<Italian>Testardo</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Uporczywy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_TIMID</Tag>
+		<English>Timid Promotion Line</English>
+		<French>Spécialisation Timide</French>
+		<German>Schüchtern</German>
+		<Russian>Timid Promotion Line</Russian>
+		<Italian>Timido</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Nie&#156;mia&#179;y)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_TIMID_PROMOTION</Tag>
+		<English>Timid Promotion Line</English>
+		<French>Spécialisation Timid</French>
+		<German>Schüchtern</German>
+		<Russian>Timid Promotion Line</Russian>
+		<Italian>Timido2</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Nie&#156;mia&#179;y)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_TRADITIONAL</Tag>
+		<English>Traditional Promotion Line</English>
+		<French>Spécialisation Traditional</French>
+		<Russian>Traditional Promotion Line</Russian>
+		<Italian>Tradizionalista</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Tradycyjny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_UNREFINED</Tag>
+		<English>Unrefined Promotion Line</English>
+		<French>Spécialisation Brut</French>
+		<Russian>Unrefined Promotion Line</Russian>
+		<Italian>Rozzo</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Nieokrzesany)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_UNSANITARY</Tag>
+		<English>Unsanitary Promotion Line</English>
+		<French>Spécialisation Malsain</French>
+		<Russian>Unsanitary Promotion Line</Russian>
+		<Italian>Malsano</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Niehigeniczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_UNSANITARY_PROMOTION</Tag>
+		<English>Unsanitary Promotion Line</English>
+		<French>Spécialisation Malsain</French>
+		<Russian>Unsanitary Promotion Line</Russian>
+		<Italian>Malsano2</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Niehigeniczny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_USURPER</Tag>
+		<English>Usurper Promotion Line</English>
+		<French>Spécialisation Usurpateur</French>
+		<Russian>Usurper Promotion Line</Russian>
+		<Italian>Usurpatore</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Uzurpator)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_WARMONGER</Tag>
+		<English>Warmonger Promotion Line</English>
+		<French>Spécialisation Chef de guerre</French>
+		<German>Kriegstreiber</German>
+		<Russian>Warmonger Promotion Line</Russian>
+		<Italian>Guerrafondaio</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Pod&#191;egacz Wojenny)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTIONLINE_ZEALOUS</Tag>
+		<English>Zealous Promotion Line</English>
+		<French>Spécialisation Zélé</French>
+		<Russian>Zealous Promotion Line</Russian>
+		<Italian>Infervorato</Italian>
+		<Polish>&#140;cie&#191;ka awansu (Gorliwy)</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AERIAL</Tag>
+		<English>Aerial</English>
+		<French>Aérien</French>
+		<Russian>Воздушный</Russian>
+		<Italian>Aereo</Italian>
+		<Polish>Lotniczy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AERIAL_STRATEGIES</Tag>
+		<English>Aerial Strategies</English>
+		<French>Stratégies Aériennes</French>
+		<Russian>Воздушные маневры</Russian>
+		<Italian>Strategie aeree</Italian>
+		<Polish>Strategie powietrzne</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AERIAL_SUPERIORITY</Tag>
+		<English>Aerial Superiority</English>
+		<French>Supériorité Aérienne</French>
+		<Russian>Воздушное господство</Russian>
+		<Italian>Superiorità aerea</Italian>
+		<Polish>Przewaga powietrzna</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AERIAL_WEAPONRY</Tag>
+		<English>Aerial Weaponry</English>
+		<French>Armement Aérien</French>
+		<Russian>Воздушное оружие</Russian>
+		<Italian>Armamento aereo</Italian>
+		<Polish>Bro&#241; powietrzna</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AGGRESSIVE0</Tag>
+		<English>Aggressive</English>
+		<French>Aggressif</French>
+		<German>Aggressiv</German>
+		<Italian>Aggressione</Italian>
+		<Russian>Агрессивный</Russian>
+		<Polish>Agresywny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AGGRESSIVE1</Tag>
+		<English>Aggressive I</English>
+		<French>Aggressif I</French>
+		<German>Aggressiv I</German>
+		<Italian>Aggressione I</Italian>
+		<Russian>Агрессивный I</Russian>
+		<Polish>Agresywny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AGGRESSIVE2</Tag>
+		<English>Aggressive II</English>
+		<French>Aggressif II</French>
+		<German>Aggressiv II</German>
+		<Italian>Aggressione II</Italian>
+		<Russian>Агрессивный II</Russian>
+		<Polish>Agresywny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_AGGRESSIVE3</Tag>
+		<English>Aggressive III</English>
+		<French>Aggressif III</French>
+		<German>Aggressiv III</German>
+		<Italian>Aggressione III</Italian>
+		<Russian>Агрессивный III</Russian>
+		<Polish>Agresywny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_BARBARIC</Tag>
+		<English>Barbaric</English>
+		<French>Barbare</French>
+		<Russian>Варвар</Russian>
+		<Italian>Barbaro</Italian>
+		<Polish>Barbarzy&#241;ski</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_BARBARIC1</Tag>
+		<English>Barbaric I</English>
+		<French>Barbare I</French>
+		<Russian>Варвар I</Russian>
+		<Italian>Barbaro I</Italian>
+		<Polish>Barbarzy&#241;ski I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_BARBARIC2</Tag>
+		<English>Barbaric II</English>
+		<French>Barbare II</French>
+		<Russian>Варвар II</Russian>
+		<Italian>Barbaro II</Italian>
+		<Polish>Barbarzy&#241;ski II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_BARBARIC3</Tag>
+		<English>Barbaric III</English>
+		<French>Barbare III</French>
+		<Russian>Варвар III</Russian>
+		<Italian>Barbaro III</Italian>
+		<Polish>Barbarzy&#241;ski III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CIVILIZED</Tag>
+		<English>Civilized</English>
+		<French>Civilisé</French>
+		<Russian>Цивилизатор</Russian>
+		<Italian>Civilizzato</Italian>
+		<Polish>Cywilizowany</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CIVILIZED1</Tag>
+		<English>Civilized I</English>
+		<French>Civilisé I</French>
+		<Russian>Цивилизатор I</Russian>
+		<Italian>Civilizzato I</Italian>
+		<Polish>Cywilizowany I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CIVILIZED2</Tag>
+		<English>Civilized II</English>
+		<French>Civilisé II</French>
+		<Russian>Цивилизатор II</Russian>
+		<Italian>Civilizzato II</Italian>
+		<Polish>Cywilizowany II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CIVILIZED3</Tag>
+		<English>Civilized III</English>
+		<French>Civilisé III</French>
+		<Russian>Цивилизатор III</Russian>
+		<Italian>Civilizzato III</Italian>
+		<Polish>Cywilizowany III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_COWARDLY</Tag>
+		<English>Cowardly</English>
+		<French>Couard</French>
+		<German>Feige</German>
+		<Russian>Трусливый</Russian>
+		<Italian>Codardo</Italian>
+		<Polish>Tch&#243;rzliwy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_COWARDLY1</Tag>
+		<English>Cowardly I</English>
+		<French>Couard I</French>
+		<German>Feige I</German>
+		<Russian>Трусливый I</Russian>
+		<Italian>Codardo I</Italian>
+		<Polish>Tch&#243;rzliwy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_COWARDLY2</Tag>
+		<English>Cowardly II</English>
+		<French>Couard II</French>
+		<German>Feige II</German>
+		<Russian>Трусливый II</Russian>
+		<Italian>Codardo II</Italian>
+		<Polish>Tch&#243;rzliwy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_COWARDLY3</Tag>
+		<English>Cowardly III</English>
+		<French>Couard III</French>
+		<German>Feige III</German>
+		<Russian>Трусливый III</Russian>
+		<Italian>Codardo III</Italian>
+		<Polish>Tch&#243;rzliwy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CROOKED</Tag>
+		<English>Crooked</English>
+		<French>Cagneux</French>
+		<Russian>Бесчестный</Russian>
+		<Italian>Disonesto</Italian>
+		<Polish>Nieuczciwy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CROOKED1</Tag>
+		<English>Crooked I</English>
+		<French>Cagneux I</French>
+		<Russian>Бесчестный I</Russian>
+		<Italian>Disonesto I</Italian>
+		<Polish>Nieuczciwy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CROOKED2</Tag>
+		<English>Crooked II</English>
+		<French>Cagneux II</French>
+		<Russian>Бесчестный II</Russian>
+		<Italian>Disonesto II</Italian>
+		<Polish>Nieuczciwy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CROOKED3</Tag>
+		<English>Crooked III</English>
+		<French>Cagneux III</French>
+		<Russian>Бесчестный III</Russian>
+		<Italian>Disonesto III</Italian>
+		<Polish>Nieuczciwy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CRUEL</Tag>
+		<English>Cruel</English>
+		<French>Cruel</French>
+		<Russian>Мучитель</Russian>
+		<Italian>Crudele</Italian>
+		<Polish>Okrutny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CRUEL1</Tag>
+		<English>Cruel I</English>
+		<French>Cruel I</French>
+		<Russian>Мучитель I</Russian>
+		<Italian>Crudele I</Italian>
+		<Polish>Okrutny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_CRUEL2</Tag>
+		<English>Cruel II</English>
+		<French>Cruel II</French>
+		<Russian>Мучитель II</Russian>
+		<Italian>Crudele II</Italian>
+		<Polish>Okrutny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DECEIVER</Tag>
+		<English>Deceiver</English>
+		<French>Trompeur</French>
+		<Russian>Жулик</Russian>
+		<Italian>Imbroglione</Italian>
+		<Polish>Zwodniczy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DECEIVER1</Tag>
+		<English>Deceiver I</English>
+		<French>Trompeur I</French>
+		<Russian>Жулик I</Russian>
+		<Italian>Imbroglione I</Italian>
+		<Polish>Zwodniczy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DECEIVER2</Tag>
+		<English>Deceiver II</English>
+		<French>Trompeur II</French>
+		<Russian>Жулик II</Russian>
+		<Italian>Imbroglione II</Italian>
+		<Polish>Zwodniczy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DECEIVER3</Tag>
+		<English>Deceiver III</English>
+		<French>Trompeur III</French>
+		<Russian>Жулик III</Russian>
+		<Italian>Imbroglione III</Italian>
+		<Polish>Zwodniczy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEFENSIVE</Tag>
+		<English>Defensive</English>
+		<French>Défensif</French>
+		<German>Defensiv</German>
+		<Russian>Защитный</Russian>
+		<Italian>Difensivo</Italian>
+		<Polish>Defensywny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEFENSIVE1</Tag>
+		<English>Defensive I</English>
+		<French>Défensif I</French>
+		<German>Defensiv I</German>
+		<Russian>Защитный I</Russian>
+		<Italian>Difensivo I</Italian>
+		<Polish>Defensywny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEFENSIVE2</Tag>
+		<English>Defensive II</English>
+		<French>Défensif II</French>
+		<German>Defensiv II</German>
+		<Russian>Защитный II</Russian>
+		<Italian>Difensivo II</Italian>
+		<Polish>Defensywa II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEFENSIVE3</Tag>
+		<English>Defensive III</English>
+		<French>Défensif III</French>
+		<German>Defensiv III</German>
+		<Russian>Защитный III</Russian>
+		<Italian>Difensivo III</Italian>
+		<Polish>Defensywa III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEVOTION</Tag>
+		<English>Devotion</English>
+		<French>Dévot</French>
+		<German>Hingabe</German>
+		<Russian>Набожный</Russian>
+		<Italian>Devoto</Italian>
+		<Polish>Fanatyczny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEVOTION1</Tag>
+		<English>Devotion I</English>
+		<French>Dévot I</French>
+		<German>Hingabe I</German>
+		<Russian>Набожный I</Russian>
+		<Italian>Devoto I</Italian>
+		<Polish>Fanatyczny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEVOTION2</Tag>
+		<English>Devotion II</English>
+		<French>Dévot II</French>
+		<German>Hingabe II</German>
+		<Russian>Набожный II</Russian>
+		<Italian>Devoto II</Italian>
+		<Polish>Fanatyczny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_DEVOTION3</Tag>
+		<English>Devotion III</English>
+		<French>Dévot III</French>
+		<German>Hingabe III</German>
+		<Russian>Набожный III</Russian>
+		<Italian>Devoto III</Italian>
+		<Polish>Fanatyczny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_HUMANITARIAN</Tag>
+		<English>Humanitarian</English>
+		<French>Humanitaire</French>
+		<Russian>Просвещенный</Russian>
+		<Italian>Filantropo</Italian>
+		<Polish>Humanitarny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_HUMANITARIAN1</Tag>
+		<English>Humanitarian I</English>
+		<French>Humanitaire I</French>
+		<Russian>Просвещенный I</Russian>
+		<Italian>Filantropo I</Italian>
+		<Polish>Humanitarny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_HUMANITARIAN2</Tag>
+		<English>Humanitarian II</English>
+		<French>Humanitaire II</French>
+		<Russian>Просвещенный II</Russian>
+		<Italian>Filantropo II</Italian>
+		<Polish>Humanitarny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_IMPERIALIST</Tag>
+		<English>Imperialist</English>
+		<French>Impérialiste</French>
+		<Russian>Империалист</Russian>
+		<Italian>Imperialista</Italian>
+		<Polish>Imperialistyczny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_IMPERIALIST1</Tag>
+		<English>Imperialist I</English>
+		<French>Impérialiste I</French>
+		<Russian>Империалист I</Russian>
+		<Italian>Imperialista I</Italian>
+		<Polish>Imperialistyczny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_IMPERIALIST2</Tag>
+		<English>Imperialist II</English>
+		<French>Impérialiste II</French>
+		<Russian>Империалист II</Russian>
+		<Italian>Imperialista II</Italian>
+		<Polish>Imperialistyczny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_IMPERIALIST3</Tag>
+		<English>Imperialist III</English>
+		<French>Impérialiste III</French>
+		<Russian>Империалист III</Russian>
+		<Italian>Imperialista III</Italian>
+		<Polish>Imperialistyczny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_LAWFUL</Tag>
+		<English>Lawful</English>
+		<French>Légitime</French>
+		<Russian>Законник</Russian>
+		<Italian>Rispettoso della legge</Italian>
+		<Polish>Praworz&#185;dny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_LAWFUL1</Tag>
+		<English>Lawful I</English>
+		<French>Légitime I</French>
+		<Russian>Законник I</Russian>
+		<Italian>Rispettoso della legge I</Italian>
+		<Polish>Praworz&#185;dny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_LAWFUL2</Tag>
+		<English>Lawful II</English>
+		<French>Légitime II</French>
+		<Russian>Законник II</Russian>
+		<Italian>Rispettoso della legge II</Italian>
+		<Polish>Praworz&#185;dny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_LAWFUL3</Tag>
+		<English>Lawful III</English>
+		<French>Légitime III</French>
+		<Russian>Законник III</Russian>
+		<Italian>Rispettoso della legge III</Italian>
+		<Polish>Praworz&#185;dny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEDICAL</Tag>
+		<English>Medical</English>
+		<French>Médical</French>
+		<Russian>Фельдшер</Russian>
+		<Italian>Medico</Italian>
+		<Polish>Medyczny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEDICAL1</Tag>
+		<English>Medical I</English>
+		<French>Médical I</French>
+		<Russian>Фельдшер I</Russian>
+		<Italian>Medico I</Italian>
+		<Polish>Medyczny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEDICAL2</Tag>
+		<English>Medical II</English>
+		<French>Médical II</French>
+		<Russian>Фельдшер II</Russian>
+		<Italian>Medico II</Italian>
+		<Polish>Medyczny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEDICAL3</Tag>
+		<English>Medical III</English>
+		<French>Médical III</French>
+		<Russian>Фельдшер III</Russian>
+		<Italian>Medico III</Italian>
+		<Polish>Medyczny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEEK</Tag>
+		<English>Meek</English>
+		<French>Doux</French>
+		<Russian>Кроткий</Russian>
+		<Italian>Mite</Italian>
+		<Polish>Cichy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEEK1</Tag>
+		<English>Meek I</English>
+		<French>Doux I</French>
+		<Russian>Кроткий I</Russian>
+		<Italian>Mite I</Italian>
+		<Polish>Cichy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEEK2</Tag>
+		<English>Meek II</English>
+		<French>Doux II</French>
+		<Russian>Кроткий II</Russian>
+		<Italian>Mite II</Italian>
+		<Polish>Cichy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_MEEK3</Tag>
+		<English>Meek III</English>
+		<French>Doux III</French>
+		<Russian>Кроткий III</Russian>
+		<Italian>Mite III</Italian>
+		<Polish>Cichy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NAIVE</Tag>
+		<English>Naive</English>
+		<French>Naïf</French>
+		<Russian>Простак</Russian>
+		<Italian>Ingenuo</Italian>
+		<Polish>Naiwny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NAIVE1</Tag>
+		<English>Naive I</English>
+		<French>Naïf I</French>
+		<Russian>Простак I</Russian>
+		<Italian>Ingenuo I</Italian>
+		<Polish>Naiwny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NAIVE2</Tag>
+		<English>Naive II</English>
+		<French>Naïf II</French>
+		<Russian>Простак II</Russian>
+		<Italian>Ingenuo II</Italian>
+		<Polish>Naiwny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NAIVE3</Tag>
+		<English>Naive III</English>
+		<French>Naïf III</French>
+		<Russian>Простак III</Russian>
+		<Italian>Ingenuo III</Italian>
+		<Polish>Naiwny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NATURALIST</Tag>
+		<English>Naturalist</English>
+		<French>Naturaliste</French>
+		<Russian>Натуралист</Russian>
+		<Italian>Naturalista</Italian>
+		<Polish>Przyrodnik</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NATURALIST1</Tag>
+		<English>Naturalist I</English>
+		<French>Naturaliste I</French>
+		<Russian>Натуралист I</Russian>
+		<Italian>Naturalista I</Italian>
+		<Polish>Przyrodnik I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NATURALIST2</Tag>
+		<English>Naturalist II</English>
+		<French>Naturaliste II</French>
+		<Russian>Натуралист II</Russian>
+		<Italian>Naturalista II</Italian>
+		<Polish>Przyrodnik II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NATURALIST3</Tag>
+		<English>Naturalist III</English>
+		<French>Naturaliste III</French>
+		<Russian>Натуралист III</Russian>
+		<Italian>Naturalista III</Italian>
+		<Polish>Przyrodnik III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NEGLIGENT</Tag>
+		<English>Negligent</English>
+		<French>Négligent</French>
+		<Russian>Беспечный</Russian>
+		<Italian>Negligente</Italian>
+		<Polish>Niedba&#179;y</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NEGLIGENT1</Tag>
+		<English>Negligent I</English>
+		<French>Négligent I</French>
+		<Russian>Беспечный I</Russian>
+		<Italian>Negligente I</Italian>
+		<Polish>Niedba&#179;y I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NEGLIGENT2</Tag>
+		<English>Negligent II</English>
+		<French>Négligent II</French>
+		<Russian>Беспечный II</Russian>
+		<Italian>Negligente II</Italian>
+		<Polish>Niedba&#179;y II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NEGLIGENT3</Tag>
+		<English>Negligent III</English>
+		<French>Négligent III</French>
+		<Russian>Беспечный III</Russian>
+		<Italian>Negligente III</Italian>
+		<Polish>Niedba&#179;y III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NOMADIC</Tag>
+		<English>Nomadic</English>
+		<French>Nomade</French>
+		<Russian>Кочевой</Russian>
+		<Italian>Nomade</Italian>
+		<Polish>Koczowniczy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NOMADIC1</Tag>
+		<English>Nomadic I</English>
+		<French>Nomade I</French>
+		<Russian>Кочевой I</Russian>
+		<Italian>Nomade I</Italian>
+		<Polish>Koczowniczy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NOMADIC2</Tag>
+		<English>Nomadic II</English>
+		<French>Nomade II</French>
+		<Russian>Кочевой II</Russian>
+		<Italian>Nomade II</Italian>
+		<Polish>Koczowniczy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_NOMADIC3</Tag>
+		<English>Nomadic III</English>
+		<French>Nomade III</French>
+		<Russian>Кочевой III</Russian>
+		<Italian>Nomade III</Italian>
+		<Polish>Koczowniczy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PACIFIST</Tag>
+		<English>Pacifist</English>
+		<French>Pacifiste</French>
+		<German>Pazifist</German>
+		<Russian>Пацифист</Russian>
+		<Italian>Pacifista</Italian>
+		<Polish>Pacyfista</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PACIFIST1</Tag>
+		<English>Pacifist I</English>
+		<French>Pacifiste I</French>
+		<German>Pazifist I</German>
+		<Russian>Пацифист I</Russian>
+		<Italian>Pacifista I</Italian>
+		<Polish>Pacyfista I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PACIFIST2</Tag>
+		<English>Pacifist II</English>
+		<French>Pacifiste II</French>
+		<German>Pazifist II</German>
+		<Russian>Пацифист II</Russian>
+		<Italian>Pacifista II</Italian>
+		<Polish>Pacyfista II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PACIFIST3</Tag>
+		<English>Pacifist III</English>
+		<French>Pacifiste III</French>
+		<German>Pazifist III</German>
+		<Russian>Пацифист III</Russian>
+		<Italian>Pacifista III</Italian>
+		<Polish>Pacyfista III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PROTECTIVE</Tag>
+		<English>Protective</English>
+		<French>Protecteur</French>
+		<Russian>Защитник</Russian>
+		<Italian>Protettivo</Italian>
+		<Polish>Opieku&#241;czy</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PROTECTIVE1</Tag>
+		<English>Protective I</English>
+		<French>Protecteur I</French>
+		<Russian>Защитник I</Russian>
+		<Italian>Protettivo I</Italian>
+		<Polish>Opieku&#241;czy I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PROTECTIVE2</Tag>
+		<English>Protective II</English>
+		<French>Protecteur II</French>
+		<Russian>Защитник II</Russian>
+		<Italian>Protettivo II</Italian>
+		<Polish>Opieku&#241;czy II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_PROTECTIVE3</Tag>
+		<English>Protective III</English>
+		<French>Protecteur III</French>
+		<Russian>Защитник III</Russian>
+		<Italian>Protettivo III</Italian>
+		<Polish>Opieku&#241;czy III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SEAFARING</Tag>
+		<English>Seafaring</English>
+		<French>Marin</French>
+		<Russian>Мореход</Russian>
+		<Italian>Marinaio</Italian>
+		<Polish>&#175;eglarz</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SEAFARING1</Tag>
+		<English>Seafaring I</English>
+		<French>Marin I</French>
+		<Russian>Мореход I</Russian>
+		<Italian>Marinaio I</Italian>
+		<Polish>&#175;eglarz I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SEAFARING2</Tag>
+		<English>Seafaring II</English>
+		<French>Marin II</French>
+		<Russian>Мореход II</Russian>
+		<Italian>Marinaio II</Italian>
+		<Polish>&#175;eglarz II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SEAFARING3</Tag>
+		<English>Seafaring III</English>
+		<French>Marin III</French>
+		<Russian>Мореход III</Russian>
+		<Italian>Marinaio III</Italian>
+		<Polish>&#175;eglarz III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SLOB</Tag>
+		<English>Slob</English>
+		<French>Plouc</French>
+		<Russian>Неряха</Russian>
+		<Italian>Sciatto</Italian>
+		<Polish>Niechlujny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SLOB1</Tag>
+		<English>Slob I</English>
+		<French>Plouc I</French>
+		<Russian>Неряха I</Russian>
+		<Italian>Sciatto I</Italian>
+		<Polish>Niechlujny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SLOB2</Tag>
+		<English>Slob II</English>
+		<French>Plouc II</French>
+		<Russian>Неряха II</Russian>
+		<Italian>Sciatto II</Italian>
+		<Polish>Niechlujny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_SLOB3</Tag>
+		<English>Slob III</English>
+		<French>Plouc III</French>
+		<Russian>Неряха III</Russian>
+		<Italian>Sciatto III</Italian>
+		<Polish>Niechlujny III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_TIMID</Tag>
+		<English>Timid</English>
+		<French>Timide</French>
+		<German>Schüchtern</German>
+		<Italian>Timido</Italian>
+		<Russian>Робкий</Russian>
+		<Polish>Nie&#156;mia&#179;y</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_TIMID1</Tag>
+		<English>Timid I</English>
+		<French>Timide I</French>
+		<German>Schüchtern I</German>
+		<Italian>Timido I</Italian>
+		<Russian>Робкий I</Russian>
+		<Polish>Nie&#156;mia&#179;y I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_TIMID2</Tag>
+		<English>Timid II</English>
+		<French>Timide II</French>
+		<German>Schüchtern II</German>
+		<Italian>Timido II</Italian>
+		<Russian>Робкий II</Russian>
+		<Polish>Nie&#156;mia&#179;y II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_TIMID3</Tag>
+		<English>Timid III</English>
+		<French>Timide III</French>
+		<German>Schüchtern III</German>
+		<Italian>Timido III</Italian>
+		<Russian>Робкий III</Russian>
+		<Polish>Nie&#156;mia&#179;y III</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_UNSANITARY</Tag>
+		<English>Unsanitary</English>
+		<French>Malsain</French>
+		<Italian>Malsano</Italian>
+		<Russian>Бродяга</Russian>
+		<Polish>Niehigieniczny</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_UNSANITARY1</Tag>
+		<English>Unsanitary I</English>
+		<French>Malsain I</French>
+		<Italian>Malsano I</Italian>
+		<Russian>Бродяга I</Russian>
+		<Polish>Niehigieniczny I</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_UNSANITARY2</Tag>
+		<English>Unsanitary II</English>
+		<French>Malsain II</French>
+		<Italian>Malsano II</Italian>
+		<Russian>Бродяга II</Russian>
+		<Polish>Niehigieniczny II</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_PROMOTION_UNSANITARY3</Tag>
+		<English>Unsanitary III</English>
+		<French>Malsain III</French>
+		<Italian>Malsano III</Italian>
+		<Russian>Бродяга III</Russian>
+		<Polish>Niehigieniczny III</Polish>
+	</TEXT>
+</Civ4GameText>

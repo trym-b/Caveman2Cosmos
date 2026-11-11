@@ -1,3 +1,6 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvPopupReturn.h"
 
@@ -7,6 +10,7 @@
 
 PopupReturn::PopupReturn(const PopupReturn &popupReturn)
 {
+	PROFILE_EXTRA_FUNC();
 	int iI;
 
 	for (iI = 0; iI < popupReturn.getRadioButtonSize(); iI++)
@@ -53,6 +57,7 @@ PopupReturn::PopupReturn(const PopupReturn &popupReturn)
 // Assignment operator
 PopupReturn &PopupReturn::operator=(const PopupReturn &source)
 {
+	PROFILE_EXTRA_FUNC();
 	int iI;
 
 	for (iI = 0; iI < source.getRadioButtonSize(); iI++)
@@ -100,9 +105,10 @@ PopupReturn &PopupReturn::operator=(const PopupReturn &source)
 
 //
 // read object from a stream
-// 
+//
 void PopupReturn::read(FDataStreamBase* pStream)
 {
+	PROFILE_EXTRA_FUNC();
 	int iSize;
 	int iValue;
 	int i;
@@ -167,12 +173,13 @@ void PopupReturn::read(FDataStreamBase* pStream)
 
 //
 // write object to a stream
-// 
+//
 void PopupReturn::write(FDataStreamBase* pStream) const
 {
+	PROFILE_EXTRA_FUNC();
 	unsigned int iI;
 	//char szString[1024];
-	
+
 	pStream->Write( m_aiSelectedRadioButton.size() );
 	for (iI = 0; iI < m_aiSelectedRadioButton.size(); iI++)
 	{

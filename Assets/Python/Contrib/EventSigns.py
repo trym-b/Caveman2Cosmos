@@ -8,8 +8,6 @@
 ##
 
 from CvPythonExtensions import *
-from operator import itemgetter
-
 import BugUtil
 import CvUtil
 import CvRandomEventInterface
@@ -69,20 +67,16 @@ def addSign(pPlot, ePlayer, szCaption):
 
 	Fix by God-Emperor
 	"""
-	# G-E fix: if not pPlot or pPlot.isNone():
-	if not pPlot:
-		BugUtil.warn("EventSigns.addSign() was passed an invalid plot")
+	if not pPlot :
+		BugUtil.warn("EventSigns.addSign() was passed an invalid plot for caption : %s" % szCaption)
+		return False
+	if pPlot.getX() == -1 or pPlot.getY() == -1:
+		BugUtil.warn("EventSigns.addSign() was passed an plot with -1 coords for caption : %s" % szCaption)
 		return False
 	if gSavedSigns == None:
 		BugUtil.warn("EventSigns.addSign() gSavedSigns is not initialized!")
 		return False
-	if pPlot.isNone(): # G-E fix
-		if ePlayer == -1 and len(szCaption) == 0:
-			global g_bForceUpdate
-			g_bForceUpdate = True
-			return True
-		BugUtil.warn("EventSigns.addSign() was passed an invalid plot: isNone = True")
-		return False
+
 	gSavedSigns.storeSign(pPlot, ePlayer, szCaption)
 	gSavedSigns.displaySign(pPlot, ePlayer)
 	SdToolKit.sdSetGlobal(SD_MOD_ID, SD_VAR_ID, gSavedSigns)
@@ -96,7 +90,8 @@ def updateCurrentSigns():
 	for iSign in range(engine.getNumSigns()):
 		pSign = engine.getSignByIndex(iSign)
 		pPlot = pSign.getPlot()
-		if pPlot and not pPlot.isNone():
+		pPlot = MAP.plot(pPlot.getX(), pPlot.getY())
+		if pPlot:
 			ePlayer = pSign.getPlayerType()
 			szCaption = pSign.getCaption()
 			if not gCurrentSigns.hasPlotSigns(pPlot):
@@ -111,6 +106,7 @@ def clearCurrentSigns ():
 	gCurrentSigns = None
 
 
+'''
 def clearSignsAndLandmarks(pPlot):
 	""" Removes any current landmarks or signs from a plot.
 
@@ -127,6 +123,7 @@ def clearSignsAndLandmarks(pPlot):
 	# Don't even know what this does; it was the last of my failed attempts to force the signs to show.
 	#engine.setDirty(EngineDirtyBits.GlobeTexture_DIRTY_BIT, True)
 	return True
+'''
 
 def placeLandmark(pPlot, sEventType, iFood, iProd, iComm, bIsSign, iSignOwner):
 	""" Places a landmark on a plot identifying a yield change with a short description.
@@ -191,7 +188,8 @@ def applyLandmarkFromEvent(argsList):
 
 	if iFood != 0 or iProd != 0 or iComm != 0:
 		pPlot = MAP.plot(kTriggeredData.iPlotX, kTriggeredData.iPlotY)
-		placeLandmark(pPlot, event.getType(), iFood, iProd, iComm, True, -1)
+		if pPlot:
+			placeLandmark(pPlot, event.getType(), iFood, iProd, iComm, True, -1)
 
 	return True
 
@@ -209,15 +207,14 @@ class MapSigns:
 
 	def isEmpty (self):
 		""" Check to see if object has any PlotSigns data. """
-		return (len(self.plotDict) == 0)
+		return not self.plotDict
 
 	def getPlotSigns (self, pPlot):
 		""" Returns PlotSigns object for given Plot. """
 		thisKey = self.__getKey(pPlot)
 		if thisKey in self.plotDict:
 			return self.plotDict[thisKey]
-		else:
-			return None
+		return None
 
 	def __getitem__ (self, pPlot):
 		""" Special method to allow access like pPlotSigns = pMapSigns[pPlot] """
@@ -254,7 +251,6 @@ class MapSigns:
 
 	def __str__ (self):
 		""" String representation of class instance. """
-		#return "MapSigns { plotDict=%s }" % (str(self.plotDict))
 		# The above doesn't seem to propagate the %s to the PlotSigns, so we do it the long way
 		szText = "MapSigns { plotDict = {"
 		for key in self.plotDict:
@@ -280,7 +276,7 @@ class MapSigns:
 		if not g_bShowSigns:
 			print "MapSigns.displaySign() called but EventSigns is disabled."
 			return False
-		if not pPlot or pPlot.isNone():
+		if not pPlot:
 			BugUtil.warn("MapSigns.displaySign() was passed an invalid plot: %s" % (str(pPlot)))
 			return False
 		thisKey = self.__getKey(pPlot)
@@ -294,7 +290,7 @@ class MapSigns:
 			return False
 		if ePlayer == -1:
 			if pPlot.isInViewport():
-				print "MapSigns.displaySign() landmark (%s) shown on plot %s" %(szCaption, ePlayer, str(thisKey))
+				print "MapSigns.displaySign() landmark (%s) shown for player %d on plot %s" %(szCaption, ePlayer, str(thisKey))
 				engine.addLandmark(pPlot.cloneToViewport(), szCaption.encode('latin_1'))
 		else:
 			pPlayer = GC.getPlayer(ePlayer)
@@ -315,7 +311,7 @@ class MapSigns:
 		""" Hides sign for given player at given plot if there's a current sign the same as the stored one.
 		Note that this function assumes gCurrentSigns is up-to-date so make sure you've updated first.
 		"""
-		if not pPlot or pPlot.isNone():
+		if not pPlot:
 			BugUtil.warn("MapSigns.hideSign() was passed an invalid plot: %s" % (str(pPlot)))
 			return False
 		thisKey = self.__getKey(pPlot)
@@ -361,7 +357,7 @@ class MapSigns:
 			bShow = g_bShowSigns
 		for pSign in self.plotDict.itervalues():
 			pPlot = pSign.getPlot()
-			if pPlot and not pPlot.isNone():
+			if pPlot:
 				print "MapSigns.processSigns() Found saved sign data for plot %d, %d ..." %(pPlot.getX(), pPlot.getY())
 				for ePlayer in pSign.getPlayers():
 					print "MapSigns.processSigns() ... and caption for player %d" % ePlayer
@@ -377,7 +373,7 @@ class MapSigns:
 	def __getKey(self, pPlot):
 		""" Gets keyname used to access this plot object. """
 		thisKey = None
-		if pPlot and not pPlot.isNone():
+		if pPlot:
 			thisKey = (pPlot.getX(), pPlot.getY())
 		return thisKey
 
@@ -387,7 +383,7 @@ class PlotSigns:
 
 	def __init__(self, pPlot):
 		""" Class initialization. Parameter is Plot Object. """
-		if pPlot and not pPlot.isNone():
+		if pPlot:
 			self.reset()
 			self.iX = pPlot.getX()
 			self.iY = pPlot.getY()
@@ -408,7 +404,7 @@ class PlotSigns:
 
 	def setPlot(self, pPlot):
 		""" Assigns plot object. """
-		if pPlot and not pPlot.isNone():
+		if pPlot:
 			self.iX = pPlot.getX()
 			self.iY = pPlot.getY()
 
@@ -428,7 +424,7 @@ class PlotSigns:
 
 	def setSign(self, ePlayer, szCaption):
 		""" Sets Caption for a given player on this plot. """
-		if ePlayer in ([-1] + range(GC.getMAX_PLAYERS())):
+		if ePlayer == -1 or 0 <= ePlayer < GC.getMAX_PLAYERS():
 			self.signDict[ePlayer] = szCaption
 		else:
 			BugUtil.warn("EventSigns PlotSigns.setSign() was passed an invalid Player ID %s at Plot (%d,%d)" % (str(ePlayer), self.iX, self.iY))
@@ -487,12 +483,11 @@ class EventSignsEventHandler:
 	def onPlotRevealed(self, argsList):
 		""" Called when plot is revealed to team. """
 		(pPlot, eTeam) = argsList
-		if g_bShowSigns:
-			if gSavedSigns:
-				for ePlayer in range(GC.getMAX_PC_PLAYERS()):
+		if g_bShowSigns and gSavedSigns:
 
-					if GC.getPlayer(ePlayer).getTeam() == eTeam:
-						gSavedSigns.displaySign(pPlot, ePlayer)
+			for ePlayer in range(GC.getMAX_PC_PLAYERS()):
+				if GC.getPlayer(ePlayer).getTeam() == eTeam:
+					gSavedSigns.displaySign(pPlot, ePlayer)
 
 	def onBeginActivePlayerTurn(self, argsList):
 		""" Called at start of active player's turn """
@@ -525,28 +520,25 @@ def applySaltpeter(argsList):
 	# Add landmark for initial plot, if there is still a yield change
 	placeLandmark(CyPlot, sEventType, iFood, iProd, iComm, True, -1)
 
-	iForest = GC.getInfoTypeForString('FEATURE_FOREST')
+	iForest = GC.getFEATURE_FOREST()
 
 	listPlots = []
-	for CyPlot in MAP.plots():
-		if (CyPlot.getOwner() == iPlayer and CyPlot.getFeatureType() == iForest and CyPlot.isHills()):
-			iDistance = plotDistance(kTriggeredData.iPlotX, kTriggeredData.iPlotY, CyPlot.getX(), CyPlot.getY())
+	for plotX in MAP.plots():
+		if (plotX.getOwner() == iPlayer and plotX.getFeatureType() == iForest and plotX.isHills()):
+			iDistance = plotDistance(kTriggeredData.iPlotX, kTriggeredData.iPlotY, plotX.getX(), plotX.getY())
 			if iDistance > 0:
-				listPlots.append((iDistance, CyPlot))
+				listPlots.append((iDistance, plotX))
 
 	listPlots.sort()
 
-	GAME = GC.getGame()
 	iCount = CvRandomEventInterface.getSaltpeterNumExtraPlots()
 	for plot in listPlots:
 		if not iCount:
 			break
 		iCount -= 1
-		iX = plot[1].getX()
-		iY = plot[1].getY()
-		GAME.setPlotExtraYield(iX, iY, YieldTypes.YIELD_COMMERCE, 1)
+		plot[1].setExtraYield(YieldTypes.YIELD_COMMERCE, 2)
 		szTxt = TRNSLTR.getText("TXT_KEY_EVENT_SALTPETER_DISCOVERED",())
-		CvUtil.sendMessage(szTxt, iPlayer, GC.getEVENT_MESSAGE_TIME(), "", -1, iX, iY, True, True, 0, "", False)
+		CvUtil.sendMessage(szTxt, iPlayer, GC.getEVENT_MESSAGE_TIME(), "", -1, plot[1].getX(), plot[1].getY(), True, True, 0, "", False)
 		# Add landmark for other plots too.
 		placeLandmark(plot[1], sEventType, iFood, iProd, iComm, True, -1)
 

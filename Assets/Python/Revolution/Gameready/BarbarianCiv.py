@@ -26,7 +26,6 @@ class BarbarianCiv:
 		self.customEM = customEM
 		self.BARBARIAN_PLAYER = GC.getBARBARIAN_PLAYER()
 		self.MAX_PC_PLAYERS = GC.getMAX_PC_PLAYERS()
-		self.NUM_UNIT_AND_TECH_PREREQS = GC.getDefineINT("NUM_UNIT_AND_TECH_PREREQS")
 
 		self.customEM.addEventHandler("BeginGameTurn", self.onBeginGameTurn)
 
@@ -64,7 +63,7 @@ class BarbarianCiv:
 		# Increase odds per barb city within reason.
 		fMod *= iNumCities ** .5
 		# Gamespeed factor
-		iFactorGS = GC.getGameSpeedInfo(GAME.getGameSpeedType()).getGrowthPercent()
+		iFactorGS = GC.getGameSpeedInfo(GAME.getGameSpeedType()).getSpeedPercent()
 		iRange = 16*iFactorGS
 		iEra = GAME.getCurrentEra()
 
@@ -195,14 +194,11 @@ class BarbarianCiv:
 				iLeader = CyPlayerX.getLeaderType()
 				if iLeader > -1: aList.append(iLeader)
 
-		bLeadAnyCiv = GAME.isOption(GameOptionTypes.GAMEOPTION_LEAD_ANY_CIV)
+		bLeadAnyCiv = GAME.isOption(GameOptionTypes.GAMEOPTION_LEADER_UNRESTRICTED)
 		leaders = []
 		for iLeader in xrange(GC.getNumLeaderHeadInfos()):
-			if iLeader in aList: continue
-			if bLeadAnyCiv:
-				if not GC.getLeaderHeadInfo(iLeader).isNPC(): continue
-			elif not GC.getCivilizationInfo(iCivType).isLeaders(iLeader): continue
-			leaders.append(iLeader)
+			if iLeader not in aList and not GC.getLeaderHeadInfo(iLeader).isNPC() and (bLeadAnyCiv or GC.getCivilizationInfo(iCivType).isLeaders(iLeader)):
+				leaders.append(iLeader)
 
 		if not leaders:
 			print "[ERROR] Unexpected lack of possible leaders." + POST_FIX
@@ -221,7 +217,7 @@ class BarbarianCiv:
 
 		CyTeam = GC.getTeam(CyPlayer.getTeam())
 
-		CyPlayer.setNewPlayerAlive(True)
+		CyPlayer.setAlive(True, False)
 
 		civName = CyPlayer.getCivilizationDescription(0)
 		print "[BarbCiv] %s has emerged in %s" %(civName, szCityName)
@@ -237,7 +233,7 @@ class BarbarianCiv:
 			CyCity.setOriginalOwner(iPlayer)
 		CyPlot.setOwner(iPlayer)
 
-		# Note: city acquisition may invalidate previous city pointer, so have to create new list of cities
+		# Note: city owner change (CyPlot.setOwner(iPlayer)) invalidate previous city pointer.
 		CyCity = CyPlayer.getCapitalCity()
 
 		iTemp = iFactorGS
@@ -251,16 +247,17 @@ class BarbarianCiv:
 			iMinEra = iEra - self.RevOpt.getNewWorldErasBehind()
 			if iMinEra > -1:
 				for iTech in xrange(iNumTechs):
-					if CyPlayer.canEverResearch(iTech) and GC.getTechInfo(iTech).getEra() <= iMinEra:
+					if CyPlayer.canResearch(iTech, False, True) and GC.getTechInfo(iTech).getEra() <= iMinEra:
 						CyTeam.setHasTech(iTech, True, iPlayer, False, False)
 		else:
 			iNumTeams = GAME.countCivTeamsAlive()
 			iTechFrac = self.RevOpt.getBarbTechPercent()
+			if iTechFrac < 1: iTechFrac = 1
 			for iTech in xrange(iNumTechs):
 				if iTech in techsOwned:
 					CyTeam.setHasTech(iTech, True, iPlayer, False, False)
 					continue
-				if not CyPlayer.canEverResearch(iTech):
+				if not CyPlayer.canResearch(iTech, False, True):
 					continue
 				iKnownRatio = 100 * GAME.countKnownTechNumTeams(iTech) / iNumTeams
 				if iKnownRatio < 100 and closeTeams:
@@ -277,7 +274,7 @@ class BarbarianCiv:
 				if iKnownRatio >= iTechFrac:
 					CyTeam.setHasTech(iTech, True, iPlayer, False, False)
 
-		CyTeam.setIsMinorCiv(True, False)
+		CyTeam.setIsMinorCiv(True)
 
 		# Units
 		iNumBarbDefenders = GC.getHandicapInfo(GAME.getHandicapType()).getBarbarianInitialDefenders()
@@ -296,7 +293,7 @@ class BarbarianCiv:
 				iBaseOffensiveUnits *= 4
 			elif bMajorCivUnits:
 				iBaseOffensiveUnits *= 2
-			else: iBaseOffensiveUnits /= 3
+			else: iBaseOffensiveUnits = max(1, iBaseOffensiveUnits / 3)
 		else:
 			if iSettler > -1:
 				CyPlayer.initUnit(iSettler, iX, iY, UnitAITypes.UNITAI_SETTLE, DirectionTypes.DIRECTION_SOUTH)
@@ -341,11 +338,8 @@ class BarbarianCiv:
 				CyInterface().addMessage(iPlayerX, False, MSG_TIME, szTxt, None, InterfaceMessageTypes.MESSAGE_TYPE_MAJOR_EVENT, None, GC.getInfoTypeForString("COLOR_HIGHLIGHT_TEXT"), -1, -1, False, False)
 
 
-	def getScenario(self, CyArea):
-		if CyArea == None:
-			print "Error!  Passed a None area!"
-			return None
 
+	def getScenario(self, CyArea):
 		bMajorCivCities = False
 		bMajorCivUnits = False
 		iCount = 0
@@ -353,6 +347,9 @@ class BarbarianCiv:
 		fPowerPlayer = 0.0
 
 		# Smaller landmasses require less relative civ power to be considered Old World...
+		# Toffer-ToDo: make new world and old world be stored to areas in the dll and set by mapscripts.
+		#	New world should become old world when the first minor civ in the new world becomes a major civ.
+		#	Would simplify getScenario, and could move this function from python to dll.
 		fSizeMod = 1.0 * MAP.getLandPlots()/CyArea.getNumTiles()
 		fSizeMod **= 0.9 # ...within reason.
 
@@ -411,7 +408,12 @@ class BarbarianCiv:
 			if isLimitedUnit(iUnit): continue
 
 			CvUnitInfo = GC.getUnitInfo(iUnit)
-			if CvUnitInfo.getDomainType() != DomainTypes.DOMAIN_LAND or CvUnitInfo.getNumPrereqAndBuildings() > 0:
+			if (
+				CvUnitInfo.getDomainType() != DomainTypes.DOMAIN_LAND
+			or	CvUnitInfo.getNumPrereqAndBuildings() > 0
+			or	CvUnitInfo.getPrereqAndBonus() != -1
+			and	GC.getBonusInfo(CvUnitInfo.getPrereqAndBonus()).getBonusClassType() == GC.getInfoTypeForString("BONUSCLASS_CULTURE")
+			):
 				continue
 
 			if not CyPlayer.canTrain(iUnit, False, False): continue
@@ -468,9 +470,8 @@ class BarbarianCiv:
 			iTech = CvUnitInfo.getPrereqAndTech()
 			if iTech > -1 and not CyTeam.isHasTech(iTech):
 				continue
-			for i in range(self.NUM_UNIT_AND_TECH_PREREQS):
-				iTech = CvUnitInfo.getPrereqAndTechs(i)
-				if iTech > -1 and not CyTeam.isHasTech(iTech):
+			for iTech in CvUnitInfo.getPrereqAndTechs():
+				if not CyTeam.isHasTech(iTech):
 					break
 			else:
 				aList.append(iUnit); break
@@ -531,43 +532,71 @@ class BarbarianCiv:
 				aList.append([iRadius, MAP.plot(iX, iY)])
 		# Convert nearby barbarian
 		iPlayerBarb = self.BARBARIAN_PLAYER
-		# City Culture
-		iCult = CyCity.getCultureTimes100(iPlayerBarb)
-		CyCity.setCultureTimes100(iPlayerBarb, 0, False)
-		CyCity.setCultureTimes100(iPlayer, iCult, False)
+
 		for iRadius, CyPlotX in aList:
 			# Plot Culture
 			iCult = CyPlotX.getCulture(iPlayerBarb)
 			if iCult > 0:
+
 				if iRadius:
-					iCult *= 2/(2+iRadius*iRadius)
+					iCult = iCult * 4/(4+iRadius*iRadius)
+
 				CyPlotX.changeCulture(iPlayerBarb, -iCult, False)
-				CyPlotX.setCulture(iPlayer, iCult, True)
+				CyPlotX.changeCulture(iPlayer, iCult, True)
+
 			# Units
 			for CyUnit in CyPlotX.units():
-				if CyUnit.getOwner() == iPlayerBarb:
-					if iRadius and GAME.getSorenRandNum(iRadius + 1, 'Convert Barbarian'): continue
+				if (
+					CyUnit.getOwner() == iPlayerBarb
+				and (CyPlotX.getOwner() == iPlayer or not GAME.getSorenRandNum(iRadius + 1, 'Convert Barbarian'))
+				):
 					iUnit = CyUnit.getUnitType()
 					CyUnit.kill(False, -1)
-					CyPlayer.initUnit(iUnit, X, Y, UnitAITypes.NO_UNITAI, DirectionTypes.NO_DIRECTION)
+					CyPlayer.initUnit(iUnit, CyPlotX.getX(), CyPlotX.getY(), UnitAITypes.NO_UNITAI, DirectionTypes.NO_DIRECTION)
+
+		# City Culture
+		# Transfer barbarian culture to the new player (becomes "accepted" culture)
+		CyCity.setCultureTimes100(iPlayer, CyCity.getCultureTimes100(iPlayerBarb), True)
+		CyCity.setCultureTimes100(iPlayerBarb, 0, False)
+
+		# Ensure the emergent civ gets its matching local culture building (C.L).
+		# onCityBuilt() normally handles this via settler promotions, but this code path
+		# converts an existing barbarian city and bypasses that event.
+		aCulturePairs = [
+			("BUILDING_C_N_AFRICAN", "BUILDING_C_L_AFRICAN"),
+			("BUILDING_C_N_ASIAN", "BUILDING_C_L_ASIAN"),
+			("BUILDING_C_N_EUROPEAN", "BUILDING_C_L_EUROPEAN"),
+			("BUILDING_C_N_MIDDLE_EASTERN", "BUILDING_C_L_MIDDLE_EASTERN"),
+			("BUILDING_C_N_NEANDERTHAL", "BUILDING_C_L_NEANDERTHAL"),
+			("BUILDING_C_N_NORTH_AMERICAN", "BUILDING_C_L_NORTH_AMERICAN"),
+			("BUILDING_C_N_OCEANIAN", "BUILDING_C_L_OCEANIAN"),
+			("BUILDING_C_N_SOUTH_AMERICAN", "BUILDING_C_L_SOUTH_AMERICAN")
+		]
+		for szNational, szLocal in aCulturePairs:
+			iNational = GC.getInfoTypeForString(szNational)
+			iLocal = GC.getInfoTypeForString(szLocal)
+			if iNational > -1 and iLocal > -1 and CyCity.hasBuilding(iNational) and not CyCity.hasBuilding(iLocal):
+				CyCity.changeHasBuilding(iLocal, True)
+				break
+
 		# Free city defenders
 		if iDefender > -1:
 			for i in range(iDefenders):
 				CyPlayer.initUnit(iDefender, X, Y, UnitAITypes.UNITAI_CITY_DEFENSE, DirectionTypes.NO_DIRECTION)
 
 
+
 	def checkMinorCivs(self, iPlayer, CyPlayer, MAX_PC_PLAYERS):
 		# Check minor civs for accomplishments which warrant settling into full civ.
 		iCities = CyPlayer.getNumCities()
 		if iCities < 1: return
-		POST_FIX = "\n\tBarbarianCiv.checkMinorCivs"
-		CyCity1 = CyPlayer.getCapitalCity()
 
+		CyCity1 = CyPlayer.getCapitalCity()
 		CyArea = CyCity1.area()
+
 		aList = self.getScenario(CyArea)
 		if not aList: return
 		bNewWorld, bMajorCivCities, bMajorCivUnits = aList
-		iAreaID = CyArea.getID()
 
 		if bNewWorld:
 			iPolicy = self.RevOpt.getNewWorldPolicy()
@@ -604,10 +633,8 @@ class BarbarianCiv:
 		odds += 4*CyPlayer.getWondersScore() # 20 points per wonder, see getWonderScore in CvGameCoreUtils.cpp.
 		if odds < 512: return
 
-		iFactorGS = GC.getGameSpeedInfo(GAME.getGameSpeedType()).getGrowthPercent()
+		iFactorGS = GC.getGameSpeedInfo(GAME.getGameSpeedType()).getSpeedPercent()
 		if not GAME.getSorenRandNum(40*iFactorGS + odds, 'minor2major') < odds: return
-
-		iX = CyCity1.getX(); iY = CyCity1.getY()
 
 		bLowScore = False
 		if not bNewWorld:
@@ -629,6 +656,7 @@ class BarbarianCiv:
 				bLowScore = GAME.getPlayerScore(iPlayer) < (iScoreSum - iMinScore) / iCount
 
 		# Turn a minor BarbCiv into a full civ, give more bonuses to launch into the world
+		iX = CyCity1.getX(); iY = CyCity1.getY()
 		if bNewWorld or bLowScore:
 
 			iDefender, iCounter, iAttack, iMobile, iAttackCity, iWorker, iSettler, iExplorer, iMerchant = self.getUnitsForPlayer(iPlayer, CyTeam)
@@ -639,8 +667,9 @@ class BarbarianCiv:
 			iNumBarbDefenders = GC.getHandicapInfo(GAME.getHandicapType()).getBarbarianInitialDefenders()
 			fMilitaryMod = self.RevOpt.getMilitaryStrength()
 
-			# Pickup nearby barb cities
-			iMaxDistance = (5 + 3*bNewWorld) * GC.getWorldInfo(MAP.getWorldSize()).getDefaultPlayers()
+			# Pickup nearby barb cities, search a 4x area if in new world.
+			iAreaID = CyArea.getID()
+			iMaxDistance = (iHighestEra + 10) * (1 + 3*bNewWorld) * GC.getWorldInfo(MAP.getWorldSize()).getDefaultPlayers() / 8
 			CyPlayerBarb = GC.getPlayer(iPlayerBarb)
 			aList = ()
 			for cityX in CyPlayerBarb.cities():
@@ -721,11 +750,11 @@ class BarbarianCiv:
 
 			# Gold
 			CyPlayer.changeGold(2 * iFactorGS * (iEra + 1))
-			CyPlayer.changeGoldenAgeTurns(GAME.goldenAgeLength())
-		CyTeam.setIsMinorCiv(False, False)
+			CyPlayer.changeGoldenAgeTurns(GAME.goldenAgeLength100()/100)
+		CyTeam.setIsMinorCiv(False)
 
 		civName = CyPlayer.getCivilizationShortDescription(0)
-		print "[INFO] Minor civ %s becomes a major civ.%s" %(civName, POST_FIX)
+		print "[INFO] Minor civ %s becomes a major civ.%s" %(civName, "\n\tBarbarianCiv.checkMinorCivs")
 		# Add replay message
 		szMsg = TRNSLTR.getText("TXT_KEY_BARBCIV_MINOR_SETTLE", ()) %(CyPlayer.getName(), CyPlayer.getCivilizationAdjective(1), civName)
 		iColor = GC.getInfoTypeForString("COLOR_HIGHLIGHT_TEXT")

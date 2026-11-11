@@ -1,5 +1,5 @@
 /*
-Partially base on MemTrack 
+Partially base on MemTrack
 from http://www.almostinfinite.com/memtrack.html
 
 Copyright (c) 2002, 2008 Curtis Bartley
@@ -33,6 +33,9 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+
+#include "FProfiler.h"
 
 #include "CvGameCoreDLL.h"
 #include "CvAllocator.h"
@@ -130,7 +133,7 @@ void CvFreeArray(void* p)
 	if (gDLL)
 	{
 #ifdef _DEBUG
-		memset(p, 0xFA, gDLL->memSize(p));
+		// memset(p, 0xFA, gDLL->memSize(p));
 #endif
 		gDLL->delMemArray(p, __FILE__, __LINE__);
 	}
@@ -240,7 +243,7 @@ namespace MemTrack
 		assert(node->myPrevNode == NULL);
 		assert(node->myNextNode == NULL);
 
-		// If we have at least one node in the list ...        
+		// If we have at least one node in the list ...
 		if (ourFirstNode != NULL)
 		{
 			// ... make the new node the first node's predecessor.
@@ -291,6 +294,7 @@ namespace MemTrack
 
 	size_t BlockHeader::CountBlocks()
 	{
+		PROFILE_EXTRA_FUNC();
 		size_t count = 0;
 		BlockHeader* currNode = ourFirstNode;
 		while (currNode != NULL)
@@ -305,6 +309,7 @@ namespace MemTrack
 
 	void BlockHeader::GetBlocks(BlockHeader** blockHeaderPP)
 	{
+		PROFILE_EXTRA_FUNC();
 		BlockHeader* currNode = ourFirstNode;
 		while (currNode != NULL)
 		{
@@ -511,7 +516,7 @@ namespace MemTrack
 		pBlockHeader->~BlockHeader();
 		pBlockHeader = NULL;
 
-		// Free the memory block.    
+		// Free the memory block.
 		CvFree(pProlog);
 	}
 
@@ -547,6 +552,7 @@ namespace MemTrack
 	}
 
 	std::string convertSize(size_t size) {
+		PROFILE_EXTRA_FUNC();
 		static const char* SIZES[] = { "B ", "KB", "MB", "GB" };
 		int div = 0;
 		size_t rem = 0;
@@ -562,6 +568,7 @@ namespace MemTrack
 
 	template < typename SizeTy_ >
 	std::string convertSize(SizeTy_ size) {
+		PROFILE_EXTRA_FUNC();
 		static const char* SIZES[] = { "B ", "KB", "MB", "GB" };
 		int div = 0;
 		SizeTy_ rem = 0;
@@ -581,6 +588,7 @@ namespace MemTrack
 
 	void TrackDumpBlocks()
 	{
+		PROFILE_EXTRA_FUNC();
 		// Get an array of pointers to all extant blocks.
 		size_t numBlocks = BlockHeader::CountBlocks();
 		BlockHeader** ppBlockHeader =
@@ -634,6 +642,7 @@ namespace MemTrack
 		size_t endPost
 	)
 	{
+		PROFILE_EXTRA_FUNC();
 		MEMTRACK_EXEMPT;
 
 		pMemDigest->typeName = ppBlockHeader[startPost]->GetTypeName();
@@ -651,6 +660,7 @@ namespace MemTrack
 
 	void TrackListMemoryUsage()
 	{
+		PROFILE_EXTRA_FUNC();
 		MEMTRACK_EXEMPT;
 
 		// If there are no allocated blocks, then return now.
@@ -812,6 +822,7 @@ namespace MemTrack
 
 	void TrackListMemoryUsageTurnDiff()
 	{
+		PROFILE_EXTRA_FUNC();
 		if (turnIndex++ % 10 != 0)
 		{
 			return;
@@ -869,17 +880,17 @@ namespace MemTrack
 			}
 		}
 
-		std::sort(diffs.rbegin(), diffs.rend());
+		algo::sort(diffs);
 
 		for (std::vector<MemInfoDiff>::const_iterator itr = diffs.begin(); itr != diffs.end(); ++itr)
 		{
 			itr->write(mem_log);
 		}
 
-		mem_log << bst::format("%-80s   TOTAL %8d %12s   DELTA %8d %12s\n") 
-			% "" 
-			% grandTotalNumBlocks % convertSize(grandTotalSize).c_str() 
-			% (static_cast<int>(grandTotalNumBlocks) - static_cast<int>(totalLastTurnBlocks)) 
+		mem_log << bst::format("%-80s   TOTAL %8d %12s   DELTA %8d %12s\n")
+			% ""
+			% grandTotalNumBlocks % convertSize(grandTotalSize).c_str()
+			% (static_cast<int>(grandTotalNumBlocks) - static_cast<int>(totalLastTurnBlocks))
 			% convertSize(static_cast<int>(static_cast<int64_t>(grandTotalSize) - static_cast<int64_t>(totalLastTurnSize))).c_str();
 
 		totalLastTurnBlocks = grandTotalNumBlocks;

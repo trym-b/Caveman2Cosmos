@@ -1,13 +1,13 @@
 ## Sid Meier's Civilization 4
 ## Copyright Firaxis Games 2005
-import CvUtil
-
 
 # Class to decipher and make screen input easy to read...
 class ScreenInput:
 
 	# Init call...
 	def __init__ (self, argsList):
+		if len(argsList) < 15:
+			raise ValueError("argsList must contain at least 15 elements")
 		self.eNotifyCode = argsList[0]
 		self.iData = argsList[1]
 		self.uiFlags = argsList[2]
@@ -83,4 +83,3 @@ class ScreenInput:
 	# Widget Option
 	def getOption (self):
 		return self.bOption
-

@@ -31,7 +31,7 @@ def startCityDemolish(screen, xRes, yRes):
 			CD.CyCity = CyCity
 			if GAME.isOption(GameOptionTypes.GAMEOPTION_NO_CITY_RAZING):
 				CD.bAbandonCity = False
-			elif not GAME.isOption(GameOptionTypes.GAMEOPTION_COMPLETE_KILLS) and CyPlayer.getNumCities() < 2:
+			elif not GAME.isOption(GameOptionTypes.GAMEOPTION_EXP_COMPLETE_KILLS) and CyPlayer.getNumCities() < 2:
 				CD.bAbandonCity = False
 			else:
 				CD.bAbandonCity = True
@@ -104,7 +104,7 @@ class CityDemolish:
 		iconGold = self.iconGold
 		fGoldMod = 0.09
 		fGoldMod *= GC.getDefineINT("BUILDING_PRODUCTION_PERCENT") / 100.0
-		fFactorGS = self.CvGameSpeedInfo.getConstructPercent() / 100.0
+		fFactorGS = self.CvGameSpeedInfo.getHammerCostPercent() / 100.0
 		fGoldMod *= fFactorGS
 		self.fGoldMod = fGoldMod
 		# Build List
@@ -113,7 +113,7 @@ class CityDemolish:
 		aList = []
 		iSum = 0
 		for iType in xrange(GC.getNumBuildingInfos()):
-			if CyCity.getNumRealBuilding(iType) and not CyCity.isFreeBuilding(iType):
+			if CyCity.hasBuilding(iType) and not CyCity.isFreeBuilding(iType):
 				if isWorldWonder(iType) or isTeamWonder(iType):
 					continue
 				CvBuildingInfo = GC.getBuildingInfo(iType)
@@ -139,10 +139,9 @@ class CityDemolish:
 			szAbandon = uFont + TRNSLTR.getText("TXT_KEY_ABANDON_CITY", ())
 			if iGold:
 				if iGold < 0:
-					szClr = "<color=197,0,0>"
-				elif iGold > 0:
-					szClr = ""
-				szAbandon += " (" + szClr + str(iGold) + "</color> " + iconGold + ")"
+					szAbandon += " (<color=197,0,0>" + str(iGold) + "</color> " + iconGold + ")"
+				else:
+					szAbandon += " (" + str(iGold) + " " + iconGold + ")"
 			self.szAbandon = szAbandon
 			screen.setTextAt(name + "Top1", name, szAbandon, 1<<0, x, y, 0, iFontGame, iWidGen, 0, 0)
 		# Populate list box with valid buildings
@@ -156,10 +155,9 @@ class CityDemolish:
 				# Build up text to display in the list box
 				if iGold:
 					if iGold < 0:
-						szClr = "<color=197,0,0>"
-					elif iGold > 0:
-						szClr = ""
-					szText += " (" + szClr + str(iGold) + "</color> " + iconGold
+						szText += " (<color=197,0,0>" + str(iGold) + "</color> " + iconGold
+					else:
+						szText += " (" + str(iGold) + " " + iconGold
 				if GC.getBuildingInfo(iType).getReligionType() >= 0:
 					if iGold:
 						szText += ","
@@ -191,7 +189,7 @@ class CityDemolish:
 			iForeignPop = iPopulation - iOwnCulturePop
 
 			# Judge
-			if CyCity.getNumActiveBuilding(GC.getInfoTypeForString("BUILDING_COURTHOUSE")):
+			if CyCity.isActiveBuilding(GC.getInfoTypeForString("BUILDING_COURTHOUSE")):
 				CyMessageControl().sendModNetMessage(905, iPlayer, iCity, -1, GC.getInfoTypeForString("UNIT_JUDGE"))
 
 			# Tribal Guardian
@@ -207,11 +205,9 @@ class CityDemolish:
 						CyMessageControl().sendModNetMessage(902, iPlayer, CyUnit.getID(), 0, 0)
 						break
 
-			NUM_UNIT_AND_TECH_PREREQS = GC.getDefineINT("NUM_UNIT_AND_TECH_PREREQS")
 			CyTeam = GC.getTeam(CyPlayer.getTeam())
 			# Settler
 			if iOwnCulturePop > 0 or iForeignPop > 2:
-				NUM_UNIT_PREREQ_OR_BONUSES = GC.getNUM_UNIT_PREREQ_OR_BONUSES()
 				aSettlerList = [
 					GC.getInfoTypeForString("UNIT_AIRSETTLER"),
 					GC.getInfoTypeForString("UNIT_PIONEER"),
@@ -228,25 +224,27 @@ class CityDemolish:
 					iTech = CvUnitInfo.getPrereqAndTech()
 					if iTech > -1 and not CyTeam.isHasTech(iTech):
 						continue
-					for i in range(NUM_UNIT_AND_TECH_PREREQS):
-						iTech = CvUnitInfo.getPrereqAndTechs(i)
-						if iTech > -1 and not CyTeam.isHasTech(iTech):
+					for iTech in CvUnitInfo.getPrereqAndTechs():
+						if not CyTeam.isHasTech(iTech):
 							bContinue = True
 							break
 					if bContinue: continue
 					# Building Prereq
 					for i in xrange(CvUnitInfo.getNumPrereqAndBuildings()):
-						if not CyCity.getNumActiveBuilding(CvUnitInfo.getPrereqAndBuilding(i)):
-							continue
+						if not CyCity.isActiveBuilding(CvUnitInfo.getPrereqAndBuilding(i)):
+							bContinue = True
+							break
+					if bContinue: continue
 					# Bonus Prereq
 					iBonus = CvUnitInfo.getPrereqAndBonus()
 					if iBonus > -1 and not CyCity.getNumBonuses(iBonus):
 						continue
-					for i in range(NUM_UNIT_PREREQ_OR_BONUSES):
-						iBonus = CvUnitInfo.getPrereqOrBonuses(i)
-						if iBonus > -1 and not CyCity.getNumBonuses(iBonus):
-							bContinue = True
-							break
+					if CvUnitInfo.getPrereqOrBonuses():
+						bContinue = True
+						for iBonus in CvUnitInfo.getPrereqOrBonuses():
+							if CyCity.getNumBonuses(iBonus):
+								bContinue = False
+								break
 					if bContinue: continue
 					# Found Valid Settler
 					CyMessageControl().sendModNetMessage(906, iPlayer, iCity, iExp, iUnit)
@@ -277,7 +275,7 @@ class CityDemolish:
 					CyMessageControl().sendModNetMessage(905, iPlayer, iCity, -1, UNIT)
 
 			# Merchants
-			fModifierGS = self.CvGameSpeedInfo.getTrainPercent() / 100.0
+			fModifierGS = self.CvGameSpeedInfo.getHammerCostPercent() / 100.0
 			aMerchantList = [
 				GC.getInfoTypeForString("UNIT_FREIGHT"),
 				GC.getInfoTypeForString("UNIT_SUPPLY_TRAIN"),
@@ -292,9 +290,8 @@ class CityDemolish:
 				iTech = CvUnitInfo.getPrereqAndTech()
 				if iTech > -1 and not CyTeam.isHasTech(iTech):
 					continue
-				for i in range(NUM_UNIT_AND_TECH_PREREQS):
-					iTech = CvUnitInfo.getPrereqAndTechs(i)
-					if iTech > -1 and not CyTeam.isHasTech(iTech):
+				for iTech in CvUnitInfo.getPrereqAndTechs():
+					if not CyTeam.isHasTech(iTech):
 						bContinue = True
 						break
 				if bContinue: continue
@@ -320,9 +317,8 @@ class CityDemolish:
 				iTech = CvUnitInfo.getPrereqAndTech()
 				if iTech > -1 and not CyTeam.isHasTech(iTech):
 					continue
-				for i in range(NUM_UNIT_AND_TECH_PREREQS):
-					iTech = CvUnitInfo.getPrereqAndTechs(i)
-					if iTech > -1 and not CyTeam.isHasTech(iTech):
+				for iTech in CvUnitInfo.getPrereqAndTechs():
+					if not CyTeam.isHasTech(iTech):
 						bContinue = True
 						break
 				if bContinue: continue

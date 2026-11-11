@@ -43,8 +43,8 @@ class WBTechScreen:
 		self.aWidgetBucket.append("topBar")
 		self.aWidgetBucket.append("botBar")
 
-		screen.setText("ExitSubScreen0", "", "<font=4b>" + TRNSLTR.getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()), 1<<1, xRes - 16, 0, 0, eFontTitle, eWidGen, 0, 1)
-		self.aWidgetBucket.append("ExitSubScreen0")
+		screen.setText("ExitSubScreen", "", "<font=4b>" + TRNSLTR.getText("TXT_WORD_EXIT", ()), 1<<1, xRes - 16, 0, 0, eFontTitle, eWidGen, 0, 1)
+		self.aWidgetBucket.append("ExitSubScreen")
 
 		DDB = "CurrentTeam"
 		self.aWidgetBucket.append(DDB)
@@ -135,6 +135,9 @@ class WBTechScreen:
 		ePanelBlack	= PanelStyles.PANEL_STYLE_MAIN_BLACK25
 
 		ScPnl = "TechScrollPanel"
+		if ScPnl in self.aWidgetBucket:
+			screen.deleteWidget(ScPnl)
+			self.aWidgetBucket.remove(ScPnl)
 		screen.addScrollPanel(ScPnl, "", 0, 28, xRes + 8, yRes - 88, PanelStyles.PANEL_STYLE_MAIN)
 		self.aWidgetBucket.append(ScPnl)
 
@@ -159,7 +162,7 @@ class WBTechScreen:
 			name = font + self.getTechListName(iTech, info)
 
 			CELL = CELL_0 + str(iTech)
-			if (iRow + iCol) % 2:
+			if (iRow * nCol + iCol) % 2:
 				screen.attachPanelAt(ScPnl, CELL, "", "", True, False, ePanelBlack, x, y, wCol, h2, eWidGen, 999, iTech)
 				screen.setStyle(CELL, "Panel_Tan15_Style")
 			else:
@@ -263,10 +266,10 @@ class WBTechScreen:
 						txt = self.positive
 					else: txt = self.negative
 					txt += "<font=3b>" + self.sAllPlayers
-					STR = "BTN|AllPlayers0"
-					screen.hide(STR)
-					screen.modifyString(STR, txt, 0)
-					screen.show(STR)
+					text = "BTN|AllPlayers0"
+					screen.hide(text)
+					screen.modifyString(text, txt, 0)
+					screen.show(text)
 
 				elif TYPE == "NoNPC":
 					self.bNoNPC = not self.bNoNPC
@@ -274,10 +277,10 @@ class WBTechScreen:
 						txt = self.positive
 					else: txt = self.negative
 					txt += "<font=3b>" + self.sNotNPC
-					STR = "BTN|NoNPC0"
-					screen.hide(STR)
-					screen.modifyString(STR, txt, 0)
-					screen.show(STR)
+					text = "BTN|NoNPC0"
+					screen.hide(text)
+					screen.modifyString(text, txt, 0)
+					screen.show(text)
 
 			elif inputClass.iData1 == 999:
 				if szFlag == "MOUSE_RBUTTONUP":
@@ -327,6 +330,10 @@ class WBTechScreen:
 		return 1
 
 
+	def update(self, fDelta): return
+
+	# # # # # #
+	# Clean Up
 	def exit(self, screen):
 		for widget in self.aWidgetBucket:
 			screen.deleteWidget(widget)

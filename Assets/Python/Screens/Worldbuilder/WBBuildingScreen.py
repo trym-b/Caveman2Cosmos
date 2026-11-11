@@ -31,6 +31,7 @@ class WBBuildingScreen:
 
 	def interfaceScreen(self, pCityX):
 		screen = CyGInterfaceScreen("WBBuildingScreen", CvScreenEnums.WB_BUILDING)
+		screen.deleteWidget("WBWonders")
 		global pCity
 		global iPlayer
 
@@ -41,12 +42,12 @@ class WBBuildingScreen:
 		screen.addPanel("MainBG", u"", u"", True, False, -10, -10, screen.getXResolution() + 20, screen.getYResolution() + 20, PanelStyles.PANEL_STYLE_MAIN )
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 
-		screen.setLabel("BuildingHeader", "Background", u"<font=4b>" + CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING", ()) + "</font>", 1<<2, screen.getXResolution() * 5/8 - 10, screen.getYResolution()/2, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
+		screen.setLabel("BuildingHeader", "Background", u"<font=4b>" + CyTranslator().getText("TXT_KEY_WB_BUILDINGS", ()) + "</font>", 1<<2, screen.getXResolution() * 5/8 - 10, screen.getYResolution()/2, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.setLabel("WonderHeader", "Background", u"<font=4b>" + CyTranslator().getText("TXT_KEY_CONCEPT_WONDERS", ()) + "</font>", 1<<2, screen.getXResolution() * 5/8 - 10, 20, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		sText = CyTranslator().getText("[COLOR_SELECTED_TEXT]", ()) + "<font=3b>" + CyTranslator().getText("TXT_KEY_WB_GRANT_AVAILABLE", ()) + "</color></font>"
 		screen.setText("BuildingAvailable", "Background", sText, 1<<2, screen.getXResolution() * 5/8 - 10, screen.getYResolution()/2 + 30, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 		screen.setText("WonderAvailable", "Background", sText, 1<<2, screen.getXResolution() * 5/8 - 10, 50, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setText("WBBuildingExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("WBBuildingExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 
 		iWidth = screen.getXResolution()/4 - 40
 
@@ -68,7 +69,7 @@ class WBBuildingScreen:
 		screen.addDropDownBoxGFC("CurrentPage", 20, screen.getYResolution() - 42, iWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_CITY_DATA", ()), 0, 0, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_CITY_DATA2", ()), 1, 1, False)
-		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING", ()), 2, 2, True)
+		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_BUILDINGS", ()), 2, 2, True)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_PLAYER_DATA", ()), 3, 3, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_WB_TEAM_DATA", ()), 4, 4, False)
 		screen.addPullDownString("CurrentPage", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_RELIGION", ()), 8, 8, False)
@@ -112,6 +113,7 @@ class WBBuildingScreen:
 
 	def placeCityTable(self):
 		screen = CyGInterfaceScreen( "WBBuildingScreen", CvScreenEnums.WB_BUILDING)
+		screen.deleteWidget("CurrentCity")
 		iWidth = screen.getXResolution()/4 - 40
 		iHeight = (screen.getYResolution() - 40 - self.iTable_Y) / 24 * 24 + 2
 		screen.addTableControlGFC( "CurrentCity", 3, 20, self.iTable_Y, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD )
@@ -125,7 +127,7 @@ class WBBuildingScreen:
 			screen.setTableText("CurrentCity", 0, iRow, "", GC.getCivilizationInfo(iCiv).getButton(), WidgetTypes.WIDGET_PYTHON, 7872, iCiv, 1<<0)
 			iLeader = GC.getPlayer(iPlayerX).getLeaderType()
 			screen.setTableText("CurrentCity", 1, iRow, "", GC.getLeaderHeadInfo(iLeader).getButton(), WidgetTypes.WIDGET_PYTHON, 7876, iLeader, 1<<0)
-			screen.setTableText("CurrentCity", 2, iRow, "<font=3>" + sColor + loopCity.getName() + "</font></color>", '', WidgetTypes.WIDGET_PYTHON, 7200 + iPlayerX, loopCity.getID(), 1<<0)
+			screen.setTableText("CurrentCity", 2, iRow, "<font=3>" + sColor + loopCity.getName() + "</color></font>", '', WidgetTypes.WIDGET_PYTHON, 7200 + iPlayerX, loopCity.getID(), 1<<0)
 
 	def sortBuildings(self):
 		global lBuilding
@@ -154,6 +156,7 @@ class WBBuildingScreen:
 
 	def placeBuildings(self):
 		screen = CyGInterfaceScreen( "WBBuildingScreen", CvScreenEnums.WB_BUILDING)
+		screen.deleteWidget("WBBuilding")
 		iWidth = screen.getXResolution() *3/4 - 20
 		iMaxRows = (screen.getYResolution()/2 - 102) / 24
 		nColumns = max(1, min(iWidth/180, (len(lBuilding) + iMaxRows - 1)/iMaxRows))
@@ -173,12 +176,13 @@ class WBBuildingScreen:
 			iRow = iCount % nRows
 			iColumn = iCount / nRows
 			ItemInfo = GC.getBuildingInfo(item[1])
-			sColor = CyTranslator().getText("[COLOR_WARNING_TEXT]", ())
-			if pCity.getNumRealBuilding(item[1]):
+
+			if pCity.hasBuilding(item[1]):
 				sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			elif pCity.getNumRealBuilding(item[1]):
-				sColor = CyTranslator().getText("[COLOR_YELLOW]", ())
-			screen.setTableText("WBBuilding", iColumn, iRow, "<font=3>" + sColor + item[0] + "</font></color>", ItemInfo.getButton(), WidgetTypes.WIDGET_HELP_BUILDING, item[1], 1, 1<<0 )
+			else:
+				sColor = CyTranslator().getText("[COLOR_WARNING_TEXT]", ())
+
+			screen.setTableText("WBBuilding", iColumn, iRow, "<font=3>" + sColor + item[0] + "</color></font>", ItemInfo.getButton(), WidgetTypes.WIDGET_HELP_BUILDING, item[1], 1, 1<<0 )
 
 	def placeWonders(self):
 		screen = CyGInterfaceScreen( "WBBuildingScreen", CvScreenEnums.WB_BUILDING)
@@ -193,11 +197,11 @@ class WBBuildingScreen:
 
 		iWidth = screen.getXResolution() *3/4 - 20
 		iMaxRows = (screen.getYResolution()/2 - self.iTable_Y) / 24
-		nColumns = max(1, min(iWidth/180, (len(lBuilding) + iMaxRows - 1)/iMaxRows))
+		nColumns = max(1, min(iWidth/180, (len(lWonders) + iMaxRows - 1)/iMaxRows))
 		iHeight = iMaxRows * 24 + 2
 		screen.addTableControlGFC("WBWonders", nColumns, screen.getXResolution()/4, self.iTable_Y, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD )
 		for i in xrange(nColumns):
-			screen.setTableColumnHeader( "WBWonders", i, "", iWidth/nColumns)		
+			screen.setTableColumnHeader( "WBWonders", i, "", iWidth/nColumns)
 
 		nRows = (len(lWonders) + nColumns - 1) / nColumns
 		for i in xrange(nRows):
@@ -208,12 +212,13 @@ class WBBuildingScreen:
 			iRow = iCount % nRows
 			iColumn = iCount / nRows
 			ItemInfo = GC.getBuildingInfo(item[1])
-			sColor = CyTranslator().getText("[COLOR_WARNING_TEXT]", ())
-			if pCity.getNumRealBuilding(item[1]):
+
+			if pCity.hasBuilding(item[1]):
 				sColor = CyTranslator().getText("[COLOR_POSITIVE_TEXT]", ())
-			elif pCity.getNumRealBuilding(item[1]):
-				sColor = CyTranslator().getText("[COLOR_YELLOW]", ())
-			screen.setTableText("WBWonders", iColumn, iRow, "<font=3>" + sColor + item[0] + "</font></color>", ItemInfo.getButton(), WidgetTypes.WIDGET_HELP_BUILDING, item[1], 1, 1<<0 )
+			else:
+				sColor = CyTranslator().getText("[COLOR_WARNING_TEXT]", ())
+
+			screen.setTableText("WBWonders", iColumn, iRow, "<font=3>" + sColor + item[0] + "</color></font>", ItemInfo.getButton(), WidgetTypes.WIDGET_HELP_BUILDING, item[1], 1, 1<<0 )
 
 	def handleInput (self, inputClass):
 		screen = CyGInterfaceScreen( "WBBuildingScreen", CvScreenEnums.WB_BUILDING)
@@ -288,7 +293,7 @@ class WBBuildingScreen:
 				self.placeWonders()
 
 		elif inputClass.getFunctionName() == "WonderClass":
-			iSelectedClass = inputClass.getData()
+			iSelectedClass = screen.getPullDownData("WonderClass", screen.getSelectedPullDownID("WonderClass"))
 			self.placeWonders()
 
 		elif inputClass.getFunctionName() == "WBWonders":
@@ -353,7 +358,7 @@ class WBBuildingScreen:
 					if not cityX.canConstruct(item, True, False, True): bModify = False
 				if bModify:
 					if iChangeType == 2 and not bAvailable:
-						iType = not cityX.getNumRealBuilding(item)
+						iType = not cityX.hasBuilding(item)
 					self.doEffects(cityX, item, iType)
 		else:
 			if bAvailable:
@@ -362,7 +367,7 @@ class WBBuildingScreen:
 				if iHolyReligion > -1 and not pCity.isHolyCityByType(iHolyReligion): return
 				if not pCity.canConstruct(item, True, False, True): return
 			if iChangeType == 2 and not bAvailable:
-				iType = not pCity.getNumRealBuilding(item)
+				iType = not pCity.hasBuilding(item)
 			self.doEffects(pCity, item, iType)
 		iFreeBuilding = info.getFreeBuilding()
 		if iFreeBuilding > -1 and bWonder != isLimitedWonder(iFreeBuilding):
@@ -371,9 +376,9 @@ class WBBuildingScreen:
 
 	def doEffects(self, pCity, item, bAdd):
 		bEffects = False
-		if bAdd and WorldBuilder.bPython and pCity.getNumRealBuilding(item) == 0:
+		if bAdd and WorldBuilder.bPython and not pCity.hasBuilding(item):
 			bEffects = True
-		pCity.setNumRealBuilding(item, bAdd)
+		pCity.changeHasBuilding(item, bAdd)
 		if bEffects:
 			self.eventManager.onBuildingBuilt([pCity, item])
 

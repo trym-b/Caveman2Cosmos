@@ -15,20 +15,24 @@ class BugAutologOptionsTab(BugOptionsTab.BugOptionsTab):
 		BugOptionsTab.BugOptionsTab.__init__(self, "Autolog", "Logging")
 
 	def create(self, screen):
-		tab = self.createTab(screen)
-		panel = self.createMainPanel(screen)
-		column = self.addOneColumnLayout(screen, panel)
+		self.createTab(screen)
+		column = self.addOneColumnLayout(screen, self.createMainPanel(screen))
 
-		left, middle, right = self.addMultiColumnLayout(screen, column, 3, "Autolog")
+		self.addCheckbox(screen, column, "Autolog__MiscLogging")
+		screen.attachHSeparator(column, column + "Sep0")
+		left, center, right = self.addThreeColumnLayout(screen, column, "Autolog0")
 		self.addCheckbox(screen, left, "Autolog__Enabled")
-		self.addCheckbox(screen, middle, "Autolog__Silent")
-		self.addIntDropdown(screen, right, right, "Autolog__BBAILevel")
+		self.addCheckbox(screen, left, "Autolog__Silent")
+		self.addIntDropdown(screen, center, center, "Autolog__LogLevelTeamBBAI")
+		self.addIntDropdown(screen, center, center, "Autolog__LogLevelPlayerBBAI")
+		self.addIntDropdown(screen, right, right, "Autolog__LogLevelUnitBBAI")
+		self.addIntDropdown(screen, right, right, "Autolog__LogLevelCityBBAI")
 
 		# File and Format
 		screen.attachHSeparator(column, column + "Sep1")
 		left, right = self.addTwoColumnLayout(screen, column, "Options")
 
-		self.addIntDropdown(screen, left, left, "Autolog__4000BC")
+		self.addIntDropdown(screen, left, left, "Autolog__StartDate")
 		self.addCheckbox(screen, left, "Autolog__DefaultFileName")
 		self.addCheckbox(screen, left, "Autolog__IBT")
 		self.addCheckbox(screen, left, "Autolog__ColorCoding")
@@ -41,7 +45,6 @@ class BugAutologOptionsTab(BugOptionsTab.BugOptionsTab):
 
 		# What to Log
 		screen.attachHSeparator(column, column + "Sep2")
-		#col1, col1, col2, col3, col4 = self.addMultiColumnLayout(screen, column, 4, "Events")
 		left, right = self.addTwoColumnLayout(screen, column, "Events", False)
 
 		self.addLabel(screen, left, "Autolog_Builds", "Research and Builds:")
@@ -58,11 +61,10 @@ class BugAutologOptionsTab(BugOptionsTab.BugOptionsTab):
 		screen.attachHSeparator(left, left + "Sep3b")
 
 		self.addLabel(screen, left, "Autolog_Cities", "Cities:")
-		col1, col2, col3, col4 = self.addMultiColumnLayout(screen, right, 4, "Cities")
+		col1, col2, col3 = self.addMultiColumnLayout(screen, right, 3, "Cities")
 		self.addCheckbox(screen, col1, "Autolog__LogCityFounded")
-		self.addCheckbox(screen, col2, "Autolog__LogCityGrowth")
-		self.addCheckbox(screen, col3, "Autolog__LogCityBorders")
-		self.addCheckbox(screen, col4, "Autolog__LogCityOwner")
+		self.addCheckbox(screen, col2, "Autolog__LogCityBorders")
+		self.addCheckbox(screen, col3, "Autolog__LogCityOwner")
 		self.addSpacer(screen, left, "Cities1")
 		self.addCheckbox(screen, col1, "Autolog__LogCityRazed")
 		self.addCheckbox(screen, col2, "Autolog__LogCityWhipStatus")
@@ -102,7 +104,6 @@ class BugAutologOptionsTab(BugOptionsTab.BugOptionsTab):
 		self.addCheckbox(screen, col3, "Autolog__LogWar")
 		self.addCheckbox(screen, col4, "Autolog__LogVassals")
 		self.addCheckbox(screen, col5, "Autolog__LogCivics")
-		#self.addCheckbox(screen, col3, "Autolog__LogTradeAll")
 
 		screen.attachHSeparator(right, right + "Sep7a")
 		screen.attachHSeparator(left, left + "Sep7b")

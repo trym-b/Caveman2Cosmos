@@ -2,8 +2,6 @@
 # AI_AUTO_PLAY_MOD
 #
 from CvPythonExtensions import *
-import Popup as PyPopup
-
 import RevDefs
 import SdToolKit
 import RevUtils
@@ -102,10 +100,10 @@ class AIAutoPlay :
 				GAME.setAIAutoPlay(i, 1)
 
 	def onVictory(self, argsList):
-		self.checkPlayer()
+		self.checkPlayer(GAME.getActivePlayer())
 		for i in range(GC.getMAX_PC_PLAYERS()):
 			if GC.getPlayer(i).isHumanDisabled():
-				GAME.setForcedAIAutoPlay(i, 0)
+				GAME.setForcedAIAutoPlay(i, 0, False)
 
 
 	def onBeginPlayerTurn(self, argsList):
@@ -115,10 +113,12 @@ class AIAutoPlay :
 
 		if GAME.getAIAutoPlay(iPlayer) == 1 and CyPlayerAct and iPlayer > iPlayerAct and CyPlayerAct.isAlive():
 			# Forces isHuman checks to come through positive for everything after human players turn
-			self.checkPlayer()
+			if iPlayer == iPlayerAct + 1:
+				self.checkPlayer(iPlayerAct)
 
 		elif self.bSaveAllDeaths and GAME.getAIAutoPlay(iPlayerAct) == 0 and CyPlayerAct and not CyPlayerAct.isAlive() and iPlayer > iPlayerAct:
-			self.checkPlayer()
+			if iPlayer == iPlayerAct + 1:
+				self.checkPlayer(iPlayerAct)
 
 
 	def onEndPlayerTurn(self, argsList):
@@ -128,10 +128,11 @@ class AIAutoPlay :
 			RevUtils.doRefortify(iPlayer)
 
 
-	def checkPlayer(self):
-		CyPlayer = GC.getActivePlayer()
+	def checkPlayer(self, iPlayer):
+		CyPlayer = GC.getPlayer(iPlayer)
 		for i in range(GC.getMAX_PC_TEAMS()):
-			CyPlayer.setEspionageSpendingWeightAgainstTeam(i, CyPlayer.getEspionageSpendingWeightAgainstTeam(i)/10)
+			current = CyPlayer.getEspionageSpendingWeightAgainstTeam(i)
+			CyPlayer.setEspionageSpendingWeightAgainstTeam(i, max(0, current * 9 // 10))
 
 
 	# keypress handler
@@ -150,7 +151,7 @@ class AIAutoPlay :
 						if bCanCancelAuto is None:
 							bCanCancelAuto = True
 							SdToolKit.sdObjectSetVal("AIAutoPlay", GAME, "bCanCancelAuto", True)
-					except:
+					except (KeyError, TypeError):
 						print "Error! AIAutoPlay: Can't find bCanCancelAuto, assuming it would be True"
 						bCanCancelAuto = True
 
@@ -158,7 +159,7 @@ class AIAutoPlay :
 						if self.refortify:
 							RevUtils.doRefortify(iPlayer)
 							self.disableMultiCheck(iPlayer)
-						self.checkPlayer()
+						self.checkPlayer(iPlayer)
 				else:
 					self.toAIChooser()
 
@@ -201,12 +202,15 @@ class AIAutoPlay :
 		yResolution = screen.getYResolution()
 		popupSizeX = 400
 		popupSizeY = 250
+		if (xResolution > 2500) :
+			popupSizeX = 500
+			popupSizeY = 350
 
-		popup = PyPopup.PyPopup(RevDefs.toAIChooserPopup,contextType = EventContextTypes.EVENTCONTEXT_ALL)
+		popup = CyPopup(RevDefs.toAIChooserPopup, EventContextTypes.EVENTCONTEXT_ALL, True)
 		popup.setPosition((xResolution - popupSizeX )/2, (yResolution-popupSizeY)/2-50)
 		popup.setSize(popupSizeX,popupSizeY)
-		popup.setHeaderString( TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_TURN_ON", ()) )
-		popup.setBodyString( TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_TURNS", ()) )
+		popup.setHeaderString(TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_TURN_ON", ()), 1<<2)
+		popup.setBodyString(TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_TURNS", ()), 1<<0)
 		popup.addSeparator()
 		popup.createPythonEditBox('10', 'Number of turns to turn over to AI', 0)
 		popup.setEditBoxMaxCharCount(4, 2, 0)
@@ -215,7 +219,7 @@ class AIAutoPlay :
 		popup.addPullDownString(TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_NO", ()), 0, 2)
 		popup.addPullDownString(TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_FULLY", ()), 1, 2)
 
-		popup.popup.setSelectedPulldownID( 1, 2 )
+		popup.setSelectedPulldownID(1, 2)
 
 		popup.addSeparator()
 		popup.addButton("OK")
@@ -233,7 +237,10 @@ class AIAutoPlay :
 
 		numTurns = 0
 		if popupReturn.getEditBoxString(0) != '':
-			numTurns = int(popupReturn.getEditBoxString(0))
+			try:
+				numTurns = int(popupReturn.getEditBoxString(0))
+			except ValueError:
+				numTurns = 0
 
 		autoIdx = popupReturn.getSelectedPullDownValue(2)
 
@@ -245,13 +252,6 @@ class AIAutoPlay :
 				if self.LOG_DEBUG: CyInterface().addImmediateMessage(TRNSLTR.getText("TXT_KEY_AIAUTOPLAY_FULLY_AUTO", ()) %numTurns, "")
 
 				self.abdicateMultiCheck(iPlayer, numTurns = numTurns)
-
-		elif autoIdx == 2 and numTurns > 0:
-			if self.LOG_DEBUG: CyInterface().addImmediateMessage("Auto Move","")
-			self.setAutoMoves(numTurns)
-		elif autoIdx == 3 and numTurns > 0:
-			if self.LOG_DEBUG: CyInterface().addImmediateMessage("Debug Mode","")
-			self.setDebugMode( numTurns )
 
 
 	# Determines whether to show popup to active player

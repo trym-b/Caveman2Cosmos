@@ -172,7 +172,7 @@ private:
 	int m_iY;
 	int m_iData;
 	bool m_bAdd;
-}; 
+};
 
 class CvNetModNetMessage : public CvMessageData
 {
@@ -188,7 +188,7 @@ private:
 	int m_iData3;
 	int m_iData4;
 	int m_iData5;
-}; 
+};
 
 //  Convert religions
 class CvNetConvert : public CvMessageData
@@ -215,7 +215,7 @@ public:
 private:
 	PlayerTypes m_ePlayer;
 	int m_iAreaId;
-}; 
+};
 
 class CvNetFoundReligion : public CvMessageData
 {
@@ -229,7 +229,7 @@ private:
 	PlayerTypes m_ePlayer;
 	ReligionTypes m_eReligion;
 	ReligionTypes m_eSlotReligion;
-}; 
+};
 
 class CvNetLaunchSpaceship : public CvMessageData
 {
@@ -242,7 +242,7 @@ public:
 private:
 	PlayerTypes m_ePlayer;
 	VictoryTypes m_eVictory;
-}; 
+};
 
 class CvNetEventTriggered : public CvMessageData
 {
@@ -256,7 +256,7 @@ private:
 	PlayerTypes m_ePlayer;
 	EventTypes m_eEvent;
 	int m_iEventTriggeredId;
-}; 
+};
 
 class CvNetJoinGroup : public CvMessageData
 {
@@ -578,6 +578,21 @@ private:
 	int m_iUnitID;
 };
 
+//  Merge all eligible same-type/size units within a selection group (Size Matters)
+class CvNetMergeAll : public CvMessageData
+{
+public:
+	CvNetMergeAll();
+	CvNetMergeAll(PlayerTypes ePlayer, int iUnitID);
+	virtual void Debug(char* szAddendum);
+	virtual void Execute();
+	virtual void PutInBuffer(FDataStreamBase* pStream);
+	virtual void SetFromBuffer(FDataStreamBase* pStream);
+private:
+	PlayerTypes m_ePlayer;
+	int m_iUnitID;
+};
+
 //  Split Unit
 class CvNetConfirmSplitUnit : public CvMessageData
 {
@@ -616,15 +631,16 @@ class CvNetChooseArrestUnit : public CvMessageData
 {
 public:
 	CvNetChooseArrestUnit();
-	CvNetChooseArrestUnit(PlayerTypes ePlayer, PlayerTypes ePlayerT, int iUnitID);
+	CvNetChooseArrestUnit(int iCopID, PlayerTypes eCopPlayer, int iVictimID, PlayerTypes eVictimPlayer);
 	virtual void Debug(char* szAddendum);
 	virtual void Execute();
 	virtual void PutInBuffer(FDataStreamBase* pStream);
 	virtual void SetFromBuffer(FDataStreamBase* pStream);
 private:
-	PlayerTypes m_ePlayer;
-	PlayerTypes m_ePlayerT;
-	int m_iUnitID;
+	PlayerTypes m_eCopPlayer;
+	PlayerTypes m_eVictimPlayer;
+	int m_iCopID;
+	int m_iVictimID;
 };
 
 //  Ambush

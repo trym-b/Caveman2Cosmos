@@ -6,9 +6,13 @@
 //  PURPOSE: Sorting classes for units
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvCity.h"
 #include "CvGlobals.h"
+#include "CvInfos.h"
 #include "CvPlayer.h"
 
 bool UnitSortBase::isLesserUnit(const CvPlayer *pPlayer, const CvCity *pCity, UnitTypes eUnit1, UnitTypes eUnit2) const
@@ -80,12 +84,9 @@ int UnitSortCost::getUnitValue(const CvPlayer *pPlayer, const CvCity *pCity, Uni
 {
 	if (pCity)
 	{
-		return pCity->getProductionNeeded(eUnit) - pCity->getUnitProduction(eUnit);
+		return pCity->getProductionNeeded(eUnit) - pCity->getProgressOnUnit(eUnit);
 	}
-	else
-	{
-		return pPlayer->getProductionNeeded(eUnit);
-	}
+	return pPlayer->getProductionNeeded(eUnit);
 }
 
 // dummy
@@ -107,7 +108,7 @@ UnitSortList::UnitSortList(const CvPlayer *pPlayer, const CvCity *pCity)
 {
 	m_pPlayer = pPlayer;
 	m_pCity = pCity;
-	
+
 	m_apUnitSort[UNIT_SORT_NAME] = new UnitSortName();
 	m_apUnitSort[UNIT_SORT_COST] = new UnitSortCost(true);
 	m_apUnitSort[UNIT_SORT_STRENGTH] = new UnitSortStrength();
@@ -124,6 +125,7 @@ UnitSortList::UnitSortList(const CvPlayer *pPlayer, const CvCity *pCity)
 
 UnitSortList::~UnitSortList()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_UNIT_SORT; i++)
 	{
 		delete m_apUnitSort[i];
@@ -137,7 +139,7 @@ UnitSortTypes UnitSortList::getActiveSort() const
 
 bool UnitSortList::setActiveSort(UnitSortTypes eActiveSort)
 {
-	FASSERT_BOUNDS(0, NUM_UNIT_SORT, eActiveSort)
+	FASSERT_BOUNDS(0, NUM_UNIT_SORT, eActiveSort);
 	const bool bChanged = m_eActiveSort != eActiveSort;
 	m_eActiveSort = eActiveSort;
 	return bChanged;

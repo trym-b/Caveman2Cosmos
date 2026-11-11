@@ -40,7 +40,7 @@
 ##     Returns a list of CyPlayers that can capitulate to <player>.
 ##
 ##
-##   tradeParters(playerOrID)
+##   tradePartners(playerOrID)
 ##     Iterates over all of <player>'s possible trade partners, yielding each CyPlayer in turn.
 ##
 ##   getTradePartnersByPlayer(playerOrID, testFunction, args...)
@@ -108,7 +108,7 @@ def canTrade(playerX, playerY):
 		return True
 
 	CyTeamX = GC.getTeam(iTeamX)
-	if not CyTeamX.isHasMet(iTeamY) or CyTeamX.isAtWar(iTeamY):
+	if not CyTeamX.isHasMet(iTeamY) or CyTeamX.isAtWarWith(iTeamY):
 		return False
 
 	bHumanX = playerX.isHuman()
@@ -233,7 +233,7 @@ def getPeaceTradePartners(playerOrID):
 	"""
 	Returns a list of CyPlayers that can sign a peace treaty with <player>.
 	"""
-	return getTradePartnersByTeam(playerOrID, lambda fromTeam, toTeam: toTeam.isAtWar(fromTeam.getID()))
+	return getTradePartnersByTeam(playerOrID, lambda fromTeam, toTeam: toTeam.isAtWarWith(fromTeam.getID()))
 
 def getVassalTradePartners(playerOrID):
 	"""
@@ -257,13 +257,13 @@ def canAcceptVassal(masterTeam, vassalTeam, bAtWar):
 		return False
 	if masterTeam.isAVassal() or vassalTeam.isAVassal():
 		return False
-	if masterTeam.isAtWar(vassalTeam.getID()) != bAtWar:
+	if masterTeam.isAtWarWith(vassalTeam.getID()) != bAtWar:
 		return False
 	# master must possess tech
 	return masterTeam.isVassalStateTrading()
 
 
-def tradeParters(player):
+def tradePartners(player):
 	"""
 	Iterates over all of <player>'s possible trade partners, yielding each CyPlayer in turn.
 	"""
@@ -279,7 +279,7 @@ def getTradePartnersByPlayer(player, testFunction, *args):
 	<testFunction> is passed two CyPlayers plus <args> for each viable pairing and should return a boolean value.
 	"""
 	partners = []
-	for partner in tradeParters(player):
+	for partner in tradePartners(player):
 		if testFunction(player, partner, *args):
 			partners.append(partner)
 	return partners
@@ -293,7 +293,7 @@ def getTradePartnersByTeam(playerOrID, testFunction, *args):
 	player = getPlayer(playerOrID)
 	team = GC.getTeam(player.getTeam())
 	partners = []
-	for partner in tradeParters(player):
+	for partner in tradePartners(player):
 		if testFunction(team, GC.getTeam(partner.getTeam()), *args):
 			partners.append(partner)
 	return partners
@@ -333,10 +333,8 @@ def initCorporationBonuses():
 	for eCorp in range(GC.getNumCorporationInfos()):
 		corp = GC.getCorporationInfo(eCorp)
 		bonuses = set()
-		for i in range(GC.getNUM_CORPORATION_PREREQ_BONUSES()):
-			eBonus = corp.getPrereqBonus(i)
-			if eBonus != -1:
-				bonuses.add(eBonus)
+		for eBonus in corp.getPrereqBonuses():
+			bonuses.add(eBonus)
 		CORP_BONUSES[eCorp] = bonuses
 
 def getTradeableBonuses(fromPlayer, eToPlayer):

@@ -60,6 +60,12 @@ def makeTooltip(screen, xPos, yPos, szTxt, uFont, listBox):
 	xRes = SR.x
 	yRes = SR.y
 
+	# Enforce certain structure
+	szTxt = szTxt.replace("\n</color>", "</color>\n")
+	# Remove whitespace at the very end.
+	while szTxt[-1:] in ("\n", "\r", "\t", " "):
+		szTxt = szTxt[:-1]
+
 	# Remove font literals
 	i1 = szTxt.find("<font=")
 	if i1 > -1:
@@ -186,7 +192,7 @@ def makeTooltip(screen, xPos, yPos, szTxt, uFont, listBox):
 	else: # Bottom half of the screen.
 		if yPos + dy + 24 < yRes - 4:
 			yOffset = 24
-		elif yPos - yRes - yPos -dy - 4 > 4:
+		elif yPos - yRes -dy - 4 > 4:
 			yOffset = yRes - yPos -dy - 4
 		else:
 			yOffset = 4 - yPos

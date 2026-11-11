@@ -1,35 +1,35 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Schema xmlns="urn:schemas-microsoft-com:xml-data" xmlns:dt="urn:schemas-microsoft-com:datatypes">
- <ElementType name="ReplacementCondition"/>
- <ElementType name="ReplacementID"/>
- <ElementType name="Constant" content="textOnly"/>
- <ElementType name="Is" content="textOnly"/>
- <ElementType name="Python" content="textOnly"/>
- <ElementType name="BoolExpr"/>
- <ElementType name="Not"/>
- <ElementType name="And"/>
- <ElementType name="Or"/>
- <ElementType name="BEqual"/>
- <ElementType name="If"/>
- <ElementType name="IntegrateOr"/>
- <ElementType name="GOMType" content="textOnly"/>
- <ElementType name="ID" content="textOnly"/>
- <ElementType name="Has" content="eltOnly">
-	<element type="GOMType" minOccurs="1" maxOccurs="*"/>
-	<element type="ID" minOccurs="1" maxOccurs="*"/>
- </ElementType>
- <ElementType name="Greater"/>
- <ElementType name="GreaterEqual"/>
- <ElementType name="Equal"/>
- <ElementType name="Random"/>
- <ElementType name="Adapt"/>
- <ElementType name="Plus"/>
- <ElementType name="Minus"/>
- <ElementType name="Mult"/>
- <ElementType name="Div"/>
- <ElementType name="IntegrateSum"/>
- <ElementType name="IntegrateAvg"/>
- <ElementType name="IntegrateCount"/>
+	<ElementType name="ReplacementCondition"/>
+	<ElementType name="ReplacementID"/>
+	<ElementType name="Constant" content="textOnly"/>
+	<ElementType name="Is" content="textOnly"/>
+	<ElementType name="Python" content="textOnly"/>
+	<ElementType name="BoolExpr"/>
+	<ElementType name="Not"/>
+	<ElementType name="And"/>
+	<ElementType name="Or"/>
+	<ElementType name="BEqual"/>
+	<ElementType name="If"/>
+	<ElementType name="IntegrateOr"/>
+	<ElementType name="GOMType" content="textOnly"/>
+	<ElementType name="ID" content="textOnly"/>
+	<ElementType name="Has" content="eltOnly">
+		<element type="GOMType" minOccurs="1" maxOccurs="*"/>
+		<element type="ID" minOccurs="1" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="Greater"/>
+	<ElementType name="GreaterEqual"/>
+	<ElementType name="Equal"/>
+	<ElementType name="Random"/>
+	<ElementType name="Adapt"/>
+	<ElementType name="Plus"/>
+	<ElementType name="Minus"/>
+	<ElementType name="Mult"/>
+	<ElementType name="Div"/>
+	<ElementType name="IntegrateSum"/>
+	<ElementType name="IntegrateAvg"/>
+	<ElementType name="IntegrateCount"/>
 	<ElementType name="Type" content="textOnly"/>
 	<ElementType name="bForceOverwrite" content="textOnly" dt:type="boolean"/>
 	<ElementType name="DependencyType" content="textOnly"/>
@@ -114,6 +114,7 @@
 		<element type="bFlexible" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
 	<ElementType name="bRiverTrade" content="textOnly" dt:type="boolean"/>
+	<ElementType name="bLanguage" content="textOnly" dt:type="boolean"/>
 	<ElementType name="TerrainType" content="textOnly"/>
 	<ElementType name="bTerrainTrade" content="textOnly" dt:type="boolean"/>
 	<ElementType name="TerrainTrade" content="eltOnly">
@@ -151,8 +152,10 @@
 	<ElementType name="Button" content="textOnly"/>
 	<ElementType name="bDCMAirBombTech1" content="textOnly" dt:type="int"/>
 	<ElementType name="bDCMAirBombTech2" content="textOnly" dt:type="int"/>
+	<ElementType name="iStackSupportLimitChange" content="textOnly" dt:type="int"/>
 	<ElementType name="TechInfo" content="eltOnly">
 		<element type="Type"/>
+		<element type="iStackSupportLimitChange" minOccurs="0"/>
 		<element type="bForceOverwrite" minOccurs="0"/>
 		<element type="AndDependencyTypes" minOccurs="0"/>
 		<element type="OrDependencyTypes" minOccurs="0"/>
@@ -161,6 +164,7 @@
 		<element type="Help" minOccurs="0"/>
 		<element type="Strategy" minOccurs="0"/>
 		<element type="Advisor" minOccurs="0"/>
+		<element type="Categories" minOccurs="0"/>
 		<element type="iAIWeight" minOccurs="0"/>
 		<element type="iAITradeModifier" minOccurs="0"/>
 		<element type="iCost" minOccurs="0"/>
@@ -219,6 +223,7 @@
 		<element type="CommerceFlexible" minOccurs="0"/>
 		<element type="TerrainTrades" minOccurs="0"/>
 		<element type="bRiverTrade" minOccurs="0"/>
+		<element type="bLanguage" minOccurs="0"/>
 		<element type="Flavors" minOccurs="0"/>
 		<element type="OrPreReqs" minOccurs="0"/>
 		<element type="AndPreReqs" minOccurs="0"/>
@@ -262,4 +267,8 @@
 	<ElementType name="FreeSpecialistCounts" content="eltOnly">
 		<element type="FreeSpecialistCount" minOccurs="0" maxOccurs="*"/>
 	</ElementType>
+	<ElementType name="Categories" content="eltOnly">
+		<element type="Category" maxOccurs="*"/>
+	</ElementType>
+	<ElementType name="Category" content="textOnly"/>
 </Schema>

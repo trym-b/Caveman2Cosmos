@@ -228,10 +228,12 @@ class CvDiplomacy:
 			self.addUserComment("USER_DIPLOCOMMENT_EXIT")
 
 		elif szType == "AI_DIPLOCOMMENT_RESEARCH":
-			CyPlayer = GC.getPlayer(self.diploScreen.getWhoTradingWith())
-			for i in range(GC.getNumTechInfos()):
-				if CyPlayer.canResearch(i):
-					self.addUserComment("USER_DIPLOCOMMENT_RESEARCH_TECH", i, -1, GC.getTechInfo(i).getTextKey())
+			player = GC.getPlayer(self.diploScreen.getWhoTradingWith())
+			team = GC.getTeam(player.getTeam())
+			for i in xrange(team.getNumAdjacentResearch()):
+				iTechX = team.getAdjacentResearch(i)
+				if player.canResearch(iTechX, True, True):
+					self.addUserComment("USER_DIPLOCOMMENT_RESEARCH_TECH", iTechX, -1, GC.getTechInfo(iTechX).getTextKey())
 
 			self.addUserComment("USER_DIPLOCOMMENT_SOMETHING_ELSE")
 			self.addUserComment("USER_DIPLOCOMMENT_EXIT")
@@ -245,7 +247,7 @@ class CvDiplomacy:
 			iPlayer = self.diploScreen.getWhoTradingWith()
 			CyTeam = GC.getTeam(GC.getPlayer(iPlayer).getTeam())
 
-			for iPlayerX in range(GC.getMAX_PC_PLAYERS()):
+			for iPlayerX in xrange(GC.getMAX_PC_PLAYERS()):
 				if iPlayerX in (iPlayerAct, iPlayer): continue
 				CyPlayerX = GC.getPlayer(iPlayerX)
 				if CyPlayerX.isAlive():
@@ -259,9 +261,9 @@ class CvDiplomacy:
 		elif szType == "AI_DIPLOCOMMENT_TARGET":
 			iTeamAct = GC.getGame().getActiveTeam()
 			CyTeamAct = GC.getTeam(iTeamAct)
-			for iPlayerX in range(GC.getMAX_PC_PLAYERS()):
+			for iPlayerX in xrange(GC.getMAX_PC_PLAYERS()):
 				CyPlayerX = GC.getPlayer(iPlayerX)
-				if CyPlayerX.isAlive() and CyTeamAct.isAtWar(CyPlayerX.getTeam()):
+				if CyPlayerX.isAlive() and CyTeamAct.isAtWarWith(CyPlayerX.getTeam()):
 					for CyCity in CyPlayerX.cities():
 						if CyCity.isRevealed(iTeamAct, False):
 							self.addUserComment("USER_DIPLOCOMMENT_TARGET_CITY", iPlayerX, CyCity.getID(), CyCity.getNameKey())
@@ -290,7 +292,7 @@ class CvDiplomacy:
 
 			self.addUserComment("USER_DIPLOCOMMENT_SOMETHING_ELSE")
 
-			if CyPlayer and not GC.getGame().isNetworkMultiPlayer():
+			if not GC.getGame().isNetworkMultiPlayer():
 				if szType in ("AI_ASSUME_REALLY_SNUFFED", "AI_ASSUME_SNUFFED", "AI_ASSUME_NOT_SNUFFED"):
 					self.addUserComment("USER_RESUME_TALKS")
 				elif szType in ("AI_RESUME_TALKS_RELUCTANT", "AI_RESUME_TALKS", "AI_RESUME_TALKS_GLADLY"):
@@ -417,7 +419,7 @@ class CvDiplomacy:
 		iAttitude = CyPlayer.AI_getAttitude(iPlayerAct)
 
 		responses = []
-		for i in range(diploInfo.getNumResponses()):
+		for i in xrange(diploInfo.getNumResponses()):
 
 			# check attitude of other player towards us
 			if self.isUsed(diploInfo.getAttitudeTypes, i, AttitudeTypes.NUM_ATTITUDE_TYPES) and not diploInfo.getAttitudeTypes(i, iAttitude):
@@ -440,11 +442,11 @@ class CvDiplomacy:
 				elif bUsSuperior and not diploInfo.getDiplomacyPowerTypes(i, DiplomacyPowerTypes.DIPLOMACYPOWER_WEAKER):
 					continue
 
-				elif diploInfo.getDiplomacyPowerTypes(i, DiplomacyPowerTypes.DIPLOMACYPOWER_EQUAL):
+				elif not diploInfo.getDiplomacyPowerTypes(i, DiplomacyPowerTypes.DIPLOMACYPOWER_EQUAL):
 					continue
 
 			# passed all tests, so add to response list
-			for j in range(diploInfo.getNumDiplomacyText(i)):
+			for j in xrange(diploInfo.getNumDiplomacyText(i)):
 				responses.append(diploInfo.getDiplomacyText(i, j))
 
 		# pick a random response

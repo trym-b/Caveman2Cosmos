@@ -174,7 +174,7 @@ def formatFloat(number, decimals=0):
 	and returns the resulting string.
 	"""
 	if decimals <= 0:
-		return "%f" % number
+		return "%.0f" % number
 	else:
 		return ("%." + str(decimals) + "f") % number
 
@@ -306,6 +306,7 @@ class Timer:
 		"""Resets all times to zero and stops the timer."""
 		self._initial = None
 		self._start = None
+		self._final = None
 		self._time = 0
 		self._total = 0
 		return self
@@ -626,7 +627,8 @@ def doHotSeatCheck(args):
 	Called during EndPlayerTurn, fires SwitchHotSeatPlayer event during a hot seat
 	game when the active player's turn ends.
 	"""
-	iGameTurn, ePlayer = args
+	#iGameTurn = args[0]
+	ePlayer = args[1]
 	GAME = CyGame()
 	if GAME.isHotSeat() and ePlayer == GAME.getActivePlayer():
 		CvEventInterface.getEventManager().fireEvent("SwitchHotSeatPlayer", ePlayer)

@@ -5,14 +5,11 @@
 
 from CvPythonExtensions import *
 import CvUtil
-import Popup as PyPopup
-
 import math
 # --------- Revolution mod -------------
 import RevDefs
 import RevData
 import RevUtils
-import BugCore
 
 
 # globals
@@ -83,8 +80,6 @@ def init(newCustomEM, RevOptHandle):
 
 	customEM.setPopupHandler( RevDefs.assimilationPopup, ["assimilationPopup", assimilateHandler, blankHandler] )
 
-	RevUtils.initCivicsList()
-
 
 def removeEventHandlers():
 	print "Removing event handlers from RevEvents"
@@ -122,7 +117,7 @@ def onEndGameTurn(argsList):
 	for i in xrange(MAX_PC_PLAYERS):
 		playerI = GC.getPlayer(i)
 		if playerI.isRebel():
-			if not GC.getTeam(playerI.getTeam()).getAtWarCount(True):
+			if not GC.getTeam(playerI.getTeam()).isAtWar(False):
 				playerI.setIsRebel(False)
 				if LOG_DEBUG:
 					print "[REV] %s (Player %d) is no longer a rebel due to no wars"%(playerI.getCivilizationDescription(0), i)
@@ -197,7 +192,7 @@ def onSetPlayerAlive(argsList):
 				if LOG_DEBUG:
 					print "[REV] The dying %s are the rebel type for %s"%(pPlayer.getCivilizationDescription(0), pCity.getName())
 
-				if GC.getTeam(pPlayer.getTeam()).isAtWar(pCity.getTeam()):
+				if GC.getTeam(pPlayer.getTeam()).isAtWarWith(pCity.getTeam()):
 					revIdx = pCity.getRevolutionIndex()
 					localIdx = pCity.getLocalRevIndex()
 					revCnt = pCity.getNumRevolts(iPlayerX)
@@ -212,7 +207,7 @@ def onSetPlayerAlive(argsList):
 						if revCnt > 2: # Hardened, stubborn populace
 							iDividend -= 8
 
-						changeRevIdx = -revIdx * iDividend / 100
+						changeRevIdx = -revIdx * iDividend // 100
 						pCity.changeRevolutionIndex(changeRevIdx)
 						pCity.changeRevRequestAngerTimer(-pCity.getRevRequestAngerTimer())
 						pCity.setRevolutionIndex(min([pCity.getRevolutionIndex(), RevOpt.getAlwaysViolentThreshold()]))
@@ -236,7 +231,7 @@ def onSetPlayerAlive(argsList):
 						if revCnt > 2: # Hardened, stubborn populace
 							iDividend -= 5
 
-						changeRevIdx = -revIdx * iDividend / 100
+						changeRevIdx = -revIdx * iDividend // 100
 						pCity.changeRevolutionIndex(changeRevIdx)
 						pCity.changeRevRequestAngerTimer(-pCity.getRevRequestAngerTimer())
 						pCity.setRevolutionIndex(min([pCity.getRevolutionIndex(),RevOpt.getAlwaysViolentThreshold()]))
@@ -259,12 +254,12 @@ def onSetPlayerAlive(argsList):
 	pTeam = GC.getTeam(pPlayer.getTeam())
 	if endWarsOnDeath and (pTeam.getNumMembers() == 1 or not pTeam.isAlive()):
 		for idx in xrange(MAX_PC_TEAMS):
-			if idx != pTeam.getID() and not GC.getTeam(idx).isMinorCiv() and pTeam.isAtWar(idx):
+			if idx != pTeam.getID() and not GC.getTeam(idx).isMinorCiv() and pTeam.isAtWarWith(idx):
 				pTeam.makePeace(idx)
 
 	if pPlayer.isMinorCiv():
 		print '[REV] %s were minor civ'%(pPlayer.getCivilizationDescription(0))
-		pTeam.setIsMinorCiv(False, False)
+		pTeam.setIsMinorCiv(False)
 
 	if LOG_DEBUG and pPlayer.isRebel():
 		print "[REV] %s (%d) is no longer a rebel by death"%(pPlayer.getCivilizationDescription(0), iPlayerID)
@@ -275,7 +270,7 @@ def onSetPlayerAlive(argsList):
 		try:
 			GAME.setAIAutoPlay(iPlayerID, 1)
 			#ChangePlayer.changeHumanPopup(True)
-		except: pass
+		except Exception: pass
 
 
 def onChangeWar(argsList):
@@ -400,42 +395,42 @@ def onCityBuilt( argsList ):
 				print "[REV] New rebel city %s given rebel religion" % city.getName()
 			city.setHasReligion(relID, True, False, False)
 
-def onCityAcquired( argsList ):
-	owner,playerType,pCity,bConquest,bTrade = argsList
+def onCityAcquired(argsList):
+	#iOwnerOld, iOwnerNew, city, bConquest, bTrade, bAutoRaze = argsList
 
 	checkRebelBonuses( argsList )
 	updateRevolutionIndices( argsList )
 
 	# Init city script data (unit spawn counter, rebel player)
-	iRevCiv = RevData.getCityVal(pCity, 'RevolutionCiv')
-	RevData.initCity(pCity)
-	RevData.setCityVal( pCity, 'RevolutionCiv', iRevCiv )
+	city = argsList[2]
+	iRevCiv = RevData.getCityVal(city, 'RevolutionCiv')
+	RevData.initCity(city)
+	RevData.setCityVal(city, 'RevolutionCiv', iRevCiv)
 
-	iTurns = pCity.getOccupationTimer()
-	pCity.setRevolutionCounter( max([int(1.5*iTurns),3]) )
+	iTurns = city.getOccupationTimer()
+	city.setRevolutionCounter( max([int(1.5*iTurns),3]) )
 
 
 def checkRebelBonuses(argsList):
 	# Give bonuses to a rebel player who successfully captures one of their rebellious cities
-	owner, playerType, pCity, bConquest, bTrade = argsList
+	iOwnerOld, iOwnerNew, pCity, bConquest, bTrade, bAutoRaze = argsList
 
-	newOwnerID = pCity.getOwner()
-	newOwner = GC.getPlayer(newOwnerID)
+	newOwner = GC.getPlayer(iOwnerNew)
 	newOwnerCiv = newOwner.getCivilizationType()
-	oldOwnerID = pCity.getPreviousOwner()
 	orgOwnerID = pCity.getOriginalOwner()
 
 	# TODO: Handle case where city is acquired by disorganized rebels
-	if newOwnerID == GC.getBARBARIAN_PLAYER() and pCity.getRevolutionCounter() > 0:
+	if iOwnerNew == GC.getBARBARIAN_PLAYER() and pCity.getRevolutionCounter() > 0:
 		print "[REV] City %s captured by barb rebels!" % pCity.getName()
-		oldOwner = GC.getPlayer(oldOwnerID)
+		'''
+		oldOwner = GC.getPlayer(iOwnerOld)
 
-		if not oldOwnerID == orgOwnerID:
+		if iOwnerOld != orgOwnerID:
 			orgOwner = GC.getPlayer(orgOwnerID)
 
-		if pCity.countTotalCultureTimes100() > 100*100:
-			if not oldOwnerID == pCity.findHighestCulture():
-				cultOwner = GC.getPlayer(pCity.findHighestCulture())
+		if pCity.countTotalCultureTimes100() > 10000 and iOwnerOld != pCity.findHighestCulture():
+			cultOwner = GC.getPlayer(pCity.findHighestCulture())
+		'''
 
 	elif newOwnerCiv == RevData.getCityVal(pCity, 'RevolutionCiv'):
 
@@ -444,7 +439,7 @@ def checkRebelBonuses(argsList):
 			print "[REV] Rebellious pCity %s is captured by rebel identity %s (%d)!!!" %(pCity.getName(), newOwner.getCivilizationDescription(0), newOwnerCiv)
 
 			newOwnerTeam = GC.getTeam(newOwner.getTeam())
-			oldOwner = GC.getPlayer(oldOwnerID)
+			oldOwner = GC.getPlayer(iOwnerOld)
 			oldOwnerTeam = GC.getTeam(oldOwner.getTeam())
 			if oldOwnerTeam.isAVassal():
 				for teamID in xrange(MAX_PC_TEAMS):
@@ -470,21 +465,21 @@ def checkRebelBonuses(argsList):
 				sound = "AS2D_CITY_REVOLT"
 				eMsgType = InterfaceMessageTypes.MESSAGE_TYPE_MINOR_EVENT
 				iMsgTime = GC.getEVENT_MESSAGE_TIME()
-				CvUtil.sendMessage(szTxt, newOwnerID, iMsgTime, icon, ColorTypes(8), ix, iy, True, True, eMsgType, sound, False)
+				CvUtil.sendMessage(szTxt, iOwnerNew, iMsgTime, icon, ColorTypes(8), ix, iy, True, True, eMsgType, sound, False)
 
 				szTxt = TRNSLTR.getText("TXT_KEY_REV_MESS_REBEL_CONTROL",())%(newOwner.getCivilizationDescription(0),pCity.getName())
-				CvUtil.sendMessage(szTxt, oldOwnerID, iMsgTime, None, ColorTypes(7), eMsgType=eMsgType, bForce=False)
+				CvUtil.sendMessage(szTxt, iOwnerOld, iMsgTime, None, ColorTypes(7), eMsgType=eMsgType, bForce=False)
 
 				# Gold
 				iGold = GAME.getSorenRandNum(min([80,8*pCity.getPopulation()]), 'Rev') + 8
 				szTxt = TRNSLTR.getText("TXT_KEY_REV_MESS_YOUR_CAPTURE_GOLD",()) %(pCity.getName(),iGold)
-				CvUtil.sendMessage(szTxt, newOwnerID, iMsgTime, icon, ColorTypes(8), ix, iy, False, False, eMsgType, sound, False)
+				CvUtil.sendMessage(szTxt, iOwnerNew, iMsgTime, icon, ColorTypes(8), ix, iy, False, False, eMsgType, sound, False)
 				newOwner.changeGold(iGold)
 
 				# Culture
-				newCulVal = int( revCultureModifier*max([pCity.getCulture(oldOwnerID),pCity.countTotalCultureTimes100()/200]) )
-				newPlotVal = int( revCultureModifier*max([pCity.plot().getCulture(oldOwnerID),pCity.plot().countTotalCulture()/2]) )
-				RevUtils.giveCityCulture( pCity, newOwnerID, newCulVal, newPlotVal)
+				newCulVal = int( revCultureModifier*max([pCity.getCulture(iOwnerOld),pCity.countTotalCultureTimes100()/200]) )
+				newPlotVal = int( revCultureModifier*max([pCity.plot().getCulture(iOwnerOld),pCity.plot().countTotalCulture()/2]) )
+				RevUtils.giveCityCulture( pCity, iOwnerNew, newCulVal, newPlotVal)
 
 				# Extra units
 				if iWorker != -1:
@@ -532,19 +527,19 @@ def checkRebelBonuses(argsList):
 
 				# Trigger golden age for rebel civ under certain circumstances
 				revTurn = RevData.revObjectGetVal(newOwner, 'RevolutionTurn')
-				if not revTurn == None and GAME.getGameTurn() - revTurn < 4*GAME.goldenAgeLength():
+				if not revTurn == None and GAME.getGameTurn() - revTurn < 4*GAME.goldenAgeLength100()/100:
 					if newOwner.getNumCities() == 3:
 						if not newOwner.getCitiesLost():
 							# By verifying they've never lost a city, gaurantee it doesn't happen multiple times
 							szTxt = TRNSLTR.getText("TXT_KEY_REV_MESS_GOLDEN_AGE",())
-							CvUtil.sendMessage(szTxt, newOwnerID, iMsgTime, icon, ColorTypes(8), ix, iy, False, False, eMsgType, sound, False)
-							newOwner.changeGoldenAgeTurns( int(1.5*GAME.goldenAgeLength()) )
+							CvUtil.sendMessage(szTxt, iOwnerNew, iMsgTime, icon, ColorTypes(8), ix, iy, False, False, eMsgType, sound, False)
+							newOwner.changeGoldenAgeTurns( int(1.5*GAME.goldenAgeLength100() / 100) )
 
 			else: # Conqueror not considered a rebel, fewer benefits
 				# Culture
-				newCulVal = int(revCultureModifier*max([pCity.getCulture(oldOwnerID)/2,pCity.countTotalCultureTimes100()/400]))
-				newPlotVal = int(revCultureModifier*max([pCity.plot().getCulture(oldOwnerID)/2,pCity.plot().countTotalCulture()/4]))
-				RevUtils.giveCityCulture(pCity, newOwnerID, newCulVal, newPlotVal)
+				newCulVal = int(revCultureModifier*max([pCity.getCulture(iOwnerOld)/2,pCity.countTotalCultureTimes100()/400]))
+				newPlotVal = int(revCultureModifier*max([pCity.plot().getCulture(iOwnerOld)/2,pCity.plot().countTotalCulture()/4]))
+				RevUtils.giveCityCulture(pCity, iOwnerNew, newCulVal, newPlotVal)
 
 				# Change city disorder timer to favor new player
 				iTurns = pCity.getOccupationTimer()
@@ -558,70 +553,66 @@ def checkRebelBonuses(argsList):
 			for unit in newUnitList:
 				if unit.canFight():
 					iDamage = 20 + GAME.getSorenRandNum(20,'Rev - Injure unit')
-					unit.setDamage(iDamage, oldOwnerID)
+					unit.setDamage(iDamage, iOwnerOld)
 
 		else: # City once rebelled as this civ type, but not currently rebellious
 			if LOG_DEBUG:
 				print "[REV] %s, captured by former rebel identity: %s (%d)!"%(pCity.getName(),newOwner.getCivilizationDescription(0),newOwnerCiv)
-			newCulVal = int( revCultureModifier*max([pCity.getCulture(oldOwnerID)/2,pCity.countTotalCultureTimes100()/400]) )
-			newPlotVal = int( revCultureModifier*max([pCity.plot().getCulture(oldOwnerID)/2,pCity.plot().countTotalCulture()/4]) )
-			RevUtils.giveCityCulture( pCity, newOwnerID, newCulVal, newPlotVal)
+			newCulVal = int( revCultureModifier*max([pCity.getCulture(iOwnerOld)/2,pCity.countTotalCultureTimes100()/400]) )
+			newPlotVal = int( revCultureModifier*max([pCity.plot().getCulture(iOwnerOld)/2,pCity.plot().countTotalCulture()/4]) )
+			RevUtils.giveCityCulture( pCity, iOwnerNew, newCulVal, newPlotVal)
 
 			iTurns = pCity.getOccupationTimer()
 			iTurns = iTurns/2 + 1
 			pCity.setOccupationTimer(iTurns)
 
-def updateRevolutionIndices( argsList ) :
-	owner,playerType,pCity,bConquest,bTrade = argsList
 
-	newOwnerID = pCity.getOwner()
-	newOwner = GC.getPlayer(newOwnerID)
-	newOwnerCiv = newOwner.getCivilizationType()
-	oldOwnerID = pCity.getPreviousOwner()
-	orgOwnerID = pCity.getOriginalOwner()
+def updateRevolutionIndices(argsList):
+	iOwnerOld, iOwnerNew, pCity, bConquest, bTrade, bAutoRaze = argsList
 
-	if( newOwner.isNPC() ) :
-		return
+	newOwner = GC.getPlayer(iOwnerNew)
+
+	if newOwner.isNPC(): return
 
 	newRevIdx = 400
 	changeRevIdx = -40
 
-	if( bConquest ) :
+	if bConquest:
 		# Occupied cities also rack up rev points each turn
 		newRevIdx += pCity.getRevolutionIndex()/4
 		newRevIdx = min( [newRevIdx, 600] )
 
-		if( pCity.plot().calculateCulturePercent( newOwnerID ) > 90 ) :
+		if pCity.plot().calculateCulturePercent( iOwnerNew ) > 90:
 			changeRevIdx -= 75
 			newRevIdx -= 100
-		elif( pCity.plot().calculateCulturePercent( newOwnerID ) > 40 ) :
+		elif pCity.plot().calculateCulturePercent( iOwnerNew ) > 40:
 			changeRevIdx -= 35
 			newRevIdx -= 60
-		elif( pCity.plot().calculateCulturePercent( newOwnerID ) > 20 ) :
+		elif pCity.plot().calculateCulturePercent( iOwnerNew ) > 20:
 			changeRevIdx -= 30
 
-	elif( bTrade ) :
+	elif bTrade:
 		newRevIdx += pCity.getRevolutionIndex()/3
 		newRevIdx = min( [newRevIdx, 650] )
 
-		if( pCity.plot().calculateCulturePercent( newOwnerID ) > 90 ) :
+		if pCity.plot().calculateCulturePercent( iOwnerNew ) > 90:
 			newRevIdx -= 50
 
-	else :
+	else:
 		# Probably cultural conversion
 		newRevIdx -= 100
-		if( pCity.plot().calculateCulturePercent( newOwnerID ) > 50 ) :
+		if pCity.plot().calculateCulturePercent( iOwnerNew ) > 50:
 			changeRevIdx -= 25
 
 
-	if( newOwner.isRebel() and newOwnerCiv == RevData.getCityVal(pCity, 'RevolutionCiv') ) :
+	if newOwner.isRebel() and newOwner.getCivilizationType() == RevData.getCityVal(pCity, 'RevolutionCiv'):
 		changeRevIdx -= 50
 		newRevIdx -= 200
-	elif( newOwnerID == pCity.getOriginalOwner() ) :
+	elif iOwnerNew == pCity.getOriginalOwner():
 		changeRevIdx -= 25
 		newRevIdx -= 100
 
-	if( pCity.getHighestPopulation() < 6 ) :
+	if pCity.getHighestPopulation() < 6:
 		changeRevIdx += 20
 		newRevIdx -= 50
 
@@ -646,20 +637,9 @@ def updateRevolutionIndices( argsList ) :
 	RevData.updateCityVal( pCity, 'RevIdxHistory', RevDefs.initRevIdxHistory() )
 
 	if newOwner.isRebel():
-		if newOwner.getNumCities() > 1 and RevData.revObjectGetVal(newOwner, 'CapitalName') == CvUtil.convertToStr(pCity.getName()):
-			# Rebel has captured their instigator city, make this their capital
-			print "[REV] Rebel %s have captured their instigator city, %s!  Moving capital." %(newOwner.getCivilizationDescription(0), pCity.getName())
-			if newOwner.isHuman():
-				# TODO: support this with a popup question
-				pass
-			else:
-				eCapitalBuilding = GC.getInfoTypeForString(RevDefs.sXMLPalace)
-				oldCapital = newOwner.getCapitalCity()
-				oldCapital.setNumRealBuilding(eCapitalBuilding, 0)
-				pCity.setNumRealBuilding(eCapitalBuilding, 1)
 
 		# Ripple effects through other rebellious cities
-		for cityX in GC.getPlayer(oldOwnerID).cities():
+		for cityX in GC.getPlayer(iOwnerOld).cities():
 			reinfCount = cityX.getReinforcementCounter()
 			if reinfCount > 2 and RevData.getCityVal(cityX, 'RevolutionCiv') == newOwner.getCivilizationType():
 				if reinfCount < 5:
@@ -683,7 +663,7 @@ def playerCityLost(CyPlayer, CyCity, bConquest = True):
 	if CyPlayer.isNPC() or CyPlayer.getNumCities() < 1:
 		return
 
-	revIdxChange = (GAME.getGameTurn() - CyCity.getGameTurnAcquired()) * 100.0 / GC.getGameSpeedInfo(GAME.getGameSpeedType()).getAnarchyPercent()
+	revIdxChange = (GAME.getGameTurn() - CyCity.getGameTurnAcquired()) * 100.0 / GC.getGameSpeedInfo(GAME.getGameSpeedType()).getSpeedPercent()
 	revIdxChange += CyCity.getHighestPopulation()
 	revIdxChange *= CyCity.plot().calculateCulturePercent(CyPlayer.getID()) / 100.0
 
@@ -725,9 +705,9 @@ def onBuildingBuilt(argsList):
 			curRevIdx = cityX.getRevolutionIndex()
 			iRevIdxChange = -max([75, curRevIdx * 12/100])
 			cityX.changeRevolutionIndex(iRevIdxChange)
-			revIdxHist = RevData.getCityVal(pCity,'RevIdxHistory')
+			revIdxHist = RevData.getCityVal(cityX,'RevIdxHistory')
 			revIdxHist['Events'][0] += iRevIdxChange
-			RevData.updateCityVal(pCity, 'RevIdxHistory', revIdxHist)
+			RevData.updateCityVal(cityX, 'RevIdxHistory', revIdxHist)
 
 	elif buildingInfo.getMaxPlayerInstances() == 1 and buildingInfo.getPrereqReligion() < 0 and buildingInfo.getProductionCost() > 10:
 		if LOG_DEBUG:
@@ -739,9 +719,9 @@ def onBuildingBuilt(argsList):
 			curRevIdx = cityX.getRevolutionIndex()
 			iRevIdxChange = -max([50, curRevIdx * 7/100])
 			cityX.changeRevolutionIndex(iRevIdxChange)
-			revIdxHist = RevData.getCityVal(pCity,'RevIdxHistory')
+			revIdxHist = RevData.getCityVal(cityX,'RevIdxHistory')
 			revIdxHist['Events'][0] += iRevIdxChange
-			RevData.updateCityVal(pCity, 'RevIdxHistory', revIdxHist)
+			RevData.updateCityVal(cityX, 'RevIdxHistory', revIdxHist)
 
 
 ########################## Religious events ###############################
@@ -786,7 +766,7 @@ def updateAttitudeExtras( bVerbose = False ) :
 					print "[REV] Extra Attitude for %s of %s now %d"%(playerI.getCivilizationDescription(0),playerJ.getCivilizationDescription(0),playerI.AI_getAttitudeExtra(j))
 			elif( attEx < 0 and GAME.getSorenRandNum(100,'Rev: Attitude') < -attEx*20 ) :
 				teamI = GC.getTeam( playerI.getTeam() )
-				if( not teamI.isAtWar( playerJ.getTeam() ) ) :
+				if( not teamI.isAtWarWith( playerJ.getTeam() ) ) :
 					playerI.AI_changeAttitudeExtra(j, -(attEx/10))
 					if LOG_DEBUG and bVerbose:
 						print "[REV] Extra Attitude for %s of %s now %d"%(playerI.getCivilizationDescription(0),playerJ.getCivilizationDescription(0),playerI.AI_getAttitudeExtra(j))
@@ -803,19 +783,23 @@ def removeFloatingRebellions():
 
 		bOnlySpy = True
 		spy = None
+		bHasFounder = False
 		unitX, i = playerX.firstUnit(False)
 		while unitX:
 			if unitX.isFound():
-				return
+				bHasFounder = True
+				break
 			if bOnlySpy:
 				if unitX.getUnitAIType() != UnitAITypes.UNITAI_SPY:
 					bOnlySpy = False
 				else: spy = unitX
 			unitX, i = playerX.nextUnit(i, False)
+		if bHasFounder:
+			continue
 
 		print "[REV] Player %d (%s) is a homeless rebel"%(iPlayerX, playerX.getCivilizationDescription(0))
 
-		if not GC.getTeam(playerX.getTeam()).getAtWarCount(True):
+		if not GC.getTeam(playerX.getTeam()).isAtWar(False):
 			print "[REV] Rebel player %d has lost their cause, terminating rebel" % iPlayerX
 			playerX.killUnits()
 
@@ -870,7 +854,7 @@ def checkForAssimilation():
 
 		if iPlayerML != None:
 			CyPlayerML = GC.getPlayer(iPlayerML)
-			bWarSeparatist = CyTeamX.isAtWar(CyPlayerML.getTeam())
+			bWarSeparatist = CyTeamX.isAtWarWith(CyPlayerML.getTeam())
 			if bWarSeparatist:
 				revTurn = RevData.revObjectGetVal(CyPlayerX, 'RevolutionTurn')
 				if revTurn != None and iTurn - revTurn < 40:
@@ -887,7 +871,7 @@ def checkForAssimilation():
 					iCivType = CyPlayerX.getCivilizationType()
 					for CyCityML in CyPlayerML.cities():
 						if RevData.getCityVal(CyCityML, 'RevolutionCiv') == iCivType:
-							revTurn = RevData.getCityVal(pCity, 'RevolutionTurn')
+							revTurn = RevData.getCityVal(CyCityML, 'RevolutionTurn')
 							if revTurn != None and iTurn - revTurn < 25:
 								iOdds -= 2
 
@@ -896,110 +880,115 @@ def checkForAssimilation():
 					print "	Revolt - Assimilation! The rebel %s are requesting again to join the %s now that they've captured %d cities"%(szCiv, CyPlayerDominant.getCivilizationDescription(0), iNumCities)
 
 
-		else:
-			if iTurn - iTurnAcquiredCity0 > 15 and iNumCities < iMinCities:
-				iTotalLand = CyPlayerX.getTotalLand()
-				if iTotalLand < minNumPlots:
+		elif iTurn - iTurnAcquiredCity0 > 15 and iNumCities < iMinCities:
+			iTotalLand = CyPlayerX.getTotalLand()
+			if iTotalLand < minNumPlots:
+				# Some patches for div0 errors on countTotalCulture in this section, Blaze 2022
 
-					if CyCity0.area().getNumCities() < iNumCities + 2:
-						continue # Isolated
+				if CyCity0.area().getNumCities() < iNumCities + 2:
+					continue # Isolated
 
-					if CyTeamX.getNumMembers() > 1:
-						continue # In alliance
+				if CyTeamX.getNumMembers() > 1:
+					continue # In alliance
 
-					iOdds = 2*(minNumPlots - iTotalLand) + (4 + 4*iMaxEra)/CyCity0.getPopulation()
+				iOdds = 2*(minNumPlots - iTotalLand) + (4 + 4*iMaxEra)/CyCity0.getPopulation()
 
-					if CyCity0.getOccupationTimer() > 0:
-						iOdds *= 3
+				if CyCity0.getOccupationTimer() > 0:
+					iOdds *= 3
 
-					iOdds += CyCity0.getRevolutionIndex()/100
+				iOdds += CyCity0.getRevolutionIndex()/100
 
-					CyPlot0 = CyCity0.plot()
-					### Special cases
-					if CyTeamX.isAVassal():
+				CyPlot0 = CyCity0.plot()
+				### Special cases
+				if CyTeamX.isAVassal():
 
-						if iOdds > 10 + GAME.getSorenRandNum(100, 'Revolution: Assimilate'):
+					if iOdds > 10 + GAME.getSorenRandNum(100, 'Revolution: Assimilate'):
 
-							# If player is a Vassal, should only be allowed to assimilate with master
-							CyPlayerMaster = None
-							for iTeamY in xrange(MAX_PC_TEAMS):
-								if not CyTeamX.isVassal(iTeamY): continue
+						# If player is a Vassal, should only be allowed to assimilate with master
+						CyPlayerMaster = None
+						for iTeamY in xrange(MAX_PC_TEAMS):
+							if not CyTeamX.isVassal(iTeamY): continue
 
-								iPlayerMaster = GC.getTeam(iTeamY).getLeaderID()
-								CyPlayerMaster = GC.getPlayer(iPlayerMaster)
+							iPlayerMaster = GC.getTeam(iTeamY).getLeaderID()
+							CyPlayerMaster = GC.getPlayer(iPlayerMaster)
 
-								print "	Revolt - Assimilation!  Vassal %s considering assimilation to master %s" %(szCiv, CyPlayerMaster.getCivilizationDescription(0))
+							print "	Revolt - Assimilation!  Vassal %s considering assimilation to master %s" %(szCiv, CyPlayerMaster.getCivilizationDescription(0))
 
-								relations = CyPlayerX.AI_getAttitude(iPlayerMaster)
+							relations = CyPlayerX.AI_getAttitude(iPlayerMaster)
 
-								if CyPlot0.getCulture(iPlayerMaster)/(1.0*CyPlot0.countTotalCulture()) > .25:
-									# Assimilate with master with large culture in city
-									if not relations == AttitudeTypes.ATTITUDE_FURIOUS:
+							if CyPlot0.getCulture(iPlayerMaster)/(max(1, 1.0*CyPlot0.countTotalCulture())) > .25:
+								# Assimilate with master with large culture in city
+								if not relations == AttitudeTypes.ATTITUDE_FURIOUS:
 
-										if not CyPlayerMaster.isHuman():
-											CyPlayerDominant = CyPlayerMaster
+									if not CyPlayerMaster.isHuman():
+										CyPlayerDominant = CyPlayerMaster
 
-										elif not iPlayerX in noAssimilateList:
-											CyPlayerDominant = CyPlayerMaster
-										if CyPlayerDominant:
-											print "	Revolt - Assimilation to master based on culture"
-
-								elif relations in (AttitudeTypes.ATTITUDE_PLEASED, AttitudeTypes.ATTITUDE_FRIENDLY):
-									# Assimilate with friendly, powerful master
-									masterPower = CyPlayerMaster.getPower()
-									vassalPower = CyPlayerX.getPower()
-
-									if masterPower > 3*vassalPower:
-										if not CyPlayerMaster.isHuman():
-											CyPlayerDominant = CyPlayerMaster
-										elif not iPlayerX in noAssimilateList:
-											CyPlayerDominant = CyPlayerMaster
-										if CyPlayerDominant:
-											print "	Revolt - Assimilation to friendly and powerful master"
-								break
-
-					elif CyPlot0.calculateCulturePercent(iPlayerX) < 60:
-						### Capital has foreign influence
-						iPlayerCult = CyPlot0.calculateCulturalOwner() # iPlayerCult guaranteed to be alive
-						if iPlayerCult != iPlayerX:
-							iOdds += 15
-
-						if iOdds > 10 + GAME.getSorenRandNum(100, 'Revolution: Assimilate'):
-							print "	Revolt - Assimilation!  %s considering assimilation by culture" % szCiv
-
-							if iPlayerCult > -1 and iPlayerCult != iPlayerX and not CyPlayerX.AI_getAttitude(iPlayerCult) == AttitudeTypes.ATTITUDE_FURIOUS:
-								## Assimilate with cultural owner
-								CyPlayerY = GC.getPlayer(iPlayerCult)
-								if CyPlayerY.isAlive():
-									if not CyPlayerY.isHuman():
-										CyPlayerDominant = CyPlayerY
 									elif not iPlayerX in noAssimilateList:
-										CyPlayerDominant = CyPlayerY
+										CyPlayerDominant = CyPlayerMaster
 									if CyPlayerDominant:
-										print "	Revolt - Assimilation culture owner: " + CyPlayerDominant.getCivilizationDescription(0)
+										print "	Revolt - Assimilation to master based on culture"
 
-							if not CyPlayerDominant:
-								## Check for good relations with second place culture
-								iMaxCult2 = 0
-								for iPlayerY in xrange(MAX_PC_PLAYERS):
-									if iPlayerY in (iPlayerX, iPlayerCult): continue
-									CyPlayerY = GC.getPlayer(iPlayerY)
-									if not CyPlayerY.isAlive(): continue
-									iCulture = CyPlot0.getCulture(iPlayerY)
-									if iCulture > iMaxCult2:
-										iPlayerCult2 = iPlayerY
-										CyPlayerCult2 = CyPlayerY
-										iMaxCult2 = iCulture
+							elif relations in (AttitudeTypes.ATTITUDE_PLEASED, AttitudeTypes.ATTITUDE_FRIENDLY):
+								# Assimilate with friendly, powerful master
+								masterPower = CyPlayerMaster.getPower()
+								vassalPower = CyPlayerX.getPower()
 
-								iTotalCulture = CyPlot0.countTotalCulture()
-								if iMaxCult2/(1.0*iTotalCulture) > .2:
+								if masterPower > 3*vassalPower:
+									if not CyPlayerMaster.isHuman():
+										CyPlayerDominant = CyPlayerMaster
+									elif not iPlayerX in noAssimilateList:
+										CyPlayerDominant = CyPlayerMaster
+									if CyPlayerDominant:
+										print "	Revolt - Assimilation to friendly and powerful master"
+							break
+
+				elif CyPlot0.calculateCulturePercent(iPlayerX) < 60:
+					### Capital has foreign influence
+					iPlayerCult = CyPlot0.calculateCulturalOwner() # iPlayerCult guaranteed to be alive
+					if iPlayerCult != iPlayerX:
+						iOdds += 15
+
+					if iOdds > 10 + GAME.getSorenRandNum(100, 'Revolution: Assimilate'):
+						print "	Revolt - Assimilation!  %s considering assimilation by culture" % szCiv
+
+						if iPlayerCult > -1 and iPlayerCult != iPlayerX and not CyPlayerX.AI_getAttitude(iPlayerCult) == AttitudeTypes.ATTITUDE_FURIOUS:
+							## Assimilate with cultural owner
+							CyPlayerY = GC.getPlayer(iPlayerCult)
+							if CyPlayerY.isAlive():
+								if not CyPlayerY.isHuman():
+									CyPlayerDominant = CyPlayerY
+								elif not iPlayerX in noAssimilateList:
+									CyPlayerDominant = CyPlayerY
+								if CyPlayerDominant:
+									print "	Revolt - Assimilation culture owner: " + CyPlayerDominant.getCivilizationDescription(0)
+
+						if not CyPlayerDominant:
+							## Check for good relations with second place culture
+							iMaxCult2 = 0
+							for iPlayerY in xrange(MAX_PC_PLAYERS):
+								if iPlayerY in (iPlayerX, iPlayerCult): continue
+								CyPlayerY = GC.getPlayer(iPlayerY)
+								if not CyPlayerY.isAlive(): continue
+								iCulture = CyPlot0.getCulture(iPlayerY)
+								if iCulture > iMaxCult2:
+									iPlayerCult2 = iPlayerY
+									CyPlayerCult2 = CyPlayerY
+									iMaxCult2 = iCulture
+
+							if iMaxCult2 < 1:
+								raise "city plot unexpectedly owned by no one, logical error in dll code dealing with culture on city plots"
+
+							else:
+								iTotalCulture = 1.0 * CyPlot0.countTotalCulture()
+								if iMaxCult2 / iTotalCulture > .2:
 									relations = CyPlayerX.AI_getAttitude(iPlayerCult2)
-									if relations in (AttitudeTypes.ATTITUDE_PLEASED, AttitudeTypes.ATTITUDE_FRIENDLY) \
-									or relations == AttitudeTypes.ATTITUDE_CAUTIOUS and iMaxCult2/(1.0*iTotalCulture) > .4:
-										if not CyPlayerCult2.isHuman():
+									if (
+										relations in (AttitudeTypes.ATTITUDE_PLEASED, AttitudeTypes.ATTITUDE_FRIENDLY)
+									or	relations == AttitudeTypes.ATTITUDE_CAUTIOUS and iMaxCult2 / iTotalCulture > .4
+									):
+										if not CyPlayerCult2.isHuman() or not iPlayerX in noAssimilateList:
 											CyPlayerDominant = CyPlayerCult2
-										elif not iPlayerX in noAssimilateList:
-											CyPlayerDominant = CyPlayerCult2
+
 										if CyPlayerDominant:
 											print "	Revolt - Assimilation to friendly, 2nd culture player"
 
@@ -1014,30 +1003,32 @@ def checkForAssimilation():
 				caesiumtextResolution = caesiumtR.split('x')
 				caesiumpasx = int(caesiumtextResolution[0])/10
 				caesiumpasy = int(caesiumtextResolution[1])/10
-				popup = PyPopup.PyPopup(RevDefs.assimilationPopup, contextType = EventContextTypes.EVENTCONTEXT_ALL, bDynamic = False)
-				if centerPopups: popup.setPosition(3*caesiumpasx,3*caesiumpasy)
-				# Additions by Caesium et al
+				popup = CyPopup(RevDefs.assimilationPopup, EventContextTypes.EVENTCONTEXT_ALL, False)
+				if centerPopups:
+					popup.setPosition(3*caesiumpasx, 3*caesiumpasy)
+				# ! Additions by Caesium et al
 				bodStr = TRNSLTR.getText("TXT_KEY_REV_ASSIM_POPUP", ()) %(szCiv, szCiv)
 				if bRiskWar:
 					bodStr += '\n\n' + TRNSLTR.getText("TXT_KEY_REV_ASSIM_POPUP_REBEL", ())%(CyPlayerML.getCivilizationDescription(0))
-				popup.setBodyString(bodStr)
+				popup.setBodyString(bodStr, 1<<0)
 				popup.addSeparator()
 				popup.addButton(TRNSLTR.getText("TXT_KEY_REV_BUTTON_ACCEPT",()))
 				popup.addButton(TRNSLTR.getText("TXT_KEY_REV_BUTTON_MAYBE_LATER",()))
 				popup.addButton(TRNSLTR.getText("TXT_KEY_REV_BUTTON_NEVER",()))
 				popup.setUserData((iPlayerX, CyPlayerDominant.getID(), bRiskWar))
-				popup.launch(bCreateOkButton = False)
+				popup.launch(False, PopupStates.POPUPSTATE_IMMEDIATE)
 			else:
 				if bRiskWar:
 					# Assimilating a rebel involves potential war declaration, attitude issues
 					CyPlayerML.AI_changeAttitudeExtra(CyPlayerDominant.getID(), CyPlayerML.AI_getAttitudeExtra(iPlayerX))
 					print "	Revolt - The %s (motherland of the rebel %s) is considering attacking the %s over the assimilation"%(CyPlayerML.getCivilizationDescription(0),szCiv,CyPlayerDominant.getCivilizationDescription(0))
-					[iOdds,attackerTeam,victimTeam] = RevUtils.computeWarOdds(CyPlayerML, CyPlayerDominant, CyCity0.area(), False, True, True )
+					[iOdds,attackerTeam,victimTeam] = RevUtils.computeWarOdds(CyPlayerML, CyPlayerDominant, CyCity0.area(), False, True, True)
 					if attackerTeam.canDeclareWar(victimTeam.getID()) and iOdds > GAME.getSorenRandNum(100, 'Revolution: War'):
 						print "  Revolt - Rebel motherland takes exception to assimilation, team %d declare war on team %d"%(attackerTeam.getID(), victimTeam.getID())
-						attackerTeam.declareWar( victimTeam.getID(), True, WarPlanTypes.NO_WARPLAN )
+						attackerTeam.declareWar(victimTeam.getID(), True, WarPlanTypes.NO_WARPLAN)
 
 				CyPlayerDominant.assimilatePlayer(iPlayerX)
+
 
 def assimilateHandler(iPlayerID, netUserData, popupReturn):
 
@@ -1048,16 +1039,18 @@ def assimilateHandler(iPlayerID, netUserData, popupReturn):
 			print "[REV] Assimilation accepted!"
 		if netUserData[2]:
 			pMotherland = GC.getPlayer(RevData.revObjectGetVal(GC.getPlayer(netUserData[0]), 'MotherlandID' ))
-			pMotherland.AI_changeAttitudeExtra( etUserData[1], pMotherland.AI_getAttitudeExtra(netUserData[0]))
+			pMotherland.AI_changeAttitudeExtra( netUserData[1], pMotherland.AI_getAttitudeExtra(netUserData[0]))
 			if LOG_DEBUG:
 				print "[REV] Rebel motherland %s extra attidude to %s now %d"%(pMotherland.getCivilizationDescription(0), GC.getPlayer(netUserData[1]).getCivilizationDescription(0), pMotherland.AI_getAttitudeExtra(netUserData[0]))
 
-			[iOdds, attackerTeam, victimTeam] = RevUtils.computeWarOdds(pMotherland, GC.getPlayer(netUserData[1]), GC.getPlayer(netUserData[0]).getCapitalCity().area(), False, True, True)
+			pRebelCapital = GC.getPlayer(netUserData[0]).getCapitalCity()
+			if not pRebelCapital.isNone():
+				[iOdds, attackerTeam, victimTeam] = RevUtils.computeWarOdds(pMotherland, GC.getPlayer(netUserData[1]), pRebelCapital.area(), False, True, True)
 
-			if attackerTeam.canDeclareWar(victimTeam.getID()) and iOdds > GAME.getSorenRandNum(100, 'Revolution: War'):
-				if LOG_DEBUG:
-					print "[REV] Rebel motherland takes exception, team %d declare war on team %d"%(attackerTeam.getID(), victimTeam.getID())
-				attackerTeam.declareWar( victimTeam.getID(), True, WarPlanTypes.NO_WARPLAN )
+				if attackerTeam.canDeclareWar(victimTeam.getID()) and iOdds > GAME.getSorenRandNum(100, 'Revolution: War'):
+					if LOG_DEBUG:
+						print "[REV] Rebel motherland takes exception, team %d declare war on team %d"%(attackerTeam.getID(), victimTeam.getID())
+					attackerTeam.declareWar( victimTeam.getID(), True, WarPlanTypes.NO_WARPLAN )
 
 		GC.getPlayer(netUserData[1]).assimilatePlayer(netUserData[0])
 	elif popupReturn.getButtonClicked() == 1:
@@ -1071,7 +1064,7 @@ def assimilateHandler(iPlayerID, netUserData, popupReturn):
 # Small revolts are short duration disorder striking a city, shutting down production and culture, etc.
 def doSmallRevolts(iPlayer, CyPlayer):
 
-	if iPlayer > 39:
+	if iPlayer >= GC.getMAX_PC_PLAYERS():
 		raise "NPC does not revolt!"
 
 	for city in CyPlayer.cities():

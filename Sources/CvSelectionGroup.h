@@ -4,15 +4,14 @@
 #define CIV4_GROUP_H
 
 #include "LinkedList.h"
+#include "copy_iterator.h"
 #include "CvPathGenerator.h"
-#include "CvUnit.h"
 #include "idinfo_iterator_base.h"
 
 class CvArea;
 class CvCity;
 class CvPlot;
 class CvPath;
-//class CvPathGenerator;
 class CvUnit;
 class CvUnitSelectionCriteria;
 #ifdef USE_OLD_PATH_GENERATOR
@@ -51,7 +50,8 @@ struct StackCompare
 };
 DECLARE_FLAGS(StackCompare::flags);
 
-class CvSelectionGroup : bst::noncopyable
+class CvSelectionGroup
+	: private bst::noncopyable
 {
 
 public:
@@ -82,13 +82,11 @@ public:
 	void autoMission();
 	void updateMission();
 
-	DllExport CvPlot* _lastMissionPlot();
-	CvPlot* lastMissionPlot() const;
+	DllExport CvPlot* lastMissionPlot() const;
 
 	bool canStartMission(int iMission, int iData1, int iData2, CvPlot* pPlot = NULL, bool bTestVisible = false, bool bUseCache = false) const;
 	bool startMission();
 	bool continueMission(int iSteps = 0);
-	bool checkMoveSafety(int iX, int iY, int iFlags);
 
 	DllExport bool canDoInterfaceMode(InterfaceModeTypes eInterfaceMode);
 	DllExport bool canDoInterfaceModeAt(InterfaceModeTypes eInterfaceMode, CvPlot* pPlot);
@@ -100,8 +98,9 @@ public:
 
 	bool isHuman() const;
 
-	DllExport bool _isBusy();
-	bool isBusy() const;
+	DllExport bool isBusy() const;
+
+	bool isCombat(const CvUnit* ignoreMe = NULL) const;
 
 	bool isCargoBusy() const;
 	int baseMoves() const;
@@ -110,23 +109,24 @@ public:
 	bool hasCargo() const;
 	int getCargo(bool bVolume = false) const;
 
-	DllExport bool _canAllMove();
-	bool canAllMove() const;
+	int getArmyID() const { return m_iArmyID; }
+	void setArmyID(int iArmyID) { m_iArmyID = iArmyID; }
+
+	bool canAllSelectedMove() const;
+	DllExport bool canAllMove() const;
+	DllExport bool canMoveInto(CvPlot* pPlot, bool bAttack = false);
+	DllExport bool canMoveOrAttackInto(CvPlot* pPlot, bool bDeclareWar = false);
+	bool canEnterPlot(const CvPlot* pPlot, bool bAttack = false) const;
+	bool canEnterOrAttackPlot(const CvPlot* pPlot, bool bDeclareWar = false) const;
+
 	bool canAnyMove(bool bValidate = false) /* not const - Can set ACTIVITY_SLEEP if bValidate is true */;
 	bool hasMoved() const;
 	bool canEnterTerritory(TeamTypes eTeam, bool bIgnoreRightOfPassage = false) const;
 	bool canEnterArea(TeamTypes eTeam, const CvArea* pArea, bool bIgnoreRightOfPassage = false) const;
 
-	DllExport bool _canMoveInto(CvPlot* pPlot, bool bAttack = false);
-	bool canMoveInto(const CvPlot* pPlot, bool bAttack = false) const;
-
-	DllExport bool _canMoveOrAttackInto(CvPlot* pPlot, bool bDeclareWar = false);
-	bool canMoveOrAttackInto(const CvPlot* pPlot, bool bDeclareWar = false) const;
-
-	bool canMoveIntoWithWar(const CvPlot* pPlot, bool bAttack = false, bool bDeclareWar = false) const;
-
 	bool canMoveThrough(const CvPlot* pPlot, bool bDeclareWar = false) const;
 	bool canFight() const;
+	bool canAttackNow() const;
 	bool canDefend() const;
 	bool canBombard(const CvPlot* pPlot, bool bCheckCanReduceOnly = false) const;
 	bool hasBombardCapability() const;
@@ -172,7 +172,7 @@ public:
 	bool canIgnoreZoneofControl() const;
 
 	bool groupDeclareWar(const CvPlot* pPlot, bool bForce = false);
-	bool groupAttack(int iX, int iY, int iFlags, bool& bFailedAlreadyFighting, bool bStealth = false);
+	bool groupAttack(int iX, int iY, int iFlags, bool& bFailedAlreadyFighting);
 	void groupMove(CvPlot* pPlot, bool bCombat, CvUnit* pCombatUnit = NULL, bool bEndMove = false);
 	bool groupPathTo(int iX, int iY, int iFlags);
 	bool groupRoadTo(int iX, int iY, int iFlags);
@@ -228,8 +228,7 @@ public:
 	CvPlot* getPathEndTurnPlot() const;
 	const CvPath& getPath() const;
 	static CvPathGenerator* getPathGenerator();
-	//TB OOS Fix
-	bool generatePath(const CvPlot* pFromPlot, const CvPlot* pToPlot, int iFlags = 0, bool bReuse = false, int* piPathTurns = NULL, int iMaxPathLen = MAX_INT, int iOptimizationLimit = -1, bool bAsync = false) const;
+	bool generatePath(const CvPlot* pFromPlot, const CvPlot* pToPlot, int iFlags = 0, bool bReuse = false, int* piPathTurns = NULL, int iMaxPathLen = MAX_INT, int iOptimizationLimit = -1) const;
 	void resetPath();
 
 	bool canPathDirectlyToInternal(const CvPlot* pFromPlot, const CvPlot* pToPlot, int movesRemaining) const;
@@ -287,6 +286,7 @@ public:
 	int getMissionType(int iNode) const;
 	int getMissionData1(int iNode) const;
 	int getMissionData2(int iNode) const;
+	bool isMoveMission(CLLNode<MissionData>* node) const;
 
 // BUG - All Units Actions - start
 	bool allMatch(UnitTypes eUnit) const;
@@ -296,13 +296,26 @@ public:
 	virtual void read(FDataStreamBase* pStream);
 	virtual void write(FDataStreamBase* pStream);
 
-	virtual void AI_init() = 0;
 	virtual void AI_reset() = 0;
 	virtual void AI_separate() = 0;
 	virtual bool AI_update() = 0;
 	virtual int AI_attackOdds(const CvPlot* pPlot, bool bPotentialEnemy, bool bForce = false, bool* bWin = NULL, int iTheshold = -1) const = 0;
-	virtual CvUnit* AI_getBestGroupAttacker(const CvPlot* pPlot, bool bPotentialEnemy, int& iUnitOdds, bool bForce = false, bool bNoBlitz = false, CvUnit** pDefender = NULL, bool bAssassinate = false, bool bSurprise = false) const = 0;
-	virtual CvUnit* AI_getBestGroupSacrifice(const CvPlot* pPlot, bool bPotentialEnemy, bool bForce = false, bool bNoBlitz = false, bool bSuprise = false) const = 0;
+
+	virtual CvUnit* AI_getBestGroupAttacker
+	(
+		const CvPlot* pPlot,
+		bool bPotentialEnemy,
+		int& iUnitOdds,
+		bool bForce = false,
+		CvUnit** pDefender = NULL,
+		bool bAssassinate = false,
+		bool bSurprise = false,
+		bool bIgnoreMadeAttack = false,
+		const std::set<int>& ignoreUnitID = std::set<int>()
+	)
+	const = 0;
+
+	virtual CvUnit* AI_getBestGroupSacrifice(const CvPlot* pPlot, bool bForce, bool bNoBlitz) const = 0;
 
 	virtual int AI_compareStacks(const CvPlot* pPlot, StackCompare::flags flags = StackCompare::None, int iRange = 0) const = 0;
 	//virtual int AI_compareStacks(const CvPlot* pPlot, bool bPotentialEnemy, bool bCheckCanAttack = false, bool bCheckCanMove = false, int iRange = 0) const = 0;
@@ -321,7 +334,7 @@ public:
 	virtual void AI_noteSizeChange(int iChange, int iVolume) = 0;
 	virtual CvUnit* AI_getMissionAIUnit() const = 0;
 	virtual CvUnit* AI_ejectBestDefender(const CvPlot* pTargetPlot, bool allowAllDefenders = false) = 0;
-	virtual bool AI_hasBeneficialPropertyEffectForCity(const CvCity* pCity) const = 0;
+	virtual bool AI_hasBeneficialPropertyEffectForCity(const CvCity* pCity, PropertyTypes pProperty) const = 0;
 	virtual CvUnit* AI_ejectBestPropertyManipulator(const CvCity* pTargetCity) = 0;
 	virtual void AI_separateNonAI(UnitAITypes eUnitAI) = 0;
 	virtual void AI_separateAI(UnitAITypes eUnitAI) = 0;
@@ -332,11 +345,11 @@ public:
 	virtual bool AI_isFull() const = 0;
 	virtual int AI_getGenericValueTimes100(UnitValueFlags eFlags) const = 0;
 
-	bool groupStackAttack(int iX, int iY, int iFlags, bool& bFailedAlreadyFighting, bool bStealth = false);
 	int defensiveModifierAtPlot(const CvPlot* pPlot) const;
 	bool meetsUnitSelectionCriteria(const CvUnitSelectionCriteria* criteria) const;
 	int getStrength() const;
 	bool hasCommander() const;
+	bool hasCommodore() const;
 	bool hasUnitOfAI(UnitAITypes eUnitAI) const;
 	int	getWorstDamagePercent(UnitCombatTypes eIgnoreUnitCombat = NO_UNITCOMBAT) const;
 	void validateLocations(bool bFixup = false) const;
@@ -430,6 +443,7 @@ private:
 	static const CvSelectionGroup* m_pCachedMovementGroup;
 	static bst::scoped_ptr<CachedPathGenerator> m_cachedPathGenerator;
 	static CachedPathGenerator& getCachedPathGenerator();
+	int m_iArmyID;
 
 public:
 	static void setGroupToCacheFor(CvSelectionGroup* group);

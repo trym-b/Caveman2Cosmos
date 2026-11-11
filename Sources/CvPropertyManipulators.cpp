@@ -7,12 +7,20 @@
 //
 //------------------------------------------------------------------------------------------------
 
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
+#include "CvPropertyInteraction.h"
+#include "CvPropertyManipulators.h"
+#include "CvPropertyPropagator.h"
+#include "CvPropertySource.h"
 #include "CvXMLLoadUtility.h"
 #include "CheckSum.h"
 
 CvPropertyManipulators::~CvPropertyManipulators()
 {
+	PROFILE_EXTRA_FUNC();
 	foreach_(const CvPropertySource* pSource, m_apSources)
 	{
 		delete pSource;
@@ -31,13 +39,22 @@ int CvPropertyManipulators::getNumSources() const
 {
 	return (int) m_apSources.size();
 }
-/*
+
 CvPropertySource* CvPropertyManipulators::getSource(int index) const
 {
-	FASSERT_BOUNDS(0, getNumSources(), index)
+	FASSERT_BOUNDS(0, getNumSources(), index);
 	return m_apSources[index];
 }
-*/
+
+const python::list CvPropertyManipulators::cyGetSources() const
+{
+	PROFILE_EXTRA_FUNC();
+	python::list l = python::list();
+	foreach_(const CvPropertySource* pSource, m_apSources)
+		l += *pSource;
+	return l;
+}
+
 int CvPropertyManipulators::addSource(PropertySourceTypes eType)
 {
 	switch (eType)
@@ -68,7 +85,7 @@ int CvPropertyManipulators::getNumInteractions() const
 /*
 CvPropertyInteraction* CvPropertyManipulators::getInteraction(int index) const
 {
-	FASSERT_BOUNDS(0, getNumInteractions(), index)
+	FASSERT_BOUNDS(0, getNumInteractions(), index);
 	return m_apInteractions[index];
 }
 */
@@ -98,7 +115,7 @@ int CvPropertyManipulators::getNumPropagators() const
 /*
 CvPropertyPropagator* CvPropertyManipulators::getPropagator(int index) const
 {
-	FASSERT_BOUNDS(0, getNumPropagators(), index)
+	FASSERT_BOUNDS(0, getNumPropagators(), index);
 	return m_apPropagators[index];
 }
 */
@@ -123,6 +140,7 @@ int CvPropertyManipulators::addPropagator(PropertyPropagatorTypes eType)
 
 void CvPropertyManipulators::buildDisplayString(CvWStringBuffer &szBuffer) const
 {
+	PROFILE_EXTRA_FUNC();
 	foreach_(const CvPropertySource* pSource, getSources())
 	{
 		szBuffer.append(NEWLINE);
@@ -145,6 +163,7 @@ void CvPropertyManipulators::buildDisplayString(CvWStringBuffer &szBuffer) const
 
 bool CvPropertyManipulators::read(CvXMLLoadUtility *pXML, const wchar_t* szTagName)
 {
+	PROFILE_EXTRA_FUNC();
 	if(pXML->TryMoveToXmlFirstChild(szTagName))
 	{
 		if(pXML->TryMoveToXmlFirstChild())
@@ -197,6 +216,7 @@ bool CvPropertyManipulators::read(CvXMLLoadUtility *pXML, const wchar_t* szTagNa
 
 void CvPropertyManipulators::copyNonDefaults(const CvPropertyManipulators* pProp)
 {
+	PROFILE_EXTRA_FUNC();
 	//if (m_apSources.empty())
 	{
 		foreach_(CvPropertySource* pSource, pProp->getSources())
@@ -226,8 +246,9 @@ void CvPropertyManipulators::copyNonDefaults(const CvPropertyManipulators* pProp
 	}
 }
 
-void CvPropertyManipulators::getCheckSum(unsigned int &iSum) const
+void CvPropertyManipulators::getCheckSum(uint32_t& iSum) const
 {
+	PROFILE_EXTRA_FUNC();
 	foreach_(const CvPropertySource* pSource, getSources())
 	{
 		pSource->getCheckSum(iSum);

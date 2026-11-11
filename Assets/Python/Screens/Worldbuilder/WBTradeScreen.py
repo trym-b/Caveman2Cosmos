@@ -3,12 +3,12 @@ import CvScreenEnums
 import WBDiplomacyScreen
 GC = CyGlobalContext()
 
-iSelected = 0
 
 class WBTradeScreen:
 
 	def __init__(self, WB):
 		self.WB = WB
+		self.iSelected = 0
 		self.iTable_Y = 80
 
 	def interfaceScreen(self):
@@ -17,9 +17,9 @@ class WBTradeScreen:
 		screen.setRenderInterfaceOnly(True)
 		screen.addPanel("MainBG", u"", u"", True, False, -10, -10, screen.getXResolution() + 20, screen.getYResolution() + 20, PanelStyles.PANEL_STYLE_MAIN )
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
-	
+
 		screen.setLabel("TradeHeader", "Background", "<font=4b>" + CyTranslator().getText("TXT_KEY_CONCEPT_TRADE", ()), 1<<2, screen.getXResolution()/2, 20, -0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
-		screen.setText("WBTradeExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper(), 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("WBTradeExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper(), 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 		screen.setText("TradeCancel", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_SCREEN_CANCEL", ()).upper(), 1<<2, screen.getXResolution()/2, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1 )
 
 		screen.addDropDownBoxGFC("CurrentPage", 20, screen.getYResolution() - 42, screen.getXResolution()/5, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
@@ -69,7 +69,7 @@ class WBTradeScreen:
 						sText += ", "
 					sText += self.getTradeData(iType, pTrade.iData, pDeal.getInitialGameTurn())
 			screen.appendListBoxString("TradeTable", sText, WidgetTypes.WIDGET_GENERAL, -1, i, 1<<0)
-		screen.setSelectedListBoxStringGFC("TradeTable", iSelected)
+		screen.setSelectedListBoxStringGFC("TradeTable", self.iSelected)
 
 	def getTradeData(self, iType, iData, iTurn):
 		if iType == TradeableItems.TRADE_OPEN_BORDERS:
@@ -89,11 +89,12 @@ class WBTradeScreen:
 			return CyTranslator().getText("[ICON_GOLD]", ()) + CyTranslator().getText("TXT_KEY_MISC_GOLD_PER_TURN", (iData,))
 		if iType == TradeableItems.TRADE_RESOURCES:
 			return u"%c%s" %(GC.getBonusInfo(iData).getChar(), GC.getBonusInfo(iData).getDescription())
+		if iType == TradeableItems.TRADE_GOLD:
+			return CyTranslator().getText("[ICON_GOLD]", ()) + CyTranslator().getText("TXT_KEY_MISC_GOLD", (iData,))
 		return ""
 
 	def handleInput(self, inputClass):
 		screen = CyGInterfaceScreen("WBTradeScreen", CvScreenEnums.WB_TRADE)
-		global iSelected
 
 		if inputClass.getFunctionName() == "CurrentPage":
 			iIndex = screen.getPullDownData("CurrentPage", screen.getSelectedPullDownID("CurrentPage"))
@@ -102,12 +103,14 @@ class WBTradeScreen:
 			elif iIndex == 1:
 				WBDiplomacyScreen.WBDiplomacyScreen(self.WB).interfaceScreen(0, True)
 		elif inputClass.getFunctionName() == "TradeTable":
-			iSelected = inputClass.getData2()
+			self.iSelected = inputClass.getData2()
 		elif inputClass.getFunctionName() == "TradeCancel":
-			pDeal = CyGame().getDeal(iSelected)
-			if pDeal:
-				pDeal.kill()
-				self.placeDeals()
+			if self.iSelected < CyGame().getIndexAfterLastDeal():
+				pDeal = CyGame().getDeal(self.iSelected)
+				if pDeal and pDeal.getFirstPlayer() > -1:
+					pDeal.kill()
+					self.iSelected = 0
+					self.placeDeals()
 		return
 
 	def update(self, fDelta):

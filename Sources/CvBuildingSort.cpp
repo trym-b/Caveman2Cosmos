@@ -6,13 +6,16 @@
 //  PURPOSE: Sorting classes for buildings
 //
 //------------------------------------------------------------------------------------------------
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvBuildingInfo.h"
 #include "CvCity.h"
 #include "CvGlobals.h"
 #include "CvPlayer.h"
 
-bool BuildingSortBase::isLesserBuilding(const CvPlayer* pPlayer, CvCity* pCity, BuildingTypes eBuilding1, BuildingTypes eBuilding2)
+bool BuildingSortBase::isLesserBuilding(const CvPlayer* pPlayer, CvCity* pCity, BuildingTypes eBuilding1, BuildingTypes eBuilding2) const
 {
 	int iVal1;
 	int iVal2;
@@ -138,7 +141,7 @@ int BuildingSortCost::getBuildingValue(const CvPlayer* pPlayer, CvCity* pCity, B
 {
 	if (pCity)
 	{
-		return pCity->getProductionNeeded(eBuilding) - pCity->getBuildingProduction(eBuilding);
+		return pCity->getProductionNeeded(eBuilding) - pCity->getProgressOnBuilding(eBuilding);
 	}
 	else
 	{
@@ -146,10 +149,26 @@ int BuildingSortCost::getBuildingValue(const CvPlayer* pPlayer, CvCity* pCity, B
 	}
 }
 
-// dummy
 int BuildingSortName::getBuildingValue(const CvPlayer* pPlayer, CvCity* pCity, BuildingTypes eBuilding) const
 {
-	return 0;
+	const CvBuildingInfo& kBuilding = GC.getBuildingInfo(eBuilding);
+	// Get the localized name/description of the building
+	CvWString szName = kBuilding.getDescription();
+
+	if (szName.empty())
+		return 0;
+
+	// Encode the first few characters of the name into an integer
+	// This way we can return an int value that represents the alphabetical order
+	int value = 0;
+	for (int i = 0; i < std::min((int)szName.length(), 3); i++)
+	{
+		// Convert character to uppercase so sorting is case-insensitive
+		wchar_t c = towupper(szName[i]);
+		// Shift previous value and add current character code
+		value = value * 256 + (int)c;
+	}
+	return -value;
 }
 
 // name sorting defaults to A first
@@ -163,6 +182,7 @@ bool BuildingSortName::isLesserBuilding(const CvPlayer* pPlayer, CvCity* pCity, 
 
 int BuildingSortProperty::getBuildingValue(const CvPlayer* pPlayer, CvCity* pCity, BuildingTypes eBuilding) const
 {
+	PROFILE_EXTRA_FUNC();
 	const CvBuildingInfo& kInfo = GC.getBuildingInfo(eBuilding);
 	int iSum = kInfo.getProperties()->getValueByProperty(m_eProperty) + kInfo.getPropertiesAllCities()->getValueByProperty(m_eProperty);
 
@@ -178,6 +198,7 @@ int BuildingSortProperty::getBuildingValue(const CvPlayer* pPlayer, CvCity* pCit
 
 BuildingSortList::BuildingSortList(CvPlayer *pPlayer, CvCity *pCity)
 {
+	PROFILE_EXTRA_FUNC();
 	m_pPlayer = pPlayer;
 	m_pCity = pCity;
 
@@ -191,6 +212,7 @@ BuildingSortList::BuildingSortList(CvPlayer *pPlayer, CvCity *pCity)
 
 BuildingSortList::~BuildingSortList()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_BUILDING_SORT; i++)
 	{
 		SAFE_DELETE(m_apBuildingSort[i]);
@@ -199,6 +221,7 @@ BuildingSortList::~BuildingSortList()
 
 void BuildingSortList::init()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < NUM_BUILDING_SORT; i++)
 	{
 		SAFE_DELETE(m_apBuildingSort[i]);
@@ -225,7 +248,7 @@ BuildingSortTypes BuildingSortList::getActiveSort() const
 
 bool BuildingSortList::setActiveSort(BuildingSortTypes eActiveSort)
 {
-	FASSERT_BOUNDS(0, NUM_BUILDING_SORT, eActiveSort)
+	FASSERT_BOUNDS(0, NUM_BUILDING_SORT, eActiveSort);
 	const bool bChanged = m_eActiveSort != eActiveSort;
 	m_eActiveSort = eActiveSort;
 	return bChanged;

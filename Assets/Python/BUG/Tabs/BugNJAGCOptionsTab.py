@@ -14,12 +14,11 @@ class BugNJAGCOptionsTab(BugOptionsTab.BugOptionsTab):
 		BugOptionsTab.BugOptionsTab.__init__(self, "NJAGC", "Clock")
 
 	def create(self, screen):
-		tab = self.createTab(screen)
+		self.createTab(screen)
 		panel = self.createMainPanel(screen)
 		column = self.addOneColumnLayout(screen, panel)
 
 		left, center, right = self.addThreeColumnLayout(screen, column, "Views")
-		#self.addSpacer(screen, center, "Scores_New_Columns", 3)
 
 		self.addCheckbox(screen, left, "NJAGC__AlternateText")
 		self.addIntDropdown(screen, right, center, "NJAGC__AltTiming")

@@ -26,10 +26,10 @@ PUSHD "%~dp0..\.."
 SET C2C_VERSION=v%APPVEYOR_BUILD_VERSION%
 SET "root_dir=%cd%"
 set SVN=svn.exe
-if not exist "%build_dir%" goto :skip_delete
-rmdir /Q /S "%build_dir%"
+@REM if not exist "%build_dir%" goto :skip_delete
+@REM rmdir /Q /S "%build_dir%"
 
-:skip_delete
+@REM :skip_delete
 
 echo C2C %C2C_VERSION% DEPLOYMENT
 echo.
@@ -42,7 +42,7 @@ powershell -ExecutionPolicy Bypass -File "%root_dir%\Tools\CI\InitGit.ps1"
 
 :: COMPILE -----------------------------------------------------
 echo Building FinalRelease DLL...
-call "%root_dir%\Tools\_MakeDLL.bat" FinalRelease build deploy
+call "%root_dir%\Tools\_MakeDLL.bat" Release build deploy
 if not errorlevel 0 (
     echo Building FinalRelease DLL failed, aborting deployment!
     exit /B 2
@@ -55,7 +55,7 @@ call "%root_dir%\Tools\CI\DoSourceIndexing.bat"
 
 :: CHECK OUT SVN -----------------------------------------------
 echo Checking out SVN working copy for deployment...
-call %SVN% --quiet checkout %svn_url% "%build_dir%"
+call %SVN% checkout %svn_url% "%build_dir%"
 if %ERRORLEVEL% neq 0 goto checkoutLoopSetup
 goto OK
 
@@ -108,10 +108,10 @@ echo Updating SVN working copy from git...
 set ROBOCOPY_FLAGS=/MIR /NFL /NDL /NJH /NJS /NS /NC
 robocopy Assets "%build_dir%\Assets" %ROBOCOPY_FLAGS%
 robocopy PrivateMaps "%build_dir%\PrivateMaps" %ROBOCOPY_FLAGS%
+robocopy PublicMaps "%build_dir%\PublicMaps" %ROBOCOPY_FLAGS%
 robocopy Resource "%build_dir%\Resource" %ROBOCOPY_FLAGS%
 robocopy Docs "%build_dir%\Docs" %ROBOCOPY_FLAGS%
 xcopy "Caveman2Cosmos.ini" "%build_dir%" /R /Y
-xcopy "Caveman2Cosmos Config.ini" "%build_dir%" /R /Y
 xcopy "C2C1.ico" "%build_dir%" /R /Y
 xcopy "C2C2.ico" "%build_dir%" /R /Y
 xcopy "C2C3.ico" "%build_dir%" /R /Y

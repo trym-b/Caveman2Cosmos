@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Civ4GameText xmlns="http://www.firaxis.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.firaxis.com ../Schema/Civ4Gametext.xsd">
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_WORLDVIEW_HUMAN_SACRIFICE_ACTIVE</Tag>
+		<English>Worldview - Human Sacrifice active</English>
+		<French>
+			<Text>Vision du Monde - Sacrifice Humain actif</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Sacrifici umani attivi (concezione del mondo)</Italian>
+		<Polish>Swiatopogl&#185;d - Ofiary z ludzi aktywne</Polish>
+		<Russian>Æåðòâû</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_ALTAR_FOR_HUMAN_SACRIFICE</Tag>
+		<English>Altar for Human Sacrifice</English>
+		<French>
+			<Text>Autel pour sacrifice humain</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Altare per sacrifici umani</Italian>
+		<Polish>O&#179;tarz Ofiar z ludzi</Polish>
+		<Russian>Æåðòâåííûé àëòàðü</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_ALTAR_FOR_HUMAN_SACRIFICE_PEDIA</Tag>
+		<English>Altar for Human Sacrifice</English>
+		<French>Autel pour Sacrifice Humain</French>
+		<Italian>Un altare utilizzato per i sacrifici umani</Italian>
+		<Polish>O&#179;tarz Ofiar z ludzi</Polish>
+		<Russian>Àëòàðü äëÿ ÷åëîâå÷åñêèõ æåðòâîïðèíîøåíèé</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_WORLDVIEW_HUMAN_SACRIFICE</Tag>
+		<English>Worldview - Human Sacrifice</English>
+		<French>
+			<Text>Vision du Monde - Sacrifice Humain</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Sacrifici umani (concezione del mondo)</Italian>
+		<Polish>Swiatopogl&#185;d - Ofiary z ludzi</Polish>
+		<Russian>Æåðòâîïðèíîøåíèÿ</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_WORLDVIEW_HUMAN_SACRIFICE_HELP</Tag>
+		<English>Allows you to sacrifice human and Neanderthal captives for culture or happiness.</English>
+		<French>Vous permet de sacrifier les hommes et néanderthaliens pour de la culture ou du bonheur.</French>
+		<Italian>Ti permette di sacrificare i prigionieri umani e Neanderthal per ottenere cultura o felicità.</Italian>
+		<Polish>Pozwala na sk&#179;adanie ofiar z pojmanych je&#241;c&#243;w.</Polish>
+		<Russian>Ïîçâîëÿåò ïðèíîñèòü â æåðòâó ÷åëîâå÷åñêèõ è íåàíäåðòàëüñêèõ ïëåííèêîâ äëÿ óâåëè÷åíèÿ êóëüòóðû èëè íàñòðîåíèÿ ãðàæäàí.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_BUILDING_WORLDVIEW_HUMAN_SACRIFICE_PEDIA</Tag>
+		<English>Human Sacrifice...</English>
+		<French>Sacrifice Humain...</French>
+		<Italian>I sacrifici umani furono praticati a lungo nella preistoria.</Italian>
+		<Polish>Ofiary z ludzi...</Polish>
+		<Russian>×åëîâå÷åñêèå æåðòâîïðèíîøåíèÿ....</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_REMOVE_WV_HUMAN_SACRIFICE</Tag>
+		<English>Stop Human Sacrifice in your nation.</English>
+		<French>Arrêter les Sacrifices Humains au sein de votre nation.</French>
+		<Italian>Ferma i sacrifici umani nella tua nazione.</Italian>
+		<Polish>Ofiary z ludzi w Twoim imperium zostaj&#185; zakazane.</Polish>
+		<Russian>Ïðåêðàòèòü ÷åëîâå÷åñêèå æåðòâîïðèíîøåíèÿ â âàøåé ñòðàíå.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SACRIFICE_CAPTIVE</Tag>
+		<English>Sacrifice a captive for Culture, Happiness.</English>
+		<French>Sacrifiez un captif pour la Culture et le Bonheur.</French>
+		<Italian>Sacrifica prigioniero per cultura e felicità.</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MISSION_SACRIFICE_CAPTIVE_HELP</Tag>
+		<English>Increases the culture and happiness of the city. Unit is consumed.</English>
+		<French>Augmente la culture et le bonheur de la ville. L'unité est consommée.</French>
+		<Italian>[NEWLINE]Aumenta la cultura e la felicità della città. L'unità è consumata nel processo.</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MSG_NO_HUMAN_SACRIFICE</Tag>
+		<English>Your nation has banned human sacrifice.</English>
+		<French>Votre nation a banni le sacrifice humain.</French>
+		<Italian>La tua nazione ha vietato i sacrifici umani.</Italian>
+		<Polish>Tw&#243;j nar&#243;d przesta&#179; zakaza&#179; ofiar z ludzi.</Polish>
+		<Russian>Â âàøåé ñòðàíå çàïðåùåíû æåðòâîïðèíîøåíèÿ.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_REMOVE_WV_HUMAN_SACRIFICE</Tag>
+		<English>End the practice of Human Sacrifice.</English>
+		<French>Arrête les pratiques du sacrifice humain.</French>
+		<Italian>Ferma la pratica dei sacrifici umani.</Italian>
+		<Polish>Koniec prakty sk&#179;adania ofiar z ludzi.</Polish>
+		<Russian>Ïðåêðàòèòü ïðàêòèêó ÷åëîâå÷åñêèõ æåðòâîïðèíîøåíèé.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_REMOVE_WV_HUMAN_SACRIFICE_MESSAGE</Tag>
+		<English>Your people no longer practice human sacrifice.</English>
+		<French>Votre peuple ne pratique plus de sacrifices humains.</French>
+		<Italian>La tua gente non pratica più i sacrifici umani.</Italian>
+		<Polish>Twoi ludzie przestali sk&#179;ada&#230; ofiary z ludzi.</Polish>
+		<Russian>Âàø íàðîä áîëåå íå ïðàêòèêóåò ÷åëîâå÷åñêèå æåðòâîïðèíîøåíèÿ.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SACRIFICE_CAPTIVE</Tag>
+		<English>The best results come with the best altars (Altar for Human Sacrifice or the better Sacrificial Alter). Better results occur with the Druid and MesoAmerican religions and their monastery and cathedrals. Some wonders also improve the outcome.</English>
+		<French>Les meilleurs résultats sont obtenus avec les plus importants autels. (Autel pour les Sacrifices humains ou mieux, Autel Sacrificiel)</French>
+		<Italian>I migliori risultati si ottengono con gli altari migliori (l'altare per i sacrifici umani oppure l'altare sacrificale). Si ottengono migliori risultati se in città sono presenti le tradizioni druidiche o le religioni mesoamericane, con i relativi edifici religiosi; perfino alcune meraviglie migliorano i risultati.</Italian>
+		<Polish>Najlepsze rezultaty osi&#185;ga si&#234; z najlepszych O&#179;arzy (O&#179;tarzy Ofiar z ludzi lub z Ofiarnych O&#179;tarzy). Jeszcze lepsze rezultaty osi&#185;gaj&#185; wierz&#185;cy w Druidyzm lub mezo-ameryka&#241;ki Nagualizm (je&#156;li posiadaj&#185; Katedry i Klasztory tych religii). Niekt&#243;re Cudy Swiata maj&#185; tak&#191;e wp&#179;yw na zyski z Ofiar.</Polish>
+		<Russian>Ëó÷øèå ðåçóëüòàòû ïðèõîäÿò ñ ëó÷øèìè æåðòâåííèêàìè (àëòàðü äëÿ ÷åëîâå÷åñêèõ æåðòâîïðèíîøåíèé èëè, ïðîùå ãîâîðÿ, Æåðòâåííèê). Ëó÷øèå ðåçóëüòàòû ïðîèñõîäÿò ñ Äðóèäèçìîì è Ìåçîàìåðèêàíñêèìè ðåëèãèÿìè è èõ ìîíàñòûðÿìè è ñîáîðàìè. Íåêîòîðûå ×óäåñà òàêæå ìîãóò óëó÷øèòü ðåçóëüòàò.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SACRIFICE_CAPTIVE_MESSAGE</Tag>
+		<English>Your people are pleased with the sacrifice.</English>
+		<French>Votre peuple est satisfait du sacrifice.</French>
+		<Italian>I tuoi sudditi sono felici del sacrificio.</Italian>
+		<Polish>Twoi ludzie s&#185; zadowoleni z ofiary.</Polish>
+		<Russian>Âàøè ëþäè îáðàäîâàíû æåðòâîïðèíîøåíèåì.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_OUTCOME_SACRIFICE_CAPTIVE_RELIGION</Tag>
+		<English>The best results come with the best altars (Altar for Human Sacrifice or the better Sacrificial Alter). Some wonders also improve the outcome.</English>
+		<French>Les meilleurs résultats sont obtenus avec les plus importants autels. (Autel pour les Sacrifices humains ou mieux, Autel Sacrificiel)</French>
+		<Italian>I migliori risultati si ottengono con gli altari migliori (l'altare per i sacrifici umani oppure l'altare sacrificale). Si ottengono migliori risultati se in città sono presenti le tradizioni druidiche o le religioni mesoamericane, con i relativi edifici religiosi; perfino alcune meraviglie migliorano i risultati.</Italian>
+		<Polish>Najlepsze rezultaty osi&#185;ga si&#234; z najlepszych O&#179;arzy (O&#179;tarzy Ofiar z ludzi lub z Ofiarnych O&#179;tarzy). Niekt&#243;re Cudy Swiata maj&#185; tak&#191;e wp&#179;yw na zyski z Ofiar.</Polish>
+		<Russian>Ëó÷øèå ðåçóëüòàòû ïðèõîäÿò ñ ëó÷øèìè æåðòâåííèêàìè (àëòàðü äëÿ ÷åëîâå÷åñêèõ æåðòâîïðèíîøåíèé èëè, ïðîùå ãîâîðÿ, Æåðòâåííèê). Íåêîòîðûå ×óäåñà òàêæå ñïîñîáíû óëó÷øèòü ðåçóëüòàò.</Russian>
+	</TEXT>
+</Civ4GameText>

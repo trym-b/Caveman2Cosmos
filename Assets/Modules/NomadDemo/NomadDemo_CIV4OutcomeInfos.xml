@@ -29,5 +29,65 @@
 			<Message>TXT_KEY_OUTCOME_NOMAD_RECON_MESSAGE</Message>
 			<PrereqTech>TECH_NOMADISM</PrereqTech>
 		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_FORAGE_CAMP</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_FORAGE_CAMP</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_FORAGE_CAMP_MESSAGE</Message>
+			<PrereqTech>TECH_GATHERING</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_HUNTING_CAMP</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_HUNTING_CAMP</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_HUNTING_CAMP_MESSAGE</Message>
+			<PrereqTech>TECH_PERSISTENCE_HUNTING</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_LORE_CIRCLE</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_LORE_CIRCLE</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_LORE_CIRCLE_MESSAGE</Message>
+			<PrereqTech>TECH_ORAL_TRADITION</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_CAMPFIRE</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_CAMPFIRE</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_CAMPFIRE_MESSAGE</Message>
+			<PrereqTech>TECH_CONTROLLED_FIRE</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_SHELTER</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_SHELTER</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_SHELTER_MESSAGE</Message>
+			<PrereqTech>TECH_SHELTER_BUILDING</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_TRADING_POST</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_TRADING_POST</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_TRADING_POST_MESSAGE</Message>
+			<PrereqTech>TECH_BARTER</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_TRAPS</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_TRAPS</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_TRAPS_MESSAGE</Message>
+			<PrereqTech>TECH_TRAPPING</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_DRUM_CIRCLE</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_DRUM_CIRCLE</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_DRUM_CIRCLE_MESSAGE</Message>
+			<PrereqTech>TECH_PREHISTORIC_MUSIC</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_RITUAL_SITE</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_RITUAL_SITE</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_RITUAL_SITE_MESSAGE</Message>
+			<PrereqTech>TECH_RITUALISM</PrereqTech>
+		</OutcomeInfo>
+		<OutcomeInfo>
+			<Type>OUTCOME_NOMAD_BUILD_COOKING_PIT</Type>
+			<Description>TXT_KEY_OUTCOME_NOMAD_BUILD_COOKING_PIT</Description>
+			<Message>TXT_KEY_OUTCOME_NOMAD_BUILD_COOKING_PIT_MESSAGE</Message>
+			<PrereqTech>TECH_COOKING</PrereqTech>
+		</OutcomeInfo>
 	</OutcomeInfos>
 </Civ4OutcomeInfos>

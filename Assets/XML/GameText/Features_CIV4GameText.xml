@@ -1,0 +1,868 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Civ4GameText xmlns="http://www.firaxis.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.firaxis.com ../Schema/Civ4Gametext.xsd">
+	<TEXT>
+		<Tag>TXT_KEY_FEATUREHELP_NO_BONUS</Tag>
+		<English>[NEWLINE][ICON_BULLET]No bonus on plots with this feature.</English>
+		<French>[NEWLINE][ICON_BULLET]Aucun bonus sur les cases avec cette caractéristique.</French>
+		<Italian>[NEWLINE][ICON_BULLET]Nessun bonus su caselle con questo miglioramento.</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATUREHELP_NO_IMPROVEMENT</Tag>
+		<English>[NEWLINE][ICON_BULLET]Cannot build any Improvements on this terrain.</English>
+		<French>[NEWLINE][ICON_BULLET]Impossible de construire d'aménagements sur ce terrain.</French>
+		<German>[NEWLINE][ICON_BULLET]Landschaftsausbau in dieser Umgebung nicht möglich.</German>
+		<Italian>[NEWLINE][ICON_BULLET]Non si possono realizzare miglioramenti su questa casella.</Italian>
+		<Spanish>[NEWLINE][ICON_BULLET]En este terreno no se pueden construir mejoras.</Spanish>
+		<Polish>[NEWLINE][ICON_BULLET]Nie mo&#191;na wybudowa&#230; &#191;adnych ulepsze&#241; terenu na tym polu.</Polish>
+		<Russian>[NEWLINE][ICON_BULLET]Íà ýòîì òèïå ìåñòíîñòè íåëüçÿ ñòðîèòü îáúåêòû.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_ASTEROIDS</Tag>
+		<English>Asteroids</English>
+		<French>
+			<Text>Astéroïdes</Text>
+			<Gender>Male</Gender>
+			<Plural>1</Plural>
+		</French>
+		<German>Asteroiden</German>
+		<Italian>Asteroide</Italian>
+		<Spanish>
+			<Text>Asteroide:Asteroides</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Asteroidy</Polish>
+		<Russian>Àñòåðîèäû</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_ASTEROIDS_PEDIA</Tag>
+		<English>Asteroids are minor planets, especially those of the inner Solar System. The larger ones have also been called planetoids. These terms have historically been applied to any astronomical object orbiting the Sun that did not show the disc of a planet and was not observed to have the characteristics of an active comet, but as minor planets in the outer Solar System were discovered, they were often distinguished from traditional asteroids. Their volatile-based surfaces were found to resemble comets.</English>
+		<French>Les astéroïdes sont des planètes mineures, en particulier celles du système solaire intérieur. Les plus gros ont également été appelés planétoïdes. Ces termes ont historiquement été appliqués à tout objet astronomique en orbite autour du Soleil qui ne montrait pas le disque d'une planète et n'a pas été observé comme ayant les caractéristiques d'une comète active, mais comme des planètes mineures du système solaire externe ont été découvertes, elles étaient souvent distingué des astéroïdes traditionnels. Leurs surfaces à base volatile ressemblaient à des comètes.</French>
+		<Russian>Астероиды - это малые небесные тела, встречающиеся во внутренней части Солнечной системы. Более крупные их представители называются планетоидами. Эти термины исторически применялись к любому астрономическому объекту, вращающемуся вокруг Солнца, который не демонстрировал диск планеты и не имел характеристик активной кометы, но поскольку были открыты малые планеты во внешней Солнечной системе, их прежде не отделяли от традиционных астероидов. Было обнаружено, что их поверхности на основе летучих веществ напоминают кометы.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_BAMBOO</Tag>
+		<English>Bamboo</English>
+		<French>Bambou</French>
+		<Italian>Bambù</Italian>
+		<German>Bambus</German>
+		<Spanish>
+			<Text>Bosque de bambú:Bosques de bambú</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Bambus</Polish>
+		<Russian>Áàìáóêîâûå çàðîñëè</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_BAMBOO_PEDIA</Tag>
+		<English>Bamboo is a tribe of flowering perennial evergreen plants in the grass family Poaceae; although, the forestry services and departments of many countries where bamboo is utilized as a building material consider bamboo to be a forestry product, and it is specifically harvested as a tree exclusively for the wood it produces, which in many ways is a wood superior in strength and resilience to other natural, fibrous building materials. In fact it is often referred to as a tree by cultures who harvest it as wood. Giant bamboos are the largest members of the grass family.</English>
+		<French>Le bambou est une variété de plantes à feuilles persistantes à fleurs vivaces de la famille des graminées Poaceae; bien que les services et départements forestiers de nombreux pays où le bambou est utilisé comme matériau de construction considèrent le bambou comme un produit forestier, et il est spécifiquement récolté comme arbre exclusivement pour le bois qu'il produit, qui à bien des égards est un bois de qualité supérieure dans résistance et résilience aux autres matériaux de construction naturels et fibreux. En fait, il est souvent appelé arbre par les cultures qui le récoltent comme bois. Les bambous géants sont les plus grands membres de la famille des graminées.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Bambus[COLOR_REVERT] ist eine tropische Pflanze, die außer in Europa und der Antarktis auf allen Kontinenten vorkommt. Sein hohler Stengel verholzt und entwickelt lange, sehr harte Röhren, wegen denen er oft als Baum oder Gehölz angesehen wird, obwohl er eigentlich zu den Süßgräsern gehört. Aufgrund seines schnellen Wachstums ist Bambus ein wichtiger Rohstoff für Bau- und Brennmaterialien. Vor allem in Asien ist er von großer ökologischer, ökonomischer und kultureller Bedeutung.</German>
+		<Polish>Bambus (Bambusa Shreb.) - rodzaj ro&#156;lin wieloletnich o drewniej&#185;cych &#179;odygach, nale&#191;&#185;cy do rodziny wiechlinowatych. Stanowi jeden z kilkudziesi&#234;ciu rodzaj&#243;w zwyczajowo okre&#156;lanych mianem "bambus&#243;w", wchodz&#185;cych w sk&#179;ad podrodziny bambusowych (Bambusoideae). Rodzaj liczy ok. 130 gatunk&#243;w wyst&#234;puj&#185;cych w tropikalnej i subtropikalnej cz&#234;&#156;ci Azji, poza tym niekt&#243;re gatunki s&#185; szeroko rozpowszechnione w uprawie.</Polish>
+		<Russian>Бамбук - это племя цветущих многолетних вечнозеленых растений семейства злаковых Poaceae; хотя лесные службы и департаменты многих стран, где бамбук используется в качестве строительного материала, считают бамбук продуктом лесного хозяйства, и его специально заготавливают как дерево исключительно для производства древесины, которая во многих отношениях превосходит древесину. прочность и устойчивость к другим натуральным волокнистым строительным материалам. Фактически, это дерево часто называют деревом в культурах, которые заготавливают его как древесину. Гигантский бамбук - самые крупные представители семейства трав.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_BLACK_HOLE</Tag>
+		<English>Black Hole</English>
+		<French>
+			<Text>Trou noir</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Schwarzes Loch</German>
+		<Italian>Buco nero</Italian>
+		<Spanish>
+			<Text>Agujero negro:Agujeros negros</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Czarna Dziura</Polish>
+		<Russian>×åðíàÿ äûðà</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_BLACK_HOLE_PEDIA</Tag>
+		<English>A black hole is a mathematically defined region of spacetime with such a strong gravitational pull that no particle or electromagnetic radiation can escape from it. According to the theory of general relativity, a sufficiently compact mass can deform spacetime, leading to the formation of a black hole. The boundary of this region, beyond which escape is impossible, is called the event horizon. While crossing the event horizon has a dramatic effect on the fate of an object, it appears to have no locally detectable features. In many ways, a black hole behaves like an ideal black body, as it does not reflect light. Observations of black holes are only possible due to the gravitational distortions they produce, which bend light around them, or when they are actively consuming a neighboring star.</English>
+		<French>Un trou noir est une région de l'espace-temps définie mathématiquement qui présente une attraction gravitationnelle si forte qu'aucune particule ou rayonnement électromagnétique ne peut y échapper. La théorie de la relativité générale prédit qu'une masse suffisamment compacte peut déformer l'espace-temps pour former un trou noir. La limite de la région d'où aucune fuite n'est possible est appelée horizon des événements. Bien que traverser l'horizon des événements ait un effet énorme sur le sort de l'objet qui le traverse, il ne semble pas avoir de caractéristiques localement détectables. À bien des égards, un trou noir agit comme un corps noir idéal, car il ne réfléchit pas la lumière.</French>
+		<Russian>Черная дыра - это математически определенная область пространства-времени, демонстрирующая такое сильное гравитационное притяжение, что никакая частица или электромагнитное излучение не может покинуть ее. Общая теория относительности предсказывает, что достаточно компактная масса может деформировать пространство-время для образования черной дыры. Граница области, из которой невозможно убежать, называется горизонтом событий. Хотя пересечение горизонта событий оказывает огромное влияние на судьбу пересекающего его объекта, оно, по-видимому, не имеет локально обнаруживаемых признаков. Во многих отношениях черная дыра действует как идеальное черное тело, так как не отражает свет.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CACTUS</Tag>
+		<English>Cactus</English>
+		<French>Cactus</French>
+		<German>Kaktus</German>
+		<Spanish>
+			<Text>Cactus</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+		<Polish>Kaktus</Polish>
+		<Russian>Êàêòóñû</Russian>
+		<Italian>Cactus</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CACTUS_PEDIA</Tag>
+		<English>A cactus is a member of the plant family Cactaceae, within the order Caryophyllales. The word cactus is derived through Latin from the Ancient Greek (kaktos), a name originally used for a spiny plant whose identity is not certain. The plural of cactus varies; the Latin cacti, the English cactuses and the uninflected plural cactus are all used. With the exception of one species, cacti are native to the Americas, ranging from Patagonia in the south to parts of western Canada in the north.</English>
+		<French>Un cactus est membre de la famille des plantes Cactaceae, au sein de l'ordre des Caryophyllales. Le mot cactus est dérivé du latin du grec ancien (kaktos), un nom utilisé à l'origine pour une plante épineuse dont l'identité n'est pas certaine. Le pluriel de cactus varie; les cactus latins, les cactus anglais et les cactus pluriels non fléchis sont tous utilisés. À l'exception d'une espèce, les cactus sont originaires des Amériques, allant de la Patagonie au sud à certaines parties de l'ouest du Canada au nord.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Kakteen[COLOR_REVERT] kommen natürlich nur in Amerika vor. Es handelt sich um ausdauernde Sträucher und seltener auch Bäume mit sehr markantem Aussehen. Obwohl sie vielmals nur mit Wüsten assoziiert werden, kann man diese Pflanzen auch in Regenwäldern, Steppen und sogar im Hochgebirge finden. Kakteen dienen auch heute noch als Wasserspender und Nahrungsmittel, bei den alten Azteken hatten sie sogar rituelle Bedeutung.</German>
+		<Polish>Kaktusowate (Cactaceae Juss., zwyczajowo nazywane kaktusami) - rodzina sukulent&#243;w &#179;odygowych (wieloletnich, zielnych lub cz&#234;&#156;ciowo zdrewnia&#179;ych) nale&#191;&#185;ca do rz&#234;du go&#159;dzikowc&#243;w. Nale&#191;y do niej, w zale&#191;no&#156;ci od systemu klasyfikacyjnego, od 24 do 220 rodzaj&#243;w, w tym od 1500 do 2000 gatunk&#243;w. Wyst&#234;puj&#185; g&#179;&#243;wnie na kontynentach ameryka&#241;skich, sk&#185;d pochodz&#185;.</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CAVES</Tag>
+		<English>Caves</English>
+		<French>Cavernes</French>
+		<German>Höhlen</German>
+		<Italian>Grotte</Italian>
+		<Spanish>
+			<Text>Cavernas</Text>
+			<Gender>Female</Gender>
+			<Plural>1</Plural>
+		</Spanish>
+		<Polish>Jaskinie</Polish>
+		<Russian>Ïåùåðû</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CAVES_PEDIA</Tag>
+		<English>A cave or cavern is a natural underground space large enough for a human to enter. The term applies to natural cavities some parts of which are in total darkness. The word "cave" also includes smaller spaces like rock shelters, sea caves, and grottos. Caves can form through various geological processes. Limestone caves form through the dissolution of soluble rocks such as limestone, dolomite, and gypsum. This process is called chemical weathering, it occurs when slightly acidic rainwater, seeps through cracks in the rock. Over millions of years, these cracks enlarge into fractures, which then become tunnels and chambers. Sea caves, on the other hand, typically form through wave activity.</English>
+		<French>Une grotte ou une caverne est un espace souterrain naturel suffisamment grand pour qu'un humain y pénètre. Le terme s'applique aux cavités naturelles dont une partie est dans l'obscurité totale. Le mot grotte comprend également des espaces plus petits comme des abris sous roche, des grottes marines et des grottes.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Höhlen[COLOR_REVERT] sind natürlich entstandene unterirdische Hohlräume, die groß genug sind, um von Menschen betreten zu werden. Im engeren Sinn bestehen sie aus mindestens einem größeren Raum, es kann sich aber auch um Systeme aus Räumen und Gängen handeln, von denen ein Teil in völliger Dunkelheit liegt. Im weiteren Sinn zählen auch Halbhöhlen (Felsdächer) und (natürliche) Grotten zu den Höhlen. Höhlen können zum Teil, aber auch vollständig überflutet sein.</German>
+		<Italian>Una caverna o grotta è uno spazio sotterraneo abbastanza grande da permettere a un uomo di entrarci. Il termine si applica alle cavità naturali, parte delle quali sono completamente nell'oscurità. La parola grotta si riferisce anche a spazi più piccoli, come buchi nelle rocce e cavità sottomarine.</Italian>
+		<Polish>Jaskinia - naturalna pusta przestrze&#241; w skale o rozmiarach umo&#191;liwiaj&#185;cych jej penetracj&#234; przez cz&#179;owieka. Najliczniejsze s&#185; jaskinie krasowe, grawitacyjne, tektoniczne, lodowcowe, wietrzeniowo-erozyjne lub pseudokrasowe. Odkrywanie (eksploracja), dokumentowanie oraz naukowe badanie jaski&#241; to speleologia.</Polish>
+		<Russian>Пещера или каверна - это естественное подземное пространство, достаточно большое для входа человека. Термин относится к естественным полостям, часть которых находится в полной темноте. Слово пещера также включает в себя небольшие пространства, такие как скальные укрытия, морские пещеры и гроты.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CORAL_REEF</Tag>
+		<English>Coral Reef</English>
+		<French>Récif de Corail</French>
+		<German>Korallenriff</German>
+		<Italian>Barriera corallina</Italian>
+		<Spanish>
+			<Text>Arrecife de coral:Arrecifes de coral</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa Koralowa</Polish>
+		<Russian>Êîðàëëîâûé ðèô</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CORAL_REEF_BEACON</Tag>
+		<English>Coral Reef (Beacon)</English>
+		<French>
+			<Text>Récif de Corail (Balise)</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Segnalatore sulla barriera corallina</Italian>
+		<German>Korallenriff (Leuchtfeuer)</German>
+		<Spanish>
+			<Text>Arrecife de coral con baliza:Arrecifes de coral con baliza</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa Koralowa (Boja)</Polish>
+		<Russian>Êîðàëëû (Áóé)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CORAL_REEF_LIGHTHOUSE</Tag>
+		<English>Coral Reef (Lighthouse)</English>
+		<French>
+			<Text>Récif de Corail (Phare)</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Faro sulla barriera corallina</Italian>
+		<German>Korallenriff (Leuchtturm)</German>
+		<Spanish>
+			<Text>Arrecife de coral con faro:Arrecifes de coral con faro</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa Koralowa (Latarnia Morska)</Polish>
+		<Russian>Êîðàëëû (Ìàÿê)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CORAL_REEF_PEDIA</Tag>
+		<English>Corals are marine organisms in the class Anthozoa of the phylum Cnidaria, typically living in compact colonies of many identical individual "polyps". The group includes the important reef builders that inhabit tropical oceans and secrete calcium carbonate to form hard skeletons.[PARAGRAPH:2]A coral "head" is a colony of many genetically identical polyps. Each polyp is a spineless animal typically only a few millimeters in diameter and a few centimeters in length. A set of tentacles surround a central mouth opening, and an exoskeleton is excreted near the base. Over many generations, the colony thus creates a large skeleton that is characteristic of the species. Individual heads grow by asexual reproduction of polyps. Corals also reproduce sexually by spawning: polyps of the same species release gametes simultaneously over a period of one to several nights around a full moon.[PARAGRAPH:2]Although corals can catch small fish and plankton using stinging cells on their tentacles, most corals obtain the majority of their energy and nutrients from photosynthetic unicellular algae called zooxanthellae, which live within the coral's tissues. Such corals require sunlight and grow in clear, shallow water, typically at depths shallower than 60 meters (200 ft). Corals can be major contributors to the physical structure of the coral reefs that develop in tropical and subtropical waters, such as the enormous Great Barrier Reef off the coast of Queensland, Australia. Other corals lack associated algae and can live in much deeper water, with the cold-water genus Lophelia surviving as deep as 3,000 meters (9,800 ft). Examples have been found on the Darwin Mounds, located north-west of Cape Wrath, Scotland. Deep-water Corals have also been found off the coast of the United States in Washington State and the Aleutian Islands of Alaska.</English>
+		<French>Les coraux sont des organismes marins de la classe Anthozoaires de phylum Cnidaria vivant généralement en colonies compactes de nombreux "polypes" individuels identiques. Le groupe comprend les constructeurs de récifs importants qui habitent les océans tropicaux et sécrètent du carbonate de calcium pour former un squelette dur.[PARAGRAPH:2]Une "tête" de corail est une colonie d'une myriade de polypes génétiquement identiques. Chaque polype est un animal sans épines qui ne mesure généralement que quelques millimètres de diamètre et quelques centimètres de longueur. Un ensemble de tentacules entoure une ouverture de bouche centrale. Un exosquelette est excrété près de la base. Sur plusieurs générations, la colonie crée ainsi un grand squelette caractéristique de l'espèce. Les têtes individuelles poussent par reproduction asexuée des polypes. Les coraux se reproduisent également sexuellement par ponte: les polypes de la même espèce libèrent simultanément des gamètes sur une période d'une à plusieurs nuits autour de la pleine lune.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Korallenriffe[COLOR_REVERT] sind die größten von Lebewesen geschaffenen Strukturen auf der Erde. Sie werden hauptsächlich von Steinkorallen gebildet. Die Kalkskelette dieser Nesseltiere formen im Laufe vieler Jahrhunderte das Riff. Korallenriffe bieten einer Vielzahl von Meereslebewesen eine Heimat und sind für deren Existenz von großer Wichtigkeit. Leider nimmt ihre Zahl in letzter Zeit durch Überfischung, industrielle Verschmutzung und Bautätigkeiten drastisch ab. Außerdem führen die globale Erwärmung und die Versauerung der Meere zu großflächigen Korallenbleichen, die oft ein Absterben der betroffenen Korallen zur Folge haben.</German>
+		<Polish>Rafa koralowa - rafa powsta&#179;a z nagromadzenia szkielet&#243;w organizm&#243;w rafotw&#243;rczych. Powstaj&#185; w morzach i oceanach, w kt&#243;rych temperatura wody utrzymuje si&#234; powy&#191;ej 18 oC, a g&#179;&#234;boko&#156;&#230; dochodzi do 50 m, wsp&#243;&#179;cze&#156;nie na obszarach od 30o30' szeroko&#156;ci geograficznej p&#243;&#179;nocnej do 35o szeroko&#156;ci geograficznej po&#179;udniowej.</Polish>
+		<Russian>Кораллы - морские организмы класса Anthozoa типа Cnidaria, обычно живущие в компактных колониях многих идентичных отдельных "полипов". В эту группу входят важные строители рифов, которые обитают в тропических океанах и выделяют карбонат кальция с образованием твердого скелета.[PARAGRAPH:2]«Голова» коралла - это колония из множества генетически идентичных полипов. Каждый полип - это животное без позвоночника, обычно диаметром всего несколько миллиметров и длиной несколько сантиметров. Ряд щупалец окружают центральное отверстие рта. Экзоскелет выводится из организма возле базы. Таким образом, на протяжении многих поколений колония создает большой скелет, характерный для данного вида. Отдельные головы растут путем бесполого размножения полипов. Кораллы также размножаются половым путем нерестом: полипы одного и того же вида высвобождают гаметы одновременно в течение периода от одной до нескольких ночей вокруг полной луны.[PARAGRAPH:2]Хотя кораллы могут ловить мелкую рыбу и планктон, используя жгучие клетки на своих щупальцах, большинство кораллов получают большую часть своей энергии и питательных веществ из фотосинтетических одноклеточных водорослей, называемых зооксантеллами, которые живут в ткани коралла. Такие кораллы требуют солнечного света и растут на чистой, мелкой воде, обычно на глубинах менее 60 метров (200 футов). Кораллы могут вносить основной вклад в физическую структуру коралловых рифов, которые развиваются в тропических и субтропических водах, таких как огромный Большой Барьерный риф у побережья Квинсленда, Австралия. Другие кораллы не имеют связанных водорослей и могут жить в более глубоких водах, а род холодной воды Lophelia сохранился на глубине 3000 метров (9 800 футов). Примеры живут на Дарвинских курганах, расположенных к северо-западу от мыса Гнев, Шотландия. Кораллы также были найдены у побережья США в штате Вашингтон и на Алеутских островах на Аляске.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CRATER</Tag>
+		<English>Crater</English>
+		<French>Cratère</French>
+		<German>Krater</German>
+		<Italian>Cratere</Italian>
+		<Spanish>
+			<Text>Cráter:Cráteres</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Krater</Polish>
+		<Russian>Êðàòåð</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CRATER_LARGE</Tag>
+		<English>Large Crater</English>
+		<French>Grand Cratère</French>
+		<German>Großer Krater</German>
+		<Italian>Cratere grande</Italian>
+		<Spanish>
+			<Text>Gran cráter:Grandes cráteres</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Du&#191;y Krater</Polish>
+		<Russian>Áîëüøîé êðàòåð</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CRATER_MEDIUM</Tag>
+		<English>Medium Crater</English>
+		<French>Cratère Moyen</French>
+		<German>Mittelgroßer Krater</German>
+		<Italian>Cratere medio</Italian>
+		<Spanish>
+			<Text>Cráter mediano:Cráteres medianos</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>&#140;redni Krater</Polish>
+		<Russian>Ñðåäíèé êðàòåð</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CRATER_PEDIA</Tag>
+		<English>An impact crater is a roughly circular depression formed when a smaller body, such as a meteorite or asteroid, strikes the surface of a planet, moon, or other solid object in the Solar System at high speed. In contrast to volcanic craters, which result from explosions or internal collapse, impact craters typically have raised rims and floors that are lower in elevation than the surrounding terrain. Impact craters range from small, bowl-shaped pits to vast, multi-ringed impact basins. Meteor Crater in Arizona is one of the most famous small impact craters on Earth.</English>
+		<French>Un cratère d'impact est une dépression approximativement circulaire à la surface d'une planète, d'une lune ou d'un autre corps solide du système solaire, formée par l'impact d'hypervitesse d'un corps plus petit avec la surface. Contrairement aux cratères volcaniques, qui résultent d'une explosion ou d'un effondrement interne, les cratères d'impact ont généralement des rebords et des sols surélevés qui sont plus bas en élévation que le terrain environnant. Les cratères d'impact vont de petites dépressions simples en forme de bol à de grands bassins d'impact complexes à anneaux multiples. Meteor Crater est peut-être l'exemple le plus connu d'un petit cratère d'impact sur la Terre.</French>
+		<German>Einschlagkrater oder Impaktkrater sind mehr oder minder halbkugelige Vertiefungen auf der Oberfläche von festen Planeten oder ähnlichen Himmelskörpern. Sie entstehen durch den Einschlag eines großen harten Objekts wie eines Asteroiden oder eines großen Meteoroiden. Nach den gefundenen Überresten, die als Meteoriten bekannt sind, spricht man auch von Meteoritenkratern. Auf der Erde schützt uns die Atmosphäre vor kleineren Einschlägen, nur größere Objekte ab einem Durchmesser von 50 m, die beim Eintritt nicht vollständig verglühen oder zerplatzen, können beim Aufprall mit hoher Geschwindigkeit tiefe [COLOR_HIGHLIGHT_TEXT]Krater[COLOR_REVERT] in die Erdoberfläche reißen.</German>
+		<Polish>Krater - koliste zag&#179;&#234;bienie (lub zniekszta&#179;cenie) na powierzchni cia&#179;a niebieskiego, spowodowane upadkiem meteorytu, planetoidy lub komety. Kratery s&#185; najcz&#234;&#156;ciej spotykanymi elementami rze&#159;by powierzchni cia&#179; o budowie skalistej i skalno-lodowej w Uk&#179;adzie S&#179;onecznym, o ile cia&#179;o jest pozbawione atmosfery, a jego powierzchnia nie zosta&#179;a przekszta&#179;cona przez procesy geologiczne. Obserwowalna g&#234;sto&#156;&#230; wyst&#234;powania krater&#243;w uderzeniowych zawiera informacj&#234; o wieku struktury geologicznej zawieraj&#185;cej te kratery i o intensywno&#156;ci proces&#243;w geologicznych. Na przyk&#179;ad, Io (ksi&#234;&#191;yc Jowisza) jest niemal zupe&#179;nie pozbawiony krater&#243;w meteorytowych.</Polish>
+		<Russian>Ударный кратер представляет собой приблизительно круговую впадину на поверхности планеты, луны или другого твердого тела в Солнечной системе, образованную гиперскоростным ударом меньшего тела с поверхностью. В отличие от вулканических кратеров, которые возникают в результате взрыва или внутреннего обрушения, ударные кратеры обычно имеют приподнятые края и полы, которые имеют более низкую высоту по сравнению с окружающей местностью. Ударные кратеры варьируются от маленьких, простых углублений в форме чаши до больших, сложных, многокольцевых ударных бассейнов. Метеоритный кратер, пожалуй, самый известный пример небольшого ударного кратера на Земле.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_CRATER_SMALL</Tag>
+		<English>Small Crater</English>
+		<French>Petit Cratère</French>
+		<German>Kleiner Krater</German>
+		<Italian>Cratere piccolo</Italian>
+		<Spanish>
+			<Text>Cráter pequeño:Cráteres pequeños</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Ma&#179;y Krater</Polish>
+		<Russian>Ìàëåíüêèé êðàòåð</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FALLOUT</Tag>
+		<English>Fallout</English>
+		<French>
+			<Text>Pollution</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Kontamination</German>
+		<Italian>Contaminazione</Italian>
+		<Spanish>
+			<Text>Lluvia radiactiva:Lluvia radiactiva</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Odpady radioaktywne</Polish>
+		<Russian>Ðàäèîàêòèâíûå îñàäêè</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FALLOUT_PEDIA</Tag>
+		<English>Fallout is the residual radiation hazard that results from a nuclear explosion, named for the way radioactive particles "fall out" of the atmosphere after the initial blast. It commonly refers to the radioactive dust and debris formed when a nuclear weapon detonates close to the ground. The shockwave kicks up dust and debris high into the atmosphere, allowing radioactive particles to spread miles away from the initial blast zone. This material, consisting of radioactive contaminants, can settle over wide areas of soil and water, and may enter the food chain, posing long-term risks to both the environment and public health.</English>
+		<French>Les retombées (pollution) sont le risque de rayonnement résiduel d'une explosion nucléaire, ainsi appelé parce qu'il «tombe» de l'atmosphère après l'explosion. Il s'agit généralement de la poussière radioactive créée lors de l'explosion d'une arme nucléaire. Cette poussière radioactive, constituée de particules chaudes, est une sorte de contamination radioactive. Cela peut conduire à la contamination du sol et de la chaîne alimentaire animale.</French>
+		<Polish>Odpady promieniotw&#243;rcze - odpady sta&#179;e, ciek&#179;e lub gazowe, zawieraj&#185;ce substancje promieniotw&#243;rcze lub ska&#191;one tymi substancjami. Utylizacja i sk&#179;adowanie odpad&#243;w promieniotw&#243;rczych jest obecnie najwa&#191;niejszym problemem energetyki j&#185;drowej.</Polish>
+		<Russian>Осадки - это остаточная радиационная опасность от ядерного взрыва, названная так потому, что она «выпадает» из атмосферы после взрыва. Обычно это радиоактивная пыль, образующаяся при взрыве ядерного оружия. Эта радиоактивная пыль, состоящая из горячих частиц, представляет собой своего рода радиоактивное загрязнение. Это может привести к загрязнению почвы и всей экосистемы.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FLOOD_PLAINS</Tag>
+		<English>Flood Plains</English>
+		<French>
+			<Text>Plaines inondables</Text>
+			<Gender>Female</Gender>
+			<Plural>1</Plural>
+		</French>
+		<German>Schwemmland</German>
+		<Italian>Pianure alluvionali</Italian>
+		<Spanish>
+			<Text>Terreno de aluvión:Terrenos de aluvión</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Tereny zalewowe</Polish>
+		<Russian>Пойма</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FLOOD_PLAINS_PEDIA</Tag>
+		<English>Floodplain (or flood plain) is a flat or nearly flat land adjacent to a stream or river that stretches from the riverbanks to the base of the enclosing valley walls. It floods during periods of high water flow. The floodplain includes two main parts: the floodway, which consists of the river channel and surrounding areas that carry fast-moving floodwaters, and the flood fringe, which are the areas covered by the floodwater, but which where the current is slow and weak.</English>
+		<French>Une plaine inondable, ou plaine inondable, est un terrain plat ou presque plat adjacent à un ruisseau ou une rivière qui s'étend des rives de son canal à la base des parois de la vallée qui l'entoure et subit des inondations pendant les périodes de fort débit. Il comprend le canal de dérivation, qui se compose du canal du ruisseau et des zones adjacentes qui véhiculent les flux de crue, et la frange de crue, qui sont des zones couvertes par la crue, mais qui ne subissent pas de fort courant.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Schwemmland[COLOR_REVERT] werden Landstriche ohne höhere Erhebungen (Tiefebenen) genannt, die durch Ablagerung von angeschwemmten Sedimenten in der Umgebung von Flüssen entstehen. Im Gegensatz zum nahezu permanent mit Wasser gefüllten Flussbett wird das Schwemmland nur mehrmals über einen begrenzten Zeitraum geflutet, wenn der Fluss zu viel Wasser führt (z.B. nach der Schneeschmelze im Frühjahr). Die zurückgelassenen fruchtbaren Sedimentböden eignen sich hervorragend zum Anbau diverser Feldfrüchte. Menschen nutzen sie schon seit tausenden von Jahren und nahezu alle frühen Hochkulturen entstanden in Schwemmgebieten.[NEWLINE]Heutzutage ist das Schwemmland der Flüsse weitestgehend kultiviert und oft auch dicht besiedelt. Meist werden die Flüsse auch noch eingedeicht oder in neue, künstliche Flussbetten gezwungen. Die regelmäßigen Überflutungen sind dadurch eher zu einer Gefahr geworden, die Jahr für Jahr Menschenleben kostet oder zumindest Schäden in Millionenhöhe verursacht.</German>
+		<Polish>Obszar zalewowy, r&#243;wnina zalewowa - naturalny p&#179;aski i szeroki teren, po&#179;o&#191;ony bezpo&#156;rednio wzd&#179;u&#191; rzeki, stanowi&#185;cy cz&#234;&#156;&#230; doliny rzecznej, zalewany w okresach wezbra&#241; i powodzi, gdy ilo&#156;&#230; wody prowadzonej przez rzek&#234; przekracza pojemno&#156;&#230; koryta.</Polish>
+		<Russian>Пойма - это плоская или почти плоская земля, примыкающая к ручью или реке, которая простирается от берегов своего канала до основания вмещающих стенок долины и испытывает затопление в периоды сильного стока. Он включает в себя паводок, который состоит из канала потока и прилегающих районов, по которым протекают потоки паводка, и границы паводка, которые являются участками, покрытыми паводком, но которые не испытывают сильного течения.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FOREST</Tag>
+		<English>Forest</English>
+		<French>
+			<Text>Forêt</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Wald</German>
+		<Italian>Foresta</Italian>
+		<Spanish>
+			<Text>Bosque:Bosques</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Las</Polish>
+		<Russian>Ëåñ</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FOREST_ANCIENT</Tag>
+		<English>Ancient Forest</English>
+		<French>
+			<Text>Ancienne Forêt</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Alter Wald</German>
+		<Spanish>
+			<Text>Bosque antiguo:Bosques antiguos</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Staro&#191;ytny Las</Polish>
+		<Russian>Äðåâíèé ëåñ</Russian>
+		<Italian>Foresta antica</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FOREST_BURNT</Tag>
+		<English>Burnt Forest</English>
+		<French>
+			<Text>Forêt brûlée</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Verbrannter Wald</German>
+		<Spanish>
+			<Text>Bosque quemado:Bosques quemados</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Spalony Las</Polish>
+		<Russian>Ãîðåëûé ëåñ</Russian>
+		<Italian>Foresta bruciata</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FOREST_PEDIA</Tag>
+		<English>Forest (also called woods, and less often as a wold, weald, holt, or frith) is an area with a high density of trees. There are many definitions of forest, based on various criteria. These plant communities cover approximately 9.4% of the Earth's total surface, or about 30% of the total land area. Historically, forests once covered about 50% of the total land area. Forests serve as vital habitats for a large percentage of Earth's  biodiversity and play a critical role in regulating water flow and soil conservation, making them one of the most important components of the Earth's biosphere. Although forests are primarily defined by the presence of trees, their ecosystems often include many other organisms such as fungi, which form symbiotic relationships with trees through mycorrhizal networks, which improves nutrient and water absorption and improving the health of individual trees and the forest as a whole. Fungi also play a very important role in recycling decomposing plant matter back into the soil which supports the growth of new plants.</English>
+		<German>Mit [COLOR_HIGHLIGHT_TEXT]Wald[COLOR_REVERT] bezeichnet man eine größere zusammenhängende, baumbestandene Fläche. Wälder haben nach den Ozeanen den meisten Einfluss auf das globale Klima. Sie sind sogar unverzichtbar, da sie die einzig effektiven Kohlendioxidverbraucher und gleichzeitig die wichtigsten Sauerstoffproduzenten der Erde sind. Wälder sind komplexe Ökosysteme mit einem riesigen Artenreichtum an Flora und Fauna und schon allein aus diesem Grund schützenswert.</German>
+		<Polish>Naturalny las jest najbardziej z&#179;o&#191;onym i najtrwalszym ekosystemem l&#185;dowym. Charakteryzuje si&#234; uwarstwieniem pionowym, w lesie szpilkowym do&#156;&#230; prostym (warstwa koron, warstwa krzew&#243;w, warstwa runa). Las spe&#179;nia wa&#191;n&#185; rol&#234; w regulacji stosunk&#243;w wodnych na danym terenie. Na obszarach wylesionych cz&#234;sto zdarzaj&#185; si&#234; powodzie, a w g&#243;rach lawiny &#156;nie&#191;ne i b&#179;otne. Wi&#234;kszo&#156;&#230; las&#243;w w Polsce to lasy sztuczne, wyhodowane przez cz&#179;owieka.</Polish>
+		<Russian>Лес представляет собой территорию с высокой плотностью произрастания деревьев. Существует множество определений леса, основанных на различных критериях. Эти растительные сообщества покрывают примерно 9,4% поверхности Земли (или 30% общей площади суши), хотя когда-то они покрывали гораздо больше (около 50% общей площади суши) во многих различных регионах и функционируют как среда обитания для организмов, гидрологических потоков, модуляторы и хранители почвы, составляющие один из важнейших аспектов биосферы Земли. Хотя лес классифицируется в первую очередь по деревьям, лесная экосистема внутренне определяется дополнительными видами, такими как грибы.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_FOREST_YOUNG</Tag>
+		<English>Young Forest</English>
+		<French>
+			<Text>Jeune Forêt</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Junger Wald</German>
+		<Spanish>
+			<Text>Bosque joven:Bosques jóvenes</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Nowy Las</Polish>
+		<Russian>Ìîëîäîé ëåñ</Russian>
+		<Italian>Foresta giovane</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_ICE</Tag>
+		<English>Ice</English>
+		<French>
+			<Text>Banquise</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>
+			<Text>Eis</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</German>
+		<Italian>Ghiaccio</Italian>
+		<Spanish>
+			<Text>Iceberg:Icebergs</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Lodowiec</Polish>
+		<Russian>Ëåä</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_ICE_PEDIA</Tag>
+		<English>Ice is water frozen into a solid state. The most common form on Earth's surface is ice Ih, which can appear transparent or opaque with a bluish-white color depending on impurities or trapped air bubbles. The presence of other materials, such as soil, can further change its appearance.</English>
+		<French>La glace est de l'eau gelée à l'état solide. Habituellement, la glace est la phase connue sous le nom de glace Ih, qui est la plus abondante des différentes phases solides à la surface de la Terre. Il peut apparaître de couleur blanc bleuâtre transparent ou opaque, selon la présence d'impuretés ou d'inclusions d'air. L'ajout d'autres matériaux tels que le sol peut encore altérer l'apparence.</French>
+		<Polish>L&#243;d brzegowy (ang. - stranded ice) - oblodzenie wyst&#234;puj&#185;ce przy brzegach rzek, &#179;ach i urz&#185;dze&#241; wodnych. Rozwija si&#234; od brzeg&#243;w koryta ku jego &#156;rodkowi. Powstaje przez &#179;&#185;czenie si&#234; &#156;ry&#191;u i kr&#185;&#191;k&#243;w lodowych na spokojniejszej wodzie przy brzegu.</Polish>
+		<Russian>Лед - это вода, застывшая в твердом состоянии. Обычно лед - это фаза, известная как лед Ih, которая является наиболее распространенной из различных твердых фаз на поверхности Земли. Он может выглядеть прозрачным или непрозрачным голубовато-белым цветом, в зависимости от наличия примесей или воздушных включений. Добавление других материалов, таких как почва, может дополнительно изменить внешний вид.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_INFECTIOUS_SMOG</Tag>
+		<English>Infectious Smog</English>
+		<French>Smog infecté</French>
+		<German>
+			<Text>Infektiöser Smog:Infektiösen Smogs:Infektiösen Smog:Infektiösen Smog</Text>
+			<Gender>Male:Male:Male:Male</Gender>
+			<Plural>0:0:0:0</Plural>
+		</German>
+		<Italian>Smog infettivo</Italian>
+		<Spanish>
+			<Text>Niebla infecciosa</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+		<Polish>Zaka&#159;na Mg&#179;a</Polish>
+		<Russian>Èíôåêöèîííûé ñìîã</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_INFECTIOUS_SMOG_PEDIA</Tag>
+		<English>A synthetic virus protected from the sun by a thick layer of smog.</English>
+		<French>Un puissant virus synthétique protégé du Soleil par une fine couche de 'Smog'.</French>
+		<German>Hier wirkt ein synthetisches Virus, das durch eine dicke Nebelwolke vor Sonneneinstrahlung geschützt ist.</German>
+		<Italian>Un virus sintetico, protetto dal sole da uno spesso strato di smog.</Italian>
+		<Spanish>Un virus sintético, protegido del sol por una espesa capa de niebla.</Spanish>
+		<Polish>Syntetyczny wirus chroniony przed s&#179;o&#241;cem przez grub&#185; warstw&#234; smogu.</Polish>
+		<Russian>Синтетический вирус, защищенный от солнечных лучей толстым слоем смога.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_JUNGLE</Tag>
+		<English>Jungle</English>
+		<French>
+			<Text>Jungle</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>
+			<Text>Dschungel</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</German>
+		<Italian>Giungla</Italian>
+		<Spanish>
+			<Text>Selva:Selvas</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>D&#191;ungla</Polish>
+		<Russian>Äæóíãëè</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_JUNGLE_PEDIA</Tag>
+		<English>Jungle or tropical forest (from Sanskrit) refers to the dense, often impenetrable tropical rainforest biome, rich in animal and plant life. The term jungle is technically synonymous with tropical rainforest. The word jungle originates from the Sanskrit word jangala, which referred to uncultivated or arid land. Although the Sanskrit word refers to "dry land", it has been suggested that an Anglo-Indian interpretation led to its current connotation as a dense "tangled thicket". While others have argued that a cognate word in Urdu did refer to forests. The term is prevalent in many languages of South Asia, and Iranian plateau, particularly in Bangla, Hindi, Marathi, Urdu, Punjabi, and Persian.</English>
+		<French>La jungle ou forêt tropicale (sanskrit) fait référence au biome de la forêt tropicale dense, plus ou moins impénétrable avec une abondance de vie animale et végétale. Le terme jungle est techniquement synonyme de forêt tropicale humide. Le mot jungle provient du mot sanskrit jangala qui faisait référence à des terres non cultivées. Bien que le mot sanskrit se réfère à la "terre sèche", il a été suggéré qu'une interprétation anglo-indienne a conduit à sa connotation comme un "fourré emmêlé" dense. tandis que d'autres ont soutenu qu'un mot ognate en ourdou faisait référence aux forêts. Le terme est répandu dans de nombreuses langues d'Asie du Sud et du plateau iranien, en particulier en bangla, hindi, marathi, ourdou, pendjabi et persan.</French>
+		<German>Als [COLOR_HIGHLIGHT_TEXT]Dschungel[COLOR_REVERT] bezeichnet man den dichten, mehr und minder undurchdringlichen tropischen Regenwald, der Lebensraum für eine Vielzahl von Pflanzen und Tieren bietet. Heutzutage wird der Begriff Dschungel synonym zu Regenwald verwendet, auch wenn er wissenschaftlich exakt eigentlich nur die dichten Wälder der nördlichen Monsunzone umfasst.</German>
+		<Polish>D&#191;ungla - termin oznaczaj&#185;cy pierwotnie i wsp&#243;&#179;cze&#156;nie w cz&#234;&#156;ci publikacji specjalistycznych rodzaj formacji ro&#156;linnej charakterystycznej dla nadrzecznych teren&#243;w w p&#243;&#179;nocno-wschodniej cz&#234;&#156;ci Azji Po&#179;udniowej. W j&#234;zyku potocznym i wed&#179;ug niekt&#243;rych publikacji specjalistycznych termin funkcjonuje jako synonim szeroko ujmowanego wilgotnego lasu r&#243;wnikowego.</Polish>
+		<Russian>Джунгли или Тропический лес (санскрит) относится к густому, более или менее непроницаемому биому тропического леса с обилием животного и растительного мира. Термин джунгли технически является синонимом тропического леса. Слово джунгли происходит от санскритского слова jangala, которое относится к необрабатываемой земле. Хотя санскритское слово относится к «суше», было высказано предположение, что англо-индийское толкование привело к его коннотации в виде плотной «запутанной заросли». Другие же утверждают, что слово «унция» в урду относится к лесам. Термин распространен во многих языках Южной Азии и на иранском плато, особенно в бангла, хинди, маратхи, урду, пенджаби и персидском языке.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_KELP</Tag>
+		<English>Kelp</English>
+		<French>Varech</French>
+		<German>Seetang</German>
+		<Spanish>
+			<Text>Algas</Text>
+			<Gender>Female</Gender>
+			<Plural>1</Plural>
+		</Spanish>
+		<Polish>Wodorosty</Polish>
+		<Russian>Âîäîðîñëè</Russian>
+		<Italian>Alghe</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_KELP_PEDIA</Tag>
+		<English>Kelps are large seaweeds (algae) belonging to the brown algae class (Phaeophyceae) in the order Laminariales. There are about 30 different genera.[PARAGRAPH:2]Kelps grow in underwater "forests" (kelp forests) in shallow oceans. The organisms require nutrient-rich water with temperatures between 6 to 14 degree Celsius. Known for their high growth rate, genera Macrocystis and Nereocystis can grow as fast as half a meter a day, ultimately reaching 30 to 80 meters.[PARAGRAPH:2]Through the 19th century, the word "kelp" was closely associated with seaweeds that could be burned to obtain soda ash (primarily sodium carbonate). These seaweeds included species from both the orders Laminariales and Fucales. The word "kelp" was also used to refer to the processed ashes themselves.</English>
+		<French>Les Varech sont de grandes algues (algues) appartenant aux algues brunes (Phaeophyceae) de l'ordre des Laminariales. Il existe environ 30 genres différents.[PARAGRAPH:2]Les varechs poussent dans les "forêts" sous-marines (forêts de varech) des océans peu profonds. Les organismes ont besoin d'une eau riche en nutriments avec des températures comprises entre 6 et 14 degrés Celsius. Ils sont connus pour leur taux de croissance élevé, les genres Macrocystis et Nereocystis peuvent croître aussi rapidement qu'un demi-mètre par jour, atteignant finalement 30 à 80 m.[PARAGRAPH:2]Au cours du 19ème siècle, le mot «varech» était étroitement associé avec des algues qui pourraient être brûlées pour obtenir de la soude (principalement du carbonate de sodium). Les algues utilisées comprenaient des espèces des ordres Laminariales et Fucales. Le mot «varech» a également été utilisé directement pour désigner ces cendres traitées.</French>
+		<Polish>Wodorosty - potoczna nazwa ro&#156;lin (i wielokom&#243;rkowych ro&#156;linopodobnych protist&#243;w) wodnych o mi&#234;kkich cia&#179;ach. Nazwa bliskoznaczna to trawa morska. Do wodorost&#243;w najcz&#234;&#156;ciej zaliczane s&#185; du&#191;e glony, takie jak brunatnice, krasnorosty, watkowe i ramienice (czasem okre&#156;lane jako makroglony lub makroalgi). Czasem ro&#156;liny wodne zanurzone (elodeidy, jak rogatek lub wyw&#179;&#243;cznik) oraz glony nitkowate (niekt&#243;re sinice), uwik&#179;owce, zrostnicowate, jak skr&#234;tnica, rzadziej pozosta&#179;e makrofity.</Polish>
+		<Russian>Келпы - это крупные водоросли (водоросли), принадлежащие к бурым водорослям (Phaeophyceae) в отряде ламинариевых. Существует около 30 различных родов.[PARAGRAPH:2]Водоросли растут в подводных «лесах» (ламинарийные леса) на мелководье океанов. Организмам требуется богатая питательными веществами вода с температурой от 6 до 14 градусов по Цельсию. Они известны своей высокой скоростью роста, роды Macrocystis и Nereocystis могут расти со скоростью до полуметра в день, в конечном итоге достигая высоты от 30 до 80 м.[PARAGRAPH:2]На протяжении XIX века слово «ламинария» было тесно связано с водорослями, которые можно было сжечь для получения кальцинированной соды (в первую очередь, карбоната натрия). Используемые водоросли включали виды из отрядов Laminariales и Fucales. Слово «ламинария» также использовалось непосредственно для обозначения обработанного пепла.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_MANGROVE</Tag>
+		<English>Mangrove</English>
+		<French>Mangrove</French>
+		<German>Mangroven</German>
+		<Spanish>
+			<Text>Manglar:Manglares</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Namorzyny</Polish>
+		<Russian>Ìàíãðîâûå äåðåâüÿ</Russian>
+		<Italian>Mangrovie</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_MANGROVE_PEDIA</Tag>
+		<English>Mangroves are various kinds of trees up to medium height and shrubs that grow in saline coastal sediment habitats in the tropics and subtropics - mainly between latitudes 25° N and 25° S. The remaining mangrove forest area in the world in 2000 was 53,190 square miles (137,760 km²), spanning 118 countries and territories. The word is used in at least three senses: (1) most broadly to refer to the habitat and entire plant assemblage or mangal, for which the terms mangrove forest biome, mangrove swamp and mangrove forest are also used; (2) to refer to all trees and large shrubs in the mangrove swamp; and (3) more narrowly to refer to the mangrove family of plants, the Rhizophoraceae, or even more specifically just to mangrove trees of the genus Rhizophora. The term "mangrove" comes to English from Spanish (perhaps by way of Portuguese) and is of Caribbean origin, likely Taíno. It was earlier "mangrow" (from Portuguese mangue or Spanish mangle), but this was altered through folk etymology by association with the word "grove".[PARAGRAPH:2]The mangrove biome, or mangal, is a distinct saline woodland or shrubland habitat characterized by depositional coastal environments, where fine sediments, often with high organic content, collect in areas protected from high-energy wave action. Mangroves dominate three quarters of tropical coastlines. The saline conditions tolerated by various mangrove species range from brackish water through pure seawater (30 to 40 ppt), to water concentrated by evaporation to over twice the salinity of ocean seawater (up to 90 ppt).</English>
+		<French>Les mangroves sont divers types d'arbres jusqu'à une hauteur moyenne et des arbustes qui poussent dans les habitats de sédiments côtiers salins dans les régions tropicales et subtropicales - principalement entre les latitudes 25 ° N et 25 ° S.Les zones de forêts de mangroves restantes du monde en 2000 étaient de 53,190 miles carrés (137 760 km²) couvrant 118 pays et territoires. Le mot est utilisé dans au moins trois sens: (1) le plus largement pour désigner l'habitat et l'ensemble de la plante ou mangal, pour lesquels les termes biome de la forêt de mangrove, marais de mangrove et forêt de mangrove sont également utilisés, (2) pour désigner tous les arbres et grands arbustes des mangroves et (3) pour désigner de manière étroite la famille de plantes de mangroves, les Rhizophoraceae, ou encore plus précisément les palétuviers du genre Rhizophora. Le terme «mangrove» vient de l'anglais de l'espagnol (peut-être par le portugais) et est d'origine caribéenne, probablement Taíno. C'était plus tôt "mangrow" (de la ligue portugaise ou mangle espagnol), mais cela a été corrompu par l'influence de l'étymologie folklorique de "bosquet".</French>
+		<German>Bei [COLOR_HIGHLIGHT_TEXT]Mangroven[COLOR_REVERT] handelt es sich um Bäume und Sträucher mittlerer Höhe, die sich an das Leben im Gezeitenbereich tropischer Meeresküsten und brackiger Flussmündungen angepasst haben. Sie sind besonders salztolerant und können mit Hilfe ihrer markanten Stelz- oder Brettwurzeln auch auf instabilem und sauerstoffarmem Boden gedeihen. Große zusammenhängende Ökosysteme werden Mangrovenwälder oder Mangrovensümpfe genannt. Mangroven sind für den Küstenschutz sehr wichtig, denn sie verhindern die Küstenerosion und können die zerstörerischen Auswirkungen von Sturmfluten und Tsunamis mindern. Leider werden sie heute häufig abgeholzt, um neue Strände für den Tourismus zu schaffen, was auf lange Sicht aber den Landverlust fördert.</German>
+		<Polish>Namorzyny, lasy namorzynowe, mangrowe, mangrowia - wiecznie zielona, pionierska formacja ro&#156;linna wybrze&#191;y morskich w niemal ca&#179;ej strefie mi&#234;dzyzwrotnikowej. Jej zasi&#234;g w tej strefie ograniczaj&#185; zimne pr&#185;dy morskie omywaj&#185;ce zachodnie wybrze&#191;a Ameryki Po&#179;udniowej i Afryki. Namorzyny stanowi&#185; formacj&#234; ziemno-wodn&#185; powstaj&#185;c&#185; na przybrze&#191;nych p&#179;yciznach morskich, w miejscach os&#179;oni&#234;tych (rafami koralowymi, w zatokach, lagunach i uj&#156;ciach rzek). Niekt&#243;re p&#179;askie wyspy pokrywaj&#185; w ca&#179;o&#156;ci. Szeroko&#156;&#230; pasa namorzyn&#243;w si&#234;ga&#230; mo&#191;e kilku kilometr&#243;w. Na og&#243;&#179; wyst&#234;puj&#185; w obszarze p&#179;yw&#243;w morskich i dlatego bywaj&#185; te&#191; okre&#156;lane jako lasy p&#179;ywowe. Okre&#156;lenie to nie jest jednak &#156;cis&#179;e, bowiem nie zawsze w miejscach wyst&#234;powania namorzyn&#243;w p&#179;ywy s&#185; wyra&#159;ne. Namorzyny zajmuj&#185; ok. 150 tysi&#234;cy km2 (stan w roku 2010), przy czym mi&#234;dzy 1980 i 2010 rokiem uby&#179;o ich 35 tysi&#234;cy km2. Pa&#241;stwa, na kt&#243;rych wybrze&#191;ach znajduj&#185; si&#234; najwi&#234;ksze zasoby tej formacji to Indonezja (21%), Brazylia (9%) i Australia (7%).</Polish>
+		<Russian>Мангровые деревья - это различные виды деревьев до средней высоты и кустарники, которые растут в солончаковых прибрежных отложениях в тропиках и субтропиках - в основном между 25° северной широты и 25° южной широты. (137 760 км²), охватывающая 118 стран и территорий. Это слово используется по крайней мере в трех смыслах: (1) в наиболее широком смысле для обозначения среды обитания и всего комплекса растений или мангала, для которого также используются термины биом мангрового леса, мангровое болото и мангровый лес, (2) для обозначения все деревья и большие кусты в мангровом болоте, и (3) узко для обозначения семейства мангровых растений, Rhizophoraceae, или, более конкретно, просто для мангровых деревьев рода Rhizophora. Термин «мангровые заросли» пришел в английский из испанского (возможно, через португальский) и имеет карибское происхождение, вероятно, Таино. Раньше это было «мангровое дерево» (от португальского mangue или испанского mangle), но оно было искажено влиянием народной этимологии слова «роща».[PARAGRAPH:2]Биом мангровых зарослей, или мангал, представляет собой отдельную засоленную лесную или кустарниковую среду обитания, характеризующуюся осадочной прибрежной средой, где мелкие отложения (часто с высоким содержанием органических веществ) собираются в областях, защищенных от воздействия волн высокой энергии. Мангровые заросли доминируют на трех четвертях тропического побережья. Солевые условия, переносимые различными видами мангровых зарослей, варьируются от солоноватой воды до чистой морской воды (от 30 до 40 ppt) до воды, концентрированной путем испарения, до более чем двукратной солености морской воды в океане (до 90 ppt).</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OASIS</Tag>
+		<English>Oasis</English>
+		<French>
+			<Text>Oasis</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Oase</German>
+		<Italian>Oasi</Italian>
+		<Spanish>
+			<Text>Oasis:Oasis</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Oaza</Polish>
+		<Russian>Оазис</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OASIS_PEDIA</Tag>
+		<English>In geography, an oasis (plural: oases), or cienega in the Southwestern United States, is an isolated area of vegetation in a desert, typically surrounding a spring or similar water source. Oases also provide habitat for animals and, if large enough, for humans. The location of oases has been of critical importance for trade and transportation routes in desert regions. Caravans must travel via oases so that supplies of water and food can be replenished. Thus, political or military control of an oasis has in many cases meant control of trade on a particular route. For example, the oases of Awjila, Ghadames, and Kufra, situated in modern-day Libya, have at various times been vital to both north-south and east-west trade in the Sahara. The word oasis entered English via Greek oasis, which was borrowed directly from Egyptian or Demotic. It was not borrowed from Coptic, as is sometimes claimed; the Greek word is attested several centuries before Coptic existed as a written language.</English>
+		<French>En géographie, une oasis (pluriel: oasis) ou cienega (sud-ouest des États-Unis) est une zone de végétation isolée dans un désert, entourant généralement une source ou une source d'eau similaire. Les oasis fournissent également un habitat aux animaux et même aux humains si la zone est suffisamment grande. L'emplacement des oasis a été d'une importance cruciale pour les routes commerciales et de transport dans les zones désertiques. Les caravanes doivent passer par des oasis pour que l'approvisionnement en eau et en nourriture puisse être réapprovisionné. Ainsi, le contrôle politique ou militaire d'une oasis signifie dans de nombreux cas le contrôle du commerce sur une route particulière. Par exemple, les oasis d'Awjila, Ghadames et Kufra, situées dans la Libye moderne, ont à plusieurs reprises été vitales pour le commerce Nord-Sud et Est-Ouest au Sahara. Le mot oasis est entré en anglais via l'oasis grecque, emprunté directement à l'égyptien ou au démotique. Il n'a pas été emprunté au copte, comme on le suggère parfois; le mot grec est attesté plusieurs siècles avant que le copte n'existe comme langue écrite.</French>
+		<German>Als [COLOR_HIGHLIGHT_TEXT]Oase[COLOR_REVERT] werden Vegetationsflecken in der Wüste bezeichnet, die sich üblicherweise an Wasserstellen befinden. Dabei kann es sich um kleine baumumstandene Teiche, aber auch um große Flächen handeln, die sich bewirtschaften lassen und in denen sich Menschen ansiedeln können.</German>
+		<Polish>Oaza - teren o bardzo bujnej ro&#156;linno&#156;ci na obszarze pusty&#241; i p&#243;&#179;pusty&#241;. Wyst&#234;puj&#185; one w miejscach, gdzie woda z rzek przenika do gruntu (oazy nadrzeczne) lub w miejscach, gdzie zwierciad&#179;o wody gruntowej znajduje si&#234; na takiej g&#179;&#234;boko&#156;ci, &#191;e dosi&#234;gaj&#185; je korzenie ro&#156;lin.</Polish>
+		<Russian>В географии оазис - это изолированный участок растительности в пустыне, обычно окружающий источник или подобный источник воды. Оазисы также обеспечивают среду обитания для животных и даже людей, если площадь достаточно велика. Расположение оазисов имело решающее значение для торговых и транспортных маршрутов в пустынных районах. Караваны должны путешествовать через оазисы, чтобы запасы воды и пищи могли пополняться. Таким образом, политический или военный контроль над оазисом во многих случаях означал контроль над торговлей на определенном маршруте. Например, оазисы Авджила, Гадамес и Куфра, расположенные в современной Ливии, в разное время были жизненно важны как для торговли Север-Юг, так и Восток-Запад в Сахаре. Слово оазис пришло в английский через греческий оазис, заимствованный непосредственно из египетского или демотического. Это не было заимствовано из коптского языка, как иногда предлагается; греческое слово засвидетельствовано за несколько столетий до того, как коптский язык существовал как письменный язык.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OUTCROP</Tag>
+		<English>Outcrop</English>
+		<French>Pics rocheux</French>
+		<German>Felsbogen</German>
+		<Italian>Sporgenza rocciosa</Italian>
+		<Spanish>
+			<Text>Arco de piedra:Arcos de piedra</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Wychodnia</Polish>
+		<Russian>Обнаженная порода</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OUTCROP_DARK</Tag>
+		<English>Dark Outcrop</English>
+		<French>Pics rocheux sombres</French>
+		<German>Dunkler Felsbogen</German>
+		<Russian>Останцы</Russian>
+		<Italian>Sporgenza scura</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OUTCROP_PEDIA</Tag>
+		<English>An outcrop, or rocky outcrop, is a visible exposure of bedrock or ancient superficial deposits on the Earth's surface. Outcrops do not cover the majority of the Earth's land surface because, in most places, bedrock or superficial deposits are hidden beneath a mantle of soil and vegetation and cannot be easily observed directly. However, in places where this overlying cover has been removed by erosion or tectonic uplift, the rock becomes exposed, or "crops out."</English>
+		<French>Un pic ou un affleurement rocheux est une exposition visible de substrat rocheux ou d'anciens dépôts superficiels à la surface de la Terre. Les affleurements ne couvrent pas la majorité de la surface terrestre car, dans la plupart des endroits, le substratum rocheux ou les dépôts superficiels sont recouverts d'un manteau de sol et de végétation et ne peuvent pas être vus ou examinés de près. Cependant, dans les endroits où la couverture sus-jacente est enlevée par l'érosion ou le soulèvement tectonique, la roche peut être exposée ou se détacher.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Felsbögen[COLOR_REVERT] werden auch nach ihrer genauen Form auch Felsbrücken, Felsentore oder Felsenfenster genannt. Solche Gebilde können durch Erosion in allen Gesteinsarten entstehen, Sand- und Kalkstein sind aber aufgrund von Wasserlöslichkeit und Wetteranfälligkeit prädestiniert für die Ausbildung von großen und markanten Felsbögen.</German>
+		<Russian>Обнажение или скалистое обнажение - это видимое обнажение коренных пород или древних поверхностных отложений на поверхности Земли. Обнажения не покрывают большую часть земной поверхности Земли, потому что в большинстве мест коренные породы или поверхностные отложения покрыты мантией почвы и растительности и не могут быть замечены или изучены близко. Тем не менее, в местах, где перекрывающий покров удаляется в результате эрозии или тектонического поднятия, камень может быть открыт или обрезаться.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_OUTCROP_POLAR</Tag>
+		<English>Polar Outcrop</English>
+		<French>Pics rocheux polaires</French>
+		<German>Eisbogen</German>
+		<Italian>Sporgenza polare</Italian>
+		<Spanish>
+			<Text>Arco de piedra polar:Arcos de piedra polares</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Polarna Wychodnia</Polish>
+		<Russian>Скальная порода</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_PEAT_BOG</Tag>
+		<English>Peat Bog</English>
+		<French>Tourbière</French>
+		<German>Torfmoor</German>
+		<Italian>Torbiera</Italian>
+		<Spanish>
+			<Text>Turbera:Turberas</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Torfowisko</Polish>
+		<Russian>Òîðôÿíèê</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_PEAT_BOG_PEDIA</Tag>
+		<English>Peat forms when plant material, usually found in marshy areas, is prevented from fully decaying due to acidic and anaerobic conditions. It is composed mainly of marshland vegetation such as trees, grasses, and fungi, as well as other types of organic remains, including insects and animal matter. In certain conditions, the decomposition of this material is inhibited by the lack of oxygen, a fact that archaeologists often take advantage of.[PARAGRAPH:2]Peat layer growth and the degree of decomposition (also called humidification, or transformation to humus) depend principally on its composition and the extent of waterlogging. Peat formed in very wet conditions accumulates much more quickly and is less decomposed than peat from drier areas. This difference allows climatologists to use peat as an indicator of past climate changes. The composition of peat can also be used to reconstruct ancient ecologies by examining the types and quantities of organic materials it contains.[PARAGRAPH:2]Under the proper conditions, peat is the earliest stage in the formation of coal.[PARAGRAPH:2]Most modern peat bogs formed in high-latitude regions after the retreat of the glaciers at the end of the last ice age, around 9,000 years ago. They usually grow very slowly, about one millimeter per year. Peat in the world's peatlands has been forming for approximately 360 million years and contains an estimated 550 gigatons of carbon.</English>
+		<French>La tourbe se forme lorsque le matériel végétal, généralement dans les zones marécageuses, est empêché de se désintégrer complètement par des conditions acides et anaérobies. Il est composé principalement de végétation de marais: arbres, herbes, champignons, ainsi que d'autres types de restes organiques, tels que des insectes et des restes d'animaux. Dans certaines conditions, la décomposition de ce dernier (en l'absence d'oxygène) est inhibée et les archéologues en profitent souvent.[PARAGRAPH:2]La croissance de la couche de tourbe et le degré de décomposition (ou humification, transformation en humus) dépendent principalement sur sa composition et sur le degré d'engorgement. La tourbe formée dans des conditions très humides s'accumule beaucoup plus rapidement et est moins décomposée que celle des endroits plus secs. Cela permet aux climatologues d'utiliser la tourbe comme indicateur du changement climatique. La composition de la tourbe peut également être utilisée pour reconstruire des écologies anciennes en examinant les types et les quantités de ses constituants organiques.</French>
+		<Italian>La torba si forma quando il materiale vegetale, di solito in aree paludose, viene fermato dal decadimento completo da condizioni acide e anaerobiche. È composta principalmente da vegetazione di palude: alberi, erbe, funghi, così come altri tipi di resti organici, come insetti e carcasse animali. In certe condizioni (assenza di ossigeno) viene inibita la decomposizione di queste ultime, a beneficio degli archeologi.[PARAGRAPH:2]La crescita dello strato di torba e il grado di decomposizione (o umificazione, trasformazione in humus) dipende principalmente dalla sua composizione e dal grado di umidità. La torba formata in posti molto bagnati si accumula molto più velocemente, ed è meno decomposta, rispetto a quella in aree più secche. Questo permette ai climatologi di usare la torba come indicatore dei cambiamenti climatici. La composizione della torba può essere utilizzata per ricostruire le ecologie antiche, esaminando i tipi e le quantità dei suoi costituenti organici.[PARAGRAPH:2]In certe condizioni, la torba è il primo stadio di formazione del carbone.[PARAGRAPH:2]La maggior parte delle moderne torbiere si formarono ad alte latitudini dopo la ritirata dei ghiacci alla fine dell'ultima era glaciale, circa 9000 anni fa. Crescono lentamente, al ritmo di circa un millimetro all'anno. La torba nelle torbiere mondiali si è formata in 360 milioni di anni a contiene 550 miliardi di tonnellate di carbone.</Italian>
+		<Polish>Torfowisko - jeden z typ&#243;w mokrade&#179;, siedlisk na tyle uwodnionych, &#191;e wyst&#234;puje tam specyficzna ro&#156;linno&#156;&#230; i zachodz&#185; procesy akumulacji osad&#243;w organicznych. Jest to teren stale podmok&#179;y, o pod&#179;o&#191;u trudno przepuszczalnym, pokryty zbiorowiskami ro&#156;lin bagiennych i bagienno-&#179;&#185;kowych. Od innych siedlisk hydrogenicznych odr&#243;&#191;nia si&#234; s&#179;abym natlenieniem. Akumulacja torfu zachodzi, gdy rozk&#179;ad szcz&#185;tk&#243;w organicznych nast&#234;puje wolniej ni&#191; ich powstawanie. Na spowolnienie tempa rozk&#179;adu wp&#179;ywaj&#185; g&#179;&#243;wnie dwa czynniki - niska temperatura i ma&#179;e napowietrzenie pod&#179;o&#191;a, czemu sprzyja jego du&#191;e uwodnienie. W niekt&#243;rych uj&#234;ciach przyjmuje si&#234; minimaln&#185; mi&#185;&#191;szo&#156;&#230; torfu (20-70 cm), kt&#243;ra pozwala na okre&#156;lenie danego siedliska jako torfowisko. W skali &#156;wiata torfowiska stanowi&#185; oko&#179;o po&#179;owy powierzchni szeroko rozumianych mokrade&#179;.</Polish>
+		<Russian>Торф образуется, когда растительный материал, как правило, в болотистых районах, полностью не разлагается из-за кислотных и анаэробных условий. Он состоит в основном из болотной растительности: деревьев, трав, грибов, а также других видов органических остатков, таких как насекомые и останки животных. При определенных условиях разложение последнего (в отсутствие кислорода) ингибируется, и археологи часто этим пользуются.[PARAGRAPH:2]Рост слоя торфа и степень разложения (или гумификации, превращения в гумус) в основном зависят по своему составу и степени заболачивания. Торф, образующийся в очень влажных условиях, накапливается значительно быстрее и менее разлагается, чем в более сухих местах. Это позволяет климатологам использовать торф в качестве индикатора изменения климата. Состав торфа также можно использовать для восстановления древней экологии путем изучения типов и количеств его органических компонентов.[PARAGRAPH:2]При надлежащих условиях торф является самой ранней стадией в образовании угля.[PARAGRAPH:2]Большинство современных торфяников образовалось в высоких широтах после отступления ледников в конце последнего ледникового периода около 9000 лет назад. Обычно они растут медленно, со скоростью около миллиметра в год. Торф на торфяниках в мире формировался в течение 360 миллионов лет и содержит 550 Гт углерода.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_PLAGUED_SMOG</Tag>
+		<English>Plagued Smog</English>
+		<French>Smog contaminé</French>
+		<Italian>Smog contaminato</Italian>
+		<Spanish>
+			<Text>Niebla contaminada</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+		<Polish>Mordercza mg&#179;a</Polish>
+		<Russian>×óìíîé ñìîã</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_PLAGUED_SMOG_PEDIA</Tag>
+		<English>A powerful synthetic virus protected from the sun by a thick layer of smog.</English>
+		<French>Un puissant virus synthétique protégé du Soleil par une fine couche de 'Smog'.</French>
+		<German>Hier wirkt ein mächtiges synthetisches Virus, das durch eine dicke Nebelwolke vor Sonneneinstrahlung geschützt ist.</German>
+		<Italian>Un virus sintetico, protetto dal sole da uno spesso strato di smog.</Italian>
+		<Spanish>Un poderoso virus sintético, protegido del sol por una espesa capa de niebla.</Spanish>
+		<Polish>Pot&#234;&#191;ny syntetyczny wirus chroniony przed s&#179;o&#241;cem przez grub&#185; warstw&#234; smogu.</Polish>
+		<Russian>Смертоносный синтетический вирус, защищенный от солнца толстым слоем смога.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_RADIATION_CLOUD</Tag>
+		<English>Radiation Cloud</English>
+		<French>
+			<Text>Nuage de radiation</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Strahlenwolke</German>
+		<Italian>Nube radioattiva</Italian>
+		<Spanish>
+			<Text>Nube radiactiva:Nubes radiactivas</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Radioaktywna Chmura</Polish>
+		<Russian>Ðàäèàöèîííîå îáëàêî</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_RADIATION_CLOUD_PEDIA</Tag>
+		<English>The devastating impact of the nuclear explosion does not end with the initial blast, unlike conventional explosives. A cloud of radioactive dust rises from the epicenter of the explosion, and is carried high into the atmosphere by wind, spreading radiation far beyond the immediate area. This fallout continues to affect living organisms long after the blast and intense heat have subsided. Radiation exposure can cause genetic mutations, radiation sickness, and death.</English>
+		<French>L'impact dévastateur de l'explosion ne s'arrête pas après l'explosion initiale, comme avec les explosifs ordinaires. Un nuage de rayonnement nucléaire se déplace de l'épicentre de l'explosion, provoquant un impact sur les formes de vie même après la fin des vagues de chaleur. Le rayonnement peut provoquer une mutation génétique, un empoisonnement par rayonnement et la mort.</French>
+		<Russian>Разрушительное воздействие ядерного оружия не прекращается после первоначального взрыва, как с обычными взрывчатыми веществами. Радиоактивное облако распространяется из эпицентра взрыва, вызывая губительное воздействие на многие формы жизни даже после угасания тепловых волн. Излучение может вызвать генетическую мутацию, радиационное отравление и смерть.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_REEF</Tag>
+		<English>Reef</English>
+		<French>
+			<Text>Récif</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Riff</German>
+		<Italian>Scogliera</Italian>
+		<Spanish>
+			<Text>Arrecife:Arrecifes</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa</Polish>
+		<Russian>Ðèô</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_REEF_BEACON</Tag>
+		<English>Reef (Beacon)</English>
+		<French>
+			<Text>Récif (Balise)</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<Italian>Segnalatore sugli scogli</Italian>
+		<German>Riff (Leuchtfeuer)</German>
+		<Spanish>
+			<Text>Arrecife con baliza:Arrecifes con baliza</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa (Boja)</Polish>
+		<Russian>Ðèô (Áóé)</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_REEF_LIGHTHOUSE</Tag>
+		<English>Reef (Lighthouse)</English>
+		<French>
+			<Text>Récif (Phare)</Text>
+			<Gender>Male</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Riff (Leuchtturm)</German>
+		<Spanish>
+			<Text>Arrecife con faro:Arrecifes con faro</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Rafa (Latarnia Morska)</Polish>
+		<Russian>Ðèô (Ìàÿê)</Russian>
+		<Italian>Faro sugli scogli</Italian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_REEF_PEDIA</Tag>
+		<English>Reefs are a navigation hazard in C2C. In nautical terminology, a reef is a rock, sandbar, or other feature lying below the surface of the water, typically at a depth of six fathoms (36 feet) or less at low tide. Many reefs form through abiotic processes, such as the deposition of sand or the erosion of rock outcrops by wave action. However, the most well-known reefs are coral reefs found in tropical waters, which develop through biotic processes dominated by corals and calcareous algae. Artificial reefs, such as shipwrecks, are sometimes created to add physical complexity to otherwise featureless sandy bottoms in order to attract a diverse assemblage of organisms, especially fish.</English>
+		<French>Les récifs sont un danger pour la navigation dans C2C. "Dans la terminologie nautique, un récif est une roche, un banc de sable ou toute autre caractéristique se trouvant sous la surface de l'eau (six brasses ou moins à marée basse). De nombreux récifs résultent de processus abiotiques, de dépôts de sable, de l'érosion des vagues planifiant des affleurements rocheux et d'autres processus naturels, mais les récifs les plus connus sont les récifs coralliens des eaux tropicales développées par des processus biotiques dominés par les coraux et les algues calcaires. Les récifs artificiels tels que les naufrages sont parfois créés pour améliorer la complexité physique sur des fonds de sable généralement sans relief afin d'attirer un assemblage divers d'organismes, en particulier de poissons. "</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Riffe[COLOR_REVERT] sind Erhebungen im Gewässerboden, die zur Oberfläche hin aufragen. Dabei kann es sich um Fels- und Sandriffe, aber auch um biogene Riffe handeln, die aus festsitzenden Organismen mit Kalkskelett bestehen. Riffe, die bis knapp unter die Wasserfläche reichen oder diese gar durchstoßen, sind eine allgegenwärtige Gefahr für die Schifffahrt.</German>
+		<Polish>Rafa - ska&#179;a podwodna, w formie wa&#179;u albo grzbietu, kt&#243;rej g&#243;rna cz&#234;&#156;&#230; znajduje si&#234; tu&#191; pod albo tu&#191; nad powierzchni&#185; wody. Rafy stanowi&#185; zagro&#191;enie dla &#191;eglugi.</Polish>
+		<Russian>Рифы представляют опасность для навигации в C2C. «В морской терминологии риф - это скала, песчаная отмель или другой объект, лежащий под поверхностью воды (шесть морских саженей или меньше при низкой воде). Многие рифы возникают в результате абиотических процессов, отложения песка, планирования волновой эрозии вниз по выходам горных пород. и другие естественные процессы, но самые известные рифы - это коралловые рифы тропических вод, развивающиеся в результате биотических процессов, в которых преобладают кораллы и известняковые водоросли. Искусственные рифы, такие как кораблекрушения, иногда создаются, чтобы увеличить физическую сложность на обычно безликих песчаных грунтах, чтобы привлечь разнообразная совокупность организмов, особенно рыб».</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SAVANNA</Tag>
+		<English>Savanna</English>
+		<French>Savane</French>
+		<German>Savanne</German>
+		<Italian>Savana</Italian>
+		<Spanish>
+			<Text>Sabana:Sabanas</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Sawanna</Polish>
+		<Russian>Ñàâàííà</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SAVANNA_PEDIA</Tag>
+		<English>A savanna, or savannah, is a grassland ecosystem characterized by trees that are either small or widely spaced, allowing sunlight to reach the ground, preventing a closed canopy. While savannas are often believed to feature widely spaced, scattered trees, many actually feature higher tree densities with more regular spacing than forests. Savannas are also characterized by seasonal water availability, with the majority of rainfall confined to one wet season. Savannas are commonly found in transitional zones between forests and deserts or prairies and are associated with multiple biome types. Savannas cover about 20% of the Earth's land surface, with the largest expanses located in Africa. (Graphics by pie_at.)</English>
+		<French>Une savane, ou savane, est un écosystème de prairie caractérisé par des arbres suffisamment petits ou largement espacés pour que le couvert ne se ferme pas. On pense souvent que les savanes présentent des arbres largement espacés et dispersés. Cependant, dans de nombreuses savanes, les densités d'arbres sont plus élevées et les arbres sont plus régulièrement espacés qu'en forêt. Les savanes se caractérisent également par la disponibilité saisonnière de l'eau, la majorité des précipitations se limitant à une seule saison. Les savanes sont associées à plusieurs types de biomes. Les savanes se trouvent fréquemment dans une zone de transition entre forêt et désert ou prairie. La savane couvre 20% de la superficie terrestre de la Terre. La plus grande zone de savane se trouve en Afrique. (Graphiques par pie_at.)</French>
+		<German>Als [COLOR_HIGHLIGHT_TEXT]Savanne[COLOR_REVERT] wird im Allgemeinen ein tropischer oder subtropischer Vegetationstyp definiert, der aus einer geschlossenen Krautschicht und einer eher offenen Gehölzschicht besteht. Die Abgrenzung zu Steppen, Grasland und Trockenwäldern wird unterschiedlich gehandhabt. Außerdem ist Savanne ein Sammelbegriff für die Vegetationszone zwischen dem tropischen Regenwald und der Wüste. Savanne beziehungsweise savana/sabana bedeutet so viel wie "weite Ebene". Savannen sind insbesondere in Afrika stark verbreitet, besonders bekannt ist die Serengeti.</German>
+		<Polish>Sawanna - jedna z formacji trawiastych strefy mi&#234;dzyzwrotnikowej o klimacie gor&#185;cym z wyra&#159;nie zaznaczon&#185; por&#185; such&#185;, trwaj&#185;c&#185; od 6 do 9 miesi&#234;cy oraz por&#185; deszczow&#185;. W szacie ro&#156;linnej dominuj&#185; k&#234;py sucholubnych traw (np. afryka&#241;ska trawa s&#179;oniowa dochodz&#185;ca do 5 m wysoko&#156;ci). Na niekt&#243;rych sawannach rosn&#185; nieliczne drzewa, np. akacje, baobaby, palmy, kt&#243;re zwykle zrzucaj&#185; li&#156;cie w porze suchej. Wi&#234;ksze skupiska drzew wyst&#234;puj&#185; tylko nad ciekami wodnymi tworz&#185;c tzw. lasy galeriowe. W krajobrazie nie ma wyra&#159;nej granicy mi&#234;dzy wilgotnym lasem r&#243;wnikowym a trawiast&#185; sawann&#185;. W strefie przej&#156;ciowej w miar&#234; posuwania si&#234; w stron&#234; sawanny las staje si&#234; coraz rzadszy, a drzewa coraz ni&#191;sze. Sawanny &#191;ywi&#185; stada zwierz&#185;t ro&#156;lino&#191;ernych. Strefa sawann jest stosunkowo g&#234;sto zaludniona; zamieszkuj&#185; j&#185; zar&#243;wno rolnicy jak i pasterze.</Polish>
+		<Russian>Саванна - это экосистема лугов, характеризующаяся тем, что деревья достаточно малы или широко разнесены, так что полог не закрывается. Считается, что в саваннах широко расставлены рассеянные деревья. Однако во многих саваннах плотность деревьев выше, и деревья располагаются более равномерно, чем в лесу. Саванны также характеризуются сезонной доступностью воды, при этом большая часть осадков ограничивается одним сезоном. Саванны связаны с несколькими типами биомов. Саванны часто находятся в переходной зоне между лесом и пустыней или прерией. Саванна покрывает 20% земной площади. Самая большая площадь саванны находится в Африке.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SEA_GRASS</Tag>
+		<English>Sea Grass</English>
+		<French>Herbe marine</French>
+		<German>Seegras</German>
+		<Italian>Prateria marina</Italian>
+		<Spanish>
+			<Text>Pradera marina:Praderas marinas</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Trawa Morska</Polish>
+		<Russian>Ìîðñêàÿ òðàâà</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SEA_GRASS_PEDIA</Tag>
+		<English>Seagrasses are flowering plants from one of four plant families (Posidoniaceae, Zosteraceae, Hydrocharitaceae, or Cymodoceaceae), all within the order Alismatales (a class of monocotyledons). These marine flowering plants grow in fully saline environments. They are called seagrasses because many species have long, narrow leaves and often grow in dense "meadows" that resemble terrestrial grasslands. In appearance, they superficially resemble true grasses of the family Poaceae, though they are not closely related.[PARAGRAPH:2]Like all autotrophic plants, seagrasses rely on photosynthesis and are thus limited to growing in the submerged photic zone. Most are found in shallow, sheltered coastal waters, anchored in sandy or muddy bottoms. Uniquely, most species undergo submarine pollination and complete their entire life cycle underwater. Around 60 species of seagrasses are found worldwide.</English>
+		<French>Les herbiers sont des plantes à fleurs de l'une des quatre familles de plantes (Posidoniaceae, Zosteraceae, Hydrocharitaceae ou Cymodoceaceae), toutes dans l'ordre des Alismatales (dans la classe des monocotylédones), qui poussent dans des environnements marins entièrement salins. Ces plantes à fleurs marines inhabituelles sont appelées herbiers parce que dans de nombreuses espèces, les feuilles sont longues et étroites, et ces plantes poussent souvent dans de grandes "prairies" qui ressemblent à des prairies: en d'autres termes, de nombreuses espèces d'herbes marines ressemblent superficiellement aux herbes terrestres de la famille Poaceae.[PARAGRAPH:2]Comme toutes les plantes autotrophes, les herbiers photosynthétiques se limitent donc à la croissance dans la zone photique submergée, et la plupart se produisent dans des eaux côtières peu profondes et abritées ancrées dans des fonds de sable ou de boue. La plupart des espèces subissent une pollinisation sous-marine et achèvent leur cycle de vie sous l'eau. Il existe une soixantaine d'espèces dans le monde.</French>
+		<German>Als [COLOR_HIGHLIGHT_TEXT]Seegras[COLOR_REVERT] werden im Deutschen verschiedene grasähnliche Samenpflanzen bezeichnet, die im Wasser leben. Sie werden häufig mit Seetang gleichgestellt, aber im Gegensatz zu diesem verfügen sie über Wurzeln. Zudem können Seegräser blühen. Da sie in Küstenregionen häufig anzutreffen sind, werden sie oft als Dünger verwendet, sie sind aber auch als Füllmaterial und Dämmstoff gut geeignet.</German>
+		<Polish>Trawa morska - okre&#156;lenie niekt&#243;rych ro&#156;lin lub surowca ro&#156;linnego o wygl&#185;dzie trawiastym, w istocie bez zwi&#185;zku z trawami sensu stricto</Polish>
+		<Russian>Морские травы - это цветущие растения из одного из четырех семейств растений (Posidoniaceae, Zosteraceae, Hydrocharitaceae или Cymodoceaceae), все в порядке Alismatales (в классе однодольных растений), которые растут в морской, полностью засоленной среде. Эти необычные морские цветущие растения называют морскими травами, потому что у многих видов листья длинные и узкие, и эти растения часто растут на больших «лугах», которые похожи на луга: другими словами, многие виды морских водорослей внешне напоминают земные травы семейства Poaceae.[PARAGRAPH: 2]Как и все автотрофные растения, фотосинтез морских водорослей ограничивается ростом в затопленной фотической зоне, и большинство встречается в неглубоких и защищенных прибрежных водах, закрепленных на дне песка или грязи. Большинство видов подвергаются подводному опылению и завершают весь свой жизненный цикл под водой. В мире насчитывается около шестидесяти видов.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SWAMP</Tag>
+		<English>Swamp</English>
+		<French>
+			<Text>Marécage</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</French>
+		<German>Sumpf</German>
+		<Italian>
+			<Text>Palude</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</Italian>
+		<Spanish>
+			<Text>Pantano:Pantanos</Text>
+			<Gender>Female</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Moczary</Polish>
+		<Russian>Áîëîòî</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_SWAMP_PEDIA</Tag>
+		<English>A swamp is a type of wetland that is forested. Many swamps occur along large rivers, where they are critically dependent upon natural water level fluctuations. Other swamps occur on the shores of large lakes. Some swamps contain hammocks, or dry-land protrusions, covered by aquatic vegetation, or plants that tolerates periodic flooding. There are two main types of swamps: "true" swamps, or swamp forests, and "transitional" swamps, also called shrub swamps. In the boreal regions of Canada, the word swamp is often used colloquially to describe wetlands more accurately classified as bogs or muskeg. Swamp water can be fresh, brackish, or saline. The type of water in a swamp influences which species of flora and fauna can thrive there. Some of the world's largest swamps are found along major rivers such as the Amazon, the Mississippi, and the Congo.</English>
+		<French>Un marécage est une zone humide boisée. De nombreux marécages se trouvent le long de grandes rivières où ils dépendent de façon critique des fluctuations naturelles du niveau de l'eau. D'autres marécages se trouvent sur les rives de grands lacs. Certains marécages ont des hamacs, ou des saillies de terres arides, couvertes de végétation aquatique, ou une végétation qui tolère les inondations périodiques. Les deux principaux types de marais sont les forêts «vraies» ou marécageuses et les marécages «transitoires» ou arbustifs. Dans les régions boréales du Canada, le mot marécage est couramment utilisé pour désigner ce qui est plus correctement appelé une tourbière ou un muskeg. L'eau d'un marais peut être de l'eau douce, de l'eau saumâtre ou de l'eau de mer. Certains des plus grands marais du monde se trouvent le long des principaux fleuves tels que l'Amazonie, le Mississippi et le Congo.</French>
+		<German>[COLOR_HIGHLIGHT_TEXT]Sümpfe[COLOR_REVERT] sind natürliche Feuchtgebiete an Flüssen und Seen. Sie sind gekennzeichnet durch schlammige Böden mit stehendem Wasser, im Gegensatz zum häufig synonym verwendeten Moor wird in Sümpfen aber kein Torf gebildet. Da Sümpfe kaum kulturell nutzbar sind, werden solche Lebensräume häufig über Entwässerung nutzbar gemacht und dadurch zerstört.</German>
+		<Polish>Mokrad&#179;o (teren podmok&#179;y, bagno, b&#179;oto, moczary, trz&#234;sawisko, bajoro, grz&#234;zawisko, topiel, topielisko) - tereny okresowo lub stale zabagnione, podtopione lub pokryte warstw&#185; wody, siedlisko hydrogeniczne, obszar o p&#179;ytkim poziomie wody gruntowej (powy&#191;ej 1 m), teren silnie uwilgotniony, zalany wod&#185; lub okresowo zabagniony, o glebach mineralnych lub organicznych.</Polish>
+		<Russian>Â íèçìåííîì ëàíäøàôòå, ãäå îáèëüíà âîäà è âîäíûé ãîðèçîíò ãðóíòîâûõ âîä áëèçîê ê ïîâåðõíîñòè, îáû÷íî çåìëÿ òîïêàÿ è ñèëüíî çàðîñøàÿ ðàñòèòåëüíîñòüþ. Ýòîò òèï ëàíäøàôòà ìîæåò áûòü èçâåñòåí êàê áîëîòî, òðÿñèíà, òîïü èëè çàáîëî÷åííûå ìåñòà. [PARAGRAPH:1] Âçàèìîäåéñòâèå ÷åëîâåêà ñ áîëîòàìè ñëîæíîå. Áîëîòèñòîå îñíîâàíèå òðóäíî è îïàñíî äëÿ ïåðåìåùåíèÿ, ÷àñòî ïðîíèçàííîå çàñàñûâàþùèìè áîëîòàìè è ìàññàìè âîäû, êîòîðûå äåëàþò íàçåìíûå òðàíñïîðòíûå ñðåäñòâà áåñïîëåçíûìè, äâèæåíèå ïåøêîì òðóäíûì, è äàæå äâèæåíèå ìàëåíüêèõ ëîäîê ñîìíèòåëüíûì. Îáû÷íî îïàñíî îñíîâûâàòüñÿ íà âëàæíîì îñíîâàíèè, ïîñêîëüêó òÿæåëûå çäàíèÿ ïðîñòî ïîãðóçÿòñÿ â ãðÿçü è íèêîãäà áîëåå íå ïîÿâÿòñÿ. Ñòðîèòåëüñòâî íà òàêîì íåïîñòîÿííîì ëàíäøàôòå òðåáóåò èñïîëüçîâàíèÿ ñâàé, ïîãðóæåííûõ ãëóáîêî â áîëîòî, è äàæå òîãäà ÷àñòî íåýêîíîìíî äëÿ øèðîêîãî èñïîëüçîâàíèÿ. Çàáîëî÷åííûå ìåñòà òàêæå ñëóæàò íåðåñòèëèùàìè äëÿ íàñåêîìûõ, êîòîðûå ìîãóò ÿâëÿòüñÿ íîñèòåëÿìè áîëåçíåé, òèïà ìàëÿðèè. [PARAGRAPH:1] Ïî âñåì ýòèì ïðè÷èíàì, ìíîãèå öèâèëèçàöèé ïûòàëèñü èññóøèòü çàáîëî÷åííûå ìåñòà âîêðóã íèõ, òàê, ÷òîáû çåìëÿ ìîãëà èñïîëüçîâàòüñÿ â äðóãèõ öåëÿõ. Ýòî ÷àñòî âûçûâàåò ýêîëîãè÷åñêîå ïîâðåæäåíèå è ìîæåò ðàçðóøèòü ñðåäñòâà ê ñóùåñòâîâàíèþ æèòåëåé.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_TAR_PIT</Tag>
+		<English>Tar Pit</English>
+		<French>Fosse de Goudron</French>
+		<Italian>Pozza di pece</Italian>
+		<Spanish>
+			<Text>Foso de alquitrán:Fosos de alquitrán</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Polish>Smo&#179;a</Polish>
+		<Russian>Ñìîëÿíàÿ ÿìà</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_TAR_PIT_PEDIA</Tag>
+		<English>A tar pit, more accurately called an asphalt pit or asphalt lake, is a type of petroleum seep where subterranean bitumen leaks to the surface, creating a large area of natural asphalt. This happens because, after the material reaches the surface, its lighter components vaporize, leaving behind the thick, sticky asphalt. Tar pits form where petroleum reservoirs are close enough to the surface for the bitumen to seep upwards through fractures in rock layers. Tar pits are perhaps most well-known for preserving the remains of plants and animals that became trapped in the asphalt. The most famous example of this is the La Brea Tar Pits in Los Angeles, California, where thousands of prehistoric fossils, including mammoths, saber-toothed cats, and ancient birds, have been recovered. Bacteria, many of whom are extremophiles, are able to live in the toxic, hydrocarbon-rich, anaerobic conditions of a tar pit by metabolizing hydrocarbons.</English>
+		<French>Une fosse de goudron, ou plus précisément connue comme une fosse d'asphalte ou un lac d'asphalte, est un type de suintement de pétrole où le bitume souterrain fuit à la surface, créant une grande surface d'asphalte naturel. Cela se produit car, une fois que le matériau a atteint la surface, ses composants plus légers se vaporisent, ne laissant que l'asphalte épais.</French>
+		<Polish>Smo&#179;a, smo&#179;a surowa - produkty odgazowania w&#234;gla, &#179;upk&#243;w bitumicznych lub drewna, rzadko torfu. Sk&#179;ada si&#234; g&#179;&#243;wnie z mieszaniny wielu rodzaj&#243;w w&#234;glowodor&#243;w oraz innych zwi&#185;zk&#243;w organicznych, zawieraj&#185;cych tlen,azot i siark&#234;, ponadto niekt&#243;re rodzaje smo&#179;y mog&#185; zawiera&#230; pewn&#185; ilo&#156;&#230; grafitu i fuleren&#243;w.</Polish>
+		<Russian>Смоляная яма, или, точнее, известная как асфальтовая яма или асфальтовое озеро, является типом нефтяного фильтра, когда подземный битум просачивается на поверхность, создавая большую площадь природного асфальта. Это происходит потому, что после того, как материал достигает поверхности, его более легкие компоненты испаряются, оставляя только толстый слой асфальта.</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_VERY_TALL_GRASS</Tag>
+		<English>Very Tall Grass</English>
+		<French>Très Hautes Herbes</French>
+		<German>Hohes Gras</German>
+		<Italian>Erba molto alta</Italian>
+		<Spanish>
+			<Text>Hierba alta</Text>
+			<Gender>Female</Gender>
+			<Plural>0</Plural>
+		</Spanish>
+		<Polish>Ostra Trawa</Polish>
+		<Russian>Çàðîñëè</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_VERY_TALL_GRASS_PEDIA</Tag>
+		<English>Very Tall Grass can grow between 2 and 3 meters (6 to 10 feet) tall, forming dense stands that dominate certain wetlands, marshes, and fen environments. Some species possess sharp leaf edges that can cut human skin. Many of these grasses belong to the Poales order, a group of monocotyledonous flowering plants. Within Poales, the family Poaceae (true grasses) includes most species of tall grasses, including the fen grasses found in the United Kingdom. The Poales order also includes the families of Cyperaceae (sedges) and Juncaceae (rushes), which are distinguished by different structural features. Tall grasses, such as the fen grasses, thrive in nutrient-rich, waterlogged soils found in wetlands. These grasses provide habitats for birds, insects, and small mammals.</English>
+		<French>Les herbes très hautes mesurent 2 à 3 mètres. Certains peuvent couper la peau humaine. Il s'agit notamment des herbes Fen au Royaume-Uni.</French>
+		<German>Über 1,80 m [COLOR_HIGHLIGHT_TEXT]hohe Gräser[COLOR_REVERT] werden auch als Riesengräser bezeichnet. Sie lassen sich zwar nur schwer bearbeiten oder ausrotten, haben dafür aber entscheidende militärische Vorteile, da sie gute Versteckmöglichkeiten bieten. Es ist trotzdem immer Vorsicht geboten, denn manche Riesengrasarten sind scharfkantig und können bei Durchquerung zu Verletzungen führen.</German>
+		<Spanish>Esta tipo de hierba tiene 2-3 metros de altura. Algunas pueden cortar la piel humana. Por ejemplo, las praderas Fen del Reino Unido.</Spanish>
+		<Polish>Wiechlinowate, trawy (Poaceae (R. Br.) Barnh., Gramineae Juss.) - rodzina ro&#156;lin nale&#191;&#185;ca do rz&#234;du wiechlinowc&#243;w. Liczy ok. 11 tys. gatunk&#243;w. Stanowi ona g&#179;&#243;wny komponent ro&#156;linno&#156;ci stepowej, &#179;&#185;kowej ipastwiskowej. Nale&#191;&#185; do niej r&#243;wnie&#191; wa&#191;ne ro&#156;liny uprawne, w tym zbo&#191;a. W Polsce wyst&#234;puje ponad 150 gatunk&#243;w traw.</Polish>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_VOLCANO_ACTIVE</Tag>
+		<English>Volcano - Active</English>
+		<French>Volcan - Actif</French>
+		<German>Vulkan (aktiv)</German>
+		<Italian>Vulcano attivo</Italian>
+		<Polish>Aktywny Wulkan</Polish>
+		<Spanish>
+			<Text>Volcán activo:Volcanes activos</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Russian>Àêòèâíûé âóëêàí</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_VOLCANO_DORMANT</Tag>
+		<English>Volcano - Dormant</English>
+		<French>Volcan - Endormi</French>
+		<German>Vulkan (ruhend)</German>
+		<Italian>Vulcano inattivo</Italian>
+		<Polish>U&#156;piony Wulkan</Polish>
+		<Spanish>
+			<Text>Volcán inactivo:Volcanes inactivos</Text>
+			<Gender>Male</Gender>
+			<Plural>0:1</Plural>
+		</Spanish>
+		<Russian>Ïîòóõøèé âóëêàí</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_FEATURE_VOLCANO_PEDIA</Tag>
+		<English>A volcano is an opening or rupture in a planet's surface or crust that allows hot molten rock (lava), ash, and gases to escape from below the surface. Over time, volcanic activity involving the extrusion of lava often builds mountains or elevated landforms. Volcanoes come in several types, distinguished by their shape, eruption style, and the composition of their lava. Shield volcanoes have broad, gentle slopes formed by the flow of low-viscosity basaltic lava (fast-moving lava). They produce large, gradual eruptions, with Mauna Loa in Hawaii being a good example. Stratovolcanoes, or composite volcanoes, are the steep, conical volcanoes that often first come to mind when describing volcanoes. These are built from layers of hardened lava, tephra, and volcanic ash. They are known for having explosive eruptions, with Mount St. Helens in the United States and Mount Fuji in Japan being among the best-known stratovolcanoes.</English>
+		<French>Un volcan est une ouverture, ou une rupture, dans la surface ou la croûte d'une planète, qui permet à la roche fondue, à la cendre et aux gaz chauds de s'échapper de sous la surface. L'activité volcanique impliquant l'extrusion de roche a tendance à former des montagnes ou des éléments comme des montagnes sur une période de temps.</French>
+		<German>Ein [COLOR_HIGHLIGHT_TEXT]Vulkan[COLOR_REVERT] ist eine Öffnung oder ein Riss in der Oberfläche eines Planeten, durch den heißes, geschmolzenes Gestein (Magma), Asche und Gase aus dem Planetenkern entweichen können. In der Regel handelt es sich um kegelförmige Krater, wobei die Hangneigung von der Zähigkeit der Lava abhängt. Einen lange Zeit inaktiven (ruhenden) Vulkan, der in Zukunft mit hoher Wahrscheinlichkeit nicht mehr ausbrechen wird, bezeichnen Geologen als erloschen. Da es aber z.B. auf Gran Canaria Vulkansysteme gibt, die Ruhepausen von mehreren Millionen Jahren haben, ist eine Unterscheidung von ruhenden und erloschenen Vulkanen sehr schwierig.</German>
+		<Italian>Un vulcano è un'apertura o rottura sulla superficie o crosta di un pianeta, che permette alla roccia calda e fusa, alla cenere e ai gas di raggiungere la superficie. L'attività vulcanica che prevede l'estrusione di roccia tende a formare montagne o caratteristiche simili alle montagne in un certo lasso di tempo.</Italian>
+		<Polish>Wulkan (z &#179;ac. Vulcanus - imi&#234; rzymskiego boga ognia) - miejsce na powierzchni Ziemi, z kt&#243;rego wydobywa si&#234; lawa, gazy wulkaniczne (solfatary, mofety, fumarole) i materia&#179; piroklastyczny. Terminu tego r&#243;wnie&#191; u&#191;ywa si&#234; jako okre&#156;lenie form terenu powsta&#179;ych wskutek dzia&#179;alno&#156;ci wulkanu, cho&#230; bardziej poprawne s&#185; takie terminy jak: g&#243;ra wulkaniczna, sto&#191;ek wulkaniczny, kopu&#179;a wulkaniczna czy wulkan tarczowy.</Polish>
+		<Russian>Вулканы - геологические образования на поверхности коры Земли или другой планеты, где магма выходит на поверхность, образуя лаву, вулканические газы, камни (вулканические бомбы и пирокластические потоки). Вулканическая активность, связанная с выдавливанием горных пород, имеет тенденцию формировать горы или объекты, такие как горы, в течение определенного периода времени.</Russian>
+	</TEXT>
+</Civ4GameText>

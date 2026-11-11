@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Civ4GameText xmlns="http://www.firaxis.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.firaxis.com ../Schema/Civ4Gametext.xsd">
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_AQUATIC</Tag>
+		<English>Aquatic Plot</English>
+		<German>Wasserfeld</German>
+		<French>Case aquatique</French>
+		<Italian>Casella acquatica</Italian>
+		<Russian>Море</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_CISLUNAR</Tag>
+		<English>Cislunar Plot</English>
+		<French>Case Cislunaire</French>
+		<Italian>Casella cislunare</Italian>
+		<German>Weltraumfeld</German>
+		<Russian>Орбита Луны</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_DISTANT</Tag>
+		<English>Distant Plot</English>
+		<French>Case Distante</French>
+		<Italian>Casella di spazio distante</Italian>
+		<Russian>Дальний сектор</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_EARTH</Tag>
+		<English>Earth Plot</English>
+		<German>Erdfeld</German>
+		<French>Case terrienne</French>
+		<Italian>Casella terrestre</Italian>
+		<Russian>Планета Земля</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_GALACTIC</Tag>
+		<English>Galactic Plot</English>
+		<German>Galaxiefeld</German>
+		<Italian>Casella galattica</Italian>
+		<French>Case galactique</French>
+		<Russian>Сектор галактики</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_HYPERSPACE</Tag>
+		<English>Hyperspace Plot</English>
+		<French>Case d'Hyperspace</French>
+		<Italian>Casella d'iperspazio</Italian>
+		<Russian>Гиперпространство</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_INTERSTELLAR</Tag>
+		<English>Interstellar Plot</English>
+		<French>Case Interstellaire</French>
+		<Italian>Casella interstellare</Italian>
+		<Russian>Межзвездное пространство</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_JOVIAN</Tag>
+		<English>Jovian Plot</English>
+		<German>Jupiterfeld</German>
+		<French>Case jovienne</French>
+		<Italian>Casella gioviana</Italian>
+		<Russian>Атмосфера Юпитера</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_LUNAR</Tag>
+		<English>Lunar Plot</English>
+		<German>Mondfeld</German>
+		<Italian>Casella lunare</Italian>
+		<French>Case lunaire</French>
+		<Russian>Поверхность Луны</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_MARTIAN</Tag>
+		<English>Martian Plot</English>
+		<German>Marsfeld</German>
+		<Italian>Casella marziana</Italian>
+		<French>Case martienne</French>
+		<Russian>Поверхность Марса</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_MILKY_WAY</Tag>
+		<English>Milky Way Plot</English>
+		<Italian>Casella della via lattea</Italian>
+		<French>Case de Voie lactée</French>
+		<Russian>Млечный Путь</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_PLASMA</Tag>
+		<English>Plasma Plot</English>
+		<Italian>Casella di plasma</Italian>
+		<German>Plasmafeld</German>
+		<French>Case de plasma</French>
+		<Russian>Плазма</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_SOLAR_SYSTEM</Tag>
+		<English>Solar System Plot</English>
+		<German>Sonnensystemfeld</German>
+		<French>Case du système solaire</French>
+		<Italian>Casella del sistema solare</Italian>
+		<Russian>Солнечная система</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_SUBTERRANEAN</Tag>
+		<English>Subterranean Plot</English>
+		<German>unterirdisches Feld</German>
+		<French>Case souterraine</French>
+		<Italian>Casella sotterranea</Italian>
+		<Russian>Недра Земли</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_TITANIC</Tag>
+		<English>Titanic Plot</English>
+		<French>Case de Titan</French>
+		<Italian>Casella di Titano</Italian>
+		<Russian>Поверхность Титана</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_UNIVERSAL</Tag>
+		<English>Universal Plot</English>
+		<French>Case Universelle</French>
+		<Italian>Casella universale</Italian>
+		<Russian>Вселенная</Russian>
+	</TEXT>
+	<TEXT>
+		<Tag>TXT_KEY_MAPCATEGORY_VENUSIAN</Tag>
+		<English>Venusian Plot</English>
+		<German>Venusfeld</German>
+		<Italian>Casella venusiana</Italian>
+		<French>Case vénusienne</French>
+		<Russian>Поверхность Венеры</Russian>
+	</TEXT>
+</Civ4GameText>

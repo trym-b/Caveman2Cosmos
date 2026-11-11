@@ -1,5 +1,7 @@
 #include "CvGameCoreDLL.h"
 #include "CvHallOfFameInfo.h"
+#include "FProfiler.h"
+#include "CvReplayInfo.h"
 
 CvHallOfFameInfo::CvHallOfFameInfo()
 {
@@ -7,9 +9,12 @@ CvHallOfFameInfo::CvHallOfFameInfo()
 
 CvHallOfFameInfo::~CvHallOfFameInfo()
 {
-	for (uint i = 0; i < m_aReplays.size(); i++)
 	{
-		SAFE_DELETE(m_aReplays[i]);
+		PROFILE_EXTRA_FUNC();
+		for (uint i = 0; i < m_aReplays.size(); i++)
+		{
+			SAFE_DELETE(m_aReplays[i]);
+		}
 	}
 }
 

@@ -27,7 +27,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_ICBM</Description>
 			<Civilopedia>TXT_KEY_UNIT_ICBM_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_ICBM_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -47,7 +46,7 @@ Base XP gained when defending
 			<PrereqBonuses>
 				<BonusType>BONUS_HEAVY_WATER</BonusType>
 			</PrereqBonuses>
-			<iCost>1750</iCost>
+			<iCost>1681</iCost>
 			<iBaseUpkeep>6</iBaseUpkeep>
 			<iMoves>1</iMoves>
 			<iNukeRange>1</iNukeRange>
@@ -90,7 +89,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_ATOMIC</Description>
 			<Civilopedia>TXT_KEY_UNIT_TACTICAL_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_ATOMIC_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -111,10 +109,10 @@ Base XP gained when defending
 			<PrereqBonuses>
 				<BonusType>BONUS_HEAVY_WATER</BonusType>
 			</PrereqBonuses>
-			<iCost>1405</iCost>
+			<iCost>1350</iCost>
 			<iBaseUpkeep>6</iBaseUpkeep>
 			<iMoves>1</iMoves>
-			<iNukeRange>1</iNukeRange>
+			<iNukeRange>0</iNukeRange>
 			<iAirRange>7</iAirRange>
 			<iAirCombat>1</iAirCombat>
 			<iAirCombatLimit>10</iAirCombatLimit>
@@ -122,6 +120,7 @@ Base XP gained when defending
 			<iXPValueDefense>6</iXPValueDefense>
 			<iAsset>5</iAsset>
 			<iPower>1000</iPower>
+			<bSuicide>1</bSuicide>
 			<UnitMeshGroups>
 				<iGroupSize>1</iGroupSize>
 				<fMaxSpeed>0.75</fMaxSpeed>
@@ -155,7 +154,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_HYDROGEN</Description>
 			<Civilopedia>TXT_KEY_UNIT_ICBM_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_ICBM_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -175,7 +173,7 @@ Base XP gained when defending
 			<PrereqBonuses>
 				<BonusType>BONUS_HEAVY_WATER</BonusType>
 			</PrereqBonuses>
-			<iCost>2360</iCost>
+			<iCost>1843</iCost>
 			<iAdvancedStartCost>150</iAdvancedStartCost>
 			<iBaseUpkeep>11</iBaseUpkeep>
 			<iMoves>1</iMoves>
@@ -217,7 +215,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_TACTICAL_NUKE</Description>
 			<Civilopedia>TXT_KEY_UNIT_TACTICAL_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_TACTICAL_NUKE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -236,7 +233,7 @@ Base XP gained when defending
 			<PrereqBonuses>
 				<BonusType>BONUS_HEAVY_WATER</BonusType>
 			</PrereqBonuses>
-			<iCost>1750</iCost>
+			<iCost>1681</iCost>
 			<iBaseUpkeep>6</iBaseUpkeep>
 			<iMoves>1</iMoves>
 			<iAirRange>4</iAirRange>
@@ -279,7 +276,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_MRBM</Description>
 			<Civilopedia>TXT_KEY_UNIT_TACTICAL_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_TACTICAL_NUKE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -295,7 +291,7 @@ Base XP gained when defending
 			</UnitAIs>
 			<PrereqTech>TECH_JET_PROPULSION</PrereqTech>
 			<BonusType>BONUS_URANIUM</BonusType>
-			<iCost>1665</iCost>
+			<iCost>1600</iCost>
 			<iAdvancedStartCost>150</iAdvancedStartCost>
 			<iBaseUpkeep>6</iBaseUpkeep>
 			<iMoves>1</iMoves>
@@ -340,7 +336,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_IRBM</Description>
 			<Civilopedia>TXT_KEY_UNIT_TACTICAL_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_TACTICAL_NUKE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -356,7 +351,7 @@ Base XP gained when defending
 			</UnitAIs>
 			<PrereqTech>TECH_GUIDED_WEAPONS</PrereqTech>
 			<BonusType>BONUS_URANIUM</BonusType>
-			<iCost>2085</iCost>
+			<iCost>2006</iCost>
 			<iAdvancedStartCost>150</iAdvancedStartCost>
 			<iBaseUpkeep>6</iBaseUpkeep>
 			<iMoves>1</iMoves>
@@ -402,7 +397,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_MISSILE_AIR</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_BIOLOGICAL_WARFARE_MISSILE</Description>
 			<Civilopedia>TXT_KEY_UNIT_BIOLOGICAL_WARFARE_MISSILE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_BIOLOGICAL_WARFARE_MISSILE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -473,7 +467,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_POISON_NUKE</Description>
 			<Civilopedia>TXT_KEY_UNIT_POISON_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_POISON_NUKE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -518,6 +511,7 @@ Base XP gained when defending
 		<UnitInfo>
 			<Type>UNIT_POISON_NOVA</Type>
 			<iMaxPlayerInstances>5</iMaxPlayerInstances>
+			<iInstanceCostModifier>5</iInstanceCostModifier>
 			<Combat>UNITCOMBAT_DOOM</Combat>
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_BALLISTIC</SubCombatType>
@@ -536,7 +530,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_POISON_NOVA</Description>
 			<Civilopedia>TXT_KEY_UNIT_POISON_NOVA_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_POISON_NOVA_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -581,6 +574,7 @@ Base XP gained when defending
 		<UnitInfo>
 			<Type>UNIT_FUSION_NUKE</Type>
 			<iMaxPlayerInstances>15</iMaxPlayerInstances>
+			<iInstanceCostModifier>5</iInstanceCostModifier>
 			<Combat>UNITCOMBAT_DOOM</Combat>
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_BALLISTIC</SubCombatType>
@@ -599,7 +593,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_FUSION_NUKE</Description>
 			<Civilopedia>TXT_KEY_UNIT_FUSION_NUKE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_FUSION_NUKE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -614,11 +607,15 @@ Base XP gained when defending
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
-			<PrereqAndBuildings>
-				<BuildingType>BUILDING_FUSION_PLANT</BuildingType>
-			</PrereqAndBuildings>
+			<PrereqOrBuildings>
+				<BuildingType>BUILDING_D_T_FUSION_POWER_PLANT</BuildingType>
+				<BuildingType>BUILDING_D_HE3_FUSION_PLANT</BuildingType>
+				<BuildingType>BUILDING_HE3_FUSION_POWER_PLANT</BuildingType>
+				<BuildingType>BUILDING_ANTIMATTER_INITIATED_FUSION_PLANT</BuildingType>
+				<BuildingType>BUILDING_QUANTUM_VACUUM_POWER_PLANT</BuildingType>
+			</PrereqOrBuildings>
 			<PrereqTech>TECH_FUSION</PrereqTech>
-			<iCost>4200</iCost>
+			<iCost>4056</iCost>
 			<iAdvancedStartCost>500</iAdvancedStartCost>
 			<iBaseUpkeep>21</iBaseUpkeep>
 			<iMoves>1</iMoves>
@@ -643,6 +640,7 @@ Base XP gained when defending
 		<UnitInfo>
 			<Type>UNIT_FUSION_NOVA</Type>
 			<iMaxPlayerInstances>5</iMaxPlayerInstances>
+			<iInstanceCostModifier>5</iInstanceCostModifier>
 			<Combat>UNITCOMBAT_DOOM</Combat>
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_BALLISTIC</SubCombatType>
@@ -661,7 +659,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_FUSION_NOVA</Description>
 			<Civilopedia>TXT_KEY_UNIT_FUSION_NOVA_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_FUSION_NOVA_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -676,11 +673,15 @@ Base XP gained when defending
 					<bUnitAI>1</bUnitAI>
 				</UnitAI>
 			</UnitAIs>
-			<PrereqAndBuildings>
-				<BuildingType>BUILDING_FUSION_PLANT</BuildingType>
-			</PrereqAndBuildings>
+			<PrereqOrBuildings>
+				<BuildingType>BUILDING_D_T_FUSION_POWER_PLANT</BuildingType>
+				<BuildingType>BUILDING_D_HE3_FUSION_PLANT</BuildingType>
+				<BuildingType>BUILDING_HE3_FUSION_POWER_PLANT</BuildingType>
+				<BuildingType>BUILDING_ANTIMATTER_INITIATED_FUSION_PLANT</BuildingType>
+				<BuildingType>BUILDING_QUANTUM_VACUUM_POWER_PLANT</BuildingType>
+			</PrereqOrBuildings>
 			<PrereqTech>TECH_SHIELDING</PrereqTech>
-			<iCost>7700</iCost>
+			<iCost>7381</iCost>
 			<iAdvancedStartCost>500</iAdvancedStartCost>
 			<iBaseUpkeep>33</iBaseUpkeep>
 			<iMoves>1</iMoves>
@@ -705,6 +706,7 @@ Base XP gained when defending
 		<UnitInfo>
 			<Type>UNIT_EXPERIMENTAL</Type>
 			<iMaxPlayerInstances>1</iMaxPlayerInstances>
+			<bUnlimitedException>1</bUnlimitedException>
 			<Combat>UNITCOMBAT_DOOM</Combat>
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_BALLISTIC</SubCombatType>
@@ -723,7 +725,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_EXPERIMENTAL</Description>
 			<Civilopedia>TXT_KEY_UNIT_EXPERIMENTAL_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_EXPERIMENTAL_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -740,11 +741,11 @@ Base XP gained when defending
 			</UnitAIs>
 			<PrereqTech>TECH_SUPERSTRONG_ALLOYS</PrereqTech>
 			<BonusType>BONUS_URANIUM</BonusType>
-			<iCost>5400</iCost>
+			<iCost>5181</iCost>
 			<iAdvancedStartCost>1000</iAdvancedStartCost>
 			<iBaseUpkeep>26</iBaseUpkeep>
 			<iMoves>1</iMoves>
-			<iNukeRange>20</iNukeRange>
+			<iNukeRange>3</iNukeRange>
 			<iEvasionProbability>50</iEvasionProbability>
 			<iAsset>5</iAsset>
 			<iPower>60</iPower>
@@ -765,6 +766,7 @@ Base XP gained when defending
 		<UnitInfo>
 			<Type>UNIT_TURN</Type>
 			<iMaxPlayerInstances>5</iMaxPlayerInstances>
+			<iInstanceCostModifier>5</iInstanceCostModifier>
 			<Combat>UNITCOMBAT_DOOM</Combat>
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_BALLISTIC</SubCombatType>
@@ -783,7 +785,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_ICBM</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_TURN</Description>
 			<Civilopedia>TXT_KEY_UNIT_TURN_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_TURN_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -845,7 +846,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_MISSILE_AIR</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_V1</Description>
 			<Civilopedia>TXT_KEY_UNIT_V1_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_V1_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -865,7 +865,7 @@ Base XP gained when defending
 			</UnitAIs>
 			<PrereqTech>TECH_ROCKETRY</PrereqTech>
 			<BonusType>BONUS_ROCKET_FUEL</BonusType>
-			<iCost>760</iCost>
+			<iCost>811</iCost>
 			<iBaseUpkeep>1</iBaseUpkeep>
 			<iMoves>1</iMoves>
 			<iAirRange>3</iAirRange>
@@ -915,7 +915,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_MISSILE_AIR</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_GUIDED_MISSILE</Description>
 			<Civilopedia>TXT_KEY_UNIT_GUIDED_MISSILE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_GUIDED_MISSILE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>
@@ -938,7 +937,7 @@ Base XP gained when defending
 			<PrereqBonuses>
 				<BonusType>BONUS_ROCKET_FUEL</BonusType>
 			</PrereqBonuses>
-			<iCost>2865</iCost>
+			<iCost>2006</iCost>
 			<iBaseUpkeep>1</iBaseUpkeep>
 			<iMoves>1</iMoves>
 			<iAirRange>4</iAirRange>
@@ -988,7 +987,6 @@ Base XP gained when defending
 			<DefaultUnitAI>UNITAI_MISSILE_AIR</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_PRECISION_ATTACK_MISSILE</Description>
 			<Civilopedia>TXT_KEY_UNIT_PRECISION_ATTACK_MISSILE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_PRECISION_ATTACK_MISSILE_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bMilitarySupport>1</bMilitarySupport>
 			<bMilitaryProduction>1</bMilitaryProduction>

@@ -15,6 +15,7 @@
 XmlValidator.log
 desktop.ini
 Assets/Python/.idea/
+docs/
 
 # Ignore python venv
 env/
@@ -66,3 +67,13 @@ UserSettings/
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
 .vs/caveman2cosmos/v16/.suo
+/.idea
+/cmake-build-debug
+/CMakeLists.txt
+DevExtras/.vs/
+DevExtras/__pycache__/
+DevExtras/PyScripts/Profiling/Backup/
+DevExtras/PyScripts/Profiling/__pycache__/
+
+# Real-time event logging log file
+realtimeevents.log

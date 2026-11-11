@@ -1,7 +1,6 @@
 from CvPythonExtensions import *
 import CvScreenEnums
 import WBPlotScreen
-import WBUnitScreen
 import WBCityEditScreen
 import WBPromotionScreen
 import WBPlayerScreen
@@ -49,7 +48,7 @@ class WBInfoScreen:
 		screen.addPanel("MainBG", u"", u"", True, False, -10, -10, screen.getXResolution() + 20, screen.getYResolution() + 20, PanelStyles.PANEL_STYLE_MAIN )
 		screen.showScreen(PopupStates.POPUPSTATE_IMMEDIATE, False)
 
-		screen.setText("WBInfoExit", "Background", "<font=4>" + CyTranslator().getText("TXT_KEY_PEDIA_SCREEN_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
+		screen.setText("WBInfoExit", "Background", "<font=4>" + CyTranslator().getText("TXT_WORD_EXIT", ()).upper() + "</font>", 1<<1, screen.getXResolution() - 30, screen.getYResolution() - 42, -0.1, FontTypes.TITLE_FONT, WidgetTypes.WIDGET_CLOSE_SCREEN, -1, -1 )
 
 		iX = 20
 		iY = 20
@@ -58,7 +57,7 @@ class WBInfoScreen:
 		screen.addDropDownBoxGFC("ItemType", iX, iY, iWidth/2, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_UNIT", ()), 0, 0, 0 == iMode)
 		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_PROMOTION", ()), 1, 1, 1 == iMode)
-		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING", ()), 2, 2, 2 == iMode)
+		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_WB_BUILDINGS", ()), 2, 2, 2 == iMode)
 		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_SPECIALIST", ()), 3, 3, 3 == iMode)
 		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_RELIGION", ()), 4, 4, 4 == iMode)
 		screen.addPullDownString("ItemType", CyTranslator().getText("TXT_KEY_CONCEPT_CORPORATIONS", ()), 5, 5, 5 == iMode)
@@ -123,10 +122,11 @@ class WBInfoScreen:
 		iY = self.iTable_Y
 		iWidth = screen.getXResolution() * 2/3 - 40
 		iMaxHeight = screen.getYResolution() * 2/3 - iY
+		MAP = GC.getMap()
 
-		iHeight = iWidth * CyMap().getGridHeight() / CyMap().getGridWidth()
+		iHeight = iWidth * MAP.getGridHeight() / MAP.getGridWidth()
 		if iHeight > iMaxHeight:
-			iWidth = iMaxHeight * CyMap().getGridWidth() / CyMap().getGridHeight()
+			iWidth = iMaxHeight * MAP.getGridWidth() / MAP.getGridHeight()
 			iHeight = iMaxHeight
 
 		self.replayInfo = CyReplayInfo()
@@ -136,8 +136,8 @@ class WBInfoScreen:
 		screen.setMinimapMode(MinimapModeTypes.MINIMAPMODE_REPLAY)
 		for iX in range(self.replayInfo.getMapWidth()):
 			for iY in range(self.replayInfo.getMapHeight()):
-				pPlot = CyMap().plot(iX, iY)
-				if pPlot.isNone(): continue
+				pPlot = MAP.plot(iX, iY)
+				if not pPlot: continue
 				iColor = GC.getInfoTypeForString("COLOR_CLEAR")
 				iOwner = pPlot.getOwner()
 				if iOwner > -1:
@@ -148,7 +148,6 @@ class WBInfoScreen:
 		screen = CyGInterfaceScreen("WBInfoScreen", CvScreenEnums.WB_INFO)
 		global lSelectedItem
 		screen.minimapClearAllFlashingTiles()
-		sHeader = ""
 		if iItem == -1:
 			screen.hide("InfoHeader")
 			return
@@ -161,6 +160,7 @@ class WBInfoScreen:
 		iHeight = (screen.getYResolution() - iY - 40) / 24 * 24 + 2
 
 		nColumns = iWidth / self.iMinColWidth
+		screen.deleteWidget("PlotTable")
 		screen.addTableControlGFC("PlotTable", nColumns, iX, iY, iWidth, iHeight, False, True, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 		for i in xrange(nColumns):
 			screen.setTableColumnHeader("PlotTable", i, "", iWidth/nColumns)
@@ -188,7 +188,7 @@ class WBInfoScreen:
 				iUnit = lPlots[1]
 				pPlayer = GC.getPlayer(iPlayer)
 				pUnit = pPlayer.getUnit(iUnit)
-				if pUnit.isNone(): continue
+				if pUnit is None: continue
 				pPlot = pUnit.plot()
 				iX = pPlot.getX()
 				iY = pPlot.getY()
@@ -202,9 +202,10 @@ class WBInfoScreen:
 				sText = sColor + pUnit.getName()
 				screen.setTableText("PlotTable", iColumn, iRow, "<font=3>" + sText + "</color></font>", pUnit.getButton(), WidgetTypes.WIDGET_PYTHON, 8300 + iPlayer, iUnit, 1<<0)
 				screen.minimapFlashPlot(iX, iY, iColorB, -1)
-			pUnit = GC.getPlayer(lSelectedItem[0]).getUnit(lSelectedItem[1])
-			if pUnit:
-				screen.minimapFlashPlot(pUnit.getX(), pUnit.getY(), iColorA, -1)
+			if lSelectedItem[0] > -1 and lSelectedItem[1] > -1:
+				pUnit = GC.getPlayer(lSelectedItem[0]).getUnit(lSelectedItem[1])
+				if pUnit:
+					screen.minimapFlashPlot(pUnit.getX(), pUnit.getY(), iColorB, -1)
 		elif iMode < 6:
 			for lPlots in lItems[iItem][5]:
 				iPlayer = lPlots[0]
@@ -229,11 +230,12 @@ class WBInfoScreen:
 				if lSelectedItem == lPlots:
 					screen.minimapFlashPlot(iX, iY, iColorA, -1)
 		elif iMode < 11:
+			MAP = GC.getMap()
 			for lPlots in lItems[iItem][5]:
 				iX = lPlots[0]
 				iY = lPlots[1]
-				pPlot = CyMap().plot(iX, iY)
-				if pPlot.isNone(): continue
+				pPlot = MAP.plot(iX, iY)
+				if not pPlot: continue
 				iColumn = iCount % nColumns
 				iRow = iCount / nColumns
 				if iRow > iMaxRows:
@@ -300,8 +302,7 @@ class WBInfoScreen:
 						if iPlayerX == iSelectedPlayer:
 							lItems[iItemX][1] += 1
 						lItems[iItemX][2] += 1
-						if not [loopUnit.getX(), loopUnit.getY()] in lItems[iItemX][5]:
-							lItems[iItemX][5].append([iPlayerX, loopUnit.getID()])
+						lItems[iItemX][5].append([iPlayerX, loopUnit.getID()])
 		elif iMode == 1:
 			iData1 = 7873
 			for i in xrange(GC.getNumPromotionInfos()):
@@ -328,7 +329,7 @@ class WBInfoScreen:
 				if pPlayerX.isAlive():
 					for loopCity in pPlayerX.cities():
 						for iItemX in xrange(GC.getNumBuildingInfos()):
-							if loopCity.getNumRealBuilding(iItemX) > 0:
+							if loopCity.hasBuilding(iItemX):
 								if iPlayerX == iSelectedPlayer:
 									lItems[iItemX][1] += 1
 								lItems[iItemX][2] += 1
@@ -336,7 +337,6 @@ class WBInfoScreen:
 									lItems[iItemX][5].append([iPlayerX, loopCity.getID()])
 		elif iMode == 3:
 			iData1 = 7879
-			pPlayer = GC.getPlayer(iSelectedPlayer)
 			for i in xrange(GC.getNumSpecialistInfos()):
 				Info = GC.getSpecialistInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
@@ -358,8 +358,8 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumReligionInfos()):
 				Info = GC.getReligionInfo(i)
 				lItems.append([Info.getDescription(), pPlayer.getHasReligionCount(i), CyGame().countReligionLevels(i), i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if not pPlot.isNone() and pPlot.isCity():
+			for pPlot in GC.getMap().plots():
+				if pPlot.isCity():
 					pCity = pPlot.getPlotCity()
 					for iItemX in xrange(GC.getNumReligionInfos()):
 						if pCity.isHasReligion(iItemX):
@@ -371,8 +371,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumCorporationInfos()):
 				Info = GC.getCorporationInfo(i)
 				lItems.append([Info.getDescription(), pPlayer.getHasCorporationCount(i), CyGame().countCorporationLevels(i), i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				if pPlot.isCity():
 					pCity = pPlot.getPlotCity()
 					for iItemX in xrange(GC.getNumCorporationInfos()):
@@ -384,8 +383,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumTerrainInfos()):
 				Info = GC.getTerrainInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				iItemX = pPlot.getTerrainType()
 				if iItemX == -1: continue
 				iOwner = pPlot.getOwner()
@@ -399,8 +397,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumFeatureInfos()):
 				Info = GC.getFeatureInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				iItemX = pPlot.getFeatureType()
 				if iItemX == -1: continue
 				iOwner = pPlot.getOwner()
@@ -414,8 +411,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumBonusInfos()):
 				Info = GC.getBonusInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				iItemX = pPlot.getBonusType(-1)
 				if iItemX == -1: continue
 				iOwner = pPlot.getOwner()
@@ -429,8 +425,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumImprovementInfos()):
 				Info = GC.getImprovementInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				iItemX = pPlot.getImprovementType()
 				if iItemX == -1: continue
 				iOwner = pPlot.getOwner()
@@ -444,8 +439,7 @@ class WBInfoScreen:
 			for i in xrange(GC.getNumRouteInfos()):
 				Info = GC.getRouteInfo(i)
 				lItems.append([Info.getDescription(), 0, 0, i, Info.getButton(), []])
-			for pPlot in CyMap().plots():
-				if pPlot.isNone(): continue
+			for pPlot in GC.getMap().plots():
 				iItemX = pPlot.getRouteType()
 				if iItemX == -1: continue
 				iOwner = pPlot.getOwner()
@@ -501,7 +495,8 @@ class WBInfoScreen:
 							lItems[iItemX][2] += iCount
 							lItems[iItemX][5].append([iTeamX, -1])
 		if iItem > -1:
-			if lItems[iItem][2] == 0:
+			match = next((item for item in lItems if item[3] == iItem), None)
+			if match is None or match[2] == 0:
 				iItem = -1
 
 		for item in lItems:
@@ -524,7 +519,7 @@ class WBInfoScreen:
 			if iMode == 0:
 				pUnit = GC.getPlayer(lSelectedItem[0]).getUnit(lSelectedItem[1])
 				if pUnit:
-					WBUnitScreen.WBUnitScreen(self.WB).interfaceScreen(pUnit)
+					self.WB.goToSubScreen("UnitScreen", [pUnit])
 			elif iMode == 1:
 				pUnit = GC.getPlayer(lSelectedItem[0]).getUnit(lSelectedItem[1])
 				if pUnit:
@@ -534,8 +529,8 @@ class WBInfoScreen:
 				if pCity:
 					WBCityEditScreen.WBCityEditScreen(self.WB).interfaceScreen(pCity)
 			elif iMode < 11:
-				pPlot = CyMap().plot(lSelectedItem[0], lSelectedItem[1])
-				if not pPlot.isNone():
+				pPlot = GC.getMap().plot(lSelectedItem[0], lSelectedItem[1])
+				if pPlot:
 					WBPlotScreen.WBPlotScreen(self.WB).interfaceScreen(pPlot)
 			elif iMode == 11:
 				WBPlayerScreen.WBPlayerScreen(self.WB).interfaceScreen(lSelectedItem[0])
@@ -571,9 +566,10 @@ class WBInfoScreen:
 					lSelectedItem = [iPlayer, iUnit]
 					screen.minimapFlashPlot(pNewUnit.getX(), pNewUnit.getY(), iColorA, -1)
 			elif iMode < 6:
-				pCity = GC.getPlayer(lSelectedItem[0]).getCity(lSelectedItem[1])
-				if pCity:
-					screen.minimapFlashPlot(pCity.getX(), pCity.getY(), iColorB, -1)
+				if lSelectedItem[0] > -1 and lSelectedItem[1] > -1:
+					pCity = GC.getPlayer(lSelectedItem[0]).getCity(lSelectedItem[1])
+					if pCity:
+						screen.minimapFlashPlot(pCity.getX(), pCity.getY(), iColorA, -1)
 				iPlayer = inputClass.getData1() - 7200
 				iCity = inputClass.getData2()
 				pNewCity = GC.getPlayer(iPlayer).getCity(iCity)

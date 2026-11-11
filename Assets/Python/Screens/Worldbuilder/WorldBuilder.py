@@ -5,7 +5,6 @@ import WBEventScreen
 import WBCityEditScreen
 import WBCityDataScreen
 import WBBuildingScreen
-import WBUnitScreen
 import WBPromotionScreen
 import WBReligionScreen
 import WBCorporationScreen
@@ -16,7 +15,6 @@ import WBProjectScreen
 import WBPlayerUnits
 import WBInfoScreen
 import WBTradeScreen
-import Popup
 
 GC = CyGlobalContext()
 MAP = GC.getMap()
@@ -51,8 +49,6 @@ class WorldBuilder:
 		self.bSensibility = True
 		self.lMoveUnit = []
 		self.iMoveCity = -1
-		self.iTargetPlotX = -1
-		self.iTargetPlotY = -1
 
 		# Initialize WB
 		if self.bNotWB:
@@ -66,9 +62,11 @@ class WorldBuilder:
 			self.inSubScreen = None
 			import WBTechScreen
 			import WBGameDataScreen
+			import WBUnitScreen
 			self.subScreens = {
 				"TechScreen" : WBTechScreen.WBTechScreen(self),
-				"GameScreen" : WBGameDataScreen.WBGameDataScreen(self)
+				"GameScreen" : WBGameDataScreen.WBGameDataScreen(self),
+				"UnitScreen" : WBUnitScreen.WBUnitScreen(self)
 			}
 			self.iPlayerAddMode = "Units"
 			self.iSelection = -1
@@ -76,6 +74,8 @@ class WorldBuilder:
 			self.iBrushWidth = 1
 			self.iBrushHeight = 1
 			self.iChange = 1
+			self.sWBSearchFilter = ""
+			self.iFeatureDropY = 55
 			self.iCurrentPlayer = GAME.getActivePlayer()
 			self.bNotWB = False
 			# Init screen
@@ -187,7 +187,7 @@ class WorldBuilder:
 		self.m_iCurrentX = self.m_pCurrentPlot.getX()
 		self.m_iCurrentY = self.m_pCurrentPlot.getY()
 
-		sText = "<font=3b>%s, X: %d, Y: %d" %(CyTranslator().getText("TXT_KEY_WB_LATITUDE",(self.m_pCurrentPlot.getLatitude(),)), self.m_iCurrentX, self.m_iCurrentY)
+		sText = "<font=3b>%s, %s, X: %d, Y: %d" %(GC.getMapInfo(GAME.getCurrentMap()).getDescription(), CyTranslator().getText("TXT_KEY_WB_LATITUDE", (self.m_pCurrentPlot.getLatitude(),)), self.m_iCurrentX, self.m_iCurrentY)
 		screen.setLabel("WBCoords", "Background", sText, 1<<2, self.xRes/2, 6, -0.3, FontTypes.GAME_FONT, WidgetTypes.WIDGET_GENERAL, -1, -1)
 
 		if self.iPlayerAddMode in self.RevealMode:
@@ -211,14 +211,15 @@ class WorldBuilder:
 		if self.m_pCurrentPlot != 0 and isMouseOverGameSurface():
 			if not self.useLargeBrush():
 				return (self.m_iCurrentX, self.m_iCurrentY)
-			else:
-				CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
-				data = self.getMultiplePlotData()
-				for x in range(data[0], data[1]):
-					for y in range(data[2], data[3]):
-						plot = MAP.plot(x, y)
-						if plot.isNone(): continue
-						CyEngine().fillAreaBorderPlotAlt(plot.getX(), plot.getY(), AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER, "COLOR_GREEN", 1)
+
+			CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER)
+			data = self.getMultiplePlotData()
+			for x in range(data[0], data[1]):
+				for y in range(data[2], data[3]):
+					plot = MAP.plot(x, y)
+					if not plot: continue
+					CyEngine().fillAreaBorderPlotAlt(plot.getX(), plot.getY(), AreaBorderLayers.AREA_BORDER_LAYER_WORLD_BUILDER, "COLOR_GREEN", 1)
+		return None
 
 	# Will update the screen (every 250 MS)
 	def updateScreen(self):
@@ -228,14 +229,13 @@ class WorldBuilder:
 	def refreshReveal(self):
 		CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS)
 		for pPlot in MAP.plots():
-			if pPlot.isNone(): continue
 			self.showRevealed(pPlot)
 
 	def refreshStartingPlots(self):
 		CyEngine().clearAreaBorderPlots(AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS)
 		for iPlayerX in xrange(GC.getMAX_PC_PLAYERS()):
 			pPlot = GC.getPlayer(iPlayerX).getStartingPlot()
-			if not pPlot.isNone():
+			if pPlot:
 				sColor = "COLOR_MAGENTA"
 				if iPlayerX == self.iCurrentPlayer:
 					sColor = "COLOR_BLACK"
@@ -250,6 +250,7 @@ class WorldBuilder:
 			CyEngine().removeLandmark(self.m_pCurrentPlot)
 			for iPlayerX in xrange(GC.getMAX_PLAYERS()):
 				CyEngine().removeSign(self.m_pCurrentPlot, iPlayerX)
+
 		elif self.iPlayerAddMode == "AddLandMark":
 			iIndex = -1
 			for i in xrange(CyEngine().getNumSigns()):
@@ -262,12 +263,14 @@ class WorldBuilder:
 			sText = ""
 			if iIndex > -1:
 				sText = CyEngine().getSignByIndex(iIndex).getCaption()
-			popup = Popup.PyPopup(5009, EventContextTypes.EVENTCONTEXT_ALL)
-			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_LANDMARK_START", ()))
+			popup = CyPopup(5009, EventContextTypes.EVENTCONTEXT_ALL, True)
+			popup.setHeaderString(CyTranslator().getText("TXT_KEY_WB_LANDMARK_START", ()), 1<<2)
 			popup.setUserData((self.m_pCurrentPlot.getX(), self.m_pCurrentPlot.getY(), self.iCurrentPlayer, iIndex))
-			popup.createEditBox(sText)
-			popup.launch()
+			popup.createEditBox(sText, 0)
+			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+
 		elif self.iSelection == -1: return
+
 		elif self.iPlayerAddMode == "Ownership":
 			self.m_pCurrentPlot.setOwner(self.iCurrentPlayer)
 	## Python Effects ##
@@ -278,9 +281,9 @@ class WorldBuilder:
 			if self.m_pCurrentPlot.isCity():
 				pCity = self.m_pCurrentPlot.getPlotCity()
 				bEffects = False
-				if bPython and pCity.getNumRealBuilding(self.iSelection) == 0:
+				if bPython and not pCity.hasBuilding(self.iSelection):
 					bEffects = True
-				pCity.setNumRealBuilding(self.iSelection, 1)
+				pCity.changeHasBuilding(self.iSelection, True)
 				if bEffects:
 					self.eventManager.onBuildingBuilt([pCity, self.iSelection])
 		elif self.iPlayerAddMode == "City":
@@ -367,7 +370,7 @@ class WorldBuilder:
 				return 1
 		elif self.iPlayerAddMode == "Buildings":
 			if self.m_pCurrentPlot.isCity():
-				self.m_pCurrentPlot.getPlotCity().setNumRealBuilding(self.iSelection, 0)
+				self.m_pCurrentPlot.getPlotCity().changeHasBuilding(self.iSelection, False)
 		elif self.iPlayerAddMode == "City":
 			if self.m_pCurrentPlot.isCity():
 				pCity = self.m_pCurrentPlot.getPlotCity()
@@ -397,91 +400,91 @@ class WorldBuilder:
 	def placeRiverNW(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()-1, self.m_pRiverStartPlot.getY())
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()-1, self.m_pRiverStartPlot.getY()+1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 
 	def placeRiverN(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY()+1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 
 	def placeRiverNE(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()+1, self.m_pRiverStartPlot.getY())
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()+1, self.m_pRiverStartPlot.getY()+1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_NORTH)
 
 	def placeRiverW(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()-1, self.m_pRiverStartPlot.getY())
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 
 	def placeRiverE(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()+1, self.m_pRiverStartPlot.getY())
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 
 	def placeRiverSW(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_WEST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()-1, self.m_pRiverStartPlot.getY()-1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 
 	def placeRiverS(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY()-1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 
 	def placeRiverSE(self, bUseCurrent):
 		if bUseCurrent:
 			pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX(), self.m_pRiverStartPlot.getY())
-			if not pRiverStepPlot.isNone():
+			if pRiverStepPlot:
 				pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()+1, self.m_pRiverStartPlot.getY())
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setNOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_EAST)
 		pRiverStepPlot = MAP.plot(self.m_pRiverStartPlot.getX()+1, self.m_pRiverStartPlot.getY()-1)
-		if not pRiverStepPlot.isNone():
+		if pRiverStepPlot:
 			pRiverStepPlot.setWOfRiver(True, CardinalDirectionTypes.CARDINALDIRECTION_SOUTH)
 
 
@@ -533,7 +536,7 @@ class WorldBuilder:
 		for x in range(Data[0], Data[1]):
 			for y in range(Data[2], Data[3]):
 				self.m_pCurrentPlot = MAP.plot(x, y)
-				if self.m_pCurrentPlot.isNone(): continue
+				if not self.m_pCurrentPlot: continue
 				if self.bSensibility:
 					if self.iPlayerAddMode == "Improvements":
 						if self.m_pCurrentPlot.canHaveImprovement(self.iSelection, -1, True):
@@ -554,7 +557,7 @@ class WorldBuilder:
 						else:
 							self.m_pCurrentPlot.setFeatureType(iOldFeature, iOldVariety)
 					elif self.iPlayerAddMode == "Routes":
-						if not self.m_pCurrentPlot.isImpassable() or self.m_pCurrentPlot.isWater():
+						if not self.m_pCurrentPlot.isImpassable() and not self.m_pCurrentPlot.isWater():
 							self.placeObject()
 					elif self.iPlayerAddMode == "Terrain":
 						if self.m_pCurrentPlot.isWater() == GC.getTerrainInfo(self.iSelection).isWaterTerrain():
@@ -571,7 +574,7 @@ class WorldBuilder:
 		for x in range(Data[0], Data[1]):
 			for y in range(Data[2], Data[3]):
 				self.m_pCurrentPlot = MAP.plot(x,y)
-				if self.m_pCurrentPlot.isNone(): continue
+				if not self.m_pCurrentPlot: continue
 				self.removeObject()
 		self.m_pCurrentPlot = permCurrentPlot
 
@@ -597,7 +600,7 @@ class WorldBuilder:
 		for x in range(Data[0], Data[1]):
 			for y in range(Data[2], Data[3]):
 				pPlot = MAP.plot(x,y)
-				if pPlot.isNone(): continue
+				if not pPlot: continue
 				self.RevealCurrentPlot(bReveal, pPlot)
 		self.refreshReveal()
 
@@ -659,6 +662,10 @@ class WorldBuilder:
 		screen.deleteWidget("WBCurrentItem")
 		screen.deleteWidget("WBSelectClass")
 		screen.deleteWidget("WBSelectItem")
+		screen.deleteWidget("WBSearchButton")
+		screen.deleteWidget("WBSearchPanel")
+		screen.deleteWidget("WBSearchClearButton")
+		screen.deleteWidget("WBSearchClearPanel")
 		screen.deleteWidget("RevealMode")
 		screen.deleteWidget("WorldBuilderEraseAll")
 		screen.deleteWidget("BrushWidth")
@@ -863,12 +870,46 @@ class WorldBuilder:
 		screen.setState("PythonEffectButton", bPython)
 		screen.setState("SensibilityCheck", self.bSensibility)
 
+	iSearchBtnWidth = 90
+	iClearBtnWidth = 24
+	iSearchBtnHeight = 26
+	iSearchAreaWidth = iSearchBtnWidth + 4 + iClearBtnWidth + 4
+	iSearchTextRaise = 10  # how much higher the text sits than the panel's vertical center
+
+	# Draws a boxed "SEARCH" button plus a small "X" clear button docked to the
+	# right edge of the row at iY. Callers that also draw a dropdown on this row
+	# should size it to iWidth - iSearchAreaWidth so the two don't overlap.
+	# Returns the lowered active search filter string.
+	def addSearchButton(self, screen, iY, iWidth):
+		iY -= 3  # nudge the panel box up to line up with the dropdown's baseline
+		iClearX = iWidth - self.iClearBtnWidth
+		iSearchX = iClearX - 4 - self.iSearchBtnWidth
+		iTextY = iY + self.iSearchBtnHeight/2 - self.iSearchTextRaise
+
+		screen.addPanel("WBSearchPanel", "", "", True, True, iSearchX, iY, self.iSearchBtnWidth, self.iSearchBtnHeight, PanelStyles.PANEL_STYLE_MAIN)
+		screen.setText("WBSearchButton", "", "<font=3b>" + CyTranslator().getText("TXT_KEY_WB_SEARCH", ()).upper() + "</font>", 1<<2, iSearchX + self.iSearchBtnWidth/2, iTextY, 0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_PYTHON, 1029, 35)
+
+		screen.addPanel("WBSearchClearPanel", "", "", True, True, iClearX, iY, self.iClearBtnWidth, self.iSearchBtnHeight, PanelStyles.PANEL_STYLE_MAIN)
+		if self.sWBSearchFilter:
+			sX = "<font=3b>" + CyTranslator().getText("[COLOR_WARNING_TEXT]", ()) + "X</color></font>"
+		else:
+			sX = "<font=3b>X</font>"
+		screen.setText("WBSearchClearButton", "", sX, 1<<2, iClearX + self.iClearBtnWidth/2, iTextY, 0.1, FontTypes.GAME_FONT, WidgetTypes.WIDGET_PYTHON, 1029, 36)
+
+		return self.sWBSearchFilter.lower()
+
+	def searchFilterHeader(self):
+		if self.sWBSearchFilter:
+			return CyTranslator().getText("TXT_KEY_WB_SEARCH", ()) + ": " + self.sWBSearchFilter
+		return ""
+
 	def setSelectionTable(self):
 		screen = self.getScreen()
 		iWidth = 256
 		if self.iPlayerAddMode == "Units":
 			iY = 25
-			screen.addDropDownBoxGFC("WBSelectClass", 0, iY, iWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+			sFilter = self.addSearchButton(screen, iY, iWidth)
+			screen.addDropDownBoxGFC("WBSelectClass", 0, iY, iWidth - self.iSearchAreaWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_WB_CITY_ALL",()), -2, -2, -2 == self.iSelectClass)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_PEDIA_NON_COMBAT",()), -1, -1, -1 == self.iSelectClass)
 			for iDomain in xrange(DomainTypes.NUM_DOMAIN_TYPES):
@@ -882,6 +923,8 @@ class WorldBuilder:
 						continue
 				elif self.iSelectClass > -1 and CvUnitInfo.getDomainType() != self.iSelectClass:
 					continue
+				if sFilter and sFilter not in CvUnitInfo.getDescription().lower():
+					continue
 				lItems.append([CvUnitInfo.getDescription(), i])
 			lItems.sort()
 
@@ -890,7 +933,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			bValid = False
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
@@ -903,10 +946,10 @@ class WorldBuilder:
 
 		elif self.iPlayerAddMode == "Buildings":
 			iY = 25
-			sWonder = CyTranslator().getText("TXT_KEY_CONCEPT_WONDERS", ())
-			screen.addDropDownBoxGFC("WBSelectClass", 0, iY, iWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+			sFilter = self.addSearchButton(screen, iY, iWidth)
+			screen.addDropDownBoxGFC("WBSelectClass", 0, iY, iWidth - self.iSearchAreaWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_WB_CITY_ALL",()), 0, 0, 0 == self.iSelectClass)
-			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_PEDIA_CATEGORY_BUILDING",()), 1, 1, 1 == self.iSelectClass)
+			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_WB_BUILDINGS",()), 1, 1, 1 == self.iSelectClass)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_PEDIA_NATIONAL_WONDER", ()), 2, 2, 2 == self.iSelectClass)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_PEDIA_TEAM_WONDER", ()), 3, 3, 3 == self.iSelectClass)
 			screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_PEDIA_WORLD_WONDER", ()), 4, 4, 4 == self.iSelectClass)
@@ -926,6 +969,8 @@ class WorldBuilder:
 				elif self.iSelectClass == 4:
 					if not isWorldWonder(i):
 						continue
+				if sFilter and sFilter not in GC.getBuildingInfo(i).getDescription().lower():
+					continue
 				lItems.append([GC.getBuildingInfo(i).getDescription(), i])
 			lItems.sort()
 
@@ -934,7 +979,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			bValid = False
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
@@ -946,10 +991,15 @@ class WorldBuilder:
 					self.iSelection = lItems[0][1]
 
 		elif self.iPlayerAddMode == "Features":
-			iY = 55
+			iY = 25
+			sFilter = self.addSearchButton(screen, iY, iWidth)
+			self.iFeatureDropY = iY
+			iY += 30
 			lItems = []
 			for i in xrange(GC.getNumFeatureInfos()):
 				ItemInfo = GC.getFeatureInfo(i)
+				if sFilter and sFilter not in ItemInfo.getDescription().lower():
+					continue
 				lItems.append([ItemInfo.getDescription(), i])
 			lItems.sort()
 
@@ -957,7 +1007,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
 				if self.iSelection == -1:
@@ -965,11 +1015,14 @@ class WorldBuilder:
 				screen.setTableText("WBSelectItem", 0, iRow, "<font=3>" + item[0] + "</font>", GC.getFeatureInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7874, item[1], 1<<0)
 
 		elif self.iPlayerAddMode == "Improvements":
-			iY = 25
+			sFilter = self.addSearchButton(screen, 25, iWidth)
+			iY = 55
 			lItems = []
 			for i in xrange(GC.getNumImprovementInfos()):
 				ItemInfo = GC.getImprovementInfo(i)
 				if ItemInfo.isGraphicalOnly(): continue
+				if sFilter and sFilter not in ItemInfo.getDescription().lower():
+					continue
 				lItems.append([ItemInfo.getDescription(), i])
 			lItems.sort()
 
@@ -977,7 +1030,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
 				if self.iSelection == -1:
@@ -985,19 +1038,21 @@ class WorldBuilder:
 				screen.setTableText("WBSelectItem", 0, iRow, "<font=3>" + item[0] + "</font>", GC.getImprovementInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7877, item[1], 1<<0)
 
 		elif self.iPlayerAddMode == "Bonus":
-			iY = 25
+			sFilter = self.addSearchButton(screen, 25, iWidth)
+			iY = 55
 			lItems = []
-			for i in xrange(GC.getNumBonusInfos()):
-				CvBonusInfo = GC.getBonusInfo(i)
-				if CvBonusInfo.getPlacementOrder() > -1:
-					lItems.append([CvBonusInfo.getDescription(), i])
+			for i in xrange(GC.getNumMapBonuses()):
+				sDesc = GC.getBonusInfo(GC.getMapBonus(i)).getDescription()
+				if sFilter and sFilter not in sDesc.lower():
+					continue
+				lItems.append([sDesc, GC.getMapBonus(i)])
 			lItems.sort()
 
 			iHeight = min(len(lItems) * 24 + 2, self.yRes - iY)
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
 				if self.iSelection == -1:
@@ -1005,10 +1060,13 @@ class WorldBuilder:
 				screen.setTableText("WBSelectItem", 0, iRow, "<font=3>" + item[0] + "</font>", GC.getBonusInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7878, item[1], 1<<0)
 
 		elif self.iPlayerAddMode == "Routes":
-			iY = 25
+			sFilter = self.addSearchButton(screen, 25, iWidth)
+			iY = 55
 			lItems = []
 			for i in xrange(GC.getNumRouteInfos()):
 				ItemInfo = GC.getRouteInfo(i)
+				if sFilter and sFilter not in ItemInfo.getDescription().lower():
+					continue
 				lItems.append([ItemInfo.getDescription(), i])
 			lItems.sort()
 
@@ -1016,7 +1074,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
 				if self.iSelection == -1:
@@ -1024,11 +1082,14 @@ class WorldBuilder:
 				screen.setTableText("WBSelectItem", 0, iRow, "<font=3>" + item[0] + "</font>", GC.getRouteInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 6788, item[1], 1<<0)
 
 		elif self.iPlayerAddMode == "Terrain":
-			iY = 25
+			sFilter = self.addSearchButton(screen, 25, iWidth)
+			iY = 55
 			lItems = []
 			for i in xrange(GC.getNumTerrainInfos()):
 				ItemInfo = GC.getTerrainInfo(i)
 				if ItemInfo.isGraphicalOnly(): continue
+				if sFilter and sFilter not in ItemInfo.getDescription().lower():
+					continue
 				lItems.append([ItemInfo.getDescription(), i])
 			lItems.sort()
 
@@ -1036,7 +1097,7 @@ class WorldBuilder:
 			screen.addTableControlGFC("WBSelectItem", 1, 0, iY, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
-			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
+			screen.setTableColumnHeader("WBSelectItem", 0, self.searchFilterHeader(), iWidth)
 			for item in lItems:
 				iRow = screen.appendTableRow("WBSelectItem")
 				if self.iSelection == -1:
@@ -1044,13 +1105,12 @@ class WorldBuilder:
 				screen.setTableText("WBSelectItem", 0, iRow, "<font=3>" + item[0] + "</font>", GC.getTerrainInfo(item[1]).getButton(), WidgetTypes.WIDGET_PYTHON, 7875, item[1], 1<<0)
 
 		elif self.iPlayerAddMode == "PlotType":
-			iY = 25
 			iHeight = 4 * 24 + 2
 			screen.addTableControlGFC("WBSelectItem", 1, 0, 25, iWidth, iHeight, False, False, 24, 24, TableStyles.TABLE_STYLE_STANDARD)
 			screen.setStyle("WBSelectItem", "Table_StandardCiv_Style")
 			screen.enableSelect("WBSelectItem", True)
 			screen.setTableColumnHeader("WBSelectItem", 0, "", iWidth)
-			for i in xrange(PlotTypes.NUM_PLOT_TYPES):
+			for _ in xrange(PlotTypes.NUM_PLOT_TYPES):
 				screen.appendTableRow("WBSelectItem")
 			item = GC.getInfoTypeForString("TERRAIN_PEAK")
 			if self.iSelection == -1:
@@ -1084,7 +1144,7 @@ class WorldBuilder:
 			sText = "<font=3>" + CyTranslator().getText("[COLOR_HIGHLIGHT_TEXT]", ()) + ItemInfo.getDescription() + "</color></font>"
 			screen.setTableText("WBCurrentItem", 0, 0 , sText, ItemInfo.getButton(), WidgetTypes.WIDGET_PYTHON, 7874, self.iSelection, 1<<0)
 			if ItemInfo.getNumVarieties() > 1:
-				screen.addDropDownBoxGFC("WBSelectClass", 0, 25, iWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
+				screen.addDropDownBoxGFC("WBSelectClass", 0, self.iFeatureDropY, iWidth - self.iSearchAreaWidth, WidgetTypes.WIDGET_GENERAL, -1, -1, FontTypes.GAME_FONT)
 				for i in xrange(ItemInfo.getNumVarieties()):
 					screen.addPullDownString("WBSelectClass", CyTranslator().getText("TXT_KEY_WB_FEATURE_VARIETY", (i,)), i, i, i == self.iSelectClass)
 			else:
@@ -1112,21 +1172,21 @@ class WorldBuilder:
 
 	def revealAll(self, bReveal):
 		for pPlot in MAP.plots():
-			if pPlot.isNone(): continue
 			self.RevealCurrentPlot(bReveal, pPlot)
 		self.refreshReveal()
 
 	def RevealCurrentPlot(self, bReveal, pPlot):
 		if self.iPlayerAddMode == "Blockade": return
-		iType = GC.getInfoTypeForStringWithHiddenAssert(self.iPlayerAddMode)
+		iType = GC.getInfoTypeForString(self.iPlayerAddMode)
 		if iType == -1:
 			if bReveal or (not pPlot.isVisible(self.m_iCurrentTeam, False)):
 				pPlot.setRevealed(self.m_iCurrentTeam, bReveal, False, -1)
-		elif bReveal:
-			if pPlot.isInvisibleVisible(self.m_iCurrentTeam, iType): return
-			pPlot.changeInvisibleVisibilityCount(self.m_iCurrentTeam, iType, 1)
-		else:
-			pPlot.changeInvisibleVisibilityCount(self.m_iCurrentTeam, iType, - pPlot.getInvisibleVisibilityCount(self.m_iCurrentTeam, iType))
+		elif iType >= 0:
+			if bReveal:
+				if pPlot.isSpotterInSight(self.m_iCurrentTeam, iType): return
+				pPlot.changeInvisibleVisibilityCount(self.m_iCurrentTeam, iType, 1)
+			else:
+				pPlot.changeInvisibleVisibilityCount(self.m_iCurrentTeam, iType, -pPlot.getInvisibleVisibilityCount(self.m_iCurrentTeam, iType))
 
 	def showRevealed(self, pPlot):
 		if self.iPlayerAddMode == "RevealPlot":
@@ -1140,7 +1200,7 @@ class WorldBuilder:
 				CyEngine().fillAreaBorderPlotAlt(pPlot.getX(), pPlot.getY(), AreaBorderLayers.AREA_BORDER_LAYER_REVEALED_PLOTS, "COLOR_BLUE", 1.0)
 		elif self.iPlayerAddMode == "Blockade":
 			if pPlot.isTradeNetwork(self.m_iCurrentTeam): return
-			if GC.getTeam(self.m_iCurrentTeam).isAtWar(pPlot.getTeam()): return
+			if GC.getTeam(self.m_iCurrentTeam).isAtWarWith(pPlot.getTeam()): return
 			if pPlot.isTradeNetworkImpassable(self.m_iCurrentTeam): return
 			if not pPlot.isOwned() and not pPlot.isRevealed(self.m_iCurrentTeam, False): return
 			if not pPlot.isBonusNetwork(self.m_iCurrentTeam): return
@@ -1163,7 +1223,7 @@ class WorldBuilder:
 
 		if bAlt or self.iPlayerAddMode == "EditUnit":
 			if self.m_pCurrentPlot.getNumUnits():
-				WBUnitScreen.WBUnitScreen(self).interfaceScreen(self.m_pCurrentPlot.getUnit(0))
+				self.goToSubScreen("UnitScreen", [self.m_pCurrentPlot.getUnit(0)])
 		elif self.iPlayerAddMode == "Promotions":
 			if self.m_pCurrentPlot.getNumUnits():
 				WBPromotionScreen.WBPromotionScreen(self).interfaceScreen(self.m_pCurrentPlot.getUnit(0))
@@ -1177,7 +1237,7 @@ class WorldBuilder:
 			if self.m_pCurrentPlot.isCity():
 				WBBuildingScreen.WBBuildingScreen(self).interfaceScreen(self.m_pCurrentPlot.getPlotCity())
 		elif self.iPlayerAddMode in self.RevealMode:
-			if not self.m_pCurrentPlot.isNone():
+			if self.m_pCurrentPlot:
 				self.setMultipleReveal(True)
 		elif self.iPlayerAddMode == "PlotData":
 			WBPlotScreen.WBPlotScreen(self).interfaceScreen(self.m_pCurrentPlot)
@@ -1187,25 +1247,23 @@ class WorldBuilder:
 			pPlayer.setStartingPlot(self.m_pCurrentPlot, True)
 			self.refreshStartingPlots()
 		elif self.iPlayerAddMode == "TargetPlot":
-			self.iTargetPlotX = self.m_pCurrentPlot.getX()
-			self.iTargetPlotY = self.m_pCurrentPlot.getY()
 			self.iPlayerAddMode = "EditUnit"
 			if len(self.TempInfo) >= 2:
 				pPlayerX = GC.getPlayer(self.TempInfo[0])
 				if pPlayerX:
 					pUnitX = pPlayerX.getUnit(self.TempInfo[1])
 					if pUnitX:
-						WBUnitScreen.WBUnitScreen(self).interfaceScreen(pUnitX)
+						self.goToSubScreen("UnitScreen", [pUnitX])
 		elif self.iPlayerAddMode == "MoveUnits":
-			if len(self.lMoveUnit) > 0:
+			if self.lMoveUnit:
 				for item in self.lMoveUnit:
 					loopUnit = GC.getPlayer(item[0]).getUnit(item[1])
-					if loopUnit.isNone(): continue
+					if loopUnit is None: continue
 					loopUnit.setXY(self.m_pCurrentPlot.getX(), self.m_pCurrentPlot.getY(), True, True, False)
 				pUnitX = GC.getPlayer(self.lMoveUnit[0][0]).getUnit(self.lMoveUnit[0][1])
 				self.lMoveUnit = []
 				self.iPlayerAddMode = "EditUnit"
-				WBUnitScreen.WBUnitScreen(self).interfaceScreen(pUnitX)
+				self.goToSubScreen("UnitScreen", [pUnitX])
 		elif self.iPlayerAddMode == "MoveCity" or self.iPlayerAddMode == "MoveCityPlus":
 			if self.m_pCurrentPlot.isCity(): return
 			pOldCity = pPlayer.getCity(self.iMoveCity)
@@ -1221,7 +1279,7 @@ class WorldBuilder:
 				if self.iPlayerAddMode == "MoveCityPlus":
 					for item in self.lMoveUnit:
 						loopUnit = GC.getPlayer(item[0]).getUnit(item[1])
-						if loopUnit.isNone(): continue
+						if loopUnit is None: continue
 						loopUnit.setXY(self.m_pCurrentPlot.getX(), self.m_pCurrentPlot.getY(), True, True, False)
 					self.lMoveUnit = []
 			self.iPlayerAddMode = "CityDataI"
@@ -1235,11 +1293,11 @@ class WorldBuilder:
 				if self.iPlayerAddMode == "DuplicateCityPlus":
 					for item in self.lMoveUnit:
 						loopUnit = GC.getPlayer(item[0]).getUnit(item[1])
-						if loopUnit.isNone(): continue
+						if loopUnit is None: continue
 						pNewUnit = pPlayer.initUnit(loopUnit.getUnitType(), self.m_pCurrentPlot.getX(), self.m_pCurrentPlot.getY(), UnitAITypes.NO_UNITAI, DirectionTypes.NO_DIRECTION)
 						pNewUnit.setName(loopUnit.getNameNoDesc())
 						pNewUnit.setLevel(loopUnit.getLevel())
-						pNewUnit.setExperience(loopUnit.getExperience(), -1)
+						pNewUnit.setExperience(loopUnit.getExperience())
 						pNewUnit.setBaseCombatStr(loopUnit.baseCombatStr())
 						for iPromotion in xrange(GC.getNumPromotionInfos()):
 							pNewUnit.setHasPromotion(iPromotion, loopUnit.isHasPromotion(iPromotion))
@@ -1249,6 +1307,9 @@ class WorldBuilder:
 						pNewUnit.changeCargoSpace(loopUnit.cargoSpace() - pNewUnit.cargoSpace())
 						pNewUnit.setImmobileTimer(loopUnit.getImmobileTimer())
 						pNewUnit.setScriptData(loopUnit.getScriptData())
+					self.lMoveUnit = []
+			self.iPlayerAddMode = "CityDataI"
+			self.iMoveCity = -1
 		elif self.useLargeBrush():
 			self.placeMultipleObjects()
 		else:
@@ -1259,7 +1320,7 @@ class WorldBuilder:
 		pNewCity.setPopulation(pOldCity.getPopulation())
 		for iBuilding in xrange(GC.getNumBuildingInfos()):
 
-			pNewCity.setBuildingProduction(iBuilding, pOldCity.getBuildingProduction(iBuilding))
+			pNewCity.setProgressOnBuilding(iBuilding, pOldCity.getProgressOnBuilding(iBuilding))
 
 			for iCommerce in xrange(CommerceTypes.NUM_COMMERCE_TYPES):
 				pNewCity.setBuildingCommerceChange(iBuilding, iCommerce, pOldCity.getBuildingCommerceChange(iBuilding, iCommerce))
@@ -1269,7 +1330,7 @@ class WorldBuilder:
 
 			if GC.getBuildingInfo(iBuilding).isCapital() and not bMove:
 				continue
-			pNewCity.setNumRealBuilding(iBuilding, pOldCity.getNumRealBuilding(iBuilding))
+			pNewCity.changeHasBuilding(iBuilding, pOldCity.hasBuilding(iBuilding))
 
 		for iPlayerX in xrange(GC.getMAX_PLAYERS()):
 			pNewCity.setCultureTimes100(iPlayerX, pOldCity.getCultureTimes100(iPlayerX), False)
@@ -1289,17 +1350,12 @@ class WorldBuilder:
 			pNewCity.setFreeSpecialistCount(iSpecialist, pOldCity.getFreeSpecialistCount(iSpecialist))
 			pNewCity.setForceSpecialistCount(iSpecialist, pOldCity.getForceSpecialistCount(iSpecialist))
 		for iUnit in xrange(GC.getNumUnitInfos()):
-			pNewCity.setUnitProduction(iUnit, pOldCity.getUnitProduction(iUnit))
+			pNewCity.setProgressOnUnit(iUnit, pOldCity.getProgressOnUnit(iUnit))
 			pNewCity.setGreatPeopleUnitProgress(iUnit, pOldCity.getGreatPeopleUnitProgress(iUnit))
 		for iCommerce in xrange(CommerceTypes.NUM_COMMERCE_TYPES):
 			pNewCity.changeSpecialistCommerce(iCommerce, pOldCity.getSpecialistCommerce(iCommerce) - pNewCity.getSpecialistCommerce(iCommerce))
 		for iBonus in xrange(GC.getNumBonusInfos()):
 			pNewCity.changeFreeBonus(iBonus, pOldCity.getFreeBonus(iBonus) - pNewCity.getFreeBonus(iBonus))
-			while pOldCity.isNoBonus(iBonus) != pNewCity.isNoBonus(iBonus):
-				if pOldCity.isNoBonus(iBonus):
-					pNewCity.changeNoBonusCount(iBonus, 1)
-				else:
-					pNewCity.changeNoBonusCount(iBonus, -1)
 		for iOrder in xrange(pOldCity.getOrderQueueLength()):
 			OrderData = pOldCity.getOrderFromQueue(iOrder)
 			pNewCity.pushOrder(OrderData.eOrderType, OrderData.iData1, OrderData.iData2, OrderData.bSave, False, True, False)
@@ -1326,15 +1382,19 @@ class WorldBuilder:
 		pNewCity.setOccupationTimer(pOldCity.getOccupationTimer())
 		pNewCity.setOverflowProduction(pOldCity.getOverflowProduction())
 		pNewCity.setPlundered(pOldCity.isPlundered())
-		pNewCity.setProduction(pOldCity.getProduction())
-		pNewCity.setProductionAutomated(pOldCity.isProductionAutomated())
+		pNewCity.setProductionProgress(pOldCity.getProductionProgress())
 		pNewCity.setScriptData(pOldCity.getScriptData())
 		pNewCity.setWallOverride(pOldCity.isWallOverride())
 
-	def rightMouseDown (self):
+		if pOldCity.isProductionAutomated():
+			# Can only be true for human player, it is false by default and false for all AI.
+			pNewCity.setProductionAutomated(True)
+
+
+	def rightMouseDown(self):
 
 		if self.iPlayerAddMode in self.RevealMode:
-			if not self.m_pCurrentPlot.isNone():
+			if self.m_pCurrentPlot:
 				self.setMultipleReveal(False)
 		elif self.useLargeBrush():
 			self.removeMultipleObjects()
@@ -1346,7 +1406,7 @@ class WorldBuilder:
 	def addComma(self, iValue):
 		sTemp = str(iValue)
 		sStart = ""
-		while len(sTemp) > 0:
+		while sTemp:
 			if sTemp[0].isdigit(): break
 			sStart += sTemp[0]
 			sTemp = sTemp[1:]
@@ -1356,16 +1416,19 @@ class WorldBuilder:
 			sEnd = sTemp[-3:] + "," + sEnd
 		return (sStart + sEnd)
 
-	def goToSubScreen(self, goTo):
+	def goToSubScreen(self, goTo, args = []):
 
 		if not self.inSubScreen is None:
 			self.inSubScreen.exit(self.getScreen())
 
 		if goTo in self.subScreens:
 			self.inSubScreen = self.subScreens[goTo]
-			self.inSubScreen.interfaceScreen()
-		else:
-			raise "WorldBuilder.goToScreen - invalid argument: goTo = '%s'" % goTo
+
+			if args: self.inSubScreen.interfaceScreen(args)
+			else: self.inSubScreen.interfaceScreen()
+
+		else: raise "WorldBuilder.goToScreen - invalid argument: goTo = '%s'" % goTo
+
 
 	def getScreen(self):
 		return CyGInterfaceScreen("WorldBuilderScreen", self.screenId)
@@ -1377,6 +1440,9 @@ class WorldBuilder:
 		if self.tooltip.bLockedTT:
 			self.tooltip.handle(self.getScreen())
 
+		if self.inSubScreen:
+			self.inSubScreen.update(fDelta)
+
 	def handleInput(self, inputClass):
 		screen = self.getScreen()
 
@@ -1385,15 +1451,7 @@ class WorldBuilder:
 		if self.inSubScreen:
 			return self.inSubScreen.handleInput(inputClass, screen)
 
-		bAlt, bCtrl, bShift = self.InputData.getModifierKeys()
-		iCode	= inputClass.eNotifyCode
-		iData	= inputClass.iData
-		ID		= inputClass.iItemID
-		NAME	= inputClass.szFunctionName
-		iBtn	= inputClass.iButtonType
-		iData1	= inputClass.iData1
-		#iData2	= inputClass.iData2
-		szFlag	= HandleInputUtil.MOUSE_FLAGS.get(inputClass.uiFlags, "UNKNOWN")
+		NAME = inputClass.szFunctionName
 
 		if NAME == "WorldBuilderEraseAll":
 			for plot in MAP.plots():
@@ -1451,12 +1509,14 @@ class WorldBuilder:
 			self.iPlayerAddMode = "Units"
 			self.iSelectClass = -2
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddBuildingsButton":
 			self.iPlayerAddMode = "Buildings"
 			self.iSelectClass = 0
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "EditStartingPlot":
@@ -1491,12 +1551,14 @@ class WorldBuilder:
 		elif NAME == "AddImprovementButton":
 			self.iPlayerAddMode = "Improvements"
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddBonusButton":
 			self.iPlayerAddMode = "Bonus"
 			self.iSelectClass = -1
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddPlotTypeButton":
@@ -1507,17 +1569,20 @@ class WorldBuilder:
 		elif NAME == "AddTerrainButton":
 			self.iPlayerAddMode = "Terrain"
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddRouteButton":
 			self.iPlayerAddMode = "Routes"
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddFeatureButton":
 			self.iPlayerAddMode = "Features"
 			self.iSelectClass = 0
 			self.iSelection = -1
+			self.sWBSearchFilter = ""
 			self.refreshSideMenu()
 
 		elif NAME == "AddRiverButton":
@@ -1533,6 +1598,18 @@ class WorldBuilder:
 		elif NAME == "WBSelectItem":
 			self.iSelection = inputClass.iData2
 			self.refreshSelection()
+
+		elif NAME == "WBSearchButton":
+			popup = CyPopup(5010, EventContextTypes.EVENTCONTEXT_ALL, True)
+			popup.setBodyString(CyTranslator().getText("TXT_KEY_WB_SEARCH_PROMPT", ()), 1<<0)
+			popup.createEditBox(self.sWBSearchFilter, 0)
+			popup.setEditBoxMaxCharCount(32, 0, 0)
+			popup.launch(True, PopupStates.POPUPSTATE_IMMEDIATE)
+
+		elif NAME == "WBSearchClearButton":
+			if self.sWBSearchFilter:
+				self.sWBSearchFilter = ""
+				self.refreshSideMenu()
 
 		elif NAME == "RevealMode":
 			self.iPlayerAddMode = self.RevealMode[screen.getPullDownData("RevealMode", screen.getSelectedPullDownID("RevealMode"))]

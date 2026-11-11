@@ -7,13 +7,19 @@
 //
 //------------------------------------------------------------------------------------------------
 
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
+#include "CvGameAI.h"
 #include "CvGameTextMgr.h"
 #include "CvGlobals.h"
+#include "CvInfos.h"
+#include "CvPropertyPropagator.h"
 #include "CvXMLLoadUtility.h"
 #include "CheckSum.h"
 
-CvPropertyPropagator::CvPropertyPropagator() : 
+CvPropertyPropagator::CvPropertyPropagator() :
 									m_eProperty(NO_PROPERTY),
 									m_eObjectType(NO_GAMEOBJECT),
 									m_eRelation(NO_RELATION),
@@ -50,19 +56,9 @@ PropertyTypes CvPropertyPropagator::getProperty() const
 	return m_eProperty;
 }
 
-void CvPropertyPropagator::setProperty(PropertyTypes eProperty)
-{
-	m_eProperty = eProperty;
-}
-
 GameObjectTypes CvPropertyPropagator::getObjectType() const
 {
 	return m_eObjectType;
-}
-
-void CvPropertyPropagator::setObjectType(GameObjectTypes eObjectType)
-{
-	m_eObjectType = eObjectType;
 }
 
 RelationTypes CvPropertyPropagator::getRelation() const
@@ -70,19 +66,9 @@ RelationTypes CvPropertyPropagator::getRelation() const
 	return m_eRelation;
 }
 
-void CvPropertyPropagator::setRelation(RelationTypes eRelation)
-{
-	m_eRelation = eRelation;
-}
-
 int CvPropertyPropagator::getRelationData() const
 {
 	return m_iRelationData;
-}
-
-void CvPropertyPropagator::setRelationData(int iRelationData)
-{
-	m_iRelationData = iRelationData;
 }
 
 RelationTypes CvPropertyPropagator::getTargetRelation() const
@@ -90,19 +76,9 @@ RelationTypes CvPropertyPropagator::getTargetRelation() const
 	return m_eTargetRelation;
 }
 
-void CvPropertyPropagator::setTargetRelation(RelationTypes eTargetRelation)
-{
-	m_eTargetRelation = eTargetRelation;
-}
-
 int CvPropertyPropagator::getTargetRelationData() const
 {
 	return m_iTargetRelationData;
-}
-
-void CvPropertyPropagator::setTargetRelationData(int iRelationData)
-{
-	m_iTargetRelationData = iRelationData;
 }
 
 GameObjectTypes CvPropertyPropagator::getTargetObjectType() const
@@ -110,13 +86,26 @@ GameObjectTypes CvPropertyPropagator::getTargetObjectType() const
 	return m_eTargetObjectType;
 }
 
-void CvPropertyPropagator::setTargetObjectType(GameObjectTypes eObjectType)
-{
-	m_eTargetObjectType = eObjectType;
-}
-
 bool CvPropertyPropagator::isActive(const CvGameObject* pObject) const
 {
+	// Beta: Nomadic Start's Fruit/Hunt/Material/Lore properties only propagate with the option enabled.
+	if (!GC.getGame().isOption(GAMEOPTION_NOMADIC_START))
+	{
+		static std::vector<PropertyTypes> aeNomadProperties;
+		if (aeNomadProperties.empty())
+		{
+			static const char* aszNomadProperties[] = { "PROPERTY_FRUIT", "PROPERTY_HUNT", "PROPERTY_MATERIAL", "PROPERTY_LORE" };
+			for (size_t i = 0; i < sizeof(aszNomadProperties) / sizeof(aszNomadProperties[0]); ++i)
+			{
+				aeNomadProperties.push_back((PropertyTypes)GC.getInfoTypeForString(aszNomadProperties[i], true));
+			}
+		}
+		if (algo::any_of_equal(aeNomadProperties, getProperty()))
+		{
+			return false;
+		}
+	}
+
 	if ((m_eObjectType == NO_GAMEOBJECT) || (m_eObjectType == pObject->getGameObjectType()))
 	{
 		if (m_pExprActive)
@@ -131,8 +120,9 @@ bool CvPropertyPropagator::isActive(const CvGameObject* pObject) const
 	return false;
 }
 
-void CvPropertyPropagator::getTargetObjects(const CvGameObject* pObject, std::vector<const CvGameObject*>& apGameObjects)
+void CvPropertyPropagator::getTargetObjects(const CvGameObject* pObject, std::vector<const CvGameObject*>& apGameObjects) const
 {
+	PROFILE_EXTRA_FUNC();
 	apGameObjects.push_back(pObject);
 	if (m_eTargetObjectType != NO_GAMEOBJECT)
 	{
@@ -273,6 +263,7 @@ int CvPropertyPropagatorSpread::getPercent() const
 
 void CvPropertyPropagatorSpread::getPredict(const std::vector<int>& aiCurrentAmount, std::vector<int>& aiPredict) const
 {
+	PROFILE_EXTRA_FUNC();
 	const int iCurrentAmount = aiCurrentAmount[0];
 	aiPredict[0] = 0;
 	for(int iI=1; iI<(int)aiCurrentAmount.size(); iI++)
@@ -284,6 +275,7 @@ void CvPropertyPropagatorSpread::getPredict(const std::vector<int>& aiCurrentAmo
 
 void CvPropertyPropagatorSpread::getCorrect(const std::vector<int>& aiCurrentAmount, const std::vector<int>& aiPredictedAmount, std::vector<int>& aiCorrect) const
 {
+	PROFILE_EXTRA_FUNC();
 	const int iCurrentAmount = aiCurrentAmount[0];
 	aiCorrect[0] = 0;
 	for(int iI=1; iI<(int)aiCurrentAmount.size(); iI++)
@@ -368,6 +360,7 @@ int CvPropertyPropagatorGather::getAmountPerTurn() const
 
 void CvPropertyPropagatorGather::getPredict(const std::vector<int>& aiCurrentAmount, std::vector<int>& aiPredict) const
 {
+	PROFILE_EXTRA_FUNC();
 	aiPredict[0] = 0;
 	for(int iI=1; iI<(int)aiCurrentAmount.size(); iI++)
 	{
@@ -386,6 +379,7 @@ void CvPropertyPropagatorGather::getPredict(const std::vector<int>& aiCurrentAmo
 
 void CvPropertyPropagatorGather::getCorrect(const std::vector<int>& aiCurrentAmount, const std::vector<int>& aiPredictedAmount, std::vector<int>& aiCorrect) const
 {
+	PROFILE_EXTRA_FUNC();
 	aiCorrect[0] = 0;
 	for(int iI=1; iI<(int)aiCurrentAmount.size(); iI++)
 	{
@@ -480,6 +474,7 @@ int CvPropertyPropagatorDiffuse::getPercent() const
 
 void CvPropertyPropagatorDiffuse::getPredict(const std::vector<int>& aiCurrentAmount, std::vector<int>& aiPredict) const
 {
+	PROFILE_EXTRA_FUNC();
 	const int iCurrentAmount = aiCurrentAmount[0];
 	aiPredict[0] = 0;
 	for(int iI=1; iI<(int)aiCurrentAmount.size(); iI++)
@@ -493,6 +488,7 @@ void CvPropertyPropagatorDiffuse::getPredict(const std::vector<int>& aiCurrentAm
 
 void CvPropertyPropagatorDiffuse::getCorrect(const std::vector<int>& aiCurrentAmount, const std::vector<int>& aiPredictedAmount, std::vector<int>& aiCorrect) const
 {
+	PROFILE_EXTRA_FUNC();
 	const int iCurrentAmount = aiCurrentAmount[0];
 	const int iPredictedAmount = aiPredictedAmount[0];
 	int iPredictedSelf = 0;
@@ -516,13 +512,13 @@ void CvPropertyPropagatorDiffuse::getCorrect(const std::vector<int>& aiCurrentAm
 				//use half of extra to base diffusion on
 				iDiff -= iExtra / 2;
 			}
-			
+
 			iChange = std::max(0, (iDiff * m_iPercent) / 100);
 			aiCorrect[iI] = iChange;
 			aiCorrect[0] -= iChange;
 		}
 	}
-	
+
 	if (iPredictedTotalSelf < iPredictedSelf)
 	{
 		const int iSelfChangeByOthers = iPredictedTotalSelf - iPredictedSelf;
@@ -548,7 +544,7 @@ void CvPropertyPropagatorDiffuse::getCorrect(const std::vector<int>& aiCurrentAm
 					//use half of extra to base diffusion on
 					iDiff -= iExtra / 2;
 				}
-				
+
 				iChange = std::max(0, (iDiff * m_iPercent) / 100);
 				aiCorrect[iI] = iChange;
 				aiCorrect[0] -= iChange;

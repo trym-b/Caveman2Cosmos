@@ -107,9 +107,9 @@ class BugTab:
 			szText += localText.getText(self.txt_key, ())
 		szText += u"</font>"
 		if not self.enabled:
-			szText = localText.changeTextColor(szText, gc.getInfoTypeForString("COLOR_GREY"))
+			szText = localText.changeTextColor(szText, gc.getCOLOR_GREY())
 		elif self.active:
-			szText = localText.changeTextColor(szText, gc.getInfoTypeForString("COLOR_YELLOW"))
+			szText = localText.changeTextColor(szText, gc.getCOLOR_YELLOW())
 		return szText
 
 
@@ -159,7 +159,7 @@ class BugScreen:
 		gapwidth = sparewidth / (num_gaps - 1)
 #		BugUtil.debug("CvEspionage Advisor: evenlySpaceTabs %i %i", gapwidth, num_gaps)
 
-		# reset the 'y' location of the tab labels
+		# reset the 'x' location of the tab labels
 		iStart = self.tabs[0].X
 		for itab in range(len(self.tabs)):
 			# don't adjust the final tab label (typically the 'EXIT' label)

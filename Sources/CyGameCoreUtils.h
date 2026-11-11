@@ -4,9 +4,10 @@
 #define CyGameCoreUtils_h
 
 //
-// Python wrapper functions for DLL 
+// Python wrapper functions for DLL
 //
 
+class CvRandom;
 class CyCity;
 class CyPlot;
 class CyUnit;
@@ -36,8 +37,6 @@ bool cyIsPotentialEnemy(int /*TeamTypes*/ eOurPlayer, int /*TeamTypes*/ eTheirPl
 CyCity* cyGetCity(const IDInfo city);
 CyUnit* cyGetUnit(const IDInfo unit);
 
-bool cyIsPromotionValid(int /*PromotionTypes*/ ePromotion, int /*UnitTypes*/ eUnit, bool bLeader);
-int cyGetTechScore(int /*TechTypes*/ eTech);
 int cyGetWonderScore(int /*BuildingTypes*/ eWonder);
 int /*ImprovementTypes*/ cyFinalImprovementUpgrade(int /*ImprovementTypes*/ eImprovement, int iCount);
 
@@ -65,5 +64,8 @@ int cyCalculateExperience(int iLevel, int /*PlayerTypes*/ ePlayer);
 int cyCalculateLevel(int iExperience, int /*PlayerTypes*/ ePlayer);
 
 int64_t cyIntSqrt64(uint64_t iValue);
+int64_t cyGetModifiedIntValue64(uint64_t iValue, const int iMod);
+
+void cyShufflePyList(python::list& pyList, CvRandom& rand);
 
 #endif	// CyGameCoreUtils_h

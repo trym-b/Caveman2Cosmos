@@ -8,10 +8,8 @@
 #ifndef	__PROFILE_H__
 #define __PROFILE_H__
 
+#include "CvGameCoreDLL.h"
 
-#include "CvDLLEntityIFaceBase.h"
-#include "CvDLLUtilityIFaceBase.h"
-#include "CvGlobals.h"	// for gDLL
 
 #define	MAX_PROFILED_THREADS	8
 
@@ -24,12 +22,12 @@ struct ProfileSample
 	explicit ProfileSample(char *name) :
 #ifdef USE_INTERNAL_PROFILER
 		Id(-1),
-#else  
-	
+#else
+
 #endif
 		Added(false),
 		Parent(-1)
-	{	
+	{
 		strcpy(Name, name);
 	}
 
@@ -77,29 +75,8 @@ class CProfileScope
 public:
 	// cppcheck-suppress uninitMemberVar
 	CProfileScope() { bValid= false;};
-	explicit CProfileScope(ProfileSample *pSample)
-	{
-		bValid = true;
-#ifdef USE_INTERNAL_PROFILER
-		m_linkage.sample = pSample;
-		IFPBeginSample(&m_linkage);
-#else
-		m_pSample = pSample;
-		gDLL->BeginSample(m_pSample);
-#endif
-	};
-	~CProfileScope()
-	{
-		if(bValid )
-		{
-#ifdef USE_INTERNAL_PROFILER
-			IFPEndSample(&m_linkage);
-#else
-			gDLL->EndSample(m_pSample);
-#endif
-			bValid = false;
-		}	
-	};
+	explicit CProfileScope(ProfileSample *pSample);
+	~CProfileScope();
 
 private:
 	bool bValid;
@@ -113,67 +90,87 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 
 // Main Interface for Profile
-#ifdef FP_PROFILE_ENABLE				// Turn Profiling On or Off .. 
-#ifdef USE_INTERNAL_PROFILER
-#define PROFILE_THREAD(name)	\
-	static ProfileSample __rootSample(name);\
-	IFPProfileThread();\
-	CProfileScope ProfileScope(&__rootSample);
 
-#define PROFILE(name)\
-	static ProfileSample sample(name);\
-	CProfileScope ProfileScope(&sample);		
-
-//BEGIN & END macros:		Only needed if you don't want to use the scope macro above. 
-// Macros must be in the same scope
-#define PROFILE_BEGIN(name)\
-	static ProfileSample sample__(name);\
-	ProfileLinkageInfo sample__linkage;\
-	sample__linkage.sample = &sample__;\
-	IFPBeginSample(&sample__linkage);
-#define PROFILE_END()\
-	IFPEndSample(&sample__linkage);
-
-#define PROFILE_BEGIN_CONDITIONAL(name1,name2)\
-	static ProfileSample sample1__(name1);\
-	static ProfileSample sample2__(name2);\
-	ProfileLinkageInfo sample__linkage1;\
-	ProfileLinkageInfo sample__linkage2;\
-	sample__linkage1.sample = &sample1__;\
-	sample__linkage2.sample = &sample2__;\
-	IFPBeginSample(&sample__linkage1,true);\
-	IFPBeginSample(&sample__linkage2,true);
-#define PROFILE_END_CONDITIONAL(result)\
-	if(result)\
-		{IFPCancelSample(&sample__linkage2);IFPEndSample(&sample__linkage1,true);}\
-	else\
-		{IFPCancelSample(&sample__linkage1);IFPEndSample(&sample__linkage2,true);}
-
-#if 0
-#define PROFILE_DEFINE_MULTI(name)\
-	static ProfileSample sample__##name##(#name);
-#define PROFILE_BEGIN_MULTI(name)\
-	IFPBeginSample(&sample__##name##);
-#define PROFILE_END_MULTI(name)\
-	IFPEndSample(&sample__##name##);
+#ifdef FP_PROFILE_EXTRA_ENABLE
+#define PROFILE_EXTRA_FUNC() PROFILE_FUNC()
+#define FP_PROFILE_ENABLE
+#else
+#define PROFILE_EXTRA_FUNC()
 #endif
 
-#define PROFILE_FUNC()\
-	static ProfileSample sample(__FUNCTION__);\
-	CProfileScope ProfileScope(&sample);	
+#define CONCAT_DETAIL(x,y) x##y
+#define CONCAT(x,y) CONCAT_DETAIL(x,y)
 
-#define PROFILE_STACK_DUMP	dumpProfileStack();
-#define PROFILE_SET_COUNT(name,value)\
-	static ProfileSample sample__##name##(#name);\
-	IFPSetCount(&sample__##name##,value);
+#ifdef FP_PROFILE_ENABLE				// Turn Profiling On or Off ..
+#ifdef USE_INTERNAL_PROFILER
+#define PROFILE_THREAD(name) \
+    static ProfileSample CONCAT(sample_,__LINE__)(name); \
+    IFPProfileThread(); \
+    CProfileScope CONCAT(ProfileScope_,__LINE__)(&CONCAT(sample_,__LINE__));
+
+#define PROFILE(name) \
+    static ProfileSample CONCAT(sample_,__LINE__)(name); \
+    CProfileScope CONCAT(ProfileScope_,__LINE__)(&CONCAT(sample_,__LINE__));
+
+
+//BEGIN & END macros:		Only needed if you don't want to use the scope macro above.
+// Macros must be in the same scope
+#define PROFILE_BEGIN(name, id) \
+    static ProfileSample CONCAT(sample_,id)(name); \
+    ProfileLinkageInfo CONCAT(sample_linkage_,id); \
+    CONCAT(sample_linkage_,id).sample = &CONCAT(sample_,id); \
+    IFPBeginSample(&CONCAT(sample_linkage_,id));
+
+#define PROFILE_END(id) \
+    IFPEndSample(&CONCAT(sample_linkage_,id));
+
+
+#define PROFILE_BEGIN_CONDITIONAL(name1,name2,id) \
+    static ProfileSample CONCAT(sample1_,id)(name1); \
+    static ProfileSample CONCAT(sample2_,id)(name2); \
+    ProfileLinkageInfo CONCAT(sample_linkage1_,id); \
+    ProfileLinkageInfo CONCAT(sample_linkage2_,id); \
+    CONCAT(sample_linkage1_,id).sample = &CONCAT(sample1_,id); \
+    CONCAT(sample_linkage2_,id).sample = &CONCAT(sample2_,id); \
+    IFPBeginSample(&CONCAT(sample_linkage1_,id),true); \
+    IFPBeginSample(&CONCAT(sample_linkage2_,id),true);
+
+#define PROFILE_END_CONDITIONAL(result,id) \
+    if(result) { \
+        IFPCancelSample(&CONCAT(sample_linkage2_,id)); \
+        IFPEndSample(&CONCAT(sample_linkage1_,id),true); \
+    } else { \
+        IFPCancelSample(&CONCAT(sample_linkage1_,id)); \
+        IFPEndSample(&CONCAT(sample_linkage2_,id),true); \
+    }
+
+//#if 0
+//#define PROFILE_DEFINE_MULTI(name)\
+//	static ProfileSample sample__##name##(#name);
+//#define PROFILE_BEGIN_MULTI(name)\
+//	IFPBeginSample(&sample__##name##);
+//#define PROFILE_END_MULTI(name)\
+//	IFPEndSample(&sample__##name##);
+//#endif
+
+#define PROFILE_FUNC() \
+    static ProfileSample CONCAT(sample_,__LINE__)(__FUNCTION__); \
+    CProfileScope CONCAT(ProfileScope_,__LINE__)(&CONCAT(sample_,__LINE__));
+
+#define PROFILE_STACK_DUMP dumpProfileStack();
+
+#define PROFILE_SET_COUNT(name,value) \
+    static ProfileSample CONCAT(sample_,__LINE__)(#name); \
+    IFPSetCount(&CONCAT(sample_,__LINE__),value);
+
 
 #else
 #define PROFILE_SET_COUNT(name,value)	;
 #define PROFILE(name)\
 	static ProfileSample sample(name);\
-	CProfileScope ProfileScope(&sample);		
+	CProfileScope ProfileScope(&sample);
 
-//BEGIN & END macros:		Only needed if you don't want to use the scope macro above. 
+//BEGIN & END macros:		Only needed if you don't want to use the scope macro above.
 // Macros must be in the same scope
 #define PROFILE_BEGIN(name)\
 	static ProfileSample sample__(name);\
@@ -186,19 +183,19 @@ private:
 
 #define PROFILE_FUNC()\
 	static ProfileSample sample(__FUNCTION__);\
-	CProfileScope ProfileScope(&sample);	
+	CProfileScope ProfileScope(&sample);
 
 #define PROFILE_STACK_DUMP ;
 #endif
 #else
 // Remove profiling code
 #define PROFILE_THREAD(name)
-#define PROFILE(name)				
-#define PROFILE_BEGIN(name)
-#define PROFILE_BEGIN_CONDITIONAL(name1,name2)
-#define PROFILE_END_CONDITIONAL(result)
+#define PROFILE(name)
+#define PROFILE_BEGIN(name, id)
+#define PROFILE_BEGIN_CONDITIONAL(name1,name2,id)
+#define PROFILE_END_CONDITIONAL(result,id)
 #define PROFILE_SET_COUNT(name,value)	;
-#define PROFILE_END()
+#define PROFILE_END(id)
 #define PROFILE_FUNC()
 #define PROFILE_STACK_DUMP ;
 #endif

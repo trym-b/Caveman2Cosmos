@@ -15,6 +15,7 @@
 #include "CvGameCoreDLL.h"
 #include "CvGlobals.h"
 #include "CvXMLLoadUtility.h"
+#include "CvInfos.h"
 
 static const int kBufSize = 2048;
 
@@ -85,17 +86,17 @@ bool CvXMLLoadUtility::CreateFXml()
 	//		return false;
 	//	}
 	//}
-	//catch (const xercesc::XMLException& toCatch) 
+	//catch (const xercesc::XMLException& toCatch)
 	//{
 	//	char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	//	sprintf(szLog, "XML error: %s(%i) : (%s)\n", 
+	//	sprintf(szLog, "XML error: %s(%i) : (%s)\n",
 	//		toCatch.getSrcFile(), toCatch.getSrcLine(), message);
 	//	logMsg(szLog);
 	//	gDLL->MessageBox(szLog, "Error");
 	//	xercesc::XMLString::release(&message);
 	//	return false;
 	//}
-	//catch (const xercesc::DOMException& toCatch) 
+	//catch (const xercesc::DOMException& toCatch)
 	//{
 	//	char* message = xercesc::XMLString::transcode(toCatch.msg);
 	//	sprintf(szLog, "XML model (DOM) error: %s : %s\n", szPath.c_str(), message);
@@ -107,13 +108,13 @@ bool CvXMLLoadUtility::CreateFXml()
 	//catch (const xercesc::SAXParseException& toCatch)
 	//{
 	//	char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-	//	sprintf(szLog, "XML parsing SAX error:\n%s :\n%s at line %llu", szPath.c_str(), message, toCatch.getLineNumber());
+	//	sprintf(szLog, "XML parsing SAX error:\n%s :\n%s at line %I64u", szPath.c_str(), message, toCatch.getLineNumber());
 	//	logMsg(szLog);
 	//	gDLL->MessageBox(szLog, "Error");
 	//	xercesc::XMLString::release(&message);
 	//	return false;
 	//}
-	//catch (const xercesc::SAXException& toCatch) 
+	//catch (const xercesc::SAXException& toCatch)
 	//{
 	//	char* message = xercesc::XMLString::transcode(toCatch.getMessage());
 	//	sprintf(szLog, "XML parsing SAX error: %s : %s\n", szPath.c_str(), message);
@@ -141,27 +142,27 @@ void CvXMLLoadUtility::DestroyFXml()
 //  PURPOSE :   Default constructor
 //
 //------------------------------------------------------------------------------------------------------
-CvXMLLoadUtility::CvXMLLoadUtility() 
+CvXMLLoadUtility::CvXMLLoadUtility()
 	: m_pCurrentXmlElement(NULL)
 	, m_pParser(NULL)
 	, m_iCurProgressStep(0)
 	, m_pCBFxn(NULL)
 	//m_pFXml(NULL)
 {
-	//OutputDebugString("Initializing XML Load Utility: Start");
+	//OutputDebugString("Initializing XML Load Utility: Start\n");
 	try
 	{
 		xercesc::XMLPlatformUtils::Initialize();
 	}
 	catch (const xercesc::XMLException & toCatch)
 	{
-		OutputDebugString("XMLPlatformUtils::Initialize Faild");
+		OutputDebugString("XMLPlatformUtils::Initialize Faild\n");
 		char* message = xercesc::XMLString::transcode(toCatch.getMessage());
 		logging::logMsg("xml.log", message);
 		gDLL->MessageBox(message, "Error");
 		xercesc::XMLString::release(&message);
 	}
-	//OutputDebugString("Initializing XML Load Utility: End");
+	//OutputDebugString("Initializing XML Load Utility: End\n");
 
 //	m_pSchemaCache = GETXML->CreateFXmlSchemaCache();
 //	m_pSchemaCache = NULL;
@@ -190,6 +191,7 @@ CvXMLLoadUtility::~CvXMLLoadUtility()
 //------------------------------------------------------------------------------------------------------
 void CvXMLLoadUtility::ResetLandscapeInfo()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < GC.getNumLandscapeInfos(); ++i)
 	{
 		SAFE_DELETE(GC.m_paLandscapeInfo[i]);
@@ -209,6 +211,7 @@ void CvXMLLoadUtility::ResetLandscapeInfo()
 //------------------------------------------------------------------------------------------------------
 void CvXMLLoadUtility::ResetGlobalEffectInfo()
 {
+	PROFILE_EXTRA_FUNC();
 	for (int i = 0; i < GC.getNumEffectInfos(); ++i)
 	{
 		SAFE_DELETE(GC.m_paEffectInfo[i]);
@@ -223,7 +226,7 @@ void CvXMLLoadUtility::ResetGlobalEffectInfo()
 //	Searches the InfoClass for the pszVal and returns the location if a match is found.
 //	returns -1 if no match is found
 //------------------------------------------------------------------------------------------------------
-int CvXMLLoadUtility::GetInfoClass(const TCHAR* pszVal)
+int CvXMLLoadUtility::GetInfoClass(const char* pszVal)
 {
 	const int idx = GC.getInfoTypeForString(pszVal, false);
 
@@ -245,20 +248,21 @@ int CvXMLLoadUtility::GetInfoClass(const TCHAR* pszVal)
 
 //------------------------------------------------------------------------------------------------------
 //
-//  FUNCTION:   LoadCivXml(FXml* pFXml, TCHAR* szFilename)
+//  FUNCTION:   LoadCivXml(const char* szFilename)
 //
 //  PURPOSE :   Gets the full pathname for the xml file from the FileManager .
 //				If it is succesful we return true
 //				from the function and a valid FXml pointer to the pFXml parameter.
 //
 //------------------------------------------------------------------------------------------------------
-bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
+bool CvXMLLoadUtility::LoadCivXml(const char* szFilename)
 {
 	char szLog[8192];
 	sprintf(szLog, "LoadCivXml (%s)", szFilename);
 	PROFILE(szLog);
-	OutputDebugString(szLog);
-	OutputDebugString("\n");
+#ifdef _DEBUG
+	OutputDebugString(strcat(szLog, "\n"));
+#endif
 	m_pParser->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
 
 	CvString szPath = szFilename;
@@ -267,30 +271,36 @@ bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
 
 	std::string szDir = gDLL->getModName();
 	szDir.append(szPath);
+#ifdef _DEBUG
 	OutputDebugString(szDir.c_str());
+	OutputDebugString("\n");
+#endif
 	FILE* f = fopen(szDir.c_str(), "r");
-	if (f == NULL)
+	if (!f)
 	{
 		// could not open file, try from current dir
 		m_pParser->setValidationScheme(xercesc::XercesDOMParser::Val_Never);
 		szDir = szPath;
 		OutputDebugString(szDir.c_str());
+		OutputDebugString("\n");
 		f = fopen(szDir.c_str(), "r");
-		if (f == NULL)
+		if (!f)
 		{
 			// could not open file, try Warlords dir
 			szDir = "..\\Warlords\\";
 			szDir.append(szPath);
 			OutputDebugString(szDir.c_str());
+			OutputDebugString("\n");
 			f = fopen(szDir.c_str(), "r");
-			if (f == NULL)
+			if (!f)
 			{
 				// could not open file, try from one further up
 				szDir = "..\\";
 				szDir.append(szPath);
 				OutputDebugString(szDir.c_str());
+				OutputDebugString("\n");
 				f = fopen(szDir.c_str(), "r");
-				if (f == NULL)
+				if (!f)
 				{
 					sprintf(szLog, "IO error: %s : File can't be found\n", szPath.c_str());
 					logging::logMsg("xml.log", szLog);
@@ -315,7 +325,7 @@ bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
 	catch (const xercesc::XMLException & toCatch)
 	{
 		char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-		sprintf(szLog, "XML error: %s(%llu) : (%s)\n",
+		sprintf(szLog, "XML error: %s(%I64u) : (%s)\n",
 			toCatch.getSrcFile(), toCatch.getSrcLine(), message);
 		logging::logMsg("xml.log", szLog);
 		gDLL->MessageBox(szLog, "Error");
@@ -334,7 +344,7 @@ bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
 	catch (const xercesc::SAXParseException & toCatch)
 	{
 		char* message = xercesc::XMLString::transcode(toCatch.getMessage());
-		sprintf(szLog, "XML parsing SAX error:\n%s :\n%s at line %llu", szPath.c_str(), message, toCatch.getLineNumber());
+		sprintf(szLog, "XML parsing SAX error:\n%s :\n%s at line %I64u", szPath.c_str(), message, toCatch.getLineNumber());
 		logging::logMsg("xml.log", szLog);
 		gDLL->MessageBox(szLog, "Error");
 		xercesc::XMLString::release(&message);
@@ -369,12 +379,12 @@ bool CvXMLLoadUtility::LoadCivXml(FXml* pFXml, const TCHAR* szFilename)
 //  PURPOSE :   create a hot key from a description and return it
 //
 //------------------------------------------------------------------------------------------------------
-CvWString CvXMLLoadUtility::CreateHotKeyFromDescription(const TCHAR* pszHotKey, bool bShift, bool bAlt, bool bCtrl)
+CvWString CvXMLLoadUtility::CreateHotKeyFromDescription(const char* pszHotKey, bool bShift, bool bAlt, bool bCtrl)
 {
 	// Delete <COLOR:140,255,40,255>Shift+Delete</COLOR>
 	CvWString szHotKey;
 
-	if (pszHotKey && strcmp(pszHotKey, "") != 0)
+	if (pszHotKey && strcmp(pszHotKey, "") != 0 && strcmp(pszHotKey, "0") != 0)
 	{
 		szHotKey += L" <color=140,255,40,255>";
 		szHotKey += L"&lt;";
@@ -404,6 +414,7 @@ CvWString CvXMLLoadUtility::CreateHotKeyFromDescription(const TCHAR* pszHotKey, 
 
 bool CvXMLLoadUtility::SetStringList(CvString** ppszStringArray, int* piSize)
 {
+	PROFILE_EXTRA_FUNC();
 	int i;
 	CvString* pszStringArray;
 
@@ -433,12 +444,12 @@ bool CvXMLLoadUtility::SetStringList(CvString** ppszStringArray, int* piSize)
 
 //------------------------------------------------------------------------------------------------------
 //
-//  FUNCTION:   CreateKeyStringFromKBCode(const TCHAR* pszHotKey)
+//  FUNCTION:   CreateKeyStringFromKBCode(const char* pszHotKey)
 //
 //  PURPOSE :   Create a keyboard string from a KB code, Delete would be returned for KB_DELETE
 //
 //------------------------------------------------------------------------------------------------------
-CvWString CvXMLLoadUtility::CreateKeyStringFromKBCode(const TCHAR* pszHotKey)
+CvWString CvXMLLoadUtility::CreateKeyStringFromKBCode(const char* pszHotKey)
 {
 	// SPEEDUP
 	PROFILE("CreateKeyStringFromKBCode");
@@ -447,7 +458,7 @@ CvWString CvXMLLoadUtility::CreateKeyStringFromKBCode(const TCHAR* pszHotKey)
 
 	struct CvKeyBoardMapping
 	{
-		TCHAR szDefineString[25];
+		char szDefineString[25];
 		CvWString szKeyString;
 	};
 
@@ -581,7 +592,7 @@ CvWString CvXMLLoadUtility::CreateKeyStringFromKBCode(const TCHAR* pszHotKey)
 //
 void CvXMLLoadUtility::UpdateProgressCB(const char* szMessage)
 {
-	OutputDebugString("Updating ProgressCB: Start");
+	OutputDebugString("Updating ProgressCB: Start\n");
 	if (m_iCurProgressStep > GetNumProgressSteps())
 	{
 		m_iCurProgressStep = 1;	// wrap
@@ -592,7 +603,7 @@ void CvXMLLoadUtility::UpdateProgressCB(const char* szMessage)
 		m_pCBFxn(++m_iCurProgressStep, GetNumProgressSteps(), CvString::format("Reading XML %s",
 			szMessage ? szMessage : "").c_str());
 	}
-	OutputDebugString("Updating ProgressCB: End");
+	OutputDebugString("Updating ProgressCB: End\n");
 }
 
 //

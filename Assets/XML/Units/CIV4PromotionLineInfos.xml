@@ -20,7 +20,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_RUFFIAN</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_MISSIONARY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -34,6 +34,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_THROWING</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_WOODEN_SHIPS</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TAMED</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_NAVIGATION</Type>
@@ -93,6 +96,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ASSAULT_MECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_STRIKE_TEAM</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_FLANKING</Type>
@@ -109,6 +115,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ASSAULT_MECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_RECON</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
@@ -131,6 +140,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HITECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -154,6 +166,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HITECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -177,6 +192,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HITECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -200,6 +218,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HITECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -215,6 +236,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_HITECH</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -231,6 +255,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ROBOT</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_HELICOPTER</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 			</NotOnDomainTypes>
@@ -272,6 +299,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ASSAULT_MECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_DREADNOUGHT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 			</NotOnDomainTypes>
@@ -286,6 +316,10 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ROBOT</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_BIOLOGICAL</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_ANIMAL</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_FIELD</Type>
@@ -354,6 +388,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_MELEE</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_GUN</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TAMED</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_CHARGE</Type>
@@ -371,6 +408,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_DREADNOUGHT</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 			</NotOnDomainTypes>
@@ -388,6 +428,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HELICOPTER</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_DREADNOUGHT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 			</NotOnDomainTypes>
@@ -415,6 +458,10 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ANIMAL</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_STRIKE_TEAM</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_TAMED</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -436,6 +483,10 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_RECON</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_TAMED</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -458,6 +509,7 @@
 				<NotOnUnitCombatType>UNITCOMBAT_CRIMINAL</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_STRIKE_TEAM</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_RUFFIAN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
@@ -479,7 +531,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_WHEELED</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_WORKER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_SETTLER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CRIMINAL</NotOnUnitCombatType>
@@ -509,6 +561,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_DREADNOUGHT</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -555,6 +610,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_CLONES</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_ASSAULT_MECH</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -641,6 +699,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_NUCLEAR_SHIPS</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_GUN</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_INTERCEPTION</Type>
@@ -782,6 +843,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_WHEELED</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_TRACKED</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_SEA</DomainType>
 				<DomainType>DOMAIN_AIR</DomainType>
@@ -801,6 +865,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_SUBMARINE</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_NUCLEAR_SHIPS</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
@@ -818,6 +885,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_ASSAULT_MECH</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_DREADNOUGHT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
@@ -908,6 +978,62 @@
 			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_MORALE_SHIPS</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_MORALE_SHIPS</Description>
+			<Button>Art/Interface/Buttons/promotions/shipMorale1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_SHIP_TACTICS</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_SHIP_TACTICS</Description>
+			<Button>Art/Interface/Buttons/promotions/shipTactics1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_SHIP_INITIATIVE</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_SHIP_INITIATIVE</Description>
+			<Button>Art/Interface/Buttons/promotions/shipInitiative1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_SHIP_OPERATIONS</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_SHIP_OPERATIONS</Description>
+			<Button>Art/Interface/Buttons/promotions/shipOperations1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_SHIP_STRIKEFORCE</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_STRIKEFORCE</Description>
+			<Button>Art/Interface/Buttons/promotions/shipStrikeForce1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_SHIP_COMMAND</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_SHIP_COMMAND</Description>
+			<Button>art/Buttons/Promotions/CommodoreCommand1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_ADMIRAL_STAFF</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_GENERAL_STAFF</Description>
+			<Button>art/Buttons/Promotions/CommodoreAdmiralStaff1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_COMMODORE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_INITIATIVE</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_INITIATIVE</Description>
 			<Button>Art/Interface/Buttons/promotions/initiative1.dds</Button>
@@ -946,6 +1072,9 @@
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TRIBAL_GUARD</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_SNEAK</Type>
@@ -966,10 +1095,11 @@
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_HUNTING_SIGHT</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_HUNTING_SIGHT</Description>
+			<OnGameOptions>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_SIZE_MATTERS</GameOptionType>
+			</OnGameOptions>
 			<Button>,Art/Interface/Buttons/Promotions/Sentry.dds,Art/Interface/Buttons/FinalFrontier1_Atlas.dds,4,10</Button>
-			<UnitCombatPrereqTypes>
-				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
-			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_SEA_CREATURE</Type>
@@ -979,6 +1109,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_SEA_ANIMAL</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
+		<!--
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_LEVIATHAN</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_LEVIATHAN</Description>
@@ -987,6 +1118,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_SEA_ANIMAL</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
+		-->
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_BARD</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_BARD</Description>
@@ -1195,7 +1327,7 @@
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_HUNTER_GATHERER</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_HUNTER_GATHERER</Description>
-			<Button>art/Buttons/Traits/TraitPolitician.dds</Button>
+			<Button>art/Buttons/Traits/TraitHunterGatherer.dds</Button>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_BARBARIAN</Type>
@@ -1312,6 +1444,19 @@
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_CIVILIAN</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PRODIGY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_MISSIONARY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_SEA_WORKER</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_SETTLER</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_TRADE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_EXECUTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_ADMINISTRATOR</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_ENTERTAINER</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_SUBDUED</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_PACK_HUNTER</Type>
@@ -1492,6 +1637,9 @@
 				<UnitCombatPrereqType>UNITCOMBAT_FELINE</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_MAMMAL_URSINE</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_CHASE</Type>
@@ -1530,6 +1678,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_FELINE</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CRIMINAL</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_RECON</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_SUBMARINE</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_STRIKE_TEAM</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_ROCKET_LAUNCHER</UnitCombatPrereqType>
@@ -1645,6 +1794,7 @@
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
 				<NotOnUnitCombatType>UNITCOMBAT_ANIMAL</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1664,6 +1814,7 @@
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_WEAPON_DIST_SHORTBOW</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_WEAPON_DIST_LONGBOW</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_WEAPON_DIST_SLING</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1778,10 +1929,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_SIZE_MICROSCOPIC</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTAIN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1798,10 +1947,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_SIZE_COLOSSAL</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTAIN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1816,10 +1963,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_GROUP_SOLO</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTAIN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1838,10 +1983,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_GROUP_COUNTLESS</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTAIN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -1855,7 +1998,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HEALS_AS_NANOMORPH</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -1875,7 +2018,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HEALS_AS_TECH</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -1979,10 +2122,10 @@
 			<Description>TXT_KEY_PROMOTIONLINE_MIGHT</Description>
 			<Button>Art/Buttons/Promotions/Might1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_SIZE_MATTERS</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_SIZE_MATTERS</GameOptionType>
 			</OnGameOptions>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -1996,13 +2139,13 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_CHASE_PLANS_HELP</Help>
 			<Button>Art/Buttons/Promotions/ChasePlans1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_FIGHT_OR_FLIGHT</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_FIGHT_OR_FLIGHT</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_SPEED_FAST</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -2064,7 +2207,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_WEAPON_H2H_LONG_POLEARM</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -2108,31 +2251,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_EXPLORER</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
-			</NotOnUnitCombatTypes>
-			<NotOnDomainTypes>
-				<DomainType>DOMAIN_AIR</DomainType>
-				<DomainType>DOMAIN_SEA</DomainType>
-			</NotOnDomainTypes>
-			<bBuildUp>1</bBuildUp>
-		</PromotionLineInfo>
-		<PromotionLineInfo>
-			<Type>PROMOTIONLINE_BUILD_UP_FORTIFY</Type>
-			<Description>TXT_KEY_PROMOTIONLINE_BUILD_UP_FORTIFY</Description>
-			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_FORTIFY_HELP</Help>
-			<Button>Art/Buttons/Promotions/Fortify1BuildUp.dds</Button>
-			<UnitCombatPrereqTypes>
-				<UnitCombatPrereqType>UNITCOMBAT_COMBATANT</UnitCombatPrereqType>
-				<UnitCombatPrereqType>UNITCOMBAT_RUFFIAN</UnitCombatPrereqType>
-				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
-			</UnitCombatPrereqTypes>
-			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
@@ -2150,13 +2270,13 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_ESCAPE_PLANS_HELP</Help>
 			<Button>Art/Buttons/Promotions/EscapePlans1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_FIGHT_OR_FLIGHT</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_FIGHT_OR_FLIGHT</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_SPEED_FAST</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -2215,7 +2335,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HEALS_AS_ANIMALS</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
@@ -2423,7 +2543,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_TO_THE_DEATH</Description>
 			<Button>Art/Interface/Buttons/Promotions/flaming1.dds</Button>
 			<UnitCombatPrereqTypes>
-				<UnitCombatPrereqType>UNITCOMBAT_COMMANDER</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_COMBATANT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -2493,7 +2613,7 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_CONCEALMENT_HELP</Help>
 			<Button>Art/Buttons/Promotions/Concealment1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_ANIMAL_COMBAT_HIDING</UnitCombatPrereqType>
@@ -2522,7 +2642,7 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_BLEND_INTO_CROWD_HELP</Help>
 			<Button>Art/Buttons/Promotions/BlendIntoCrowd1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_CRIMINAL</UnitCombatPrereqType>
@@ -2546,7 +2666,7 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_CHECKPOINTS_HELP</Help>
 			<Button>Art/Buttons/Promotions/Checkpoints1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
@@ -2570,7 +2690,7 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_TERRITORIAL_VIGILANCE_HELP</Help>
 			<Button>Art/Buttons/Promotions/TerritorialVigilance1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_CANINE</UnitCombatPrereqType>
@@ -2595,7 +2715,7 @@
 			<Help>TXT_KEY_PROMOTIONLINE_BUILD_UP_OBSERVATION_HELP</Help>
 			<Button>Art/Buttons/Promotions/Observation1BuildUp.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_EXPLORER</UnitCombatPrereqType>
@@ -2618,7 +2738,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_HIDE_IN_SHADOWS</Description>
 			<Button>Art/Buttons/Promotions/HideInShadows1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_ANIMAL_COMBAT_CAMOFLAGED</UnitCombatPrereqType>
@@ -2628,7 +2748,7 @@
 				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_PACIFIST</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
@@ -2644,13 +2764,14 @@
 			<Description>TXT_KEY_PROMOTIONLINE_FAKE_IDENTITY</Description>
 			<Button>Art/Buttons/Promotions/FakeIdentity1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_ENTERTAINER</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_CRIMINAL</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TRIBAL_GUARD</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
@@ -2667,7 +2788,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_INNOCENT_MERCHANTS</Description>
 			<Button>Art/Buttons/Promotions/InnocentMerchants1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_PIRATE</UnitCombatPrereqType>
@@ -2689,7 +2810,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_KEEN_EARS</Description>
 			<Button>Art/Buttons/Promotions/KeenEars1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_CANINE</UnitCombatPrereqType>
@@ -2712,7 +2833,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_HAWK_EYES</Description>
 			<Button>Art/Buttons/Promotions/HawkEyes1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_EXPLORER</UnitCombatPrereqType>
@@ -2736,7 +2857,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_CROWS_NEST</Description>
 			<Button>Art/Buttons/Promotions/CrowsNest1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_EXPLORER</UnitCombatPrereqType>
@@ -2760,13 +2881,14 @@
 			<Description>TXT_KEY_PROMOTIONLINE_IDENTIFY</Description>
 			<Button>Art/Buttons/Promotions/Identify1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
 				<UnitCombatPrereqType>UNITCOMBAT_SPY</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TRIBAL_GUARD</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
@@ -2782,7 +2904,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_COVERT_OPERATIONS</Description>
 			<Button>Art/Buttons/Promotions/CovertOperations1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_COMBATANT</UnitCombatPrereqType>
@@ -2806,7 +2928,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_WARRIORS_INTUITION</Description>
 			<Button>Art/Buttons/Promotions/WarriorIntuition1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_COMBATANT</UnitCombatPrereqType>
@@ -2828,8 +2950,8 @@
 			<Description>TXT_KEY_PROMOTIONLINE_LOW_PROFILE</Description>
 			<Button>Art/Buttons/Promotions/LowProfile1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
-				<GameOptionType>GAMEOPTION_SIZE_MATTERS</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_SIZE_MATTERS</GameOptionType>
 			</OnGameOptions>
 			<NotOnUnitCombatTypes>
 				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
@@ -2844,8 +2966,8 @@
 			<Description>TXT_KEY_PROMOTIONLINE_SPOT</Description>
 			<Button>Art/Buttons/Promotions/Spot1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
-				<GameOptionType>GAMEOPTION_SIZE_MATTERS</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_SIZE_MATTERS</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_EXPLORER</UnitCombatPrereqType>
@@ -2856,6 +2978,10 @@
 				<NotOnUnitCombatType>UNITCOMBAT_IDEA</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+                <NotOnUnitCombatType>UNITCOMBAT_MISSIONARY</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_HEALTH_CARE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_TAMED</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_SUBDUED</NotOnUnitCombatType>
 			</NotOnUnitCombatTypes>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
@@ -2863,7 +2989,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_RED_TAPE</Description>
 			<Button>Art/Buttons/Promotions/RedTape1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_CRIMINAL</UnitCombatPrereqType>
@@ -2882,7 +3008,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_CLOUT</Description>
 			<Button>Art/Buttons/Promotions/Clout1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
@@ -2923,10 +3049,8 @@
 				<UnitCombatPrereqType>UNITCOMBAT_MOTILITY_DRIVING</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
 			<NotOnUnitCombatTypes>
-				<NotOnUnitCombatType>UNITCOMBAT_SPY</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_COMMANDER</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_ATTACHE</NotOnUnitCombatType>
-				<NotOnUnitCombatType>UNITCOMBAT_CAPTIVE</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CAPTAIN</NotOnUnitCombatType>
+				<NotOnUnitCombatType>UNITCOMBAT_CIVILIAN</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_CRIMINAL</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_STRIKE_TEAM</NotOnUnitCombatType>
 				<NotOnUnitCombatType>UNITCOMBAT_RUFFIAN</NotOnUnitCombatType>
@@ -3062,6 +3186,14 @@
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_TRESPASS</Type>
+			<Description>TXT_KEY_STATUS_TRESPASS</Description>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_EXILE</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+			<Button>Art/Interface/buttons/Promotions/StatusTrespass.dds</Button>
 		</PromotionLineInfo>
 		<PromotionLineInfo>
 			<Type>PROMOTIONLINE_STAY_THE_HAND</Type>
@@ -3254,7 +3386,7 @@
 			<Description>TXT_KEY_PROMOTIONLINE_HUNTING_STRIKE</Description>
 			<Button>Art/Interface/Buttons/Promotions/HuntingStrike1Promotion.dds</Button>
 			<OnGameOptions>
-				<GameOptionType>GAMEOPTION_HIDE_AND_SEEK</GameOptionType>
+				<GameOptionType>GAMEOPTION_COMBAT_HIDE_SEEK</GameOptionType>
 			</OnGameOptions>
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
@@ -3270,6 +3402,9 @@
 			<UnitCombatPrereqTypes>
 				<UnitCombatPrereqType>UNITCOMBAT_LAW_ENFORCEMENT</UnitCombatPrereqType>
 			</UnitCombatPrereqTypes>
+			<NotOnUnitCombatTypes>
+				<NotOnUnitCombatType>UNITCOMBAT_TRIBAL_GUARD</NotOnUnitCombatType>
+			</NotOnUnitCombatTypes>
 			<NotOnDomainTypes>
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
@@ -3278,17 +3413,6 @@
 			<Type>PROMOTIONLINE_MASTER_HUNTER</Type>
 			<Description>TXT_KEY_PROMOTIONLINE_MASTER_HUNTER</Description>
 			<Button>Art/Interface/Buttons/Promotions/Master_hunter1.dds</Button>
-			<UnitCombatPrereqTypes>
-				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
-			</UnitCombatPrereqTypes>
-		</PromotionLineInfo>
-		<PromotionLineInfo>
-			<Type>PROMOTIONLINE_SEA_MASTER_HUNTER</Type>
-			<Description>TXT_KEY_PROMOTIONLINE_SEA_MASTER_HUNTER</Description>
-			<Button>Art/Interface/Buttons/Promotions/Master_seahunter1.dds</Button>
-			<UnitCombatPrereqTypes>
-				<UnitCombatPrereqType>UNITCOMBAT_HUNTER</UnitCombatPrereqType>
-			</UnitCombatPrereqTypes>
 		</PromotionLineInfo>
 		<!-- Is that TB experiment? -->
 		<PromotionLineInfo>
@@ -3365,6 +3489,25 @@
 				<DomainType>DOMAIN_AIR</DomainType>
 			</NotOnDomainTypes>
 			<bBuildUp>1</bBuildUp>
-		</PromotionLineInfo>		
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_BUSHIDO</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_BUSHIDO</Description>
+			<Button>Art/Interface/Buttons/Promotions/Bushido1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_ARCHER</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_MELEE</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_THROWING</UnitCombatPrereqType>
+				<UnitCombatPrereqType>UNITCOMBAT_MOUNTED</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
+		<PromotionLineInfo>
+			<Type>PROMOTIONLINE_WIND_HORSE</Type>
+			<Description>TXT_KEY_PROMOTIONLINE_WIND_HORSE</Description>
+			<Button>Art/Interface/Buttons/Promotions/Windhorse1.dds</Button>
+			<UnitCombatPrereqTypes>
+				<UnitCombatPrereqType>UNITCOMBAT_MOUNTED</UnitCombatPrereqType>
+			</UnitCombatPrereqTypes>
+		</PromotionLineInfo>
 	</PromotionLineInfos>
 </Civ4PromotionLineInfos>

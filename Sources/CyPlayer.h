@@ -7,13 +7,12 @@
 // Python wrapper class for CvPlayer
 //
 
-class CyUnit;
-class CvPlayer;
-class CvProperties;
-class CyCity;
-class CyArea;
-class CyPlot;
-class CySelectionGroup;
+#include "CyUnit.h"
+#include "CyCity.h"
+#include "CyArea.h"
+#include "CySelectionGroup.h"
+#include "CyPlot.h"
+#include "CvPlayer.h"
 
 class CyPlayer
 {
@@ -25,7 +24,6 @@ public:
 
 	void changeLeader(int /*LeaderHeadTypes*/ eNewLeader);
 	void changeCiv(int /*CivilizationTypes*/ eNewCiv);
-	void setIsHuman(bool bNewValue);
 	void setIsRebel(bool bNewValue);
 	bool isRebel() const;
 
@@ -39,8 +37,6 @@ public:
 	int startingPlotRange() const;
 	bool startingPlotWithinRange(const CyPlot* pPlot, int /*PlayerTypes*/ ePlayer, int iRange, int iPass);
 
-	CyPlot* findStartingPlot(bool bRandomize) const;
-
 	CyCity* initCity(int x, int y);
 	void acquireCity(CyCity* pCity, bool bConquest, bool bTrade);
 	void killCities();
@@ -53,7 +49,6 @@ public:
 	bool hasTrait(int /*TraitTypes*/ iIndex) const;
 	bool isHuman() const;
 	bool isHumanDisabled() const;
-	bool isBarbarian() const;
 	bool isNPC() const;
 	bool isHominid() const;
 	std::wstring getName() const;
@@ -87,6 +82,7 @@ public:
 	int countOwnedBonuses(int /*BonusTypes*/ eBonus) const;
 	int countNumBuildings(int /*BuildingTypes*/ eBuilding) const;
 	bool hasBuilding(int /*BuildingTypes*/ eBuilding) const;
+	int getBuildingPrereqBuilding(BuildingTypes eBuilding, BuildingTypes ePrereqBuilding, int iExtra) const;
 	int countNumCitiesConnectedToCapital() const;
 
 	bool canContact(int /*PlayerTypes*/ ePlayer) const;
@@ -99,6 +95,8 @@ public:
 	int getNumTradeableBonuses(int /*BonusTypes*/ eBonus) const;
 	bool hasBonus(int /*BonusTypes*/ eBonus) const;
 
+	bool hasHeritage(int iType) const;
+
 	bool isTurnActive() const;
 
 	void receiveGoody(const CyPlot* pPlot, int /*GoodyTypes*/ eGoody, const CyUnit* pUnit);
@@ -108,12 +106,12 @@ public:
 	bool canTrain(int /*UnitTypes*/ eUnit, bool bContinue, bool bTestVisible) const;
 	bool canConstruct(int /*BuildingTypes*/eBuilding, bool bContinue, bool bTestVisible, bool bIgnoreCost) const;
 	bool canCreate(int /*ProjectTypes*/ eProject, bool bContinue, bool bTestVisible) const;
-	bool canMaintain(int /*ProcessTypes*/ eProcess, bool bContinue) const;
 	int getUnitProductionNeeded(int /*UnitTypes*/ iIndex) const;
+	int getUnitProductionNeededPreMerged(int /*UnitTypes*/ iIndex) const;
+	bool isPreMergedUnitBuildEnabled() const;
 	int getBuildingProductionNeeded(int /*BuildingTypes*/ iIndex) const;
 	int getProjectProductionNeeded(int /*ProjectTypes*/ iIndex) const;
 
-	bool canBuild(const CyPlot* pPlot, int /*BuildTypes*/ eBuild, bool bTestEra, bool bTestVisible) const;
 	int /*RouteTypes*/ getBestRoute(const CyPlot* pPlot) const;
 
 	int calculateTotalYield(int /*YieldTypes*/ eYield) const;
@@ -137,15 +135,14 @@ public:
 	int calculateResearchRate(int /*TechTypes*/ eTech) const;
 	int calculateResearchModifier(int /*TechTypes*/ eTech) const;
 	int calculateBaseNetResearch() const;
-	bool canEverResearch(int /*TechTypes*/ eTech) const;
-	bool canResearch(int /*TechTypes*/ eTech) const;
+	bool canResearch(const int iTech, const bool bRightNow, const bool bSpecialRequirements) const;
 	int /* TechTypes */ getCurrentResearch() const;
 	bool isCurrentResearchRepeat() const;
 	int getResearchTurnsLeft(int /*TechTypes*/ eTech, bool bOverflow) const;
 
 	bool isCivic(int /*CivicTypes*/ eCivic) const;
 	bool canDoCivics(int /*CivicTypes*/ eCivic) const;
-	bool canRevolution(int /*CivicTypes**/ paeNewCivics) const;
+	bool canRevolution() const;
 
 	bool canChangeReligion() const;
 	bool canConvert(int /*ReligionTypes*/ iIndex) const;
@@ -153,7 +150,7 @@ public:
 	bool hasHolyCity(int /*ReligionTypes*/ eReligion) const;
 	int countHolyCities() const;
 
-	int getCivicAnarchyLength(boost::python::list& /*CivicTypes**/ paeNewCivics) const;
+	int getCivicAnarchyLength(const python::list& /*CivicTypes*/ lNewCivics) const;
 	int getReligionAnarchyLength() const;
 
 	bool hasHeadquarters(int /*CorporationTypes*/ eCorporation) const;
@@ -220,7 +217,13 @@ public:
 	bool isNonStateReligionCommerce() const;
 
 	int getRevIdxNational() const;
+	int getRevIdxDistanceModifier() const;
+
 	bool canFoundReligion() const;
+
+	bool hasIdleCity() const;
+
+	void setForcedCityCycle(const bool bNewValue);
 
 	int getNumMilitaryUnits() const;
 
@@ -228,6 +231,7 @@ public:
 	bool isBuildingOnlyHealthy() const;
 
 	int64_t getTreasuryUpkeep() const;
+	int64_t getCorporateMaintenance() const;
 	int getTotalMaintenance() const;
 	int getLevelExperienceModifier() const;
 
@@ -271,13 +275,9 @@ public:
 	bool isFoundedFirstCity() const;
 
 	void setFoundedFirstCity(bool bNewValue);
-	void setAlive(bool bNewValue);
-	void setNewPlayerAlive(bool bNewValue);
-	void changeTechScore(int iChange);
+	void setAlive(bool bNewValue, bool bActivateTurn);
 
 	bool isStrike() const;
-
-	bool isMADNukesEnabled() const;
 
 	int getID() const;
 	int /* HandicapTypes */ getHandicapType() const;
@@ -299,7 +299,6 @@ public:
 	int getPlayerTextColorB() const;
 	int getPlayerTextColorA() const;
 
-	int getSeaPlotYield(YieldTypes eIndex) const;
 	int getYieldRateModifier(YieldTypes eIndex) const;
 	int getCommercePercent(int /*CommerceTypes*/ eIndex) const;
 	void changeCommercePercent(CommerceTypes eIndex, int iChange);
@@ -343,7 +342,7 @@ public:
 	bool isResearchingTech(int /*TechTypes*/ iIndex) const;
 	int /*CivicTypes*/ getCivics(int /*CivicOptionTypes*/ iIndex) const;
 	int getSingleCivicUpkeep(int /*CivicTypes*/ eCivic, bool bIgnoreAnarchy) const;
-	int getCivicUpkeep(boost::python::list&  /*CivicTypes*/ paiCivics, bool bIgnoreAnarchy) const;
+	int getCivicUpkeep(bool bIgnoreAnarchy) const;
 	void setCivics(int /*CivicOptionTypes*/ eIndex, int /*CivicTypes*/ eNewValue);
 
 	int getCombatExperience() const;
@@ -381,8 +380,6 @@ public:
 	void resetEventOccured(/*EventTypes*/ int eEvent);
 	EventTriggeredData* getEventTriggered(int iID) const;
 	EventTriggeredData* initTriggeredData(int eEventTrigger, bool bFire, int iCityId, int iPlotX, int iPlotY, int eOtherPlayer, int iOtherPlayerCityId, int eReligion, int eCorporation, int iUnitId, int eBuilding);
-
-	int getEventTriggerWeight(int /*EventTriggerTypes*/ eTrigger) const;
 
 	void AI_updateFoundValues(bool bStartingLoc);
 	bool AI_isFinancialTrouble() const;
@@ -428,18 +425,16 @@ public:
 
 	int getBuildingCountWithUpgrades(int /*BuildingTypes*/ iBuilding) const;
 	void setColor(int /*PlayerColorTypes*/ iColor);
-	void setHandicap(int iNewVal);
+	void setHandicap(int iNewVal, bool bAverageGameHandicap);
 
 	void setModderOption(int /*ModderOptionTypes*/ eIndex, int iNewValue);
 
-	void doRevolution(boost::python::list& /*CivicTypes**/ paeNewCivics, bool bForce);
+	void doRevolution(const python::list& /*CivicTypes*/ lNewCivics, bool bForce);
 
 	bool isAutomatedCanBuild(int /*BuildTypes*/ eIndex) const;
 	void setAutomatedCanBuild(int /*BuildTypes*/ eIndex, bool bNewValue);
 
 	int64_t getCulture() const;
-	void setCulture(int64_t iNewValue);
-	void changeCulture(int64_t iAddValue);
 
 	CvProperties* getProperties() const;
 

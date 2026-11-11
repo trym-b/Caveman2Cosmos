@@ -5,6 +5,8 @@
 #ifndef CIV4_PLAYER_AI_H
 #define CIV4_PLAYER_AI_H
 
+#include "FProfiler.h"
+
 #include "CvPlayer.h"
 #include "AI_defines.h"
 
@@ -13,7 +15,12 @@ class CvCity;
 class CvEventTriggerInfo;
 class CvSelectionGroup;
 class CvUnitSelectionCriteria;
+class CvArmy;
 
+/**
+ * Stores information about a mission target for AI planning.
+ * - Tracks number of units targeting, closest distance, and total volume.
+ */
 struct MissionTargetInfo
 {
 	MissionTargetInfo() : iCount(0), iClosest(0), iVolume(0) {}
@@ -26,6 +33,9 @@ struct MissionTargetInfo
 //	Koshling - add caching to plot danger calculations
 #define PLOT_DANGER_CACHING
 #ifdef PLOT_DANGER_CACHING
+// C2C Optimization: Player-aware plot danger caching. Adding ePlayer allows the cache
+// to be safely shared or queried contextually, and increasing cache size to 128
+// matches C2C's scale (larger maps, more players, and heavier pathing queries).
 struct plotDangerCacheEntry
 {
 	plotDangerCacheEntry()
@@ -33,6 +43,7 @@ struct plotDangerCacheEntry
 		, plotY(-1)
 		, iRange(-1)
 		, bTestMoves(false)
+		, ePlayer(NO_PLAYER)
 		, iResult(-1)
 		, iLastUseCount(0)
 	{}
@@ -41,12 +52,17 @@ struct plotDangerCacheEntry
 	int plotY;
 	int iRange;
 	bool bTestMoves;
+	PlayerTypes ePlayer;
 	int iResult;
 	int iLastUseCount;
 };
 
-#define PLOT_DANGER_CACHE_SIZE 24
+#define PLOT_DANGER_CACHE_SIZE 128
 
+/**
+ * Manages a fixed-size cache of plot danger entries.
+ * - Provides clear method and tracks usage counter.
+ */
 class plotDangerCache
 {
 public:
@@ -54,13 +70,15 @@ public:
 
 	void clear()
 	{
+		PROFILE_EXTRA_FUNC();
 		if ( currentUseCounter != 0 )
 		{
 			currentUseCounter = 0;
 
-			for(int i = 0; i < PLOT_DANGER_CACHE_SIZE; i++)
+			foreach_(plotDangerCacheEntry& entry, entries)
 			{
-				entries[i].iLastUseCount = 0;
+				entry.iLastUseCount = 0;
+				entry.ePlayer = NO_PLAYER;
 			}
 		}
 	}
@@ -70,6 +88,12 @@ public:
 };
 #endif
 
+/**
+ * AI player logic for managing all aspects of a civilization.
+ * - Handles turn-based decisions, unit and city management, diplomacy, research, and victory strategies.
+ * - Contains routines for evaluating yields, commerce, military, city sites, attitudes, and more.
+ * - Integrates with city and unit AI, caching, and global game state.
+ */
 class CvPlayerAI : public CvPlayer
 {
 
@@ -81,7 +105,7 @@ public:
 	// inlined for performance reasons
 	static CvPlayerAI& getPlayer(PlayerTypes ePlayer)
 	{
-		FASSERT_BOUNDS(0, MAX_PLAYERS, ePlayer)
+		FASSERT_BOUNDS(0, MAX_PLAYERS, ePlayer);
 		return m_aPlayers[ePlayer];
 	}
 
@@ -109,8 +133,20 @@ public:
 
 	int AI_movementPriority(const CvSelectionGroup* pGroup) const;
 	void AI_unitUpdate();
+	bool AI_releaseStalledContractWaits();
 
 	void AI_makeAssignWorkDirty();
+	
+/**
+ * Assigns working plots and specialists for the city.
+ * - Updates special yield multipliers.
+ * - Removes invalid plots and excess specialists.
+ * - Ensures home plot is always worked.
+ * - Removes worst citizens if over population limit.
+ * - Assigns unassigned population to plots or specialists.
+ * - If automated, optimizes assignments for best yields.
+ * - Updates UI if city is selected.
+ */	
 	void AI_assignWorkingPlots();
 	void AI_updateAssignWork();
 
@@ -118,7 +154,7 @@ public:
 
 	void AI_doCentralizedProduction();
 
-	void AI_conquerCity(CvCity* pCity);
+	void AI_conquerCity(PlayerTypes eOldOwner, CvCity* pCity, bool bConquest, bool bTrade);
 
 	bool AI_acceptUnit(const CvUnit* pUnit) const;
 
@@ -140,31 +176,42 @@ public:
 
 	bool AI_isCommercePlot(const CvPlot* pPlot) const;
 
+	int AI_plotDangerUnitCheck
+	(
+		const CvPlot* plot0, const CvPlot* plotX,
+		const CvUnit* unitX, const TeamTypes eTeam,
+		const int iDistance = 0, const bool bTestMoves = false
+	)
+	const;
 	bool AI_getAnyPlotDanger(const CvPlot* pPlot, int iRange = -1, bool bTestMoves = true) const;
 	bool AI_getVisiblePlotDanger(const CvPlot* pPlot, int iRange, bool bAnimalOnly, CvSelectionGroup* group = NULL, int acceptableOdds = -1) const;
 	int AI_getPlotDanger(const CvPlot* pPlot, int iRange = -1, bool bTestMoves = true) const;
 	//	Koshling - internal bypasses cache
 	int AI_getPlotDangerInternal(const CvPlot* pPlot, int iRange, bool bTestMoves) const;
-	//int AI_getUnitDanger(CvUnit* pUnit, int iRange = -1, bool bTestMoves = true, bool bAnyDanger = true) const;
 
-	int AI_getWaterDanger(const CvPlot* pPlot, int iRange, bool bTestMoves = true) const;
+	int AI_getWaterDanger(const CvPlot* pPlot, int iRange) const;
 	int AI_countNumLocalNavy(const CvPlot* pPlot, int iRange) const;
 
 	bool AI_avoidScience() const;
+	bool AI_hasCriticalGold() const;
 	bool AI_isFinancialTrouble() const;
 	short AI_fundingHealth(int iExtraExpense = 0, int iExtraExpenseMod = 0) const;
 	short AI_safeFunding() const;
-	int AI_goldTarget() const;
+	int64_t AI_goldTarget() const;
 	int AI_goldValueAssessmentModifier() const;
 
-	TechTypes AI_bestTech(int iMaxPathLength = 1, bool bIgnoreCost = false, bool bAsync = false, TechTypes eIgnoreTech = NO_TECH, AdvisorTypes eIgnoreAdvisor = NO_ADVISOR) const;
+	TechTypes AI_bestTech(int iMaxPathLength = 1, bool bIgnoreCost = false, bool bAsync = false, TechTypes eIgnoreTech = NO_TECH, AdvisorTypes eIgnoreAdvisor = NO_ADVISOR);
 
-	int AI_techValue(TechTypes eTech, int iPathLength, bool bIgnoreCost, bool bAsync, const std::vector<int>& paiBonusClassRevealed, const std::vector<int>& paiBonusClassUnrevealed, const std::vector<int>& paiBonusClassHave) const;
-	int AI_techBuildingValue( TechTypes eTech, int iPathLength, bool &bEnablesWonder ) const;
-	int AI_techUnitValue( TechTypes eTech, int iPathLength, bool &bEnablesUnitWonder ) const;
 
-	int  AI_TechValueCached(TechTypes eTech, bool bAsync, const std::vector<int>& paiBonusClassRevealed, const std::vector<int>& paiBonusClassUnrevealed, const std::vector<int>& paiBonusClassHave, bool considerFollowOns = false) const;
-	int AI_averageCurrentTechValue(TechTypes eRelativeTo, bool bAsync, const std::vector<int>& paiBonusClassRevealed, const std::vector<int>& paiBonusClassUnrevealed, const std::vector<int>& paiBonusClassHave) const;
+	bool AI_canTrainSettler();
+
+	int AI_techValue(TechTypes eTech, int iPathLength, bool bIgnoreCost, bool bAsync);
+	int AI_techBuildingValue( TechTypes eTech, int iPathLength, bool &bEnablesWonder);
+	int AI_techUnitValue( TechTypes eTech, int iPathLength, bool &bEnablesUnitWonder);
+	int AI_heritageValue(const HeritageTypes eType) const;
+
+	int  AI_TechValueCached(TechTypes eTech, bool bAsync, bool considerFollowOns = false);
+	int AI_averageCurrentTechValue(TechTypes eRelativeTo, bool bAsync);
 	void AI_chooseFreeTech();
 	void AI_chooseResearch();
 	void AI_startGoldenAge();
@@ -217,9 +264,10 @@ public:
 	bool AI_counterPropose(PlayerTypes ePlayer, const CLinkList<TradeData>* pTheirList, const CLinkList<TradeData>* pOurList, CLinkList<TradeData>* pTheirInventory, CLinkList<TradeData>* pOurInventory, CLinkList<TradeData>* pTheirCounter, CLinkList<TradeData>* pOurCounter) const;
 
 	int AI_maxGoldTrade(PlayerTypes ePlayer) const;
-
 	int AI_maxGoldPerTurnTrade(PlayerTypes ePlayer) const;
-	int AI_goldPerTurnTradeVal(int iGoldPerTurn) const;
+
+	int AI_getGoldValue(const int iGold, const int iValuePercent) const;
+	int AI_getGoldFromValue(const int iValue, const int iValuePercent) const;
 
 	int AI_bonusVal(BonusTypes eBonus, int iChange = 1, bool bForTrade = false) const;
 	int AI_baseBonusVal(BonusTypes eBonus, bool bForTrade = false) const;
@@ -250,8 +298,8 @@ public:
 	int AI_totalWaterAreaUnitAIs(const CvArea* pArea, UnitAITypes eUnitAI) const;
 	int AI_countCargoSpace(UnitAITypes eUnitAI) const;
 
-	int AI_neededExplorers(const CvArea* pArea, bool bIdeal = false) const;
-	int AI_neededHunters(const CvArea* pArea, bool bIdeal = false) const;
+	int AI_neededExplorers(const CvArea* pArea) const;
+	int AI_neededHunters(const CvArea* pArea) const;
 	int AI_neededWorkers(const CvArea* pArea) const;
 	int AI_neededMissionaries(const CvArea* pArea, ReligionTypes eReligion) const;
 	int AI_neededExecutives(const CvArea* pArea, CorporationTypes eCorporation) const;
@@ -269,7 +317,7 @@ public:
 	int AI_plotTargetMissionAIsInternal(const CvPlot* pPlot, MissionAITypes eMissionAI, int iRange = 0, int* piClosest = NULL) const;
 	int AI_plotTargetMissionAIsInternalinCargoVolume(const CvPlot* pPlot, MissionAITypes eMissionAI, int iRange = 0, int* piClosest = NULL) const;
 	int AI_plotTargetMissionAIs(const CvPlot* pPlot, MissionAITypes eMissionAI, const CvSelectionGroup* pSkipSelectionGroup = NULL, int iRange = 0, int* piClosest = NULL) const;
-	int AI_plotTargetMissionAIsinCargoVolume(CvPlot* pPlot, MissionAITypes eMissionAI, const CvSelectionGroup* pSkipSelectionGroup = NULL, int iRange = 0, int* piClosest = NULL) const;
+	int AI_plotTargetMissionAIsinCargoVolume(const CvPlot* pPlot, MissionAITypes eMissionAI, const CvSelectionGroup* pSkipSelectionGroup = NULL, int iRange = 0, int* piClosest = NULL) const;
 	void AI_noteMissionAITargetCountChange(MissionAITypes eMissionAI, const CvPlot* pPlot, int iChange, const CvPlot* pUnitPlot, int iVolume);
 	int AI_unitTargetMissionAIs(const CvUnit* pUnit, MissionAITypes eMissionAI, const CvSelectionGroup* pSkipSelectionGroup = NULL) const;
 	int AI_unitTargetMissionAIs(const CvUnit* pUnit, MissionAITypes* aeMissionAI, int iMissionAICount, const CvSelectionGroup* pSkipSelectionGroup = NULL) const;
@@ -404,6 +452,7 @@ public:
 
 	int AI_getTotalCityThreat() const;
 	int AI_getTotalFloatingDefenseNeeded() const;
+	int AI_getTotalProperty(PropertyTypes eProperty) const;
 
 
 	int AI_getTotalAreaCityThreat(const CvArea* pArea, int* piLargestThreat = NULL) const;
@@ -426,7 +475,7 @@ public:
 
 	void AI_recalculateFoundValues(int iX, int iY, int iInnerRadius, int iOuterRadius) const;
 
-	int AI_bestCityValue(const CvPlot* pPlot, int iFoundValue) const;
+	int AI_getCitySitePriorityFactor(const CvPlot* pPlot) const;
 	void AI_updateCitySites(int iMinFoundValueThreshold, int iMaxSites) const;
 	void calculateCitySites() const;
 
@@ -444,6 +493,58 @@ public:
 
 	int AI_getUnitWeight(UnitTypes eUnit) const;
 	int AI_getUnitCombatWeight(UnitCombatTypes eUnitCombat) const;
+
+#ifdef CVARMY_BREAKSAVE
+	void AI_formArmies();   // Nouvelle fonction de cr�ation des arm�es
+#endif
+
+	/**
+	 * \brief Calculate the relative viability of a unit type for a given AI role.
+	 *
+	 * This function evaluates all units of the specified domain and determines
+	 * how strong the best unit of the requested AI type is compared to other
+	 * available units in the same domain.
+	 *
+	 * \param eUnitAI The Unit AI role to evaluate (e.g., UNITAI_ATTACK, UNITAI_CITY_DEFENSE).
+	 * \param eDomain The domain of units to consider (DOMAIN_LAND, DOMAIN_SEA, DOMAIN_AIR).
+	 *
+	 * \return An integer representing the relative strength of the best unit
+	 *         for the requested AI type compared to the strongest other unit
+	 *         in the same domain. The value is scaled by 100.
+	 *
+	 * \note
+	 * - Units are considered only if they are available to the player's team
+	 *   (weight > 0 or prerequisite tech known).
+	 * - Compares combat strength (`getCombat()`) of units.
+	 *
+	 * \see CvUnitInfo::getUnitAIType()
+	 * \see GET_TEAM()
+	 * \see CvPlayerAI::m_aiUnitWeights
+	 *
+	 * \dot
+	 * digraph AI_calculateUnitAIViability {
+	 *   rankdir=LR;
+	 *   node [shape=box, style=filled, color=lightblue];
+	 *   Start [label="Start"];
+	 *   ForEachUnit [label="For each unit in domain"];
+	 *   CheckAvailability [label="Check if player can use unit"];
+	 *   CheckUnitAI [label="Does unit match eUnitAI?"];
+	 *   UpdateBestAI [label="Update iBestUnitAIStrength"];
+	 *   UpdateBestOther [label="Update iBestOtherStrength"];
+	 *   ReturnValue [label="Return (100 * iBestUnitAIStrength) / iBestOtherStrength"];
+	 *
+	 *   Start -> ForEachUnit;
+	 *   ForEachUnit -> CheckAvailability;
+	 *   CheckAvailability -> CheckUnitAI [label="Yes"];
+	 *   CheckAvailability -> UpdateBestOther [label="No"];
+	 *   CheckUnitAI -> UpdateBestAI [label="Yes"];
+	 *   CheckUnitAI -> UpdateBestOther [label="No"];
+	 *   UpdateBestAI -> ForEachUnit;
+	 *   UpdateBestOther -> ForEachUnit;
+	 *   ForEachUnit -> ReturnValue [label="End loop"];
+	 * }
+	 * \enddot
+	 */
 	int AI_calculateUnitAIViability(UnitAITypes eUnitAI, DomainTypes eDomain) const;
 
 	void AI_updateBonusValue();
@@ -480,7 +581,23 @@ public:
 
 	int AI_workerTradeVal(const CvUnit* pUnit) const;
 	int AI_militaryUnitTradeVal(const CvUnit* pUnit) const;
-	int AI_corporationTradeVal(CorporationTypes eCorporation, PlayerTypes ePlayer) const;
+
+	void resetBonusClassTallyCache(const int iTurn = -1, const bool bFull = true);
+
+private:
+	// Toffer - Transient Caches
+	int* m_bonusClassRevealed;
+	int* m_bonusClassUnrevealed;
+	int* m_bonusClassHave;
+	int m_iBonusClassTallyCachedTurn;
+
+	// will be set to true first time every game load when settler can be built. (since it never happens that you can no longer build settler unit
+	bool m_canTrainSettler;
+
+	int AI_corporationTradeVal(CorporationTypes eCorporation) const;
+
+public:
+
 	int AI_pledgeVoteTradeVal(const VoteTriggeredData* kData, PlayerVoteTypes ePlayerVote, PlayerTypes ePlayer) const;
 	int AI_secretaryGeneralTradeVal(VoteSourceTypes eVoteSource, PlayerTypes ePlayer) const;
 
@@ -493,7 +610,7 @@ public:
 	int AI_getCivicAttitudeChange(PlayerTypes ePlayer) const;
 	int AI_promotionValue(PromotionTypes ePromotion, UnitTypes eUnit, const CvUnit* pUnit = NULL, UnitAITypes eUnitAI = NO_UNITAI, bool bForBuildUp = false) const;
 	int AI_unitCombatValue(UnitCombatTypes eUnitCombat, UnitTypes eUnit, const CvUnit* pUnit = NULL, UnitAITypes eUnitAI = NO_UNITAI) const;
-	TechTypes AI_bestReligiousTech(int iMaxPathLength, TechTypes eIgnoreTech, AdvisorTypes eIgnoreAdvisor) const;
+	TechTypes AI_bestReligiousTech(int iMaxPathLength, TechTypes eIgnoreTech, AdvisorTypes eIgnoreAdvisor);
 	int AI_religiousTechValue(TechTypes eTech) const;
 	int AI_ourCityValue(CvCity* pCity) const;
 
@@ -531,6 +648,21 @@ protected:
 
 	static CvPlayerAI* m_aPlayers;
 
+	// Last-resort watchdog for CvGame::updateMoves()/AI_unitUpdate(): if the exact same
+	// selection group is still the (sole) reason hasBusyUnit() is true across many
+	// consecutive engine ticks, something is stuck and not making progress on its own -
+	// see AI_unitUpdate(). Transient, not saved: resets naturally via group ID mismatch.
+	int m_iStuckBusyGroupID;
+	int m_iStuckBusyGroupTicks;
+
+	// How many times the watchdog above has had to force-resolve a given unit (keyed by head
+	// unit ID), across however many separate stuck episodes. A unit that keeps tripping the
+	// watchdog has some persistent, non-self-correcting problem (e.g. a permanently unreachable
+	// destination) rather than a one-off hiccup; after repeated recoveries it gets scrapped
+	// instead of indefinitely being reset only to get stuck again. Transient, not saved - count
+	// restarts from 0 after a reload.
+	std::map<int, int> m_stuckUnitRecoveryCounts;
+
 	int m_iPeaceWeight;
 	int m_iEspionageWeight;
 	int m_iAttackOddsChange;
@@ -550,6 +682,12 @@ protected:
 	bool m_bHasInquisitionTarget;
 
 	mutable TechTypes m_eBestResearchTarget; // Koshling - retain beeline target to minmimize need for recalculation
+
+	// C2C Optimization: Cached values to speed up AI_isFinancialTrouble check
+	mutable bool m_bFinancialTroubleCache;
+	mutable int m_iFinancialTroubleCacheTurn;
+	mutable int64_t m_iFinancialTroubleCacheGold;
+	mutable int m_iFinancialTroubleCacheNumCities;
 
 	mutable volatile int m_iAveragesCacheTurn;
 
@@ -594,9 +732,12 @@ protected:
 	bool m_bWasFinancialTrouble;
 	int m_iTurnLastProductionDirty;
 
+
 	void AI_doCounter();
 	void AI_doMilitary();
-	void AI_doResearch();
+
+	int heritagePropertiesValue(const CvHeritageInfo& heritage) const;
+
 public:
 	void AI_doCivics();
 protected:
@@ -608,7 +749,7 @@ protected:
 	void AI_doSplit();
 	void AI_doCheckFinancialTrouble();
 
-	bool AI_disbandUnit(int iExpThreshold, bool bObsolete);
+	bool AI_disbandUnit(int iExpThreshold);
 
 	int AI_getStrategyHash() const;
 	void AI_calculateAverages() const;
@@ -620,7 +761,7 @@ protected:
 	int AI_getHealthWeight(int iHealth, int iExtraPop) const;
 
 	void AI_convertUnitAITypesForCrush();
-	int AI_eventValue(EventTypes eEvent, const EventTriggeredData& kTriggeredData) const;
+	int AI_eventValue(EventTypes eEvent, const EventTriggeredData& kTriggeredData, std::vector<bool>* pvbVisited = NULL) const;
 
 	void AI_doEnemyUnitData();
 	void AI_invalidateCloseBordersAttitudeCache();
@@ -639,8 +780,8 @@ private:
 	static int plotDangerCacheReads;
 #endif
 
-	techPath* findBestPath(TechTypes eTech, int& valuePerUnitCost, bool bIgnoreCost, bool bAsync, const std::vector<int>& paiBonusClassRevealed, const std::vector<int>& paiBonusClassUnrevealed, const std::vector<int>& paiBonusClassHave) const;
-	int	 techPathValuePerUnitCost(techPath* path, TechTypes eTech, bool bIgnoreCost, bool bAsync, const std::vector<int>& paiBonusClassRevealed, const std::vector<int>& paiBonusClassUnrevealed, const std::vector<int>& paiBonusClassHave) const;
+	techPath* findBestPath(TechTypes eTech, int& valuePerUnitCost, bool bIgnoreCost, bool bAsync);
+	int	 techPathValuePerUnitCost(techPath* path, TechTypes eTech, bool bIgnoreCost, bool bAsync);
 	TechTypes findStartTech(techPath* path) const;
 
 	typedef stdext::hash_map<TechTypes, int> TechTypesValueMap;

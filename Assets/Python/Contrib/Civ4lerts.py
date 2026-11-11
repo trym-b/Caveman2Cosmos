@@ -6,7 +6,7 @@
 ## [o] = Partially implemented in the Civ4lerts mod
 ## [x] = Already implemented in CivIV
 ## [?] = Not sure if this applies in CivIV
-## 
+##
 ## Golden Age turns left
 ## At Year 1000 B.C. (QSC Save Submission)
 ## Within 10 tiles of domination limit
@@ -40,7 +40,7 @@
 ## City is working unimproved tiles
 ## Disconnected resources in our territory
 ## City is about to produce a great person
-## 
+##
 ## Other:
 ## City is under cultural pressure
 
@@ -94,16 +94,11 @@ class Civ4lerts:
 
 
 ## Displaying Alert Messages
-
-def addMessageAtPlot(iPlayer, message, icon, iX, iY):
-	"Displays an on-screen message with a popup icon that zooms to the given plot."
-	addMessage(iPlayer, message, icon, iX, iY, True, True)
-
 def addMessage(iPlayer, szTxt, icon=None, iX=-1, iY=-1, bOffArrow=False, bOnArrow=False):
 	"Displays an on-screen message."
 	"""
 	Make these alerts optionally show a delayable popup with various options.
-	a) show: 
+	a) show:
 
 	Happy: Zoom to City, Turn OFF avoid growth, Whip (maybe?), Ignore
 	Unhappy:  Zoom to City, Turn on Avoid Growth, Suggest cheapest military unit (with right civic), Open Resources screen in FA, Ignore. (for future = suggest building)
@@ -121,7 +116,7 @@ def addMessage(iPlayer, szTxt, icon=None, iX=-1, iY=-1, bOffArrow=False, bOnArro
 ## Base Alert Class
 class AbstractStatefulAlert:
 	"""
-	Provides a base class and several convenience functions for 
+	Provides a base class and several convenience functions for
 	implementing an alert that retains state between turns.
 	"""
 	def __init__(self, eventManager):
@@ -153,7 +148,7 @@ def getCityId(city):
 
 class AbstractCityAlertManager(AbstractStatefulAlert):
 	"""
-	Triggered when cities are acquired or lost, this event manager passes 
+	Triggered when cities are acquired or lost, this event manager passes
 	each off to a set of alert checkers.
 
 	All of the alerts are reset when the game is loaded or started.
@@ -169,9 +164,9 @@ class AbstractCityAlertManager(AbstractStatefulAlert):
 		alert.init()
 
 	def onCityAcquiredAndKept(self, argsList):
-		iPlayer, city = argsList
-		if iPlayer == GAME.getActivePlayer():
-			self._resetCity(city)
+		#iOwnerOld, iOwnerNew, city, bConquest, bTrade = argsList
+		if argsList[1] == GAME.getActivePlayer():
+			self._resetCity(argsList[2])
 
 	def onCityLost(self, argsList):
 		city = argsList[0]
@@ -185,7 +180,7 @@ class AbstractCityAlertManager(AbstractStatefulAlert):
 		player = GC.getActivePlayer()
 		for city in player.cities():
 			for alert in self.alerts:
-				alert.checkCity(city.getID(), city, ePlayer, player)
+				alert.checkCity(getCityId(city), city, ePlayer, player)
 
 	def _init(self):
 		"Initializes each alert."
@@ -301,7 +296,7 @@ class AbstractCityTestAlert(AbstractCityAlert):
 			if passed != willPass:
 				message, icon = self._getPendingAlertMessageIcon(city, willPass)
 		if message:
-			addMessageAtPlot(iPlayer, message, icon, city.getX(), city.getY())
+			addMessage(iPlayer, message, icon, city.getX(), city.getY(), True, True)
 
 	def _passedTest(self, cityId):
 		"Returns True if the city passed the test last turn."
@@ -354,14 +349,15 @@ class CityPendingGrowth(AbstractCityAlert):
 	def checkCity(self, cityId, city, iPlayer, player):
 		if Civ4lertsOpt.isShowCityPendingGrowthAlert():
 			if CityUtil.willGrowThisTurn(city):
-
-				message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_PENDING_GROWTH", (city.getName(), city.getPopulation() + 1))
-				addMessageAtPlot(iPlayer, message, "Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY())
-
+				addMessage(
+					iPlayer, TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_PENDING_GROWTH", (city.getName(), city.getPopulation() + 1)),
+					"Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY(), True, True
+				)
 			elif CityUtil.willShrinkThisTurn(city):
-
-				message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_PENDING_SHRINKAGE", (city.getName(), city.getPopulation() - 1))
-				addMessageAtPlot(iPlayer, message, "Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY())
+				addMessage(
+					iPlayer, TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_PENDING_SHRINKAGE", (city.getName(), city.getPopulation() - 1)),
+					"Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY(), True, True
+				)
 
 class CityGrowth(AbstractCityAlert):
 	"""
@@ -386,12 +382,15 @@ class CityGrowth(AbstractCityAlert):
 
 			if Civ4lertsOpt.isShowCityGrowthAlert():
 				if iPop > iOldPop:
-					message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_GROWTH", (city.getName(), iPop))
-					addMessageAtPlot(iPlayer, message, "Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY())
-
+					addMessage(
+						iPlayer, TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_GROWTH", (city.getName(), iPop)),
+						"Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY(), True, True
+					)
 				elif iPop < iOldPop and not bWhipOrDraft:
-					message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_SHRINKAGE", (city.getName(), iPop))
-					addMessageAtPlot(iPlayer, message, "Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY())
+					addMessage(
+						iPlayer, TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_SHRINKAGE", (city.getName(), iPop)),
+						"Art/Interface/Symbols/Food/food05.dds", city.getX(), city.getY(), True, True
+					)
 
 			self.populations[cityId] = iPop
 			self.CityWhipCounter[cityId] = iWhipCounter
@@ -571,19 +570,23 @@ class AbstractCanHurry(AbstractCityTestAlert):
 		self.keHurryType = GC.getInfoTypeForString(szHurryType)
 
 	def onCityBuildingUnit(self, argsList):
-		city, iUnit = argsList
+		city = argsList[0]
+		#iUnit = argsList[1]
 		self._onItemStarted(city)
 
 	def onCityBuildingBuilding(self, argsList):
-		city, iBuilding = argsList
+		city = argsList[0]
+		#iBuilding = argsList[1]
 		self._onItemStarted(city)
 
 	def onCityBuildingProject(self, argsList):
-		city, iProject = argsList
+		city = argsList[0]
+		#iProject = argsList[1]
 		self._onItemStarted(city)
 
 	def onCityBuildingProcess(self, argsList):
-		city, iProcess = argsList
+		city = argsList[0]
+		#iProcess = argsList[1]
 		self._onItemStarted(city)
 
 	def _onItemStarted(self, city):
@@ -617,7 +620,7 @@ class CanHurryPopulation(AbstractCanHurry):
 	"""
 	Displays an alert when a city can hurry using population.
 	"""
-	def __init__(self, eventManager): 
+	def __init__(self, eventManager):
 		AbstractCanHurry.__init__(self, eventManager)
 
 	def init(self):
@@ -632,19 +635,19 @@ class CanHurryPopulation(AbstractCanHurry):
 		if Civ4lertsOpt.isWhipAssistOverflowCountCurrentProduction():
 			iOverflow = iOverflow + city.getCurrentProductionDifference(True, False)
 		iAnger = city.getHurryAngerTimer() + city.flatHurryAngerLength()
-		iMaxOverflow = min(city.getProductionNeeded(), iOverflow)
+		iMaxOverflow = city.getMaxProductionOverflow()
 		iOverflowGold = max(0, iOverflow - iMaxOverflow) * GC.getDefineINT("MAXED_UNIT_GOLD_PERCENT") / 100
-		iOverflow =  100 * iMaxOverflow / city.getBaseYieldRateModifier(GC.getInfoTypeForString("YIELD_PRODUCTION"), city.getProductionModifier())
+		iOverflow = 100 * iMaxOverflow / city.getBaseYieldRateModifier(YieldTypes.YIELD_PRODUCTION, 0)
 		if iOverflowGold > 0:
 			return TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_CAN_HURRY_POP_PLUS_GOLD", (city.getName(), info.getDescription(), iPop, iOverflow, iAnger, iOverflowGold))
-		else:
-			return TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_CAN_HURRY_POP", (city.getName(), info.getDescription(), iPop, iOverflow, iAnger))
+
+		return TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_CITY_CAN_HURRY_POP", (city.getName(), info.getDescription(), iPop, iOverflow, iAnger))
 
 class CanHurryGold(AbstractCanHurry):
 	"""
 	Displays an alert when a city can hurry using gold.
 	"""
-	def __init__(self, eventManager): 
+	def __init__(self, eventManager):
 		AbstractCanHurry.__init__(self, eventManager)
 
 	def init(self):
@@ -673,19 +676,22 @@ class GoldTrade(AbstractStatefulAlert):
 		if (not Civ4lertsOpt.isShowGoldTradeAlert()):
 			return
 		playerID = GAME.getActivePlayer()
+		bFirstCheck = getattr(self, "bFirstCheck", True)
 		for rival in TradeUtil.getGoldTradePartners(playerID):
 			rivalID = rival.getID()
 			oldMaxGoldTrade = self._getMaxGoldTrade(playerID, rivalID)
 			newMaxGoldTrade = rival.AI_maxGoldTrade(playerID)
 			deltaMaxGoldTrade = newMaxGoldTrade - oldMaxGoldTrade
-			if deltaMaxGoldTrade >= Civ4lertsOpt.getGoldTradeThreshold():
+			if not bFirstCheck and deltaMaxGoldTrade >= Civ4lertsOpt.getGoldTradeThreshold():
 				message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_GOLD_TRADE", (rival.getName(), newMaxGoldTrade))
 				addMessage(playerID, message)
 				self._setMaxGoldTrade(playerID, rivalID, newMaxGoldTrade)
-			elif newMaxGoldTrade < oldMaxGoldTrade:
+			elif bFirstCheck or newMaxGoldTrade < oldMaxGoldTrade:
 				self._setMaxGoldTrade(playerID, rivalID, newMaxGoldTrade)
+		self.bFirstCheck = False
 
 	def _reset(self):
+		self.bFirstCheck = True
 		self.maxGoldTrade = {}
 		for player in range(GC.getMAX_PLAYERS()):
 			self.maxGoldTrade[player] = {}
@@ -711,20 +717,25 @@ class GoldPerTurnTrade(AbstractStatefulAlert):
 		if (not Civ4lertsOpt.isShowGoldPerTurnTradeAlert()):
 			return
 		playerID = GAME.getActivePlayer()
+		bFirstCheck = getattr(self, "bFirstCheck", True)
 		for rival in TradeUtil.getGoldTradePartners(playerID):
 			rivalID = rival.getID()
 			oldMaxGoldPerTurnTrade = self._getMaxGoldPerTurnTrade(playerID, rivalID)
 			newMaxGoldPerTurnTrade = rival.AI_maxGoldPerTurnTrade(playerID)
 			deltaMaxGoldPerTurnTrade = newMaxGoldPerTurnTrade - oldMaxGoldPerTurnTrade
-			if (deltaMaxGoldPerTurnTrade >= Civ4lertsOpt.getGoldPerTurnTradeThreshold()):
+			if not bFirstCheck and (deltaMaxGoldPerTurnTrade >= Civ4lertsOpt.getGoldPerTurnTradeThreshold()):
 				message = TRNSLTR.getText("TXT_KEY_CIV4LERTS_ON_GOLD_PER_TURN_TRADE", (rival.getName(), newMaxGoldPerTurnTrade))
 				addMessage(playerID, message)
 				self._setMaxGoldPerTurnTrade(playerID, rivalID, newMaxGoldPerTurnTrade)
 			else:
 				maxGoldPerTurnTrade = min(oldMaxGoldPerTurnTrade, newMaxGoldPerTurnTrade)
+				if bFirstCheck:
+					maxGoldPerTurnTrade = newMaxGoldPerTurnTrade
 				self._setMaxGoldPerTurnTrade(playerID, rivalID, maxGoldPerTurnTrade)
+		self.bFirstCheck = False
 
 	def _reset(self):
+		self.bFirstCheck = True
 		self.maxGoldPerTurnTrade = {}
 		for player in range(GC.getMAX_PC_PLAYERS()):
 			self.maxGoldPerTurnTrade[player] = {}
@@ -794,6 +805,7 @@ class RefusesToTalk(AbstractStatefulAlert):
 		iTeam = CyPlayer.getTeam()
 		CyTeam = GC.getTeam(iTeam)
 		refusals = self.refusals[iPlayer]
+		bFirstCheck = getattr(self, "bFirstCheck", True)
 		aSet = set()
 		for iPlayerX in range(GC.getMAX_PC_PLAYERS()):
 			if iPlayerX == iPlayer: continue
@@ -801,14 +813,16 @@ class RefusesToTalk(AbstractStatefulAlert):
 			if not CyPlayerX.isAlive() or CyPlayerX.isHuman() or CyPlayerX.isMinorCiv(): continue
 
 			iTeamX = CyPlayerX.getTeam()
-			if iTeamX == iTeam or not CyTeam.isHasMet(iTeamX) or CyTeam.isAtWar(iTeamX): continue
+			if iTeamX == iTeam or not CyTeam.isHasMet(iTeamX) or CyTeam.isAtWarWith(iTeamX): continue
 
 			if not CyPlayerX.AI_isWillingToTalk(iPlayer):
 				aSet.add(CyPlayerX.getID())
 
-		self.display(iPlayer, "TXT_KEY_CIV4LERTS_ON_WILLING_TO_TALK", refusals.difference(aSet))
-		self.display(iPlayer, "TXT_KEY_CIV4LERTS_ON_REFUSES_TO_TALK", aSet.difference(refusals))
+		if not bFirstCheck:
+			self.display(iPlayer, "TXT_KEY_CIV4LERTS_ON_WILLING_TO_TALK", refusals.difference(aSet))
+			self.display(iPlayer, "TXT_KEY_CIV4LERTS_ON_REFUSES_TO_TALK", aSet.difference(refusals))
 		self.refusals[iPlayer] = aSet
+		self.bFirstCheck = False
 
 	def display(self, eActivePlayer, key, players):
 		if GAME.getElapsedGameTurns() > 0:
@@ -819,6 +833,7 @@ class RefusesToTalk(AbstractStatefulAlert):
 					addMessage(eActivePlayer, message)
 
 	def _reset(self):
+		self.bFirstCheck = True
 		self.refusals = {}
 		for i in range(0,GC.getMAX_PC_PLAYERS()):
 			self.refusals[i] = set()
@@ -839,7 +854,9 @@ class WorstEnemy(AbstractStatefulAlert):
 		self.checkIfIsAnyOrHasMetAllTeams(eTeam, eRivalTeam)
 
 	def onChangeWar(self, argsList):
-		bIsWar, eTeam, eRivalTeam = argsList
+		#bIsWar = argsList[0]
+		eTeam = argsList[1]
+		eRivalTeam = argsList[2]
 		self.checkIfIsAnyOrHasMetAllTeams(eTeam, eRivalTeam)
 
 	def onCityRazed(self, argsList):
@@ -847,12 +864,10 @@ class WorstEnemy(AbstractStatefulAlert):
 		self.checkIfIsAnyOrHasMetAllTeams(city.getTeam(), GC.getPlayer(ePlayer).getTeam())
 
 	def onVassalState(self, argsList):
-		eMaster, eVassal, bVassal = argsList
+		eMaster = argsList[0]
+		eVassal = argsList[1]
+		#bVassal = argsList[2]
 		self.checkIfIsAnyOrHasMetAllTeams(eMaster, eVassal)
-
-	def onPlayerChangeStateReligion(self, argsList):
-		ePlayer, eNewReligion, eOldReligion = argsList
-		self.checkIfIsAnyOrHasMetAllTeams(GC.getPlayer(ePlayer).getTeam())
 
 	def checkIfIsAnyOrHasMetAllTeams(self, *eTeams):
 		"""
@@ -873,6 +888,7 @@ class WorstEnemy(AbstractStatefulAlert):
 		activeTeam = GC.getTeam(iActiveTeam)
 		enemies = self.enemies[eActivePlayer]
 		newEnemies = AttitudeUtil.getWorstEnemyTeams()
+		bFirstCheck = getattr(self, "bFirstCheck", True)
 		delayedMessages = {}
 		for eTeam, eNewEnemy in newEnemies.iteritems():
 			#RevolutionDCM fix
@@ -886,42 +902,46 @@ class WorstEnemy(AbstractStatefulAlert):
 					eNewEnemy = -1
 				if eOldEnemy != eNewEnemy:
 					enemies[eTeam] = eNewEnemy
-					if eNewEnemy == -1:
-						if eOldEnemy == iActiveTeam:
-							message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_YOU_NO_WORST_ENEMY", GC.getTeam(eTeam).getName())
+					if not bFirstCheck:
+						if eNewEnemy == -1:
+							if eOldEnemy == iActiveTeam:
+								message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_YOU_NO_WORST_ENEMY", GC.getTeam(eTeam).getName())
+							else:
+								message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_NO_WORST_ENEMY",
+										(GC.getTeam(eTeam).getName(), GC.getTeam(eOldEnemy).getName()))
+						elif eOldEnemy == -1:
+							message = None # handled below
+							if eNewEnemy not in delayedMessages:
+								delayedMessages[eNewEnemy] = GC.getTeam(eTeam).getName()
+							else:
+								delayedMessages[eNewEnemy] += u", " + GC.getTeam(eTeam).getName()
 						else:
-							message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_NO_WORST_ENEMY", 
-									(GC.getTeam(eTeam).getName(), GC.getTeam(eOldEnemy).getName()))
-					elif eOldEnemy == -1:
-						message = None # handled below
-						if eNewEnemy not in delayedMessages:
-							delayedMessages[eNewEnemy] = GC.getTeam(eTeam).getName()
-						else:
-							delayedMessages[eNewEnemy] += u", " + GC.getTeam(eTeam).getName()
-					else:
-						if eOldEnemy == iActiveTeam:
-							message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY_FROM_YOU", 
-									(GC.getTeam(eTeam).getName(), GC.getTeam(eNewEnemy).getName()))
-						elif eNewEnemy == iActiveTeam:
-							message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY_TO_YOU", 
-									(GC.getTeam(eTeam).getName(), GC.getTeam(eOldEnemy).getName()))
-						else:
-							message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY", 
-									(GC.getTeam(eTeam).getName(), GC.getTeam(eNewEnemy).getName(), GC.getTeam(eOldEnemy).getName()))
-					if message:
-						addMessage(eActivePlayer, message)
-		for eEnemy, haters in delayedMessages.iteritems():
-			if iActiveTeam == eEnemy:
-				message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_YOU_WORST_ENEMY", haters)
-			else:
-				message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_WORST_ENEMY", (haters, GC.getTeam(eEnemy).getName()))
-			addMessage(eActivePlayer, message)
+							if eOldEnemy == iActiveTeam:
+								message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY_FROM_YOU",
+										(GC.getTeam(eTeam).getName(), GC.getTeam(eNewEnemy).getName()))
+							elif eNewEnemy == iActiveTeam:
+								message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY_TO_YOU",
+										(GC.getTeam(eTeam).getName(), GC.getTeam(eOldEnemy).getName()))
+							else:
+								message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_SWITCH_WORST_ENEMY",
+										(GC.getTeam(eTeam).getName(), GC.getTeam(eNewEnemy).getName(), GC.getTeam(eOldEnemy).getName()))
+						if message:
+							addMessage(eActivePlayer, message)
+		if not bFirstCheck:
+			for eEnemy, haters in delayedMessages.iteritems():
+				if iActiveTeam == eEnemy:
+					message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_YOU_WORST_ENEMY", haters)
+				else:
+					message = BugUtil.getText("TXT_KEY_CIV4LERTS_ON_WORST_ENEMY", (haters, GC.getTeam(eEnemy).getName()))
+				addMessage(eActivePlayer, message)
+		self.bFirstCheck = False
 
 	def _reset(self):
 		"""
 		The enemies dictionary maps all teams to their worst enemy.
 		It will hold -1 for any team or enemy the active team hasn't met.
 		"""
+		self.bFirstCheck = True
 		self.enemies = {}
 		for i in range(0,GC.getMAX_PC_PLAYERS()):
 			self.enemies[i] = [-1] * GC.getMAX_TEAMS()

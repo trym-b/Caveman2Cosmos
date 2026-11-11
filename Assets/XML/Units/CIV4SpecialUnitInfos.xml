@@ -70,13 +70,6 @@
 			</CarrierUnitAIs>
 		</SpecialUnitInfo>
 		<SpecialUnitInfo>
-			<Type>SPECIALUNIT_UNITED_NATIONS</Type>
-			<Description>TXT_KEY_SPECIALUNIT_UNITED_NATIONS</Description>
-			<bValid>1</bValid>
-			<bCityLoad>0</bCityLoad>
-			<CarrierUnitAIs/>
-		</SpecialUnitInfo>
-		<SpecialUnitInfo>
 			<Type>SPECIALUNIT_VTOL</Type>
 			<Description>TXT_KEY_SPECIALUNIT_VTOL</Description>
 			<bValid>1</bValid>

@@ -5,7 +5,9 @@
 			<Type>PROJECT_THE_INTERNET</Type>
 			<Description>TXT_KEY_PROJECT_THE_INTERNET</Description>
 			<Civilopedia>TXT_KEY_PROJECT_THE_INTERNET_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_THE_INTERNET_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_FIBER_OPTICS</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>14760</iCost>
@@ -20,8 +22,13 @@
 				</BonusProductionModifier>
 			</BonusProductionModifiers>
 			<iWorldTradeRoutes>1</iWorldTradeRoutes>
+            <YieldModifiers>
+                <iYield>0</iYield>
+                <iYield>0</iYield>
+                <iYield>10</iYield>
+            </YieldModifiers>
 			<CommerceModifiers>
-				<iCommerce>10</iCommerce>
+				<iCommerce>0</iCommerce>
 				<iCommerce>10</iCommerce>
 				<iCommerce>10</iCommerce>
 			</CommerceModifiers>
@@ -32,7 +39,9 @@
 			<Type>PROJECT_SDI</Type>
 			<Description>TXT_KEY_PROJECT_SDI</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SDI_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SDI_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_COMMUNICATION_NETWORKS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>15400</iCost>
@@ -49,10 +58,12 @@
 			<Button>,Art/Interface/Buttons/Buildings/SDI.dds,Art/Interface/Buttons/Buildings_Atlas.dds,1,6</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_MISSILE_DEFENCE_I</Type>
-			<Description>TXT_KEY_PROJECT_MISSILE_DEFENCE_I</Description>
+			<Type>PROJECT_AA_MISSILE_DEFENSES</Type>
+			<Description>TXT_KEY_PROJECT_AA_MISSILE_DEFENSES</Description>
 			<Civilopedia>TXT_KEY_PROJECT_MISSILE_DEFENCE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_MISSILE_DEFENCE_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_GUIDED_WEAPONS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>12840</iCost>
@@ -68,10 +79,12 @@
 			<Button>art/Interface/Buttons/Projects/MissileAAGun.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_MISSILE_DEFENCE_II</Type>
-			<Description>TXT_KEY_PROJECT_MISSILE_DEFENCE_II</Description>
+			<Type>PROJECT_LASER_AUTO_DEFENSES</Type>
+			<Description>TXT_KEY_PROJECT_LASER_AUTO_DEFENSES</Description>
 			<Civilopedia>TXT_KEY_PROJECT_MISSILE_DEFENCE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_MISSILE_DEFENCE_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_PHOTON_THERMODYNAMICS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>33160</iCost>
@@ -91,10 +104,12 @@
 			<Button>art/Interface/Buttons/Projects/LaserDefenses.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_MISSILE_RAILGUN</Type>
-			<Description>TXT_KEY_PROJECT_MISSILE_RAILGUN</Description>
+			<Type>PROJECT_ANTI_MISSILE_RAILGUN</Type>
+			<Description>TXT_KEY_PROJECT_ANTI_MISSILE_RAILGUN</Description>
 			<Civilopedia>TXT_KEY_PROJECT_MISSILE_DEFENCE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_MISSILE_DEFENCE_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_RAILGUN</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>21000</iCost>
@@ -120,7 +135,9 @@
 			<Type>PROJECT_APOLLO_PROGRAM</Type>
 			<Description>TXT_KEY_PROJECT_APOLLO_PROGRAM</Description>
 			<Civilopedia>TXT_KEY_PROJECT_APOLLO_PROGRAM_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_APOLLO_PROGRAM_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
 			<TechPrereq>TECH_ASTRO_ENVIRONMENTAL_SYSTEMS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
@@ -137,11 +154,13 @@
 			<Type>PROJECT_SS_COCKPIT</Type>
 			<Description>TXT_KEY_PROJECT_SS_COCKPIT</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_COCKPIT_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_INTERACTIVE_GLASS</TechPrereq>
+			<TechPrereq>TECH_MOLECULAR_SCANNING</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
-			<iCost>33160</iCost>
+			<iCost>57640</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -167,11 +186,13 @@
 			<Type>PROJECT_SS_LIFE_SUPPORT</Type>
 			<Description>TXT_KEY_PROJECT_SS_LIFE_SUPPORT</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_LIFE_SUPPORT_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_ADVANCED_ENVIRONMENTAL_SYSTEMS</TechPrereq>
+			<TechPrereq>TECH_EXTRATERRESTRIAL_AGRICULTURE</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
-			<iCost>25960</iCost>
+			<iCost>62440</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -197,11 +218,13 @@
 			<Type>PROJECT_SS_STASIS_CHAMBER</Type>
 			<Description>TXT_KEY_PROJECT_SS_STASIS_CHAMBER</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_STASIS_CHAMBER_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_CRYONICS</TechPrereq>
+			<TechPrereq>TECH_NANOTROIDS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
-			<iCost>43640</iCost>
+			<iCost>62440</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -221,11 +244,13 @@
 			<Type>PROJECT_SS_DOCKING_BAY</Type>
 			<Description>TXT_KEY_PROJECT_SS_DOCKING_BAY</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_DOCKING_BAY_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_COMMERCIAL_SPACEFLIGHT</TechPrereq>
+			<TechPrereq>TECH_NANOMORPHICS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
-			<iCost>19240</iCost>
+			<iCost>53240</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -251,11 +276,13 @@
 			<Type>PROJECT_SS_ENGINE</Type>
 			<Description>TXT_KEY_PROJECT_SS_ENGINE</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_ENGINE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_MASS_DRIVER</TechPrereq>
+			<TechPrereq>TECH_NUCLEAR_PULSE_PROPULSION</TechPrereq>
 			<iMaxTeamInstances>2</iMaxTeamInstances>
-			<iCost>27080</iCost>
+			<iCost>62440</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -282,11 +309,13 @@
 			<Type>PROJECT_SS_CASING</Type>
 			<Description>TXT_KEY_PROJECT_SS_CASING</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_CASING_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_SUPERSTRONG_ALLOYS</TechPrereq>
+			<TechPrereq>TECH_NANOSHIELDING</TechPrereq>
 			<iMaxTeamInstances>5</iMaxTeamInstances>
-			<iCost>33160</iCost>
+			<iCost>55240</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -319,11 +348,13 @@
 			<Type>PROJECT_SS_THRUSTERS</Type>
 			<Description>TXT_KEY_PROJECT_SS_THRUSTERS</Description>
 			<Civilopedia>TXT_KEY_PROJECT_SS_THRUSTERS_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_SPACE_SHIP_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<VictoryPrereq>VICTORY_SPACE_RACE</VictoryPrereq>
-			<TechPrereq>TECH_FUSION</TechPrereq>
+			<TechPrereq>TECH_SOLAR_ORDNANCE</TechPrereq>
 			<iMaxTeamInstances>5</iMaxTeamInstances>
-			<iCost>25960</iCost>
+			<iCost>60040</iCost>
 			<bSpaceship>1</bSpaceship>
 			<PrereqProjects>
 				<PrereqProject>
@@ -356,7 +387,9 @@
 			<Type>PROJECT_FIRST_CLONED_MAMMAL</Type>
 			<Description>TXT_KEY_PROJECT_FIRST_CLONED_MAMMAL</Description>
 			<Civilopedia>TXT_KEY_PROJECT_FIRST_CLONED_MAMMAL_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_FIRST_CLONED_MAMMAL_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_CLONING</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>15400</iCost>
@@ -370,14 +403,16 @@
 			<Button>Art/Interface/Buttons/Buildings/Cloned_mammal.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_HUBBLE</Type>
-			<Description>TXT_KEY_PROJECT_HUBBLE</Description>
-			<Civilopedia>TXT_KEY_PROJECT_HUBBLE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_HUBBLE_STRATEGY</Strategy>
+			<Type>PROJECT_HUBBLE_SPACE_TELESCOPE</Type>
+			<Description>TXT_KEY_PROJECT_HUBBLE_SPACE_TELESCOPE</Description>
+			<Civilopedia>TXT_KEY_PROJECT_HUBBLE_SPACE_TELESCOPE_PEDIA</Civilopedia>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_ASTRONAUTICS</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>11800</iCost>
-			<EveryoneSpecialBuilding>SPECIALBUILDING_DEEP_SPACE_RESEARCH</EveryoneSpecialBuilding>
+			<EveryoneSpecialBuilding>SPECIALBUILDING_DEEP_SPACE_RESEARCH_INSTITUTE</EveryoneSpecialBuilding>
 			<BonusProductionModifiers>
 				<BonusProductionModifier>
 					<BonusType>BONUS_ALUMINUM_INGOTS</BonusType>
@@ -388,10 +423,12 @@
 			<Button>art/Interface/Buttons/Projects/hubble.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_ENCYCLOPEDIE</Type>
-			<Description>TXT_KEY_PROJECT_ENCYCLOPEDIE</Description>
-			<Civilopedia>TXT_KEY_PROJECT_ENCYCLOPEDIE_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_ENCYCLOPEDIE_STRATEGY</Strategy>
+			<Type>PROJECT_ENCYCLOPEDIA</Type>
+			<Description>TXT_KEY_PROJECT_ENCYCLOPEDIA</Description>
+			<Civilopedia>TXT_KEY_PROJECT_ENCYCLOPEDIA_PEDIA</Civilopedia>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_LIBERALISM</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>4120</iCost>
@@ -404,10 +441,12 @@
 			<Button>Art/Interface/Buttons/Buildings/CodeCivil.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_IST</Type>
-			<Description>TXT_KEY_PROJECT_IST</Description>
-			<Civilopedia>TXT_KEY_PROJECT_IST_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_IST_STRATEGY</Strategy>
+			<Type>PROJECT_INTERNATIONAL_SPACE_STATION</Type>
+			<Description>TXT_KEY_PROJECT_INTERNATIONAL_SPACE_STATION</Description>
+			<Civilopedia>TXT_KEY_PROJECT_INTERNATIONAL_SPACE_STATION_PEDIA</Civilopedia>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_SPACE_STATIONS</TechPrereq>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>13480</iCost>
@@ -425,18 +464,23 @@
 			<Type>PROJECT_ITER</Type>
 			<Description>TXT_KEY_PROJECT_ITER</Description>
 			<Civilopedia>TXT_KEY_PROJECT_ITER_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_ITER_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_CONTROLLED_PLASMA</TechPrereq>
+			<MovieDefineTag>ART_DEF_MOVIE_FUSION_PLANT</MovieDefineTag>
 			<iMaxTeamInstances>1</iMaxTeamInstances>
 			<iCost>18440</iCost>
-			<EveryoneSpecialBuilding>SPECIALBUILDING_FUSION_PLANT</EveryoneSpecialBuilding>
+			<EveryoneSpecialBuilding>SPECIALBUILDING_D_T_FUSION_POWER_PLANT</EveryoneSpecialBuilding>
 			<Button>Art/Interface/Buttons/buildings/ITER.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_IMF</Type>
-			<Description>TXT_KEY_PROJECT_IMF</Description>
-			<Civilopedia>TXT_KEY_PROJECT_IMF_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_IMF_STRATEGY</Strategy>
+			<Type>PROJECT_INTERNATIONAL_MONETARY_FUND</Type>
+			<Description>TXT_KEY_PROJECT_INTERNATIONAL_MONETARY_FUND</Description>
+			<Civilopedia>TXT_KEY_PROJECT_INTERNATIONAL_MONETARY_FUND_PEDIA</Civilopedia>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_GLOBALIZATION</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>9440</iCost>
@@ -450,21 +494,25 @@
 			<Button>Art/Interface/Buttons/buildings/IMF.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_EDEN</Type>
-			<Description>TXT_KEY_PROJECT_EDEN</Description>
-			<Civilopedia>TXT_KEY_PROJECT_EDEN_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_PROJECT_EDEN_STRATEGY</Strategy>
+			<Type>PROJECT_EDEN_PROJECT</Type>
+			<Description>TXT_KEY_PROJECT_EDEN_PROJECT</Description>
+			<Civilopedia>TXT_KEY_PROJECT_EDEN_PROJECT_PEDIA</Civilopedia>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_WEATHER_CONTROL</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>55240</iCost>
-			<MovieDefineTag>ART_DEF_MOVIE_EDEN</MovieDefineTag>
+						<MovieDefineTag>ART_DEF_MOVIE_EDEN</MovieDefineTag>
 			<Button>Art/Interface/Buttons/Buildings/Eden.dds</Button>
 		</ProjectInfo>
 		<ProjectInfo>
 			<Type>PROJECT_CURE_FOR_CANCER</Type>
 			<Description>TXT_KEY_BUILDING_CANCER</Description>
 			<Civilopedia>TXT_KEY_BUILDING_CANCER_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_BUILDING_CANCER_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_PERSONALIZED_HEALTH</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>21000</iCost>
@@ -475,10 +523,12 @@
 			<Button>,Art/Interface/Buttons/Buildings/Cancer.dds,Art/Interface/Buttons/RoM_Building_Atlas.dds,5,2</Button>
 		</ProjectInfo>
 		<ProjectInfo>
-			<Type>PROJECT_HUMAN_GENOME</Type>
+			<Type>PROJECT_HUMAN_GENOME_PROJECT</Type>
 			<Description>TXT_KEY_BUILDING_HUMAN_GENOME_PROJECT</Description>
 			<Civilopedia>TXT_KEY_BUILDING_HUMAN_GENOME_PROJECT_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_BUILDING_HUMAN_GENOME_PROJECT_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_GENETICS</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>12840</iCost>
@@ -493,7 +543,9 @@
 			<Type>PROJECT_LONGEVITY</Type>
 			<Description>TXT_KEY_BUILDING_LONGEVITY</Description>
 			<Civilopedia>TXT_KEY_BUILDING_LONGEVITY_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_BUILDING_LONGEVITY_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_ANTI_AGING_MEDICINE</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>31800</iCost>
@@ -512,15 +564,18 @@
 			<Type>PROJECT_THEORY_OF_EVOLUTION</Type>
 			<Description>TXT_KEY_BUILDING_THEORY_OF_EVOLUTION</Description>
 			<Civilopedia>TXT_KEY_BUILDING_THEORY_OF_EVOLUTION_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_BUILDING_THEORY_OF_EVOLUTION_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_PALEONTOLOGY</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>4440</iCost>
 			<iGlobalHealth>1</iGlobalHealth>
 			<iGlobalHappiness>1</iGlobalHappiness>
 			<CommerceModifiers>
-				<iCommerce>10</iCommerce>
-				<iCommerce>15</iCommerce>
+				<iCommerce>0</iCommerce>
+				<iCommerce>20</iCommerce>
+				<iCommerce>5</iCommerce>
 			</CommerceModifiers>
 			<Button>,Art/Interface/Buttons/Buildings/Evolution.dds,Art/Interface/Buttons/RoM_Building_Atlas.dds,8,3</Button>
 		</ProjectInfo>
@@ -528,13 +583,20 @@
 			<Type>PROJECT_THEORY_OF_EVERYTHING</Type>
 			<Description>TXT_KEY_BUILDING_THEORY_OF_EVERYTHING</Description>
 			<Civilopedia>TXT_KEY_BUILDING_THEORY_OF_EVERYTHING_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_BUILDING_THEORY_OF_EVERYTHING_STRATEGY</Strategy>
+			<MapCategoryTypes>
+				<MapCategoryType>MAPCATEGORY_EARTH</MapCategoryType>
+			</MapCategoryTypes>
 			<TechPrereq>TECH_SUPERSTRING_THEORY</TechPrereq>
 			<iMaxGlobalInstances>1</iMaxGlobalInstances>
 			<iCost>16040</iCost>
 			<iGlobalHappiness>1</iGlobalHappiness>
+            <YieldModifiers>
+                <iYield>0</iYield>
+                <iYield>0</iYield>
+                <iYield>10</iYield>
+            </YieldModifiers>
 			<CommerceModifiers>
-				<iCommerce>10</iCommerce>
+				<iCommerce>0</iCommerce>
 				<iCommerce>25</iCommerce>
 			</CommerceModifiers>
 			<Button>,Art/Interface/Buttons/Techtree/TheoryofEverything.dds,Art/Interface/Buttons/RoM_Techtree_Atlas2.dds,4,2</Button>

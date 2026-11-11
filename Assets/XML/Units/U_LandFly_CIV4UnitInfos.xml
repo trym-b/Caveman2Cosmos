@@ -7,6 +7,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -26,7 +27,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_AUTOGYRO</Description>
 			<Civilopedia>TXT_KEY_UNIT_AUTOGYRO_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_AUTOGYRO_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -141,6 +141,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -162,7 +163,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_GUNSHIP</Description>
 			<Civilopedia>TXT_KEY_UNIT_GUNSHIP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_GUNSHIP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -277,6 +277,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -298,7 +299,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_AH64_GUNSHIP</Description>
 			<Civilopedia>TXT_KEY_UNIT_GUNSHIP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_GUNSHIP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -421,6 +421,7 @@
 				<SubCombatType>UNITCOMBAT_STEALTH</SubCombatType>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -442,7 +443,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_STEALTH_GUNSHIP</Description>
 			<Civilopedia>TXT_KEY_UNIT_GUNSHIP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_STEALTH_GUNSHIP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -563,6 +563,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -585,7 +586,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_HYBRID_GUNSHIP</Description>
 			<Civilopedia>TXT_KEY_UNIT_HYBRID_GUNSHIP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_HYBRID_GUNSHIP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -701,6 +701,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_HUMAN</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -724,7 +725,6 @@
 			<DefaultUnitAI>UNITAI_PARADROP</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_DROPSHIP</Description>
 			<Civilopedia>TXT_KEY_UNIT_DROPSHIP_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_DROPSHIP_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -848,6 +848,7 @@
 			<SubCombatTypes>
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_AI</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -869,7 +870,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_UNMANNED_HELICOPTER</Description>
 			<Civilopedia>TXT_KEY_UNIT_UNMANNED_HELICOPTER_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_UNMANNED_HELICOPTER_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>
@@ -990,6 +990,7 @@
 				<SubCombatType>UNITCOMBAT_COMBATANT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_ROBOT</SubCombatType>
 				<SubCombatType>UNITCOMBAT_SPECIES_AI</SubCombatType>
+				<SubCombatType>UNITCOMBAT_GUNSHIP</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_METHOD_DISTANCE_ONLY</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_H2H_VEHICULAR</SubCombatType>
 				<SubCombatType>UNITCOMBAT_WEAPON_STYLE_DIST_VEHICULAR</SubCombatType>
@@ -1012,7 +1013,6 @@
 			<DefaultUnitAI>UNITAI_ATTACK</DefaultUnitAI>
 			<Description>TXT_KEY_UNIT_DROID_HELICOPTER</Description>
 			<Civilopedia>TXT_KEY_UNIT_DROID_HELICOPTER_PEDIA</Civilopedia>
-			<Strategy>TXT_KEY_UNIT_DROID_HELICOPTER_STRATEGY</Strategy>
 			<Advisor>ADVISOR_MILITARY</Advisor>
 			<bNoCapture>1</bNoCapture>
 			<bMilitarySupport>1</bMilitarySupport>

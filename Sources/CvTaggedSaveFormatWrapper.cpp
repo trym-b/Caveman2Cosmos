@@ -1,10 +1,19 @@
 // CvTaggedSaveFormatWrapper.cpp
 
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
+#include "CvBonusInfo.h"
 #include "CvBuildingInfo.h"
 #include "CvGlobals.h"
+#include "CvImprovementInfo.h"
+#include "CvBonusInfo.h"
 #include "CvInfos.h"
+#include "CvTraitInfo.h"
+#include "CvUnitCombatInfo.h"
 #include "CvPopupInfo.h"
+#include "CvHeritageInfo.h"
 
 #ifdef _DEBUG
 //#define	DETAILED_TRACE	1
@@ -35,28 +44,28 @@ public:
 	virtual void	Rewind() { m_wrapped->Rewind(); }
 	virtual bool	AtEnd() { return m_wrapped->AtEnd(); }
 	virtual void	FastFwd() { m_wrapped->FastFwd(); }
-	virtual unsigned int  GetPosition() const { return m_lenRead; }
-	virtual void    SetPosition(unsigned int position) { m_wrapped->SetPosition(position); }
+	virtual uint32_t  GetPosition() const { return m_lenRead; }
+	virtual void    SetPosition(uint32_t position) { m_wrapped->SetPosition(position); }
 	virtual void    Truncate() { m_wrapped->Truncate(); }
 	virtual void	Flush() { m_wrapped->Flush(); }
-	virtual unsigned int	GetEOF() const { return m_wrapped->GetEOF(); }
-	virtual unsigned int			GetSizeLeft() const { return m_wrapped->GetSizeLeft(); }
+	virtual uint32_t	GetEOF() const { return m_wrapped->GetEOF(); }
+	virtual uint32_t			GetSizeLeft() const { return m_wrapped->GetSizeLeft(); }
 	virtual void	CopyToMem(void* mem) { m_wrapped->CopyToMem(mem); }
-	
-	virtual unsigned int	WriteString(const wchar_t* szName) { return m_wrapped->WriteString(szName); }
-	virtual unsigned int	WriteString(const char* szName) { return m_wrapped->WriteString(szName); }
-	virtual unsigned int	WriteString(const std::string& szName) { return m_wrapped->WriteString(szName); }
-	virtual unsigned int	WriteString(const std::wstring& szName) { return m_wrapped->WriteString(szName); }
-	virtual unsigned int	WriteString(int count, std::string values[]) { return m_wrapped->WriteString(count,values); }
-	virtual unsigned int	WriteString(int count, std::wstring values[]) { return m_wrapped->WriteString(count,values); }
-	
-	virtual unsigned int	ReadString(char* szName){ return m_wrapped->ReadString(szName); m_lenRead += strlen(szName); }
-	virtual unsigned int	ReadString(wchar_t* szName) { return m_wrapped->ReadString(szName); m_lenRead += wcslen(szName); }
-	virtual unsigned int	ReadString(std::string& szName) { return m_wrapped->ReadString(szName); m_lenRead += szName.length(); }
-	virtual unsigned int	ReadString(std::wstring& szName) { return m_wrapped->ReadString(szName); m_lenRead += 2*szName.length(); }
-	virtual unsigned int	ReadString(int count, std::string values[]) { return m_wrapped->ReadString(count,values); m_lenRead += count*values[0].length(); }
-	virtual unsigned int	ReadString(int count, std::wstring values[]) { return m_wrapped->ReadString(count,values); m_lenRead += 2*count*values[0].length(); }
-	
+
+	virtual uint32_t	WriteString(const wchar_t* szName) { return m_wrapped->WriteString(szName); }
+	virtual uint32_t	WriteString(const char* szName) { return m_wrapped->WriteString(szName); }
+	virtual uint32_t	WriteString(const std::string& szName) { return m_wrapped->WriteString(szName); }
+	virtual uint32_t	WriteString(const std::wstring& szName) { return m_wrapped->WriteString(szName); }
+	virtual uint32_t	WriteString(int count, std::string values[]) { return m_wrapped->WriteString(count,values); }
+	virtual uint32_t	WriteString(int count, std::wstring values[]) { return m_wrapped->WriteString(count,values); }
+
+	virtual uint32_t	ReadString(char* szName){ return m_wrapped->ReadString(szName); m_lenRead += strlen(szName); }
+	virtual uint32_t	ReadString(wchar_t* szName) { return m_wrapped->ReadString(szName); m_lenRead += wcslen(szName); }
+	virtual uint32_t	ReadString(std::string& szName) { return m_wrapped->ReadString(szName); m_lenRead += szName.length(); }
+	virtual uint32_t	ReadString(std::wstring& szName) { return m_wrapped->ReadString(szName); m_lenRead += 2*szName.length(); }
+	virtual uint32_t	ReadString(int count, std::string values[]) { return m_wrapped->ReadString(count,values); m_lenRead += count*values[0].length(); }
+	virtual uint32_t	ReadString(int count, std::wstring values[]) { return m_wrapped->ReadString(count,values); m_lenRead += 2*count*values[0].length(); }
+
 	virtual char*		ReadString() { char* result = m_wrapped->ReadString(); m_lenRead += (result == NULL ? 0 : strlen(result)); return result; }
 	virtual wchar_t*	ReadWideString() { wchar_t* result = m_wrapped->ReadWideString(); m_lenRead += (result == NULL ? 0 : 2*wcslen(result)); return result; }
 	virtual void		Read(char *arg) { m_wrapped->Read(arg); m_lenRead++;}
@@ -70,14 +79,19 @@ public:
 	virtual void		Read(int count, short values[]){ m_wrapped->Read(count, values); m_lenRead += count*2;}
 	virtual void		Read(int count, uint16_t values[]) { m_wrapped->Read(count, values); m_lenRead += count*2;}
 	virtual void		Read(int* i){ m_wrapped->Read(i); m_lenRead += 4;}
-	virtual void		Read(unsigned int* i) { m_wrapped->Read(i); m_lenRead += 4;}
+	virtual void		Read(uint32_t* i) { m_wrapped->Read(i); m_lenRead += 4;}
 	virtual void 		Read(int count, int values[]) { m_wrapped->Read(count, values); m_lenRead += 4*count;}
-	virtual void 		Read(int count, unsigned int values[]) { m_wrapped->Read(count, values); m_lenRead += 4*count; }
+	virtual void 		Read(int count, uint32_t values[]) { m_wrapped->Read(count, values); m_lenRead += 4*count; }
 
 	virtual void		Read(long* l) { m_wrapped->Read(l); m_lenRead += 4;}
 	virtual void		Read(unsigned long* l)  { m_wrapped->Read(l); m_lenRead += 4;}
 	virtual void 		Read(int count, long values[]) { m_wrapped->Read(count, values); m_lenRead += 4*count;}
 	virtual void 		Read(int count, unsigned long values[])  { m_wrapped->Read(count, values); m_lenRead += 4*count;}
+
+	virtual void		Read(int64_t* ll) { m_wrapped->Read(ll); m_lenRead += 4; }
+	virtual void		Read(uint64_t* ll) { m_wrapped->Read(ll); m_lenRead += 4; }
+	virtual void 		Read(int count, int64_t values[]) { m_wrapped->Read(count, values); m_lenRead += 4 * count; }
+	virtual void 		Read(int count, uint64_t values[]) { m_wrapped->Read(count, values); m_lenRead += 4 * count; }
 
 	virtual void		Read(float* value) { m_wrapped->Read(value); m_lenRead += sizeof(float);}
 	virtual void		Read(int count, float values[]) { m_wrapped->Read(count, values); m_lenRead += count*sizeof(float);}
@@ -99,14 +113,19 @@ public:
 	virtual void		Write(int count, const uint16_t values[]) { m_wrapped->Write(count, values); }
 
 	virtual void		Write(int value) { m_wrapped->Write(value); }
-	virtual void		Write(unsigned int value) { m_wrapped->Write(value); }
+	virtual void		Write(uint32_t value) { m_wrapped->Write(value); }
 	virtual void 		Write(int count, const int values[]) { m_wrapped->Write(count, values); }
-	virtual void		Write(int count, const unsigned int values[])  { m_wrapped->Write(count, values); }
+	virtual void		Write(int count, const uint32_t values[])  { m_wrapped->Write(count, values); }
 
 	virtual void		Write(long value) { m_wrapped->Write(value); }
 	virtual void		Write(unsigned long  value) { m_wrapped->Write(value); }
 	virtual void 		Write(int count, const long values[]) { m_wrapped->Write(count, values); }
 	virtual void		Write(int count, const unsigned long values[]) { m_wrapped->Write(count, values); }
+
+	virtual void		Write(int64_t value) { m_wrapped->Write(value); }
+	virtual void		Write(uint64_t value) { m_wrapped->Write(value); }
+	virtual void 		Write(int count, const int64_t values[]) { m_wrapped->Write(count, values); }
+	virtual void		Write(int count, const uint64_t values[]) { m_wrapped->Write(count, values); }
 
 	virtual void		Write(float value) { m_wrapped->Write(value); }
 	virtual void		Write(int count, const float values[]) { m_wrapped->Write(count, values); }
@@ -133,7 +152,7 @@ static int usageSeq = 0;
 //		value definitions	Defines the value of an id'd element
 //	Writing the entries for the dictionary of id->elements names as we go
 //	means we only have to save a name once and thereafter can use the corresponding
-//	id, saving lots of storage.  An id definiton is signified by an entry with a 
+//	id, saving lots of storage.  An id definiton is signified by an entry with a
 //	reserved id of its own
 #define SAVE_ELEMENT_ID_DICTIONARY_ENTRY (-1)	//	Special id value for id->name mapping elements (payload is a mapping element)
 #define SAVE_ELEMENT_ID_OBJECT_DELIMITER (-2)	//	Special id for object delimiter elements
@@ -283,7 +302,7 @@ typedef struct value_entry_int
 typedef struct value_entry_unsigned_int
 {
 	int id;
-	unsigned int value;
+	uint32_t value;
 } value_entry_unsigned_int;
 
 //	Value entry for type int array
@@ -300,7 +319,7 @@ typedef struct value_entry_unsigned_int_array
 {
 	int id;
 	int numInts;
-	uint16_t value[VAR];
+	uint32_t value[VAR];
 } value_entry_unsigned_int_array;
 
 //	Value entry for type long
@@ -332,6 +351,36 @@ typedef struct value_entry_unsigned_long_array
 	int numLongs;
 	uint16_t value[VAR];
 } value_entry_unsigned_long_array;
+
+//	Value entry for type long long
+typedef struct value_entry_long_long
+{
+	int id;
+	int64_t value;
+} value_entry_long_long;
+
+//	Value entry for type unsigned long long
+typedef struct value_entry_unsigned_long_long {
+	int id;
+	int64_t value;
+} value_entry_unsigned_long_long;
+
+//	Value entry for type long long array
+typedef struct value_entry_long_long_array
+{
+	int id;
+	int numLongLongs;
+	int64_t value[VAR];
+} value_entry_long_long_array;
+#define VALUE_ENTRY_LONG_LONG_ARRAY_SIZE_FROM_NUM(numLongLongs)	((int)sizeof(value_entry_long_long_array)+((int)sizeof(int64_t))*(numLongLongs-VAR))
+
+//	Value entry for type unsigned long array
+typedef struct value_entry_unsigned_long_long_array
+{
+	int id;
+	int numLongLongs;
+	uint64_t value[VAR];
+} value_entry_unsigned_long_long_array;
 
 //	Value entry for type float
 typedef struct value_entry_float
@@ -407,6 +456,16 @@ typedef struct value_entry_class_int_array
 } value_entry_class_int_array;
 #define VALUE_ENTRY_CLASS_INT_ARRAY_SIZE_FROM_NUM(numInts)	((int)sizeof(value_entry_class_int_array)+((int)sizeof(int))*(numInts-VAR))
 
+// Value entry for type unsigned long long class array (indexes are class enums)
+struct value_entry_class_unsigned_long_long_array
+{
+	int					id;
+	RemappedClassType	classType;
+	int					numLongLongs;
+	uint64_t			value[VAR];
+};
+#define VALUE_ENTRY_CLASS_UNSIGNED_LONG_LONG_ARRAY_SIZE_FROM_NUM(numLongLongs)	((int)sizeof(value_entry_class_unsigned_long_long_array)+((int)sizeof(uint64_t))*(numLongLongs-VAR))
+
 //	Value entry for type bool class array (indexes are class enums)
 typedef struct value_entry_class_bool_array
 {
@@ -473,6 +532,7 @@ CvTaggedSaveFormatWrapper::~CvTaggedSaveFormatWrapper()
 void
 CvTaggedSaveFormatWrapper::reset(bool useTaggedFormat)
 {
+	PROFILE_EXTRA_FUNC();
 	usageSeq++;
 	lastIdMatch = -1;
 	m_idDictionary.clear();
@@ -565,7 +625,7 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTable(RemappedClassType classType)
 
 	entry.escapeId = SAVE_ELEMENT_ID_CLASS_MAP;
 	entry.classType = classType;
-	
+
 	switch(classType)
 	{
 	case REMAPPED_CLASS_TYPE_BUILDINGS:
@@ -667,12 +727,12 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTable(RemappedClassType classType)
 			m_stream->WriteString(info.getType());
 		}
 		break;
-	case REMAPPED_CLASS_TYPE_MAPS:
-		entry.numClasses = NUM_MAPS;
+	case REMAPPED_CLASS_TYPE_MAPCATEGORIES:
+		entry.numClasses = GC.getNumMapCategoryInfos();
 		m_stream->Write(sizeof(class_mapping_table_entry), (uint8_t*)&entry);
 		for(int i = 0; i < entry.numClasses; i++)
 		{
-			const CvMapInfo& info = GC.getMapInfo((MapTypes)i);
+			const CvMapCategoryInfo& info = GC.getMapCategoryInfo((MapCategoryTypes)i);
 
 			DEBUG_TRACE3("\t%d : %s\n", i, info.getType())
 			m_stream->WriteString(info.getType());
@@ -1008,6 +1068,28 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTable(RemappedClassType classType)
 			m_stream->WriteString(info.getType());
 		}
 		break;
+	case REMAPPED_CLASS_TYPE_CATEGORIES:
+		entry.numClasses = GC.getNumCategoryInfos();
+		m_stream->Write(sizeof(class_mapping_table_entry), (uint8_t*)& entry);
+		for (int i = 0; i < entry.numClasses; i++)
+		{
+			const CvCategoryInfo& info = GC.getCategoryInfo((CategoryTypes)i);
+
+			DEBUG_TRACE3("\t%d : %s\n", i, info.getType())
+				m_stream->WriteString(info.getType());
+		}
+		break;
+	case REMAPPED_CLASS_TYPE_HERITAGE:
+		entry.numClasses = GC.getNumHeritageInfos();
+		m_stream->Write(sizeof(class_mapping_table_entry), (uint8_t*)& entry);
+		for (int i = 0; i < entry.numClasses; i++)
+		{
+			const CvHeritageInfo& info = GC.getHeritageInfo((HeritageTypes)i);
+
+			DEBUG_TRACE3("\t%d : %s\n", i, info.getType())
+				m_stream->WriteString(info.getType());
+		}
+		break;
 	case REMAPPED_CLASS_TYPE_MISSIONS:
 		entry.numClasses = GC.getNumMissionInfos();
 		m_stream->Write(sizeof(class_mapping_table_entry), (uint8_t*)&entry);
@@ -1052,6 +1134,17 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTable(RemappedClassType classType)
 			m_stream->WriteString(info.getType());
 		}
 		break;
+	case REMAPPED_CLASS_TYPE_MAPS:
+		entry.numClasses = NUM_MAPS;
+		m_stream->Write(sizeof(class_mapping_table_entry), (uint8_t*)&entry);
+		for (int i = 0; i < entry.numClasses; i++)
+		{
+			const CvMapInfo& info = GC.getMapInfo((MapTypes)i);
+
+			DEBUG_TRACE3("\t%d : %s\n", i, info.getType())
+			m_stream->WriteString(info.getType());
+		}
+		break;
 	default:
 		FErrorMsg("Unexpected RemappedClassType");
 		break;
@@ -1074,7 +1167,7 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTables()
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_COMBATINFOS);
 	//TB Promotion Line Mod begin
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_PROMOTIONLINES);
-	WriteClassMappingTable(REMAPPED_CLASS_TYPE_MAPS);
+	WriteClassMappingTable(REMAPPED_CLASS_TYPE_MAPCATEGORIES);
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_IDEACLASSES);
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_IDEAS);
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_TRAITS);
@@ -1110,11 +1203,14 @@ CvTaggedSaveFormatWrapper::WriteClassMappingTables()
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_YIELDS);
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_COMMERCES);
 	WriteClassMappingTable(REMAPPED_CLASS_TYPE_DOMAINS);
+	WriteClassMappingTable(REMAPPED_CLASS_TYPE_CATEGORIES);
+	WriteClassMappingTable(REMAPPED_CLASS_TYPE_HERITAGE);
+	WriteClassMappingTable(REMAPPED_CLASS_TYPE_MAPS);
 }
 
 //	How many members of a given class type were present at save time?
 int
-CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType)
+CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType) const
 {
 	PROFILE_FUNC();
 
@@ -1155,8 +1251,8 @@ CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType)
 		case REMAPPED_CLASS_TYPE_PROMOTIONLINES:
 			result = GC.getNumPromotionLineInfos();
 			break;
-		case REMAPPED_CLASS_TYPE_MAPS:
-			result = NUM_MAPS;
+		case REMAPPED_CLASS_TYPE_MAPCATEGORIES:
+			result = GC.getNumMapCategoryInfos();
 			break;
 		case REMAPPED_CLASS_TYPE_IDEACLASSES:
 			result = GC.getNumIdeaClassInfos();
@@ -1236,6 +1332,12 @@ CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType)
 		case REMAPPED_CLASS_TYPE_INVISIBLES:
 			result = GC.getNumInvisibleInfos();
 			break;
+		case REMAPPED_CLASS_TYPE_CATEGORIES:
+			result = GC.getNumCategoryInfos();
+			break;
+		case REMAPPED_CLASS_TYPE_HERITAGE:
+			result = GC.getNumHeritageInfos();
+			break;
 		case REMAPPED_CLASS_TYPE_MISSIONS:
 			result = GC.getNumMissionInfos();
 			break;
@@ -1248,6 +1350,9 @@ CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType)
 		case REMAPPED_CLASS_TYPE_DOMAINS:
 			result = NUM_DOMAIN_TYPES;
 			break;
+		case REMAPPED_CLASS_TYPE_MAPS:
+			result = NUM_MAPS;
+			break;
 		default:
 			FErrorMsg("Unexpected RemappedClassType");
 			break;
@@ -1257,51 +1362,39 @@ CvTaggedSaveFormatWrapper::getNumClassEnumValues(RemappedClassType classType)
 	}
 }
 
-//	Translate explicitly from an old enum value to the current
-int
-CvTaggedSaveFormatWrapper::getNewClassEnumValue(RemappedClassType classType, int oldValue, bool allowMissing)
+// Translate explicitly from an old enum value to the current
+int CvTaggedSaveFormatWrapper::getNewClassEnumValue(RemappedClassType classType, int oldValue, bool allowMissing)
 {
 	PROFILE_FUNC();
 
-	if ( m_useTaggedFormat )
+	if (m_useTaggedFormat)
 	{
-		if ( oldValue == -1 )
+		if (oldValue == -1)
 		{
 			return -1;
 		}
-		else
+		std::vector<EnumInfo>& mapVector = m_enumMaps[classType];
+
+		if (oldValue < (int)mapVector.size())
 		{
-			std::vector<EnumInfo>& mapVector = m_enumMaps[classType];
+			EnumInfo& info = mapVector[oldValue];
 
-			if ( oldValue < (int)mapVector.size() )
+			if (info.m_id == -1 && !info.m_lookedUp)
 			{
-				EnumInfo& info = mapVector[oldValue];
+				info.m_id = GC.getInfoTypeForString(info.m_szType, true);
 
-				if ( info.m_id == -1 && !info.m_lookedUp )
+				if (info.m_id == -1 && !allowMissing)
 				{
-					info.m_id = GC.getInfoTypeForString(info.m_szType, true);
-
-					if ( info.m_id == -1 && !allowMissing )
-					{
-						//	Instantiated object uses class no longer defined - game is not save compatible
-						HandleIncompatibleSave(CvString::format("Save format is not compatible due to missing class %s", info.m_szType.c_str()).c_str());
-					}
-
-					info.m_lookedUp = true;
+					// Instantiated object uses class no longer defined - game is not save compatible
+					HandleIncompatibleSave(CvString::format("Save format is not compatible due to missing class %s", info.m_szType.c_str()).c_str());
 				}
-
-				return info.m_id;
+				info.m_lookedUp = true;
 			}
-			else
-			{
-				return -1;
-			}
+			return info.m_id;
 		}
+		return -1;
 	}
-	else
-	{
-		return oldValue;
-	}
+	return oldValue;
 }
 
 void
@@ -1416,6 +1509,30 @@ CvTaggedSaveFormatWrapper::WriteClassArray(const char* name, int& idHint, int& i
 	}
 }
 
+// The following are for arrays whose index is a class enum value
+void CvTaggedSaveFormatWrapper::WriteClassArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, const uint64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		value_entry_class_unsigned_long_long_array entry;
+
+		DEBUG_TRACE4("Write bool class array for class %d, name %s, count=%d\n", classType, name, count)
+
+		entry.id = getId(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_UNSIGNED_LONG_LONG_ARRAY, true);
+		entry.classType = classType;
+		entry.numLongLongs = count;
+
+		m_stream->Write(VALUE_ENTRY_CLASS_UNSIGNED_LONG_LONG_ARRAY_SIZE_FROM_NUM(0), (const uint8_t*)&entry);
+		m_stream->Write(count * sizeof(uint64_t), (const uint8_t*)values);
+	}
+	else
+	{
+		m_stream->Write(count * sizeof(uint64_t), (const uint8_t*)values);
+	}
+}
+
 //	The following are for arrays whose index is a class enum value
 void
 CvTaggedSaveFormatWrapper::WriteClassArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, const bool values[])
@@ -1527,7 +1644,7 @@ CvTaggedSaveFormatWrapper::WriteClassEnumArray(const char* name, int& idHint, in
 
 
 //	The following methods are direct replacements for the write calls
-//	in the underlying FDataStreamBase 
+//	in the underlying FDataStreamBase
 void
 CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, char value)
 {
@@ -1801,7 +1918,7 @@ CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int 
 }
 
 void
-CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, unsigned int value)
+CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, uint32_t value)
 {
 	PROFILE_FUNC();
 
@@ -1850,7 +1967,7 @@ CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int 
 }
 
 void
-CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int count, const unsigned int values[])
+CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int count, const uint32_t values[])
 {
 	PROFILE_FUNC();
 
@@ -1900,7 +2017,7 @@ CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, long
 }
 
 void
-CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, unsigned long  value) 
+CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, unsigned long  value)
 {
 	PROFILE_FUNC();
 
@@ -1970,6 +2087,93 @@ CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int 
 	else
 	{
 		m_stream->Write(count, values);
+	}
+}
+
+
+void CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int64_t value)
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		value_entry_long_long entry;
+
+		DEBUG_TRACE3("Write long long %s: %d\n", name, value)
+
+		entry.id = getId(name, idHint, idSeq, SAVE_VALUE_TYPE_LONG_LONG, true);
+		entry.value = value;
+
+		m_stream->Write((int)sizeof(entry), (const uint8_t*)&entry);
+	}
+	else
+	{
+		m_stream->Write((int)sizeof(int64_t), (const uint8_t*)value);
+	}
+}
+
+void CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, uint64_t value) 
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		value_entry_unsigned_long_long entry;
+
+		DEBUG_TRACE3("Write unsigned long long %s: %lu\n", name, value)
+
+		entry.id = getId(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG, true);
+		entry.value = value;
+
+		m_stream->Write((int)sizeof(entry), (const uint8_t*)&entry);
+	}
+	else
+	{
+		m_stream->Write((int)sizeof(uint64_t), (const uint8_t*)value);
+	}
+}
+
+void CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int count, const int64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		value_entry_long_long_array entry;
+
+		DEBUG_TRACE3("Write long long array %s, count=%d\n", name, count)
+
+		entry.id = getId(name, idHint, idSeq, SAVE_VALUE_TYPE_LONG_LONG_ARRAY, true);
+		entry.numLongLongs = count;
+
+		m_stream->Write(VALUE_ENTRY_LONG_LONG_ARRAY_SIZE_FROM_NUM(0), (const uint8_t*)&entry);
+		m_stream->Write(count * sizeof(int64_t), (const uint8_t*)values);
+	}
+	else
+	{
+		m_stream->Write(count * sizeof(int64_t), (const uint8_t*)values);
+	}
+}
+
+void CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int count, const uint64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		value_entry_unsigned_long_long_array entry;
+
+		DEBUG_TRACE3("Write unsigned long long array %s, count=%d\n", name, count)
+
+		entry.id = getId(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG_ARRAY, true);
+		entry.numLongLongs = count;
+
+		m_stream->Write(VALUE_ENTRY_LONG_LONG_ARRAY_SIZE_FROM_NUM(0), (const uint8_t*)&entry);
+		m_stream->Write(count * sizeof(uint64_t), (const uint8_t*)values);
+	}
+	else
+	{
+		m_stream->Write(count * sizeof(uint64_t), (const uint8_t*)values);
 	}
 }
 
@@ -2072,7 +2276,7 @@ CvTaggedSaveFormatWrapper::Write(const char* name, int& idHint, int& idSeq, int 
 		m_stream->Write(count, values);
 	}
 }
-	
+
 void
 CvTaggedSaveFormatWrapper::WriteString(const char* name, int& idHint, int& idSeq, const wchar_t* szName)
 {
@@ -2273,8 +2477,7 @@ CvTaggedSaveFormatWrapper::getId(const char* name, int& idHint, int& idSeq, Save
 	return id;
 }
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, char **szName)
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, char** szName)
 {
 	PROFILE_FUNC();
 
@@ -2284,7 +2487,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE2("Read string, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_STRING) )
+		if (Expect(name, SAVE_VALUE_TYPE_STRING))
 		{
 			*szName = m_stream->ReadString();
 		}
@@ -2295,8 +2498,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, wchar_t **szName)
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, wchar_t** szName)
 {
 	PROFILE_FUNC();
 
@@ -2306,7 +2508,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE2("Read string, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_WSTRING) )
+		if (Expect(name, SAVE_VALUE_TYPE_WSTRING))
 		{
 			*szName = m_stream->ReadWideString();
 		}
@@ -2318,8 +2520,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 }
 
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, std::string& szName)
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, std::string& szName)
 {
 	PROFILE_FUNC();
 
@@ -2329,7 +2530,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE2("Read string, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_STD_STRING) )
+		if (Expect(name, SAVE_VALUE_TYPE_STD_STRING))
 		{
 			m_stream->ReadString(szName);
 		}
@@ -2341,8 +2542,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 }
 
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, std::wstring& szName)
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, std::wstring& szName)
 {
 	PROFILE_FUNC();
 
@@ -2352,7 +2552,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE2("Read string, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_STD_WSTRING) )
+		if (Expect(name, SAVE_VALUE_TYPE_STD_WSTRING))
 		{
 			m_stream->ReadString(szName);
 		}
@@ -2374,8 +2574,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 }
 
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, int count, std::string values[])
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, int count, std::string values[])
 {
 	PROFILE_FUNC();
 
@@ -2385,7 +2584,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE3("Read string array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_STRING_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_STRING_ARRAY))
 		{
 			int numStrings;
 
@@ -2406,8 +2605,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 }
 
 
-void
-CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq, int count, std::wstring values[])
+void CvTaggedSaveFormatWrapper::ReadString(const char* name, int count, std::wstring values[])
 {
 	PROFILE_FUNC();
 
@@ -2417,7 +2615,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 	{
 		DEBUG_TRACE3("Read wstring array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_WSTRING_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_WSTRING_ARRAY))
 		{
 			int numStrings;
 
@@ -2438,8 +2636,7 @@ CvTaggedSaveFormatWrapper::ReadString(const char* name, int& idHint, int& idSeq,
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, char *pChar)
+void CvTaggedSaveFormatWrapper::Read(const char* name, int8_t* pChar)
 {
 	PROFILE_FUNC();
 
@@ -2449,7 +2646,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, char 
 	{
 		DEBUG_TRACE2("Read char, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CHAR) )
+		if (Expect(name, SAVE_VALUE_TYPE_CHAR))
 		{
 			m_stream->Read(pChar);
 		}
@@ -2461,8 +2658,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, char 
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint8_t* pByte)
+void CvTaggedSaveFormatWrapper::Read(const char* name, uint8_t* pByte)
 {
 	PROFILE_FUNC();
 
@@ -2472,7 +2668,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint8
 	{
 		DEBUG_TRACE2("Read byte, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_BYTE) )
+		if (Expect(name, SAVE_VALUE_TYPE_BYTE))
 		{
 			m_stream->Read(pByte);
 		}
@@ -2484,8 +2680,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint8
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, char values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, int8_t values[])
 {
 	PROFILE_FUNC();
 
@@ -2495,7 +2690,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read char array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CHAR_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CHAR_ARRAY))
 		{
 			int num;
 
@@ -2516,8 +2711,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, uint8_t values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, uint8_t values[])
 {
 	PROFILE_FUNC();
 
@@ -2527,7 +2721,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read byte array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_BYTE_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_BYTE_ARRAY))
 		{
 			int num;
 
@@ -2548,8 +2742,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, bool *pBool)
+void CvTaggedSaveFormatWrapper::Read(const char* name, bool* pBool)
 {
 	PROFILE_FUNC();
 
@@ -2559,7 +2752,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, bool 
 	{
 		DEBUG_TRACE2("Read bool, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_BOOL) )
+		if (Expect(name, SAVE_VALUE_TYPE_BOOL))
 		{
 			m_stream->Read(pBool);
 		}
@@ -2571,8 +2764,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, bool 
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, bool values[], bool bAllowTruncation)
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, bool values[], bool bAllowTruncation)
 {
 	PROFILE_FUNC();
 
@@ -2582,7 +2774,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read bool array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_BOOL_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_BOOL_ARRAY))
 		{
 			int num;
 
@@ -2595,9 +2787,9 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 				//	Also allow less, throwing the extra away - use this option CAREFULLY!
 				if ( bAllowTruncation )
 				{
-					bool*	tempBuffer = new bool[num-count];
+					bst::scoped_array<bool> tempBuffer(new bool[num-count]);
 
-					m_stream->Read(num-count, tempBuffer);
+					m_stream->Read(num-count, tempBuffer.get());
 				}
 				else
 				{
@@ -2614,8 +2806,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, short	*s)
+void CvTaggedSaveFormatWrapper::Read(const char* name, int16_t* s)
 {
 	PROFILE_FUNC();
 
@@ -2625,7 +2816,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, short
 	{
 		DEBUG_TRACE2("Read short, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_SHORT) )
+		if (Expect(name, SAVE_VALUE_TYPE_SHORT))
 		{
 			m_stream->Read(s);
 		}
@@ -2637,8 +2828,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, short
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint16_t* s) 
+void CvTaggedSaveFormatWrapper::Read(const char* name, uint16_t* s)
 {
 	PROFILE_FUNC();
 
@@ -2648,7 +2838,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint1
 	{
 		DEBUG_TRACE2("Read unsigned short, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_SHORT) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_SHORT))
 		{
 			m_stream->Read(s);
 		}
@@ -2660,8 +2850,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, uint1
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, short values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, int16_t values[])
 {
 	PROFILE_FUNC();
 
@@ -2671,7 +2860,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read short array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_SHORT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_SHORT_ARRAY))
 		{
 			int num;
 
@@ -2692,8 +2881,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, uint16_t values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, uint16_t values[])
 {
 	PROFILE_FUNC();
 
@@ -2703,7 +2891,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read unsigned short array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_SHORT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_SHORT_ARRAY))
 		{
 			int num;
 
@@ -2724,8 +2912,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int* i)
+void CvTaggedSaveFormatWrapper::Read(const char* name, int32_t* i)
 {
 	PROFILE_FUNC();
 
@@ -2735,7 +2922,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int* 
 	{
 		DEBUG_TRACE2("Read int, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_INT) )
+		if (Expect(name, SAVE_VALUE_TYPE_INT))
 		{
 			m_stream->Read(i);
 		}
@@ -2747,8 +2934,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int* 
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsigned int* i)
+void CvTaggedSaveFormatWrapper::Read(const char* name, uint32_t* i)
 {
 	PROFILE_FUNC();
 
@@ -2758,7 +2944,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsig
 	{
 		DEBUG_TRACE2("Read unsigned int, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_INT) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_INT))
 		{
 			m_stream->Read(i);
 		}
@@ -2770,31 +2956,38 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsig
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, int values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, int32_t values[], bool bAllowTruncation)
 {
 	PROFILE_FUNC();
 
 	FAssert(m_stream != NULL);
 
-	if ( m_useTaggedFormat )
+	if (m_useTaggedFormat)
 	{
 		DEBUG_TRACE3("Read int array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_INT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_INT_ARRAY))
 		{
 			int num;
 
 			m_stream->Read(&num);
+			m_stream->Read(std::min(num,count), values);
 
-			if ( num != count )
+			// Allow reading LESS than the desired number.  This allows for things like new MEMORY_TYPES
+			if (num > count)
 			{
-				DEBUG_TRACE4("Read int array, name %s, count=%d, num=%d\n", name, count, num)
+				// Also allow less, throwing the extra away - use this option CAREFULLY!
+				if (bAllowTruncation)
+				{
+					bst::scoped_array<int> tempBuffer(new int[num-count]);
 
-				//	Incompatible save
-				HandleIncompatibleSave(CvString::format("Save format is not compatible (%s)", name).c_str());
+					m_stream->Read(num-count, tempBuffer.get());
+				}
+				else // Incompatible save
+				{
+					HandleIncompatibleSave(CvString::format("Save format is not compatible (%s)", name).c_str());
+				}
 			}
-			m_stream->Read(count, values);
 		}
 	}
 	else
@@ -2804,8 +2997,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, unsigned int values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, uint32_t values[])
 {
 	PROFILE_FUNC();
 
@@ -2815,7 +3007,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read unsigned int array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_INT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_INT_ARRAY))
 		{
 			int num;
 
@@ -2835,8 +3027,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, long* l)
+void CvTaggedSaveFormatWrapper::Read(const char* name, long* l)
 {
 	PROFILE_FUNC();
 
@@ -2846,7 +3037,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, long*
 	{
 		DEBUG_TRACE2("Read long, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_LONG) )
+		if (Expect(name, SAVE_VALUE_TYPE_LONG))
 		{
 			m_stream->Read(l);
 		}
@@ -2858,8 +3049,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, long*
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsigned long* l)
+void CvTaggedSaveFormatWrapper::Read(const char* name, unsigned long* l)
 {
 	PROFILE_FUNC();
 
@@ -2869,7 +3059,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsig
 	{
 		DEBUG_TRACE2("Read unsigned long, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_LONG) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG))
 		{
 			m_stream->Read(l);
 		}
@@ -2881,8 +3071,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, unsig
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, long values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, long values[])
 {
 	PROFILE_FUNC();
 
@@ -2892,7 +3081,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read long array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_LONG_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_LONG_ARRAY))
 		{
 			int num;
 
@@ -2913,8 +3102,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, unsigned long values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, unsigned long values[])
 {
 	PROFILE_FUNC();
 
@@ -2924,7 +3112,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read unsigned long array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_UNSIGNED_LONG_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG_ARRAY))
 		{
 			int num;
 
@@ -2945,9 +3133,106 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 }
 
 
+void CvTaggedSaveFormatWrapper::Read(const char* name, int64_t* ll)
+{
+	PROFILE_FUNC();
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, float* value)
+	if (m_useTaggedFormat)
+	{
+		DEBUG_TRACE2("Read long long, name %s\n", name)
+
+		if (Expect(name, SAVE_VALUE_TYPE_LONG_LONG))
+		{
+			m_stream->Read(sizeof(int64_t), (char*)ll);
+		}
+	}
+	else
+	{
+			m_stream->Read(sizeof(int64_t), (char*)ll);
+	}
+}
+
+
+void CvTaggedSaveFormatWrapper::Read(const char* name, uint64_t* ll)
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		DEBUG_TRACE2("Read unsigned long long, name %s\n", name)
+
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG))
+		{
+			m_stream->Read(sizeof(uint64_t), (char*)ll);
+		}
+	}
+	else
+	{
+		m_stream->Read(sizeof(uint64_t), (char*)ll);
+	}
+}
+
+
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, int64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		DEBUG_TRACE3("Read long long array, name %s, count=%d\n", name, count)
+
+		if (Expect(name, SAVE_VALUE_TYPE_LONG_LONG_ARRAY))
+		{
+			int num;
+
+			m_stream->Read(&num);
+
+			if (num != count)
+			{
+				//	Incompatible save
+				HandleIncompatibleSave(CvString::format("Save format is not compatible (%s)", name).c_str());
+			}
+			m_stream->Read(count * sizeof(int64_t), (char*)values);
+		}
+	}
+	else
+	{
+		m_stream->Read(count * sizeof(int64_t), (char*)values);
+	}
+}
+
+
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, uint64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		DEBUG_TRACE3("Read unsigned long long array, name %s, count=%d\n", name, count)
+
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG_ARRAY))
+		{
+			int num;
+
+			m_stream->Read(&num);
+
+			if (num != count)
+			{
+				//	Incompatible save
+				HandleIncompatibleSave(CvString::format("Save format is not compatible (%s)", name).c_str());
+			}
+			m_stream->Read(count * sizeof(uint64_t), (char*)values);
+		}
+	}
+	else
+	{
+		m_stream->Read(count * sizeof(uint64_t), (char*)values);
+	}
+}
+
+
+
+void CvTaggedSaveFormatWrapper::Read(const char* name, float* value)
 {
 	PROFILE_FUNC();
 
@@ -2957,7 +3242,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, float
 	{
 		DEBUG_TRACE2("Read float, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_FLOAT) )
+		if (Expect(name, SAVE_VALUE_TYPE_FLOAT))
 		{
 			m_stream->Read(value);
 		}
@@ -2969,8 +3254,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, float
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, float values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, float values[])
 {
 	PROFILE_FUNC();
 
@@ -2980,7 +3264,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read float array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_FLOAT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_FLOAT_ARRAY))
 		{
 			int num;
 
@@ -3002,8 +3286,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, double* value)
+void CvTaggedSaveFormatWrapper::Read(const char* name, double* value)
 {
 	PROFILE_FUNC();
 
@@ -3013,7 +3296,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, doubl
 	{
 		DEBUG_TRACE2("Read double, name %s\n", name)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_DOUBLE) )
+		if (Expect(name, SAVE_VALUE_TYPE_DOUBLE))
 		{
 			m_stream->Read(value);
 		}
@@ -3025,8 +3308,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, doubl
 }
 
 
-void
-CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int count, double values[])
+void CvTaggedSaveFormatWrapper::Read(const char* name, int count, double values[])
 {
 	PROFILE_FUNC();
 
@@ -3036,7 +3318,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 	{
 		DEBUG_TRACE3("Read double array, name %s, count=%d\n", name, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_DOUBLE_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_DOUBLE_ARRAY))
 		{
 			int num;
 
@@ -3058,8 +3340,7 @@ CvTaggedSaveFormatWrapper::Read(const char* name, int& idHint, int& idSeq, int c
 
 
 //	The following methods must be used for entities that correspond to class enums
-void
-CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int* value, bool allowMissing)
+void CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, RemappedClassType classType, int* value, bool allowMissing)
 {
 	PROFILE_FUNC();
 
@@ -3069,7 +3350,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idS
 	{
 		DEBUG_TRACE3("Read class enum, name %s, classType=%d\n", name, classType)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_ENUM) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_ENUM))
 		{
 			value_class_enum	entry;
 
@@ -3093,8 +3374,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idS
 }
 
 //	The following methods must be used for entities that correspond to class enums
-void
-CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idSeq, RemappedClassType classType, short* value, bool allowMissing)
+void CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, RemappedClassType classType, int16_t* value, bool allowMissing)
 {
 	PROFILE_FUNC();
 
@@ -3104,7 +3384,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idS
 	{
 		DEBUG_TRACE3("Read class enum, name %s, classType=%d\n", name, classType)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_ENUM) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_ENUM))
 		{
 			value_class_enum entry;
 
@@ -3117,7 +3397,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idS
 			}
 			else
 			{
-				*value = (short)getNewClassEnumValue(classType, entry.value, allowMissing);
+				*value = (int16_t)getNewClassEnumValue(classType, entry.value, allowMissing);
 			}
 		}
 	}
@@ -3132,8 +3412,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnum(const char* name, int& idHint, int& idS
 //	array used to be saved as an uninterpretted array but is now handled
 //	as a class array (if the save has a raw array ids are ASSUMED to be
 //	unchanged and the actual saved element count must be <= class enum array size)
-void
-CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, int values[], bool allowMissing, bool allowRawArray)
+void CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, RemappedClassType classType, int count, int values[], bool allowMissing, bool allowRawArray)
 {
 	PROFILE_FUNC();
 
@@ -3143,7 +3422,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 	{
 		DEBUG_TRACE4("Read class array, name %s, classType=%d, count=%d\n", name, classType, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_INT_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_INT_ARRAY))
 		{
 			value_entry_class_int_array	entry;
 
@@ -3172,7 +3451,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 					//	actually instantiated they will be present (but are ignorable if we are right about the 0/-1/MIN_INT
 					//	defaulting which is the 'risky' part - should perhaps take an extra argument to specify the
 					//	not-referenced default)
-					int currentValue = arrayBuffer[i];
+					const int currentValue = arrayBuffer[i];
 					if (info.m_id == -1 && currentValue != 0 && currentValue != -1 && currentValue != MIN_INT)
 					{
 						//	Instantiated object uses class no longer defined - game is not save compatible
@@ -3190,7 +3469,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 				}
 			}
 		}
-		else if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_INT_ARRAY) )
+		else if (Expect(name, SAVE_VALUE_TYPE_INT_ARRAY))
 		{
 			int num;
 
@@ -3210,8 +3489,82 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, bool values[], bool allowMissing, bool allowRawArray)
+void CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, RemappedClassType classType, int count, uint64_t values[])
+{
+	PROFILE_FUNC();
+
+	if (m_useTaggedFormat)
+	{
+		DEBUG_TRACE4("Read class array, name %s, classType=%d, count=%d\n", name, classType, count)
+
+		if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG_ARRAY))
+		{
+			value_entry_class_unsigned_long_long_array entry;
+
+			m_stream->Read(sizeof(RemappedClassType), (uint8_t*)&entry.classType);
+			m_stream->Read(&entry.numLongLongs);
+
+			bst::scoped_array<uint64_t> arrayBuffer(new uint64_t[entry.numLongLongs]);
+
+			FAssert(classType == entry.classType);
+
+			m_stream->Read(entry.numLongLongs * sizeof(uint64_t), (uint8_t*)&arrayBuffer[0]);
+
+			std::vector<EnumInfo>& mapVector = m_enumMaps[classType];
+
+			for (int i = 0; i < entry.numLongLongs; i++)
+			{
+				EnumInfo& info = mapVector[i];
+
+				if (info.m_id == -1 && !info.m_lookedUp)
+				{
+					info.m_id = GC.getInfoTypeForString(info.m_szType, true);
+
+					// If some objects are missing be tolerant provided their value was 0, -1, MIN_INT (assumed likely defaults
+					// for most int array entries).  Need to do something like this because these arrays generally
+					// represent values about every possible member of an entity type, so even if they are not
+					// actually instantiated they will be present (but are ignorable if we are right about the 0/-1/MIN_INT
+					// defaulting which is the 'risky' part - should perhaps take an extra argument to specify the
+					// not-referenced default)
+					const uint64_t currentValue = arrayBuffer[i];
+					if (info.m_id == -1 && currentValue != 0 && currentValue != -1 && currentValue != MIN_INT)
+					{
+						// Instantiated object uses class no longer defined - game is not save compatible
+						HandleRecoverableIncompatibleSave(CvString::format("Current assets are missing in-use class %s - any instances will have been removed", info.m_szType.c_str()).c_str());
+					}
+
+					info.m_lookedUp = true;
+				}
+
+				if (info.m_id != -1)
+				{
+					FAssert(info.m_id < count);
+
+					values[info.m_id] = arrayBuffer[i];
+				}
+			}
+		}
+		else if (Expect(name, SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG_ARRAY))
+		{
+			int num;
+
+			m_stream->Read(&num);
+
+			if (num > count)
+			{
+				// Incompatible save
+				HandleIncompatibleSave(CvString::format("Save format is not compatible (%s)", name).c_str());
+			}
+			m_stream->Read(num * sizeof(uint64_t), (uint8_t*)values);
+		}
+	}
+	else
+	{
+		m_stream->Read(count * sizeof(uint64_t), (uint8_t*)values);
+	}
+}
+
+void CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, RemappedClassType classType, int count, bool values[], bool allowMissing, bool allowRawArray)
 {
 	PROFILE_FUNC();
 
@@ -3221,7 +3574,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 	{
 		DEBUG_TRACE4("Read class array, name %s, classType=%d, count=%d\n", name, classType, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_BOOL_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_BOOL_ARRAY))
 		{
 			value_entry_class_bool_array	entry;
 
@@ -3267,7 +3620,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 				}
 			}
 		}
-		else if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_BOOL_ARRAY) )
+		else if (Expect(name, SAVE_VALUE_TYPE_BOOL_ARRAY))
 		{
 			int num;
 
@@ -3288,8 +3641,7 @@ CvTaggedSaveFormatWrapper::ReadClassArray(const char* name, int& idHint, int& id
 }
 
 //	The following are for arrays whose index is a class enum value and value is another class enum value
-void
-CvTaggedSaveFormatWrapper::ReadClassArrayOfClassEnum(const char* name, int& idHint, int& idSeq, RemappedClassType indexClassType, RemappedClassType valueClassType, int count, int values[])
+void CvTaggedSaveFormatWrapper::ReadClassArrayOfClassEnum(const char* name, RemappedClassType indexClassType, RemappedClassType valueClassType, int count, int values[])
 {
 	PROFILE_FUNC();
 
@@ -3299,7 +3651,7 @@ CvTaggedSaveFormatWrapper::ReadClassArrayOfClassEnum(const char* name, int& idHi
 	{
 		DEBUG_TRACE4("Read class array, name %s, classType=%d, count=%d\n", name, valueClassType, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_BOOL_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_BOOL_ARRAY))
 		{
 			value_entry_class_class_array	entry;
 
@@ -3343,8 +3695,7 @@ CvTaggedSaveFormatWrapper::ReadClassArrayOfClassEnum(const char* name, int& idHi
 }
 
 //	The following methods must be used for entities that correspond to class enums
-void
-CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, short values[], bool allowMissing)
+void CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, RemappedClassType classType, int count, int16_t values[], bool allowMissing)
 {
 	PROFILE_FUNC();
 
@@ -3354,7 +3705,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int
 	{
 		DEBUG_TRACE4("Read class enum array, name %s, classType=%d, count=%d\n", name, classType, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_ENUM_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_ENUM_ARRAY))
 		{
 			value_class_enum_array entry;
 
@@ -3375,7 +3726,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int
 			{
 				if ( values[i] != -1 )
 				{
-					values[i] = (short)getNewClassEnumValue(classType, values[i], allowMissing);
+					values[i] = (int16_t)getNewClassEnumValue(classType, values[i], allowMissing);
 				}
 			}
 		}
@@ -3387,8 +3738,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int
 }
 
 //	The following methods must be used for entities that correspond to class enums
-void
-CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int& idSeq, RemappedClassType classType, int count, int values[], bool allowMissing)
+void CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, RemappedClassType classType, int count, int values[], bool allowMissing)
 {
 	PROFILE_FUNC();
 
@@ -3398,7 +3748,7 @@ CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int
 	{
 		DEBUG_TRACE4("Read class enum array, name %s, classType=%d, count=%d\n", name, classType, count)
 
-		if ( Expect(name, idHint, idSeq, SAVE_VALUE_TYPE_CLASS_ENUM_ARRAY) )
+		if (Expect(name, SAVE_VALUE_TYPE_CLASS_ENUM_ARRAY))
 		{
 			value_class_enum_array	entry;
 
@@ -3430,43 +3780,39 @@ CvTaggedSaveFormatWrapper::ReadClassEnumArray(const char* name, int& idHint, int
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::ReadStartObject(const char* name, int& idHint, int& idSeq)
+void CvTaggedSaveFormatWrapper::ReadStartObject(const char* name)
 {
 	PROFILE_FUNC();
-
-	FAssert(m_stream != NULL);
+	FAssert(m_stream);
 
 	m_inUse = true;
-	if ( m_useTaggedFormat )
+	if (m_useTaggedFormat)
 	{
 		m_nestingDepth++;
-
+#ifdef _DEBUG
 		OutputDebugString(CvString::format("ReadStartObject for %s, depth now %d\n", name, m_nestingDepth).c_str());
-
-		Expect(name, idHint, idSeq, (SaveValueType)SAVE_ELEMENT_ID_OBJECT_DELIMITER);
+#endif
+		Expect(name, (SaveValueType)SAVE_ELEMENT_ID_OBJECT_DELIMITER);
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::ReadEndObject()
+void CvTaggedSaveFormatWrapper::ReadEndObject()
 {
-	int dummy;
-
 	PROFILE_FUNC();
+	FAssert(m_stream);
 
-	FAssert(m_stream != NULL);
-
-	if ( m_useTaggedFormat )
+	if (m_useTaggedFormat)
 	{
 		FAssert(m_nestingDepth > 0);
 
 		m_nestingDepth--;
-
-		//OutputDebugString(CvString::format("ReadStartEnd, depth now %d\n", m_nestingDepth).c_str());
-
+/*
+#ifdef _DEBUG
+		OutputDebugString(CvString::format("ReadStartEnd, depth now %d\n", m_nestingDepth).c_str());
+#endif
+*/
 		//	Consume until the stream also exits this object
-		while( !Expect(NULL, dummy, dummy, (SaveValueType)SAVE_ELEMENT_ID_OBJECT_DELIMITER) )
+		while (!Expect(NULL, (SaveValueType)SAVE_ELEMENT_ID_OBJECT_DELIMITER))
 		{
 			SkipElement();
 		}
@@ -3481,7 +3827,7 @@ CvTaggedSaveFormatWrapper::ReadEndObject()
 //		3) An object start delimiter is the next thing in the stream - same as case (2)
 //		4) An object end delimiter is the next thing in the stream - error incompatible save
 bool
-CvTaggedSaveFormatWrapper::Expect(const char* name, int& idHint, int& idSeq, SaveValueType type)
+CvTaggedSaveFormatWrapper::Expect(const char* name, SaveValueType type)
 {
 	PROFILE_FUNC();
 
@@ -3513,7 +3859,7 @@ CvTaggedSaveFormatWrapper::Expect(const char* name, int& idHint, int& idSeq, Sav
 		default:
 			m_bReadNextElementHeader = true;
 
-			FAssert(m_idDictionary.size() > (unsigned int)m_iNextElementNameId);
+			FAssert(m_idDictionary.size() > (uint32_t)m_iNextElementNameId);
 
 			m_iNextElementType = m_idDictionary[m_iNextElementNameId].m_type;
 			break;
@@ -3542,7 +3888,7 @@ CvTaggedSaveFormatWrapper::Expect(const char* name, int& idHint, int& idSeq, Sav
 		{
 			//	Non matching start element for a nested object.  This implies the version we are running
 			//	now has added fields to the serialisation of the current object (prior to the
-			//	nested element).  These are skipped and it is assumed that their default initialization suffices 
+			//	nested element).  These are skipped and it is assumed that their default initialization suffices
 			//	to provide default semantics
 			return false;
 		}
@@ -3561,7 +3907,7 @@ CvTaggedSaveFormatWrapper::Expect(const char* name, int& idHint, int& idSeq, Sav
 		{
 			//	Non matching leaf element.  This implies the version we are running
 			//	now has added fields to the serialisation of the current object.  These
-			//	are skipped and it is assumed that their default initialization suffices 
+			//	are skipped and it is assumed that their default initialization suffices
 			//	to provide default semantics
 			return false;
 		}
@@ -3575,17 +3921,15 @@ CvTaggedSaveFormatWrapper::Expect(const char* name, int& idHint, int& idSeq, Sav
 	}
 }
 
-void
-CvTaggedSaveFormatWrapper::ConsumeBytes(int numBytes)
+void CvTaggedSaveFormatWrapper::ConsumeBytes(int numBytes) const
 {
 	PROFILE_FUNC();
 
 	uint8_t	buffer[512];
-	int		readSize;
 
 	while(numBytes > 0)
 	{
-		readSize = std::min(numBytes, (int)sizeof(buffer));
+		const int readSize = std::min(numBytes, (int)sizeof(buffer));
 
 		m_stream->Read(readSize, buffer);
 		numBytes -= readSize;
@@ -3593,7 +3937,7 @@ CvTaggedSaveFormatWrapper::ConsumeBytes(int numBytes)
 }
 
 void
-CvTaggedSaveFormatWrapper::SkipElement(const char* name, int& idHint, int& idSeq, SaveValueType saveType)
+CvTaggedSaveFormatWrapper::SkipElement(const char* name, SaveValueType saveType)
 {
 	PROFILE_FUNC();
 
@@ -3601,7 +3945,7 @@ CvTaggedSaveFormatWrapper::SkipElement(const char* name, int& idHint, int& idSeq
 
 	if ( m_useTaggedFormat )
 	{
-		if ( Expect(name, idHint, idSeq, saveType) )
+		if (Expect(name, saveType))
 		{
 			SkipElement();
 		}
@@ -3679,7 +4023,7 @@ CvTaggedSaveFormatWrapper::SkipElement()
 		break;
 	case SAVE_VALUE_TYPE_UNSIGNED_INT_ARRAY:
 		m_stream->Read(&arraySize);
-		ConsumeBytes(sizeof(unsigned int)*arraySize);
+		ConsumeBytes(sizeof(uint32_t)*arraySize);
 		break;
 	case SAVE_VALUE_TYPE_LONG:
 		ConsumeBytes(sizeof(value_entry_long)-sizeof(int));
@@ -3694,6 +4038,20 @@ CvTaggedSaveFormatWrapper::SkipElement()
 	case SAVE_VALUE_TYPE_UNSIGNED_LONG_ARRAY:
 		m_stream->Read(&arraySize);
 		ConsumeBytes(sizeof(unsigned long)*arraySize);
+		break;
+	case SAVE_VALUE_TYPE_LONG_LONG:
+		ConsumeBytes(sizeof(value_entry_long_long)-sizeof(int));
+		break;
+	case SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG:
+		ConsumeBytes(sizeof(value_entry_unsigned_long_long)-sizeof(int));
+		break;
+	case SAVE_VALUE_TYPE_LONG_LONG_ARRAY:
+		m_stream->Read(&arraySize);
+		ConsumeBytes(sizeof(int64_t)*arraySize);
+		break;
+	case SAVE_VALUE_TYPE_UNSIGNED_LONG_LONG_ARRAY:
+		m_stream->Read(&arraySize);
+		ConsumeBytes(sizeof(uint64_t)*arraySize);
 		break;
 	case SAVE_VALUE_TYPE_FLOAT:
 		ConsumeBytes(sizeof(value_entry_float)-sizeof(int));
@@ -3905,7 +4263,7 @@ CvTaggedSaveFormatWrapper::NormalizeName(const char* name)
 			memmove(ptr + 2, ptr + 3, strlen(ptr + 3) + 1);
 		}
 	}
-	
+
 	//	Strip array accessors.  Do this crudely but cheaply - we just assume the
 	//	expression is legal ([ comes before ]) and not nested (no arrays of arrays)
 	//	e.g. - we want m_thingy[iI] on save to match m_thingy[iJ] on load (don't require the same
@@ -3976,16 +4334,6 @@ CvTaggedSaveFormatWrapper::close()
 {
 	if ( m_inUse )
 	{
-		foreach_(const CvWString& it, m_warnings)
-		{
-			CvPopupInfo* pInfo = new CvPopupInfo(BUTTONPOPUP_SAVE_INFO_LOST);
-			if (NULL != pInfo)
-			{
-				pInfo->setText(it.c_str());
-				gDLL->getInterfaceIFace()->addPopup(pInfo);
-			}
-		}
-
 		reset(false);
 
 		m_inUse = false;

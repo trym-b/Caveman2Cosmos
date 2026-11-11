@@ -1,6 +1,10 @@
+
+#include "FProfiler.h"
+
 #include "CvGameCoreDLL.h"
 #include "CvCity.h"
 #include "CvGlobals.h"
+#include "CvInfos.h"
 #include "CvMap.h"
 #include "CvPlot.h"
 #include "CyArea.h"
@@ -9,7 +13,7 @@
 #include "CyUnit.h"
 
 //
-// Python wrapper class for CvPlot 
+// Python wrapper class for CvPlot
 //
 
 CyPlot::CyPlot(CvPlot* pPlot, bool bInViewportSpace) : m_pPlot(pPlot), m_bIsInViewportSpace(bInViewportSpace) {}
@@ -79,11 +83,6 @@ bool CyPlot::isRiver() const
 	return m_pPlot ? m_pPlot->isRiver() : false;
 }
 
-CyPlot* CyPlot::getNearestLandPlot() const
-{
-	return m_pPlot ? new CyPlot(m_pPlot->getNearestLandPlot()) : NULL;
-}
-
 bool CyPlot::canHaveBonus(int /*BonusTypes*/ eBonus, bool bIgnoreLatitude) const
 {
 	return m_pPlot ? m_pPlot->canHaveBonus((BonusTypes)eBonus, bIgnoreLatitude) : false;
@@ -133,11 +132,6 @@ int /*PlayerTypes*/ CyPlot::calculateCulturalOwner() const
 bool CyPlot::isOwned() const
 {
 	return m_pPlot ? m_pPlot->isOwned() : false;
-}
-
-bool CyPlot::isBarbarian() const
-{
-	return m_pPlot ? m_pPlot->isBarbarian() : false;
 }
 
 bool CyPlot::isNPC() const
@@ -205,11 +199,6 @@ bool CyPlot::isVisibleEnemyUnit(int /*PlayerTypes*/ ePlayer) const
 	return m_pPlot ? m_pPlot->isVisibleEnemyUnit((PlayerTypes) ePlayer) : false;
 }
 
-bool CyPlot::isFighting() const
-{
-	return m_pPlot ? m_pPlot->isFighting() : false;
-}
-
 bool CyPlot::canHaveFeature(int /*FeatureTypes*/ eFeature) const
 {
 	return m_pPlot ? m_pPlot->canHaveFeature((FeatureTypes)eFeature) : false;
@@ -262,7 +251,8 @@ CyArea* CyPlot::area() const
 
 CyArea* CyPlot::waterArea() const
 {
-	return m_pPlot ? new CyArea(m_pPlot->waterArea()) : NULL;
+	CvArea* area = m_pPlot ? m_pPlot->waterArea() : NULL;
+	return area ? new CyArea(area) : NULL;
 }
 
 int CyPlot::getArea() const
@@ -410,26 +400,6 @@ void CyPlot::setOwnershipDuration(int iNewValue)
 	if (m_pPlot) m_pPlot->setOwnershipDuration(iNewValue);
 }
 
-void CyPlot::changeOwnershipDuration(int iChange)
-{
-	if (m_pPlot) m_pPlot->changeOwnershipDuration(iChange);
-}
-
-int CyPlot::getImprovementDuration() const
-{
-	return m_pPlot ? m_pPlot->getImprovementDuration() : -1;
-}
-
-void CyPlot::setImprovementDuration(int iNewValue)
-{
-	if (m_pPlot) m_pPlot->setImprovementDuration(iNewValue);
-}
-
-void CyPlot::changeImprovementDuration(int iChange)
-{
-	if (m_pPlot) m_pPlot->changeImprovementDuration(iChange);
-}
-
 int /*BonusTypes*/ CyPlot::getBonusType(int /*TeamTypes*/ eTeam) const
 {
 	return m_pPlot ? m_pPlot->getBonusType((TeamTypes)eTeam) : -1;
@@ -485,6 +455,11 @@ void CyPlot::setRiverID(int iNewValue)
 int CyPlot::getYield(YieldTypes eIndex) const
 {
 	return m_pPlot ? m_pPlot->getYield(eIndex) : -1;
+}
+
+void CyPlot::setExtraYield(YieldTypes eYield, short iExtraYield)
+{
+	m_pPlot->setExtraYield(eYield, iExtraYield);
 }
 
 int CyPlot::calculateBestNatureYield(YieldTypes eIndex, TeamTypes eTeam) const
@@ -567,18 +542,19 @@ int CyPlot::getInvisibleVisibilityCount(int /*TeamTypes*/ eTeam, int /*Invisible
 	return m_pPlot ? m_pPlot->getInvisibleVisibilityCount((TeamTypes) eTeam, (InvisibleTypes) eInvisible) : -1;
 }
 
-bool CyPlot::isInvisibleVisible(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible) const
+bool CyPlot::isSpotterInSight(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible) const
 {
-	return m_pPlot ? m_pPlot->isInvisibleVisible((TeamTypes) eTeam, (InvisibleTypes) eInvisible) : -1;
+	return m_pPlot ? m_pPlot->isSpotterInSight((TeamTypes) eTeam, (InvisibleTypes) eInvisible) : false;
 }
 
-void CyPlot::changeInvisibleVisibilityCount(int /*TeamTypes*/ eTeam, int /*InvisibleTypes*/ eInvisible, int iChange, int iIntensity)
+void CyPlot::changeInvisibleVisibilityCount(int iTeam, int iInvisible, int iChange)
 {
-	if (m_pPlot) m_pPlot->changeInvisibleVisibilityCount((TeamTypes) eTeam, (InvisibleTypes) eInvisible, iChange, iIntensity);
+	if (m_pPlot) m_pPlot->changeInvisibleVisibilityCount((TeamTypes) iTeam, (InvisibleTypes) iInvisible, iChange);
 }
 
 python::list CyPlot::units() const
 {
+	PROFILE_EXTRA_FUNC();
 	python::list list = python::list();
 
 	if (m_pPlot)
@@ -624,4 +600,34 @@ bool CyPlot::isInViewport() const
 CyPlot* CyPlot::cloneToViewport() const
 {
 	return new CyPlot(m_pPlot, true);
+}
+
+python::list CyPlot::adjacent() const
+{
+	PROFILE_EXTRA_FUNC();
+	python::list list = python::list();
+
+	if (m_pPlot)
+	{
+		foreach_(CvPlot* plot, m_pPlot->adjacent())
+		{
+			list.append(CyPlot(plot));
+		}
+	}
+	return list;
+}
+
+python::list CyPlot::rect(int halfWid, int halfHgt) const
+{
+	PROFILE_EXTRA_FUNC();
+	python::list list = python::list();
+
+	if (m_pPlot)
+	{
+		foreach_(CvPlot* plot, m_pPlot->rect(halfWid, halfHgt))
+		{
+			list.append(CyPlot(plot));
+		}
+	}
+	return list;
 }
